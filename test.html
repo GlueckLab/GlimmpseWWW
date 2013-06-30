@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with column filter plugin - Place filter in the external form</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript" language="javascript" src="./js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="./js/tsizesWide.js"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready( function () {
+
+            
+            
+            $('#tblUsers').dataTable({
+                "bDestroy": true,
+                "bProcessing": true,
+                "sProcessing": false,
+                "sAjaxSource": path,
+                "bFilter": false,
+                "bLengthChange": false,
+                "bInfo": false,
+                "iDisplayLength": 15,
+                "sPaginationType": "full_numbers",
+                "aoColumns":
+            [
+                { "mDataProp": "UserName" },
+                { "mDataProp": "FirstName" },
+                { "mDataProp": "LastName" },
+                { "sDefaultContent": "", "fnRender": function (oObj) { return "<a onclick=AssignUser(this,'" + oObj.aData.UserName + "','btnRemove_" + oObj.aData.UserName + "') id='btnAssgin_" + oObj.aData.UserName + "'> Assign User</a>"; }
+                },
+                 { "sDefaultContent": "", "fnRender": function (oObj) { return "<a onclick=RemoveUser(this,'" + oObj.aData.UserName + "','btnAssgin_" + oObj.aData.UserName + "') id='btnRemove_" + oObj.aData.UserName + "' disabled='true'>Remove User</a>"; }
+                 }
+
+            ],
+                "aoColumnDefs": [
+                                  { "sWidth": "20%", "aTargets": [0] },
+                                  { "sWidth": "20%", "aTargets": [1] },
+                                  { "sWidth": "20%", "aTargets": [2] },
+                                  { "sWidth": "20%", "aTargets": [3] },
+                                  { "sWidth": "20%", "aTargets": [4] }
+                                ]
+            });
+            
+            
+            
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+
+		<div id="container">
+			<a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
+			<div class="full_width big">
+
+				JQuery DataTable Column Filter - External Form
+			</div>
+			
+			<h1>Preamble</h1>
+			<p>
+				Filtering elements can be placed outside the table. You can define 
+placeholders where each filtering element should be injected
+				(e.g. external form or table).
+			</p>
+
+			
+	
+			
+			
+			<h1>Live example</h1>
+
+		<table class="display" id="Table1" border="0" cellpadding="0" cellspacing="0">
+			<thead>
+			<tr>
+				<th>Column</th>
+				<th>Filter</th>
+			</tr>
+			</thead>
+			<tbody>
+				<tr id="filter_global">
+					<td align="center">Rendering engine</td>
+					<td id="renderingEngineFilter" align="center"><span class="filter_column filter_select"><select class="select_filter search_init"><option selected="selected" value="" class="search_init">Rendering engine</option><option value="Gecko">Gecko</option><option value="Gecko%20%28UTF-8%3A%20%24%A2%u20AC%29">Gecko (UTF-8: $¢€)</option><option value="KHTML">KHTML</option><option value="Misc">Misc</option><option value="Other%20browsers">Other browsers</option><option value="Presto">Presto</option><option value="Tasman">Tasman</option><option value="Trident">Trident</option><option value="Webkit">Webkit</option></select></span></td>
+				</tr>
+				<tr id="filter_col1">
+					<td align="center">Browser</td>
+					<td id="browserFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Browser" type="text"></span></td>
+				</tr>
+				<tr id="filter_col2">
+					<td align="center">Platform(s)</td>
+					<td id="platformsFilter" align="center"><span class="filter_column filter_text"><input class="search_init text_filter" value="Platform(s)" type="text"></span></td>
+				</tr>
+				<tr id="filter_col3">
+					<td align="center">Engine version</td>
+					<td id="engineVersionFilter" align="center"><span class="filter_column filter_number_range">From <input value="1" class="number_range_filter" id="example_range_from_3" rel="3" type="text"> to <input value="6" class="number_range_filter" id="example_range_to_3" rel="3" type="text"></span></td>
+				</tr>
+				<tr id="filter_col4">
+					<td align="center">CSS grade</td>
+					<td id="cssGradeFilter" align="center"><span class="filter_column filter_select"><select class="search_init select_filter"><option selected="selected" value="" class="search_init">CSS grade</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></span></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+			<div id="demo">
+
+<div id="example_wrapper" class="dataTables_wrapper" role="grid"><div class="dataTables_length" id="example_length"><label>Show <select aria-controls="example" size="1" name="example_length"><option selected="selected" value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="example_filter" class="dataTables_filter"><label>Search: <input aria-controls="example" type="text"></label></div><table aria-describedby="example_info" class="display dataTable" id="example" border="0" cellpadding="0" cellspacing="0">
+	<thead>
+		<tr role="row"><th aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" style="width: 128px;" colspan="1" rowspan="1" aria-controls="example" tabindex="0" role="columnheader" class="sorting_asc">Rendering engine</th><th aria-label="Browser: activate to sort column ascending" style="width: 178px;" colspan="1" rowspan="1" aria-controls="example" tabindex="0" role="columnheader" class="sorting">Browser</th><th aria-label="Platform(s): activate to sort column ascending" style="width: 170px;" colspan="1" rowspan="1" aria-controls="example" tabindex="0" role="columnheader" class="sorting">Platform(s)</th><th aria-label="Engine version: activate to sort column ascending" style="width: 109px;" colspan="1" rowspan="1" aria-controls="example" tabindex="0" role="columnheader" class="sorting">Engine version</th><th aria-label="CSS grade: activate to sort column ascending" style="width: 75px;" colspan="1" rowspan="1" aria-controls="example" tabindex="0" role="columnheader" class="sorting">CSS grade</th></tr>
+	</thead>
+	<tfoot>
+		<tr><th colspan="1" rowspan="1">Rendering engine</th><th colspan="1" rowspan="1">Browser</th><th colspan="1" rowspan="1">Platform(s)</th><th colspan="1" rowspan="1">Engine version</th><th colspan="1" rowspan="1">CSS grade</th></tr>
+	</tfoot>
+	
+<tbody aria-relevant="all" aria-live="polite" role="alert"><tr class="even_gradeC odd" id="4">
+			<td class=" sorting_1">KHTML</td>
+			<td class=" ">Konqureror 3.1</td>
+			<td class=" ">KDE 3.1</td>
+
+			<td class="center ">3.1</td>
+			<td class="center ">C</td>
+		</tr><tr class="odd_gradeA even" id="5">
+			<td class=" sorting_1">KHTML</td>
+			<td class=" ">Konqureror 3.3</td>
+			<td class=" ">KDE 3.3</td>
+
+			<td class="center ">3.3</td>
+			<td class="center ">A</td>
+		</tr><tr class="even_gradeA odd" id="1">
+			<td class=" sorting_1">KHTML</td>
+			<td class=" ">Konqureror 3.5</td>
+			<td class=" ">KDE 3.5</td>
+
+			<td class="center ">3.5</td>
+			<td class="center ">A</td>
+		</tr><tr class="even_gradeC even" id="4">
+			<td class=" sorting_1">Tasman</td>
+			<td class=" ">Internet Explorer 5.1</td>
+			<td class=" ">Mac OS 7.6-9</td>
+
+			<td class="center ">1</td>
+			<td class="center ">C</td>
+		</tr><tr class="odd_gradeC odd" id="3">
+			<td class=" sorting_1">Tasman</td>
+			<td class=" ">Internet Explorer 5.2</td>
+			<td class=" ">Mac OS 8-X</td>
+
+			<td class="center ">1</td>
+			<td class="center ">C</td>
+		</tr><tr class="odd_gradeX even" id="2">
+			<td class="read_only sorting_1">Trident</td>
+			<td class=" ">Internet Explorer 4.0</td>
+			<td class=" ">Win 95+</td>
+			<td class="center ">4</td>
+
+			<td class="center ">X</td>
+		</tr><tr class="even_gradeC odd" id="4">
+			<td class=" sorting_1">Trident</td>
+			<td class=" ">Internet Explorer 5.0</td>
+			<td class=" ">Win 95+</td>
+			<td class="center ">5</td>
+
+			<td class="center ">C</td>
+		</tr><tr class="odd_gradeA even" id="5">
+			<td class=" sorting_1">Trident</td>
+			<td class=" ">Internet Explorer 5.5</td>
+			<td class=" ">Win 95+</td>
+			<td class="center ">5.5</td>
+
+			<td class="center ">A</td>
+		</tr><tr class="even_gradeA odd" id="1">
+			<td class=" sorting_1">Trident</td>
+			<td class="read_only ">Internet Explorer 6</td>
+			<td class=" ">Win 98+</td>
+			<td class="center ">6</td>
+
+			<td class="center ">A</td>
+		</tr><tr class="even_gradeA even" id="1">
+			<td class=" sorting_1">Trident</td>
+			<td class=" ">AOL browser (AOL desktop)</td>
+			<td class=" ">Win XP</td>
+			<td class="center ">6</td>
+
+			<td class="center read_only ">A</td>
+		</tr></tbody></table><div id="example_info" class="dataTables_info">Showing 21 to 30 of 30 entries (filtered from 57 total entries)</div><div id="example_paginate" class="dataTables_paginate paging_two_button"><a aria-controls="example" id="example_previous" class="paginate_enabled_previous" tabindex="0" role="button">Previous</a><a aria-controls="example" id="example_next" class="paginate_disabled_next" tabindex="0" role="button">Next</a></div></div>
+
+			</div>
+			<div class="spacer"></div>
+
+
+			
+			<h1>Initialization code</h1>
+			<p>First you will need to define placeholder elements where filter elements will be placed.</p>
+			
+			<pre class="brush: xml;">	&lt;p id="renderingEngineFilter"&gt;&lt;/p&gt;
+	&lt;p id="browserFilter"&gt;&lt;/p&gt;
+	&lt;p id="platformsFilter"&gt;&lt;/p&gt;
+	&lt;p id="engineVersionFilter"&gt;&lt;/p&gt;
+	&lt;p id="cssGradeFilter"&gt;&lt;/p&gt;
+</pre>
+			<p>Then, for each column you should put selector that defines where in the page will be placed filtering element.
+			An example where selectors are added as JQuery id selectors is shown in the script below:</p>
+			<pre class="brush: js;">	$('#example').dataTable()
+			.columnFilter({aoColumns:[
+				{ sSelector: "#renderingEngineFilter", type:"select"  },
+				{ sSelector: "#browserFilter" },
+				{ sSelector: "#platformsFilter" },
+				{ sSelector: "#engineVersionFilter", type:"number-range" },
+				{ sSelector: "#cssGradeFilter", type:"select", values : ["A", "B", "C"] }
+				]}
+			);
+	</pre>
+			
+			
+
+
+			<h1>Other examples</h1>
+			<ul>
+
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/default.html">Basic usage</a></li>
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/customFilters.html">Custom filters</a></li>
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/dateRange.html">Date ranges</a></li>
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/numberRange.html">Number ranges</a></li>
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/ajaxSource.html">Ajax source filtering</a></li>
+				<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/serverSide.html">Server-side filtering</a></li>
+		        	<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/regex.html">Regular expression filtering</a></li>
+		        	<li><a href="http://jquery-datatables-column-filter.googlecode.com/svn/trunk/external.html">Filtering via external form</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Column Filter Add-on © Jovan Popovic 2011.<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk/">Allan Jardine</a> © 2007-2011<br>
+				</span>
+			</div>
+		</div>
+	
+
+
+
+
+
+</body></html>

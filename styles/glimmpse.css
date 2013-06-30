@@ -1,0 +1,1087 @@
+/*
+GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+Copyright (C) 2010 Regents of the University of Colorado.  
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*** Start page styles ***/
+html {
+    background: #e5e5e5;
+}
+body {
+    margin: 0px;
+}
+a {
+    text-decoration: none;
+}
+
+#header {
+  background: url('../images/bluegradient.png') repeat-x;
+}
+
+#footer {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  text-align: center;
+  color: #555;
+  width: 960px;
+  margin: 10px auto;
+}
+
+#glimmpse-topbar {
+	align: center;
+	width: 960px;
+	margin-left: 0px;
+	height: 60px;
+}
+
+#glimmpse-logo {
+	font-family: Palatino, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+	padding-left: 55px;
+	padding-top: 15px;
+	padding-right: 10px;
+	font-size: 24pt;
+	background-image: url('../images/glimmpse.png');
+	background-repeat: no-repeat;
+	background-position: 10px 15px;
+    background-size: 36px 36px;
+	color: white;
+	height: 50px;
+	float: left;
+    text-shadow: 1px 1px 2px #444;
+}
+
+#top-navbar {
+    margin-right: 0px;
+}
+
+.top-navbar-link {
+	font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+	margin-top: 20px;
+	margin-right: 10px;
+	padding-right: 5px;
+	color: white;
+	float: right;
+}
+
+.top-navbar-link a {
+	color: #e4eaef;
+	text-decoration: none;
+}
+
+.top-navbar-link a:visited {
+	color: #e4eaef;
+}
+
+.top-navbar-link a:hover {
+	color: white;
+    text-decoration: underline;
+}
+
+
+#layout-grid {
+	width: 960px;
+	background-color: white; 	
+	text-align: left;
+	margin: 0px auto;
+    padding: 0px;
+    -moz-box-shadow: 0px 0px 6px #555;
+    -webkit-box-shadow: 0px 0px 6px #555;
+    box-shadow: 0px 0px 6px #555;
+}
+
+#site-title {
+	margin-top: 20px;
+	margin-left: 20px;
+	font-size: small;
+	float: left;
+	font-weight: bold;	
+}
+
+.selected {
+	font-weight: bold;
+}
+
+.no-border {
+	border: none;	
+}
+
+#center {
+  margin: 0, auto;	
+}
+
+.rounded-box {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.shaded-box {
+    -moz-box-shadow: 0px 0px 4px #aaa;
+    -webkit-box-shadow: 0px 0px 4px #aaa;
+    box-shadow: 0px 0px 4px #aaa;
+}
+
+#content-grid {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#content-grid td {
+    vertical-align: top;
+}
+
+/**** The calculate button ****/
+#calculate-grid {
+    width: 200px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    /* border: 1px solid #cccccc;    */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#calculate-grid button {
+    color: white;
+    background: none repeat scroll 0% 0% #5DC68B;
+    border: 2px solid #58B781;
+    text-shadow: 0px 1px 3px #24603E;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    -khtml-border-radius: 1px;
+    border-radius: 1px;
+
+    font-family: "ProximaNovaRegular","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:20px;
+    text-align: center;
+
+    width: 180px;
+    height: 40px;
+    margin-left: 10px;
+
+
+}
+
+/**** Navigation Accordion Styles ****/
+
+#accordion-grid {
+    /*border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc; */
+    width: 200px;
+    margin-left: 10px;
+    padding-bottom: 10px;
+}
+
+#accordion * {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#accordion {
+    width: 180px;
+    margin-left: 10px;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+#accordion .ui-accordion-header {
+    color: #999999;
+    background: #ffffff; /* Old browsers */
+
+}
+
+#accordion .ui-accordion-header a:hover{
+    background: gray;
+    color: white;
+    text-shadow: 1px 1px 1px #545454;
+}
+
+#accordion .ui-accordion-header.ui-state-active {
+    color: white; /*#1D5C84;*/
+    background: #3BA6E9;
+}
+
+#accordion .ui-accordion-header.ui-state-active a {
+    color: white;
+    text-shadow: 1px 1px 1px #3188BF;
+}
+
+#accordion .ui-accordion-header a {
+    color: #999999;
+
+    margin: 0px;
+    line-height: 32px;
+    display: block;
+    font-size: 10pt;
+    width: 100%;
+    text-indent: 10px;
+}
+
+#accordion .ui-accordion-content {
+    width: 100%;
+    background-color: white;
+    color: #777;
+    font-size: 9pt;
+    line-height: 16pt;
+    border-left: 1px solid #cccccc;
+}
+#accordion .ui-accordion-content > * {
+    margin: 0px;
+    padding: 5px;
+}
+#accordion .ui-accordion-content a {
+    color: black;
+    text-align: left;
+    margin-left: 10px;
+    text-size: 10pt;
+}
+
+#content {
+    width: 700px;
+    min-height: 500px;
+    padding: 10px 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+}
+
+#toolbox {
+    width: 180px;
+    margin-left: 20px;
+    font-family: Helvetica, Arial, sans-serif;
+    border: 1px solid #CBD1D6;
+    background: #E4EAEF;
+    color: #999999;
+}
+
+.toolbox-item {
+    font-size: 10pt;
+    margin: 5px 5px;
+}
+/**** GLIMMPSE Application Styles ****/
+
+/* style for initial mode selection screen */  /*
+.modeSelectionInputContainer {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	padding: 10px;
+	spacing: 20px;
+}
+
+.modeSelectionPanelHeader {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin-left: 20px;
+	margin-top: 10px;
+	font-weight: bold;
+	font-size: large;
+	width: 90%;
+}
+
+.modeSelectionPanelDescription {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin: 10px 20px;
+	width: 80%;
+}
+
+.modeSelectionPanelContainer {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	background-color:  white;
+	height: 260px;
+	width: 240px;
+	border: 2px solid #ccc;
+	margin-right: 20px;
+}
+
+.modeSelectionPanelContainerTitle {
+	font-size: larger;
+	text-align: center;
+	width: 100%;
+	height: 30px;
+	padding-top: 6px;
+	background: #005C84;
+	border-bottom: 2px solid black;
+	color: white;
+}
+
+.modeSelectionPanelContainerDescription {
+	padding: 10px;
+	height: 150px;
+}
+
+.modeSelectionPanelGoButton {
+	float: right;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+.modeSelectionPanelContainer .gwt-FileUpload {
+	width: 150px;
+	margin-left: 5px;
+	margin-top: 8px;
+}
+
+*//*** Main wizard styles ***/
+/* overall wizard panel */  /*
+.wizardPanel {
+	background-color: white;
+	margin-top: 10px;
+	margin-bottom: 10px;	
+	background-color: #e4eaef;
+	*//* background-color: #f2f2f2; *//*
+	border: solid 1px #ccc;
+}
+
+.leftPanel {
+	width: 200px;
+}
+
+.rightPanel {
+	width: 750x;
+}
+
+*//*** left navigation panel ***//*
+
+.wizardLeftNavPanel {
+	*//*background-color: #f2f2f2;*/ /*
+	background-color: #e4eaef;
+	width: 200px;
+	margin-top: 20px;
+	padding-top: 10px;
+	border-collapse: collapse;
+}
+
+.wizardLeftNavHeader {
+	height: 32px;
+	width: 200px;
+	padding-left: 5px;
+	text-align: left;
+	color: #999;
+	background-color:  #e4eaef;
+	border-top: 1px solid #ccc; 
+	border-bottom: none;
+	border-right: none;
+	border-left: none;
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	padding-left: 4px;
+}
+
+.wizardLeftNavHeader:hover {
+	text-decoration: underline;
+}
+
+.wizardLeftNavHeader-open  {
+	color: #1d5c84;
+	font-weight: bold;
+	background: white; 
+	border-left: 4px solid #e87439;
+	border-top: 1px solid #ccc;
+	border-right: 1px solid #white;
+	border-bottom: none;
+}
+
+.wizardLeftNavHeader-open:hover  {
+	text-decoration: none;
+}
+
+.wizardLeftNavContent {
+	border-left: 1px solid #ccc;
+	border-bottom: none;
+	background-color: white;
+	width: 200px;
+	border-collapse: collapse;
+	border-right: 1px solid white;
+
+}
+
+.wizardLeftNavLink {
+  cursor: pointer;
+  cursor: hand;
+  font: smaller;
+  border: none;
+  background-color: white;
+  text-align: left;
+  padding-left: 20px;
+  width: 180px;
+}
+
+.wizardLeftNavLink-open {
+	font-weight: bold;
+	color: black;
+	border-right: 1px solid white;
+}
+
+.wizardLeftNavLink-openIncomplete {
+  font-weight: bold;
+  color: black;
+  background: url('/images/incomplete_icon.png') no-repeat left;
+}
+
+.wizardLeftNavLink-openComplete {
+	font-weight: bold;
+	color: black;
+	background: url('/images/complete_icon.png') no-repeat left;
+}
+
+.wizardLeftNavLink-openNotAllowed {
+	font-weight: bold;
+	color: black;
+  background: url('/images/not_allowed_icon.png') no-repeat left;
+}
+
+
+
+.wizardLeftNavLink-incomplete {
+  color: gray;
+  background: url('/images/incomplete_icon.png') no-repeat left;
+}
+
+.wizardLeftNavLink-complete {
+	color: gray;
+	background: url('/images/complete_icon.png') no-repeat left;
+}
+
+.wizardLeftNavLink-notAllowed {
+  color: gray;
+  background: url('/images/not_allowed_icon.png') no-repeat left;
+}
+
+.wizardLeftNavLink:hover {
+}
+
+*//* Action buttons: next, prev, save, cancel, help *//*
+
+.wizardActionPanel {
+  width: 740px;
+  background-color: #ddd;
+  height: 24px;
+  border: solid 1px #ddd;
+  padding-left: 20px;
+  margin-left: 200px;
+}
+
+.wizardActionSaveButton {
+  border: none;
+  cursor: pointer;
+  color: #005C84;
+  text-decoration: none;
+  background: url(/images/save.png) no-repeat;
+  width: 120px;
+}
+
+.wizardActionCancelButton {
+  border: none;
+  cursor: pointer;
+  color: #005C84;
+  text-decoration: none;
+  background: url('/images/cancel.png') no-repeat;
+  width: 85px;
+}
+
+.wizardActionHelpButton {
+  border: none;
+  color: #005C84;
+  cursor: pointer;
+  text-decoration: none;
+  background: url('/images/help.png') no-repeat;
+  width: 75px;
+  margin-left: 365px;
+}
+
+.wizardActionNextButton {
+  background: url('/images/next.png') no-repeat;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+
+.wizardActionNextButton-disabled {
+  background: url('/images/next-disabled.png') no-repeat;
+}
+
+.wizardActionNextButton-disabled:hover {
+  background: url('/images/next-disabled.png') no-repeat;
+}
+
+.wizardActionNextButton:hover {
+  background: url('/images/next-highlight.png') no-repeat;
+}
+
+.wizardActionPreviousButton {
+  background: url('/images/previous.png') no-repeat;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.wizardActionPreviousButton:hover {
+  background: url('/images/previous-highlight.png') no-repeat;
+}
+
+.wizardActionPreviousButton-disabled {
+  background: url('/images/previous-disabled.png') no-repeat;
+}
+
+.wizardActionPreviousButton-disabled:hover {
+	background: url('/images/previous-disabled.png') no-repeat;
+}
+
+*//* finish button *//*
+.wizardFinishButton {
+	background-color:#21944f;
+	color:#ffffff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:16px;
+	font-weight:bold;
+	text-align: center;
+	text-shadow: 1px 1px 0px #000000;
+	width: 140px;
+	height: 36px;
+	margin-top: 20px;
+	margin-left: 30px;
+}
+.wizardFinishButton:hover {
+	background-color:#48b373;
+}
+
+.wizardFinishButton-disabled {
+	background: #ccc;
+}
+.wizardFinishButton-disabled:hover {
+	background: gray;
+}
+
+*//* style for main wizard input panel (GWT class) */      /*
+.glimmpseWizardPanel {
+	background: #fff;
+	height: 100%;
+	border-collapse: collapse;
+}
+
+*//* style for main wizard input panel (GWT class) */ /*
+.wizardContentPanel {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	width: 740px;
+	min-height: 500px;
+	background-color: white;
+}
+
+*//* styles applied to steps in the input wizard */ /*
+.wizardStepPanel {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	min-height: 400px;
+	width: 100%;
+	padding-top: 20px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+}
+
+.wizardStepPanel-subpanel {
+	width: 100%;
+}
+
+.wizardStepHeader {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin: 5px 5px;
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+.wizardStepSubheader {
+	margin: 5px 5px;
+	font-weight: bold;
+}
+
+.wizardStepDescription {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin: 5px 5px;
+	font-size: 12pt;
+	width: 80%;
+}
+
+
+.wizardStepButton {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	text-decoration: underline;
+	color: blue;
+	background-color: white;
+	border: none;
+}
+
+.wizardStepButton-save {
+	margin-top: 30px;
+	padding-top: 5px;
+	padding-left: 24px;
+	border: none;
+	color: #005C84;
+	cursor: pointer;
+	text-decoration: none;
+	background: url(../images/save.png) no-repeat 4px 6px;
+}
+
+.wizardStepButton-cancel {
+	padding-top: 5px;
+	padding-left: 24px;
+	border: none;
+	color: #005C84;
+	cursor: pointer;
+	text-decoration: none;
+	background: url(../images/cancel.png) no-repeat 4px 6px;
+}
+
+.wizardStepButton-help {
+	padding-top: 5px;
+	padding-left: 24px;
+	border: none;
+	color: #005C84;
+	cursor: pointer;
+	text-decoration: none;
+	background: url(../images/help.png) no-repeat 4px 6px;
+}
+
+.wizardStepButton:hover {
+	text-decoration: underline;
+}
+
+.wizardStepHeader-subpanel {
+	border-top: 1px solid #ccc;
+	font-weight: normal;
+	font-size: larger;
+	margin: 10px 0px;
+}
+
+
+*//* List entry panel styles */    /*
+.wizardStepListPanel {
+	background: #e4eaef;
+	width: 80%;
+	border: 1px solid #999;
+	border-collapse: collapse;
+}
+
+.wizardStepListPanel .gwt-ListBox {
+	border: none;
+	border-top: 1px solid #999;
+	width: 100%;
+	padding: 5px;
+}
+
+.wizardStepListHeader {
+	padding: 5px;
+	spacing: 5px;
+}
+
+.wizardStepListButton {
+	cursor: pointer;
+	margin-left: 5px;
+}
+
+*//* Matrix displays */ /*
+.matrixPanel {
+	border: 1px solid #ccc;
+	background: #e4eaef;
+	margin-left: 5px;
+}
+
+.matrixData {
+	border-collapse: collapse;
+}
+.matrixData-disabled {
+    background: #ebf0f5;
+    border: 1px solid #ccc;
+    height: 24px;
+}
+
+.matrixCell {
+	background: white;
+	border: 1px solid #ccc;
+	width: 50px;
+	margin: 0px;
+}
+
+.matrixCell-disabled {
+    background: #ccc;
+    border: 1px solid #ebf0f5;
+    width: 50px;
+}
+
+.matrixDimensions .gwt-HTML {
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.matrixDimensions .gwt-TextBox {
+	width: 30px;
+}
+
+*//* Table display styles */ /*
+.wizardStepTablePanel {
+	border: 1px outset #14f;
+	background: #E0ECF8;
+}
+
+.wizardStepTable {
+	border-collapse: collapse;
+	background: #ebf0f5;
+}
+
+.wizardStepTableHeader .gwt-HTML {
+	font-weight: bold;
+	color: #000;
+}
+
+.wizardStepTableHeader td {
+	border: 1px solid #ccc;
+	padding: 5px;
+	text-align: center;
+}
+
+.wizardStepTableRow {
+	background: #fff;
+	*//*width: 100%;*/  /*
+}
+
+.wizardStepTableRow td {
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+
+.wizardStepTableRow .gwt-TextBox {
+	padding: 0px;
+	width: 100%;
+}
+
+.wizardStepTableRow .gwt-ListBox {
+	width: 100%;
+	border: none;
+}
+
+.wizardStepTableRow-odd {
+	background: #fff;
+}
+
+.wizardStepTableRow-even {
+	background: #fff;
+}
+
+
+
+.wizardStepTreeNode {
+  border: solid 1px #ddd;
+  padding: 5px;
+}
+
+
+.wizardStepTextBox {
+}
+
+.wizardStepTextbox-disabled {
+	color: gray;
+}
+
+.wizardStepTextBox-short {
+	width: 20px;
+}
+
+*//* tab panel style */  /*
+.wizardStepTabPanel {
+	background-color: white;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+*//* tab header bar */  /*
+.wizardStepTabPanelHeader {
+  background-color: white;
+  	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+*//* tabs - uses GWT DecoratorPanel */ /*
+.wizardStepTabPanelTab {
+	height: 32px;
+	background-color: #e4eaef;
+  	border-collapse: collapse;
+	border-spacing: 0;
+	font-weight: normal;
+}
+
+.wizardStepTabPanelTab .middleRight {
+	height: 32px;
+	width: 32px;
+	background-color: white;
+	background-repeat: no-repeat;
+	border: none;
+}
+
+.wizardStepTabPanelTab .topCenter {
+	height: 1px;
+	background-color: white;
+	border-bottom: 1px solid #ddd;
+}
+
+.wizardStepTabPanelTab .topRight {
+	height: 1px;
+	background-color: white;
+	border: none;
+}
+
+.wizardStepTabPanelTab .topLeft {
+	height: 1px;
+	background-color: white;
+	border: none;
+}
+
+*//* single tab - always highlighted */    /*
+.wizardStepTabPanelTab-single {
+	background-color: white;
+}
+
+.wizardStepTabPanelTab-single .middleRight {
+	background-image: url('/images/right-active.png');
+}
+
+.wizardStepTabPanelTab-single .middleLeft {
+	height: 32px;
+	width: 32px;
+	background-color: white;
+	background-image: url('/images/left-active.png');
+	background-repeat: no-repeat;
+	border: none;
+}
+
+*//* center tabs */  /*
+.wizardStepTabPanelTab-middle .middleRight {
+	background-image: url('/images/middle-inactive.png');
+}
+
+.wizardStepTabPanelTab-middleActive {
+	background-color: white;
+	font-weight: bold;
+}
+
+.wizardStepTabPanelTab-middleActive .middleRight {
+	background-image: url('/images/middle-right-active.png');
+}
+
+.wizardStepTabPanelTab-middleNextToActive .middleRight {
+	background-image: url('/images/middle-left-active.png');
+}
+
+
+*//* left most tab */  /*
+.wizardStepTabPanelTab-left .middleLeft {
+	height: 32px;
+	width: 32px;
+	background-color: white;
+	background-image: url('/images/left-inactive.png');
+	background-repeat: no-repeat;
+	border: none;
+}
+
+.wizardStepTabPanelTab-left .middleRight {
+	background-image: url('/images/middle-inactive.png');
+}
+
+.wizardStepTabPanelTab-leftActive {
+	background-color: white;
+	font-weight: bold;
+}
+
+.wizardStepTabPanelTab-leftActive .middleLeft {
+	height: 32px;
+	width: 32px;
+	background-color: white;
+	background-image: url('/images/left-active.png');
+	background-repeat: no-repeat;
+	border: none;
+}
+
+.wizardStepTabPanelTab-leftActive .middleRight {
+	background-image: url('/images/middle-right-active.png');
+}
+
+.wizardStepTabPanelTab-leftNextToActive .middleLeft {
+	height: 32px;
+	width: 32px;
+	background-color: white;
+	background-image: url('/images/left-inactive.png');
+	background-repeat: no-repeat;
+	border: none;
+}
+
+.wizardStepTabPanelTab-leftNextToActive .middleRight {
+	background-image: url('/images/middle-left-active.png');
+}
+
+
+*//* right most tab */ /*
+.wizardStepTabPanelTab-rightActive {
+	background-color: white;
+	font-weight: bold;
+}
+
+.wizardStepTabPanelTab-right .middleRight {
+	background-image: url('/images/right-inactive.png');
+}
+
+.wizardStepTabPanelTab-rightActive .middleRight {
+	background-image: url('/images/right-active.png');
+}
+
+
+*//* contents associated with tab */    /*
+.wizardStepTabPanelContent {
+	border: 1px solid #ddd;
+	padding: 5px;
+	width: 700px;
+}
+
+.editTrendPanel {
+	border: 1px solid #ddd;
+}
+
+.editTrendPanelButton {
+	width: 300px;
+	height: 70px;
+}
+
+.editTrendPanelButton-allTrends {
+	background: url('/images/all_polynomial_trends.png') no-repeat 220px 0px ;
+}
+
+.editTrendPanelButton-changeFromBaseline {
+	background: url('/images/change_from_baseline.png') no-repeat 220px 0px ;
+}
+
+.editTrendPanelButton-linear {
+	background: url('/images/linear_trend_only.png') no-repeat 220px 0px ;
+}
+
+.editTrendPanelButton-quadratic {
+	background: url('/images/quadratic_trend_only.png') no-repeat 220px 0px ;
+}
+
+.editTrendPanelButton-cubic {
+	background: url('/images/cubic_trend_only.png') no-repeat 220px 0px;
+}
+
+.explanationButton {
+	background: url('/images/help.png') no-repeat;
+	width: 16px;
+	height: 16px;
+	border: none;
+}
+
+*//* error message styles */      /*
+.message-error {
+	color: maroon;
+}
+
+.message-okay {
+	color: green;
+	font-weight: bold;
+	background: #fff;
+}
+
+*//* processing dialog */   /*
+.waitDialog {
+	background: #fff url(../images/processing.gif) no-repeat 10px 12px;
+	padding: 10px;
+	border: 2px solid  #005C84;
+	width: 230px;
+	height: 40px;
+	position: relative;
+}
+
+.waitDialogText {
+	position: absolute;
+	left: 56px; top: 20px;
+	font-weight: bold;
+}
+
+*//* feedback panel */ /*
+.feedbackHeader {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin: 5px 5px;
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+.feedbackDescription {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin: 5px 5px;
+	font-size: 12pt;
+	width: 100%;
+	border-bottom: 1px solid #ddd
+}
+
+.feedbackQuestion {
+	font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+	margin-top: 10px;
+	margin-left: 10px;
+	font-size: 12pt;
+	width: 100%;
+}
+
+.feedbackResponse {
+	margin-left: 10px;
+}
+
+.feedbackSubmit {
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.feedbackMessage {
+	margin-left: 10px;
+	width: 500px;
+	height: 200px;
+}
+
+.blockWithBorder {
+	border: 1px solid #ddd;
+}
+
+.blockWithSpacing {
+	margin: 10px;
+}
+
+.wizardStepDeckPanelBar {
+	background: #e4eaef;
+	width: 600px;
+	border: 1px solid #999;
+	border-collapse: collapse;
+	padding: 10px;
+}
+
+.wizardStepDeckPanelContents {
+	border: 1px solid #999;
+	border-collapse: collapse;
+	width: 600px;
+}
+
+.wizardStepDeckPanelContentsSubpanel {
+	padding: 20px;	
+}
+	
