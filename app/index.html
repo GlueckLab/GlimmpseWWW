@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="glimmpse">
+
+<head>
+
+    <LINK REL="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <title>GLIMMPSE: General Linear Multivariate Model Power &amp; Sample Size</title>
+
+    <!--  <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-21939703-1']);
+            _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+      <script type="text/javascript"
+        src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+      </script>        -->
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet" />  -->
+    <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
+    <script>
+        $(function() {
+            $( "#accordion" ).accordion({
+                active: false,
+                autoHeight: false,
+                navigation: true
+            });
+        });
+    </script>
+
+
+</head>
+
+<body>
+
+<div id="layout-grid">
+    <div id="header">
+        <div id="glimmpse-topbar">
+            <div id="glimmpse-logo">Glimmpse</div>
+            <div id="top-navbar">
+                <div class="top-navbar-link no-border"><a href="/feedback.html">Feedback</a></div>
+                <div class="top-navbar-link"><a href="http://samplesizeshop.org/software-downloads/glimmpse/">Downloads</a></div>
+                <div class="top-navbar-link"><a href="http://samplesizeshop.org/documentation/glimmpse/">Documentation</a></div>
+                <div class="top-navbar-link"><a href="http://samplesizeshop.org">SampleSizeShop.org</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-grid">
+        <table id="content-table">
+            <tr>
+                <td>
+                    <!-- Left navigation bar -->
+                    <div id="calculate-grid" >
+                        <button id="calculate-button">Calculate</button>
+                    </div>
+                    <div id="accordion-grid" >
+                        <div class="ui-accordion" id="accordion">
+                            <h3><a href="#">Start</a></h3>
+                            <div>
+                                <div ><a href="#/solvingFor">Solving For</a></div>
+                                <div ><a href="#/nominalPower">Desired Power</a></div>
+                                <div ><a href="#/typeIError">Type I Error</a></div>
+                            </div>
+                            <h3><a href="#">Sampling Unit</a></h3>
+                            <div>
+                                <div ><a href="#/predictors">Study Groups</a></div>
+                                <div ><a href="#/covariates">Covariate</a></div>
+                                <div ><a href="#/isu">Clustering</a></div>
+                                <div ><a href="#/relativeGroupSize">Relative Group Size</a></div>
+                                <div ><a href="#/smallestGroupSize">Smallest Group Size</a></div>
+                            </div>
+                            <h3><a href="#">Responses</a></h3>
+                            <div>
+                                <div ><a href="#/responseVariables">Response Variables</a></div>
+                                <div ><a href="#/repeatedMeasures">Repeated Measures</a></div>
+                            </div>
+                            <h3><a href="#">Hypothesis</a></h3>
+                            <div>
+                                <div ><a href="#/hypothesis">Hypothesis</a></div>
+                            </div>
+                            <h3><a href="#">Means</a></h3>
+                            <div>
+                                <div ><a href="#/means">Means</a></div>
+                                <div ><a href="#/meansScale">Scale Factors for Means</a></div>
+                            </div>
+                            <h3><a href="#">Variability</a></h3>
+                            <div>
+                                <div ><a href="#/variabilityWithin">Within Participant Variability</a></div>
+                                <div ><a href="#/variabilityCovariate">Covariate Variability</a></div>
+                                <div ><a href="#/variabilityScale">Scale Factors for Variability</a></div>
+                            </div>
+                            <h3><a href="#">Options</a></h3>
+                            <div>
+                                <div ><a href="#/test">Statistical Test</a></div>
+                                <div ><a href="#/powerMethod">Power Method</a></div>
+                                <div ><a href="#/confidenceIntervals">Confidence Intervals</a></div>
+                                <div ><a href="#/plotOptions">Power Curve</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="toolbox">
+                        <div class="toolbox-item">Save Design</div>
+                        <div class="toolbox-item">Cancel</div>
+                        <div class="toolbox-item">Templates</div>
+                        <div class="toolbox-item">Help</div>
+                    </div>
+                </td>
+                <!-- Content panel to display individual input screens -->
+                <td>
+                    <div id="content" class="font-main" ng-view=""></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="footer">
+    <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
+        <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
+    <div>
+        GLIMMPSE version 2.0.1 is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
+        (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
+        Previous funding was received from an American Recovery
+        and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
+    </div>
+</div>
+
+
+<!-- Angular.js scripts -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+
+
+<script>
+    // Code goes here
+    'use strict';
+
+    var glimmpseApp = angular.module('glimmpse', [])
+            .config(['$routeProvider', function($routeProvider) {
+                $routeProvider
+                        .when('/',
+                        {templateUrl: 'partials/home.html', controller: 'StudyDesignController'}
+                )
+                        .when('/solvingFor',
+                        {templateUrl: 'partials/solvingForScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/nominalPower',
+                        {templateUrl: 'partials/nominalPowerScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/typeIError',
+                        {templateUrl: 'partials/typeIErrorScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/predictors',
+                        {templateUrl: 'partials/predictorsScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/covariates',
+                        {templateUrl: 'partials/covariateScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/isu',
+                        {templateUrl: 'partials/independentSamplingUnitScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/relativeGroupSize',
+                        {templateUrl: 'partials/relativeGroupSizesScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/smallestGroupSize',
+                        {templateUrl: 'partials/smallestGroupSizeScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/responseVariables',
+                        {templateUrl: 'partials/responseVariablesScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/repeatedMeasures',
+                        {templateUrl: 'partials/repeatedMeasuresScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/hypothesis',
+                        {templateUrl: 'partials/hypothesisScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/means',
+                        {templateUrl: 'partials/meansScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/meansScale',
+                        {templateUrl: 'partials/scaleFactorsForMeansScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/variabilityWithin',
+                        {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/variabilityCovariate',
+                        {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/variabilityScale',
+                        {templateUrl: 'partials/scaleFactorsForVariabilityScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/test',
+                        {templateUrl: 'partials/statisticalTestScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/powerMethod',
+                        {templateUrl: 'partials/powerMethodScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/confidenceIntervals',
+                        {templateUrl: 'partials/confidenceIntervalsScreen.html', controller: 'StudyDesignController' }
+                )
+                        .when('/plotOptions',
+                        {templateUrl: 'partials/plotOptionsScreen.html', controller: 'StudyDesignController' }
+                )
+                        .otherwise({ redirectTo: '/' });
+            }]);
+
+    glimmpseApp.controller('StudyDesignController', function($scope) {
+        $scope.nominalPowerList = [{idx: 1, value: 0.9}];
+    });
+
+
+
+</script>
+
+</body>
+</html>
