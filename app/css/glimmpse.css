@@ -19,26 +19,73 @@
 
 /*** Start page styles ***/
 html {
-    background: #e5e5e5;
+    background: white;
+
 }
 body {
     margin: 0px;
+    /*background: url('../img/bluegradientLong.png') repeat-x;      */
+
+    background: rgb(38,91,134); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(38,91,134,1) 0%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(38,91,134,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(38,91,134,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(38,91,134,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(38,91,134,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(38,91,134,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#265b86', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
 }
+
 a {
     text-decoration: none;
 }
 
-#header {
-  background: url('../img/bluegradient.png') repeat-x;
+/* generic styles */
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
 
+.rounded-box {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.shaded-box {
+    -moz-box-shadow: 0px 0px 4px #000;
+    -webkit-box-shadow: 0px 0px 4px #000;
+    box-shadow: 0px 0px 4px #000;
+}
+
+.font-main {
+    font-family: Helvetica,Arial,sans-serif;
+}
+
+/* main footer */
+
 #footer {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 10pt;
-  text-align: center;
-  color: #555;
-  width: 960px;
-  margin: 10px auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    text-align: center;
+    color: #555;
+    width: 960px;
+    margin: 10px auto;
+}
+
+/* main header */
+#header {
+    /*background: url('../img/bluegradientLong.png') repeat-x;  */
+}
+
+#layout-grid {
+    width: 960px;
+    margin: 0px auto;
 }
 
 #glimmpse-topbar {
@@ -94,60 +141,86 @@ a {
 }
 
 
-#layout-grid {
-	width: 960px;
+/*
+* Main tab panel - results will be displayed in a new tab each time the
+* user hits calculate (max of 5)
+*
+* The Design tab contains the main input screen
+*
+*/
+
+#glimmpse-tabs {
+    width: 960px;
+    min-height: 500px;
+    margin: 0px auto;
+}
+
+.tab-contents {
+    -moz-box-shadow: 0px 1px 4px #000;
+    -webkit-box-shadow: 0px 1px 4px #000;
+    box-shadow: 0px 1px 4px #000;
+    background: white;
+}
+
+.ui-tabs {
+    /* position: relative prevents IE scroll bug
+    (element with position: relative inside container
+    with overflow: auto appear as "fixed") */
+    position: relative;
+    padding: 0px;
+    width: 960px;
+}
+.ui-tabs .ui-tabs-nav {
+    margin: 0;
+    padding-left: 575px;
+}
+.ui-tabs .ui-tabs-nav li {
+    list-style:none;
+    display:inline;
+}
+.ui-tabs .ui-tabs-nav li a {
+    padding:5px 10px;
+    display:inline-block;
+    background:#666;
+    color:#fff;
+    text-decoration:none;
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+    background:#fff;
+    color:#000;
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+.ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
+    cursor: text;
+}
+.ui-tabs .ui-tabs-nav li a, /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
+    cursor: pointer;
+}
+.ui-tabs .ui-tabs-panel {
+    display: block;
+    border-width: 0;
+    padding: 20px 0px;
+    background: white;
+    margin: 0px;
+}
+
+
+/*
+* Design input panel consisting of left nav and input view
+*
+*/
+
+#content-table {
+	width: 100%;
 	background-color: white; 	
 	text-align: left;
-	margin: 0px auto;
-    padding: 0px;
-    -moz-box-shadow: 0px 0px 6px #555;
-    -webkit-box-shadow: 0px 0px 6px #555;
-    box-shadow: 0px 0px 6px #555;
+	margin: 0px 0px;
+    padding: 0px 0px;
 }
 
-#site-title {
-	margin-top: 20px;
-	margin-left: 20px;
-	font-size: small;
-	float: left;
-	font-weight: bold;	
-}
-
-.selected {
-	font-weight: bold;
-}
-
-.no-border {
-	border: none;	
-}
-
-#center {
-  margin: 0, auto;	
-}
-
-.rounded-box {
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -khtml-border-radius: 4px;
-    border-radius: 4px;
-}
-
-.shaded-box {
-    -moz-box-shadow: 0px 0px 4px #aaa;
-    -webkit-box-shadow: 0px 0px 4px #aaa;
-    box-shadow: 0px 0px 4px #aaa;
-}
-
-.font-main {
-    font-family: Helvetica,Arial,sans-serif;
-}
-
-#content-grid {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#content-grid td {
+#content-table td {
     vertical-align: top;
 }
 
@@ -205,30 +278,23 @@ a {
 }
 
 #accordion .ui-accordion-header {
-    color: #999999;
-    background: #ffffff; /* Old browsers */
+    margin: 0px;
 
-}
+    border: 1px solid #cccccc;
+    background: rgb(239,239,239); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(239,239,239,1) 0%, rgba(245,245,245,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(239,239,239,1)), color-stop(100%,rgba(245,245,245,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(239,239,239,1) 0%,rgba(245,245,245,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(239,239,239,1) 0%,rgba(245,245,245,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(239,239,239,1) 0%,rgba(245,245,245,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(239,239,239,1) 0%,rgba(245,245,245,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efefef', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 
-#accordion .ui-accordion-header a:hover{
-    background: gray;
-    color: white;
-    text-shadow: 1px 1px 1px #545454;
-}
-
-#accordion .ui-accordion-header.ui-state-active {
-    color: white; /*#1D5C84;*/
-    background: #3BA6E9;
-}
-
-#accordion .ui-accordion-header.ui-state-active a {
-    color: white;
-    text-shadow: 1px 1px 1px #3188BF;
 }
 
 #accordion .ui-accordion-header a {
-    color: #999999;
-
+    color: #555555;
+    /*text-shadow: 1px 1px 1px #545454;   */
     margin: 0px;
     line-height: 32px;
     display: block;
@@ -237,22 +303,58 @@ a {
     text-indent: 10px;
 }
 
+#accordion .ui-accordion-header a:hover{
+    background: #2E628B;
+    color: white;
+    text-shadow: 1px 1px 1px #545454;
+}
+
+#accordion .ui-accordion-header.ui-state-active {
+    color: white; /*#1D5C84;*/
+    /*background: #3BA6E9;       */
+    border: none;
+    background: #4abeeb; /* Old browsers */
+    background: -moz-linear-gradient(top,  #4abeeb 0%, #3999da 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4abeeb), color-stop(100%,#3999da)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #4abeeb 0%,#3999da 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4abeeb', endColorstr='#3999da',GradientType=0 ); /* IE6-9 */
+
+}
+
+#accordion .ui-accordion-header.ui-state-active a {
+    color: white;
+    text-shadow: 1px 1px 1px #3188BF;
+}
+
+#accordion .ui-accordion-header.ui-state-active a:hover {
+    color: white; /*#1D5C84;*/
+    background: #3BA6E9;
+}
+
+
+
 #accordion .ui-accordion-content {
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
     width: 100%;
     background-color: white;
     color: #777;
     font-size: 9pt;
     line-height: 16pt;
-    border-left: 1px solid #cccccc;
 }
+
 #accordion .ui-accordion-content > * {
     margin: 0px;
-    padding: 5px;
 }
 #accordion .ui-accordion-content a {
+    width: 100%;
     color: black;
     text-align: left;
     margin-left: 10px;
+    margin-top: 2px;
     text-size: 10pt;
 }
 
@@ -260,7 +362,7 @@ a {
     width: 700px;
     min-height: 500px;
     padding: 10px 10px;
-    margin-left: 10px;
+    margin-left: 5px;
     margin-right: 10px;
     margin-bottom: 10px;
     border: 1px solid #cccccc;
@@ -271,8 +373,7 @@ a {
     margin-left: 20px;
     font-family: Helvetica, Arial, sans-serif;
     border: 1px solid #CBD1D6;
-    background: #E4EAEF;
-    color: #999999;
+    color: black;
 }
 
 .toolbox-item {

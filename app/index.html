@@ -52,6 +52,10 @@
                 navigation: true
             });
         });
+        $(function() {
+            $( "#glimmpse-tabs" ).tabs();
+        });
+
     </script>
 
 
@@ -72,74 +76,103 @@
         </div>
     </div>
 
-    <div id="content-grid">
-        <table id="content-table">
-            <tr>
-                <td>
-                    <!-- Left navigation bar -->
-                    <div id="calculate-grid" >
-                        <button id="calculate-button">Calculate</button>
-                    </div>
-                    <div id="accordion-grid" >
-                        <div class="ui-accordion" id="accordion">
-                            <h3><a href="#">Start</a></h3>
-                            <div>
-                                <div ><a href="#/solvingFor">Solving For</a></div>
-                                <div ><a href="#/nominalPower">Desired Power</a></div>
-                                <div ><a href="#/typeIError">Type I Error</a></div>
-                            </div>
-                            <h3><a href="#">Sampling Unit</a></h3>
-                            <div>
-                                <div ><a href="#/predictors">Study Groups</a></div>
-                                <div ><a href="#/covariates">Covariate</a></div>
-                                <div ><a href="#/isu">Clustering</a></div>
-                                <div ><a href="#/relativeGroupSize">Relative Group Size</a></div>
-                                <div ><a href="#/smallestGroupSize">Smallest Group Size</a></div>
-                            </div>
-                            <h3><a href="#">Responses</a></h3>
-                            <div>
-                                <div ><a href="#/responseVariables">Response Variables</a></div>
-                                <div ><a href="#/repeatedMeasures">Repeated Measures</a></div>
-                            </div>
-                            <h3><a href="#">Hypothesis</a></h3>
-                            <div>
-                                <div ><a href="#/hypothesis">Hypothesis</a></div>
-                            </div>
-                            <h3><a href="#">Means</a></h3>
-                            <div>
-                                <div ><a href="#/means">Means</a></div>
-                                <div ><a href="#/meansScale">Scale Factors for Means</a></div>
-                            </div>
-                            <h3><a href="#">Variability</a></h3>
-                            <div>
-                                <div ><a href="#/variabilityWithin">Within Participant Variability</a></div>
-                                <div ><a href="#/variabilityCovariate">Covariate Variability</a></div>
-                                <div ><a href="#/variabilityScale">Scale Factors for Variability</a></div>
-                            </div>
-                            <h3><a href="#">Options</a></h3>
-                            <div>
-                                <div ><a href="#/test">Statistical Test</a></div>
-                                <div ><a href="#/powerMethod">Power Method</a></div>
-                                <div ><a href="#/confidenceIntervals">Confidence Intervals</a></div>
-                                <div ><a href="#/plotOptions">Power Curve</a></div>
+
+    <div id="glimmpse-tabs" class="font-main">
+        <ul>
+            <li><a href="#design-tab" class="active">Study Design</a></li>
+            <li><a href="#result-tab-1">Results</a></li>
+        </ul>
+        <div id="design-tab" class="tab-contents">
+            <table id="content-table">
+                <tr>
+                    <td>
+                        <!-- Left navigation bar -->
+                        <div id="calculate-grid" >
+                            <button id="calculate-button">Calculate</button>
+                        </div>
+                        <div id="accordion-grid" >
+                            <div class="ui-accordion " id="accordion">
+                                <h3><a href="#">Start</a></h3>
+                                <div>
+                                    <div ><a href="#/solvingFor">Solving For</a></div>
+                                    <div ><a href="#/nominalPower">Desired Power</a></div>
+                                    <div ><a href="#/typeIError">Type I Error</a></div>
+                                </div>
+                                <h3><a href="#">Sampling Unit</a></h3>
+                                <div>
+                                    <div ><a href="#/predictors">Study Groups</a></div>
+                                    <div ><a href="#/covariates">Covariate</a></div>
+                                    <div ><a href="#/isu">Clustering</a></div>
+                                    <div ><a href="#/relativeGroupSize">Relative Group Size</a></div>
+                                    <div ><a href="#/smallestGroupSize">Smallest Group Size</a></div>
+                                </div>
+                                <h3><a href="#">Responses</a></h3>
+                                <div>
+                                    <div ><a href="#/responseVariables">Response Variables</a></div>
+                                    <div ><a href="#/repeatedMeasures">Repeated Measures</a></div>
+                                </div>
+                                <h3><a href="#">Hypothesis</a></h3>
+                                <div>
+                                    <div ><a href="#/hypothesis">Hypothesis</a></div>
+                                </div>
+                                <h3><a href="#">Means</a></h3>
+                                <div>
+                                    <div ><a href="#/means">Means</a></div>
+                                    <div ><a href="#/meansScale">Scale Factors for Means</a></div>
+                                </div>
+                                <h3><a href="#">Variability</a></h3>
+                                <div>
+                                    <div ><a href="#/variabilityWithin">Within Participant Variability</a></div>
+                                    <div ><a href="#/variabilityCovariate">Covariate Variability</a></div>
+                                    <div ><a href="#/variabilityScale">Scale Factors for Variability</a></div>
+                                </div>
+                                <h3><a href="#">Options</a></h3>
+                                <div>
+                                    <div ><a href="#/test">Statistical Test</a></div>
+                                    <div ><a href="#/powerMethod">Power Method</a></div>
+                                    <div ><a href="#/confidenceIntervals">Confidence Intervals</a></div>
+                                    <div ><a href="#/plotOptions">Power Curve</a></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="toolbox">
-                        <div class="toolbox-item">Save Design</div>
-                        <div class="toolbox-item">Cancel</div>
-                        <div class="toolbox-item">Templates</div>
-                        <div class="toolbox-item">Help</div>
-                    </div>
-                </td>
-                <!-- Content panel to display individual input screens -->
-                <td>
-                    <div id="content" class="font-main" ng-view=""></div>
-                </td>
-            </tr>
-        </table>
+                        <div id="toolbox" class="font-main">
+                            <div class="toolbox-item">Save Design</div>
+                            <div class="toolbox-item">Cancel</div>
+                            <div class="toolbox-item">Templates</div>
+                            <div class="toolbox-item">Help</div>
+                        </div>
+                    </td>
+                    <!-- Content panel to display individual input screens -->
+                    <td>
+                        <div id="content" class="font-main" ng-view=""></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="result-tab" class="tab-contents">
+            <table id="results-table">
+                <tr>
+                    <td>
+                        <!-- Left navigation bar -->
+                        <div id="results-report"><a href="#">Report</a></div>
+                        <div id="results-plot"><a href="#">Plot</a></div>
+                        <div id="results-toolbox" class="font-main">
+                            <div class="toolbox-item">Save Report</div>
+                            <div class="toolbox-item">Save Results as CSV</div>
+                            <div class="toolbox-item">Save Plot</div>
+                            <div class="toolbox-item">View Matrices</div>
+                            <div class="toolbox-item">Help</div>
+                        </div>
+                    </td>
+                    <!-- Content panel to display individual input screens -->
+                    <td>
+                        <div id="results-content" class="font-main" ></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-</div>
+
 
 <div id="footer">
     <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
