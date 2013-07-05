@@ -212,7 +212,7 @@ button:focus {
 *
 */
 
-#content-table {
+#content-table, #results-table {
 	width: 100%;
 	background-color: white; 	
 	text-align: left;
@@ -220,7 +220,7 @@ button:focus {
     padding: 0px 0px;
 }
 
-#content-table td {
+#content-table td, #results-table td {
     vertical-align: top;
 }
 
@@ -277,7 +277,7 @@ button:focus {
     font-family: Helvetica, Arial, sans-serif;
 }
 
-#accordion .ui-accordion-header {
+#accordion .ui-accordion-header, .results-nav {
     margin: 0px;
 
     border: 1px solid #cccccc;
@@ -292,7 +292,7 @@ button:focus {
 
 }
 
-#accordion .ui-accordion-header a {
+#accordion .ui-accordion-header a, .results-nav a {
     color: #555555;
     /*text-shadow: 1px 1px 1px #545454;   */
     margin: 0px;
@@ -303,13 +303,13 @@ button:focus {
     text-indent: 10px;
 }
 
-#accordion .ui-accordion-header a:hover{
+#accordion .ui-accordion-header a:hover {
     background: #2E628B;
     color: white;
     text-shadow: 1px 1px 1px #545454;
 }
 
-#accordion .ui-accordion-header.ui-state-active {
+#accordion .ui-accordion-header.ui-state-active  {
     color: white; /*#1D5C84;*/
     /*background: #3BA6E9;       */
     border: none;
@@ -358,7 +358,7 @@ button:focus {
     text-size: 10pt;
 }
 
-#content {
+#content, #results-content {
     width: 700px;
     min-height: 500px;
     padding: 10px 10px;
@@ -368,7 +368,7 @@ button:focus {
     border: 1px solid #cccccc;
 }
 
-#toolbox {
+.toolbox {
     width: 180px;
     margin-left: 20px;
     font-family: Helvetica, Arial, sans-serif;
@@ -380,6 +380,16 @@ button:focus {
     font-size: 10pt;
     margin: 5px 5px;
 }
+
+#results-nav-grid {
+    width: 180px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+
+
 /**** GLIMMPSE Application Styles ****/
 
 /* style for initial mode selection screen */  /*
