@@ -1,0 +1,42 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+
+<h3>Type I Error Values</h3>
+<p>
+    A Type I error occurs when a scientist declares a difference when none is actually present.
+    The Type I error rate is the probability of a Type I error occurring, and is often referred to as &alpha;.
+    Type I error rates range from 0 to 1. The most commonly used values are 0.01, 0.05, and 0.1.
+</p>
+<p>
+    Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
+</p>
+<div class="list-entry">
+    <form class="list-entry-header" ng-submit="addTypeIErrorRate()">
+        <input placeholder="Enter a Type I error value" ng-model="newTypeIErrorRate" autofocus>
+    </form>
+    <ul class="list-entry-contents">
+        <li ng-repeat="alpha in studyDesign.alphaList">
+            <label ng-dblclick="editTypeIErrorRate(alpha)">{{alpha.value}}</label>
+            <button data-ng-click="deleteTypeIErrorRate(alpha)">&times;</button>
+        </li>
+    </ul>
+</div>
+
+
+

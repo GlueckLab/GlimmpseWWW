@@ -17,4 +17,84 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/* App defined in index.html for the moment.  Will move here soon */
+
+'use strict';
+
+/*
+* Main glimmpse application module
+ */
+var glimmpseApp = angular.module('glimmpse', [])
+    .config(['$routeProvider', function($routeProvider) {
+        /*
+        * Main route provider for the study design tab
+         */
+        $routeProvider
+            .when('/',
+            {templateUrl: 'partials/home.html'}
+        )
+            .when('/solvingFor',
+            {templateUrl: 'partials/solvingForView.html', controller: 'solutionTypeController' }
+        )
+            .when('/nominalPower',
+            {templateUrl: 'partials/nominalPowerView.html', controller: 'nominalPowerController' }
+        )
+            .when('/typeIError',
+            {templateUrl: 'partials/typeIErrorView.html', controller: 'typeIErrorRateController' }
+        )
+            .when('/predictors',
+            {templateUrl: 'partials/predictorsScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/covariates',
+            {templateUrl: 'partials/covariateScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/isu',
+            {templateUrl: 'partials/independentSamplingUnitScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/relativeGroupSize',
+            {templateUrl: 'partials/relativeGroupSizesScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/smallestGroupSize',
+            {templateUrl: 'partials/smallestGroupSizeScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/responseVariables',
+            {templateUrl: 'partials/responseVariablesScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/repeatedMeasures',
+            {templateUrl: 'partials/repeatedMeasuresScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/hypothesis',
+            {templateUrl: 'partials/hypothesisScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/means',
+            {templateUrl: 'partials/meansScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/meansScale',
+            {templateUrl: 'partials/scaleFactorsForMeansScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/variabilityWithin',
+            {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/variabilityCovariate',
+            {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/variabilityScale',
+            {templateUrl: 'partials/scaleFactorsForVariabilityScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/test',
+            {templateUrl: 'partials/statisticalTestScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/powerMethod',
+            {templateUrl: 'partials/powerMethodScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/confidenceIntervals',
+            {templateUrl: 'partials/confidenceIntervalsScreen.html', controller: 'StudyDesignController' }
+        )
+            .when('/plotOptions',
+            {templateUrl: 'partials/plotOptionsScreen.html', controller: 'StudyDesignController' }
+
+        )
+            .otherwise({ redirectTo: '/' });
+    }]);
+
+
+

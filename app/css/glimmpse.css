@@ -58,9 +58,9 @@ button:focus {
 }
 
 .shaded-box {
-    -moz-box-shadow: 0px 0px 4px #000;
-    -webkit-box-shadow: 0px 0px 4px #000;
-    box-shadow: 0px 0px 4px #000;
+    -moz-box-shadow: 0px 2px 4px #000;
+    -webkit-box-shadow: 0px 2px 4px #000;
+    box-shadow: 0px 2px 4px #000;
 }
 
 .font-main {
@@ -371,6 +371,7 @@ button:focus {
 .toolbox {
     width: 180px;
     margin-left: 20px;
+    margin-top: 10px;
     font-family: Helvetica, Arial, sans-serif;
     border: 1px solid #CBD1D6;
     color: black;
@@ -387,6 +388,72 @@ button:focus {
     margin-left: 20px;
     margin-right: 10px;
 }
+
+
+
+/**** list input widgets ****/
+.list-entry {
+    margin-top: 20px;
+    margin-left: 30px;
+    width: 300px;
+    padding: 0;
+    list-style: none;
+}
+
+.list-entry ul {
+    list-style: none;
+}
+
+.list-entry-header {
+    border-top: 10px solid   #5E85A5;
+    background-color: #5E85A5;
+}
+.list-entry-header input {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-size: 20px;
+    font-family: inherit;
+    font-style: italic;
+    line-height: 1.4em;
+    border: 0;
+    outline: none;
+    color: inherit;
+    padding: 6px;
+    border: 1px solid #999;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.list-entry-contents {
+    text-decoration: none;
+    margin: 0px 0px;
+    padding: 0px;
+    border: 1px solid #999999;
+}
+.list-entry-contents li {
+    position: relative;
+    font-size: 18px;
+    border-bottom: 1px solid #ccc;
+    line-height: 32pt;
+}
+
+.list-entry-contents label {
+    padding: 15px;
+    margin-left: 45px;
+    display: inline;
+    line-height: 1.2;
+}
+
+.list-entry-contents button {
+    float: right;
+}
+
+
+
 
 
 

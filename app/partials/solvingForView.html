@@ -20,7 +20,7 @@
 <html lang="en"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Solving For Screen</title>
+    <title>Solving For View</title>
 </head>
 
 <body>
@@ -36,8 +36,10 @@ If you have fewer restrictions on recruitment and would like to ensure a well-po
 then solving for sample size is likely to be more useful.
 </p>
 <div>
-<div><input type="radio" name="solvingFor" value="power">Power</input></div>
-<div><input type="radio" name="solvingFor" value="samplesize">Sample Size</input></div>
+<div><input type="radio" name="solvingFor" value="power"
+            data-ng-model="studyDesign.solutionTypeEnum">Power</input></div>
+<div><input type="radio" name="solvingFor" value="samplesize"
+            data-ng-model="studyDesign.solutionTypeEnum">Sample Size</input></div>
 </div>
 
 </body>
