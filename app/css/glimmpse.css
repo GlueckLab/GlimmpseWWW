@@ -67,6 +67,10 @@ button:focus {
     font-family: Helvetica,Arial,sans-serif;
 }
 
+.font-serif {
+    font-family: "Times New Roman", Times, serif;;
+}
+
 /* main footer */
 
 #footer {
@@ -255,6 +259,26 @@ button:focus {
 
 }
 
+#content, #results-content {
+     width: 700px;
+     min-height: 500px;
+     padding: 10px 10px;
+     margin-left: 5px;
+     margin-right: 10px;
+     margin-bottom: 10px;
+     border: 1px solid #cccccc;
+     color: #555;
+ }
+
+#content h3, #results-content h3 {
+    font-family: "Times New Roman", Times, serif;
+    color: #444;
+    font-size: 1.5em;
+    margin-top: 0px;
+    margin-bottom: 30px;
+
+}
+
 /**** Navigation Accordion Styles ****/
 
 #accordion-grid {
@@ -358,15 +382,7 @@ button:focus {
     text-size: 10pt;
 }
 
-#content, #results-content {
-    width: 700px;
-    min-height: 500px;
-    padding: 10px 10px;
-    margin-left: 5px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #cccccc;
-}
+
 
 .toolbox {
     width: 180px;
@@ -393,8 +409,7 @@ button:focus {
 
 /**** list input widgets ****/
 .list-entry {
-    margin-top: 20px;
-    margin-left: 30px;
+    margin: 20px auto;
     width: 300px;
     padding: 0;
     list-style: none;
@@ -405,9 +420,26 @@ button:focus {
 }
 
 .list-entry-header {
-    border-top: 10px solid   #5E85A5;
-    background-color: #5E85A5;
+    padding: 6px;
+    background: #4abeeb; /* Old browsers */
+    background: -moz-linear-gradient(top,  #4abeeb 0%, #3999da 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4abeeb), color-stop(100%,#3999da)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #4abeeb 0%,#3999da 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4abeeb', endColorstr='#3999da',GradientType=0 ); /* IE6-9 */
+
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -khtml-border-radius-topleft: 4px;
+    -khtml-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
 }
+
 .list-entry-header input {
     position: relative;
     margin: 0;
@@ -416,10 +448,9 @@ button:focus {
     font-family: inherit;
     font-style: italic;
     line-height: 1.4em;
-    border: 0;
+    padding: 6px;
     outline: none;
     color: inherit;
-    padding: 6px;
     border: 1px solid #999;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -450,6 +481,16 @@ button:focus {
 
 .list-entry-contents button {
     float: right;
+    font-size: 18px;
+    margin-top: 8px;
+    background-color: white;
+    color: #999999;
+    font-weight: bold;
+    border: none;
+}
+
+.list-entry-contents button:hover {
+    color: red;
 }
 
 
