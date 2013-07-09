@@ -27,8 +27,11 @@
     Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
 </p>
 <div class="list-entry">
-    <form class="list-entry-header" ng-submit="addTypeIErrorRate()">
-        <input placeholder="Enter a Type I error value" ng-model="newTypeIErrorRate" autofocus>
+    <form name="alphaForm" class="list-entry-header" novalidate ng-submit="addTypeIErrorRate()">
+        <input name="newAlpha" type="number" placeholder="Enter a Type I error value" ng-model="newTypeIErrorRate"
+               min='0' max='1' step='0.01' autocomplete="off" autofocus required >
+        <span class="error" ng-show="alphaForm.newAlpha.$error.min">Please enter a number between 0 and 1</span>
+        <span class="error" ng-show="alphaForm.newAlpha.$error.max">Please enter a number between 0 and 1</span>
     </form>
     <ul class="list-entry-contents">
         <li ng-repeat="alpha in studyDesign.alphaList">
@@ -36,6 +39,7 @@
             <button data-ng-click="deleteTypeIErrorRate(alpha)">&times;</button>
         </li>
     </ul>
+
 </div>
 
 

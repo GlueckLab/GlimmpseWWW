@@ -40,31 +40,30 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
     init();
     function init() {
         $scope.studyDesign = studyDesignService;
-        $scope.newNominalPower = '';
-        $scope.editedNominalPower = '';
+        $scope.newNominalPower = undefined;
+        $scope.editedNominalPower = undefined;
     }
     /**
      * Add a new nominal power value
      */
     $scope.addNominalPower = function () {
-        var newPower = $scope.newNominalPower.trim();
-        if (!newPower.length) {
-            return;
+        var newPower = $scope.newNominalPower;
+        if (newPower != undefined) {
+            // add the power to the list
+            studyDesignService.nominalPowerList.push({
+                id: studyDesignService.nominalPowerList.length,
+                value: newPower
+            });
         }
-        // add the power to the list
-        studyDesignService.nominalPowerList.push({
-            id: studyDesignService.nominalPowerList.length,
-            value: newPower
-        });
         // reset the new power to null
-        $scope.newNominalPower = '';
+        $scope.newNominalPower = undefined;
     };
 
     /**
      * Edit an existing nominal power
      */
     $scope.editNominalPower = function(power) {
-        $scope.editedNominalPower = todo;
+        $scope.editedNominalPower = power;
     };
 
 
@@ -99,24 +98,23 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.newTypeIErrorRate = '';
-            $scope.editedTypeIErrorRate = '';
+            $scope.newTypeIErrorRate = undefined;
+            $scope.editedTypeIErrorRate = undefined;
         }
         /**
          * Add a new type I error rate
          */
         $scope.addTypeIErrorRate = function () {
-            var newAlpha = $scope.newTypeIErrorRate.trim();
-            if (!newAlpha.length) {
-                return;
-            }
+            var newAlpha = $scope.newTypeIErrorRate;
+            if (newAlpha != undefined) {
             // add the power to the list
-            studyDesignService.alphaList.push({
-                id: studyDesignService.alphaList.length,
-                value: newAlpha
-            });
+                studyDesignService.alphaList.push({
+                    id: studyDesignService.alphaList.length,
+                    value: newAlpha
+                });
+            }
             // reset the new power to null
-            $scope.newTypeIErrorRate = '';
+            $scope.newTypeIErrorRate = undefined;
         };
 
         /**
@@ -146,6 +144,120 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         $scope.deleteTypeIErrorRate = function(alpha) {
             studyDesignService.alphaList.splice(
                 studyDesignService.alphaList.indexOf(alpha), 1);
+        };
+    })
+
+/**
+ * Controller managing the smallest group size list
+ */
+    .controller('sampleSizeController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newSampleSize = undefined;
+            $scope.editedSampleSize = undefined;
+        }
+        /**
+         * Add a new sample size
+         */
+        $scope.addSampleSize = function () {
+            var newN = $scope.newSampleSize;
+            if (newN != undefined) {
+                // add the power to the list
+                studyDesignService.sampleSizeList.push({
+                    id: studyDesignService.sampleSizeList.length,
+                    value: newN
+                });
+            }
+            // reset the new sample size to null
+            $scope.newSampleSize = undefined;
+        };
+
+        /**
+         * Edit an existing sample size
+         */
+        $scope.editSampleSize = function(samplesize) {
+            $scope.editedSampleSize = samplesize;
+        };
+
+
+        /**
+         * Called when editing is complete
+         * @param samplesize
+         */
+        $scope.doneEditing = function (samplesize) {
+            $scope.editedSampleSize = null;
+            samplesize.value = samplesize.value.trim();
+
+            if (!samplesize.value) {
+                $scope.deleteSampleSize(samplesize);
+            }
+        };
+
+        /**
+         * Delete an existing nominal power value
+         */
+        $scope.deleteSampleSize = function(samplesize) {
+            studyDesignService.sampleSizeList.splice(
+                studyDesignService.sampleSizeList.indexOf(samplesize), 1);
+        };
+    })
+
+/**
+ * Controller managing the response variables list
+ */
+    .controller('responseController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newResponse = '';
+            $scope.editedResponse = '';
+        }
+        /**
+         * Add a new response variable
+         */
+        $scope.addResponse = function () {
+            var newOutcome = $scope.newResponse;
+            if (newOutcome.length > 0) {
+                // add the power to the list
+                studyDesignService.responseList.push({
+                    id: studyDesignService.responseList.length,
+                    value: newOutcome
+                });
+            }
+            // reset the new response to null
+            $scope.newResponse = '';
+        };
+
+        /**
+         * Edit an existing response variable
+         */
+        $scope.editResponse = function(response) {
+            $scope.editedResponse = response;
+        };
+
+
+        /**
+         * Called when editing is complete
+         * @param response
+         */
+        $scope.doneEditing = function (response) {
+            $scope.editedResponse = null;
+            response.value = response.value.trim();
+
+            if (!response.value) {
+                $scope.deleteResponse(response);
+            }
+        };
+
+        /**
+         * Delete an existing nominal power value
+         */
+        $scope.deleteResponse = function(response) {
+            studyDesignService.responseList.splice(
+                studyDesignService.responseList.indexOf(response), 1);
         };
     })
 

@@ -42,7 +42,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/typeIErrorView.html', controller: 'typeIErrorRateController' }
         )
             .when('/predictors',
-            {templateUrl: 'partials/predictorsScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/predictorsView.html', controller: 'StudyDesignController' }
         )
             .when('/covariates',
             {templateUrl: 'partials/covariateScreen.html', controller: 'StudyDesignController' }
@@ -54,10 +54,10 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/relativeGroupSizesScreen.html', controller: 'StudyDesignController' }
         )
             .when('/smallestGroupSize',
-            {templateUrl: 'partials/smallestGroupSizeScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/smallestGroupSizeView.html', controller: 'sampleSizeController' }
         )
             .when('/responseVariables',
-            {templateUrl: 'partials/responseVariablesScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }
         )
             .when('/repeatedMeasures',
             {templateUrl: 'partials/repeatedMeasuresScreen.html', controller: 'StudyDesignController' }
