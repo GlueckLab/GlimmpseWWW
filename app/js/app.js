@@ -45,13 +45,13 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/predictorsView.html', controller: 'StudyDesignController' }
         )
             .when('/covariates',
-            {templateUrl: 'partials/covariateScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/covariatesView.html', controller: 'StudyDesignController' }
         )
             .when('/isu',
-            {templateUrl: 'partials/independentSamplingUnitScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'StudyDesignController' }
         )
             .when('/relativeGroupSize',
-            {templateUrl: 'partials/relativeGroupSizesScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'StudyDesignController' }
         )
             .when('/smallestGroupSize',
             {templateUrl: 'partials/smallestGroupSizeView.html', controller: 'sampleSizeController' }
@@ -60,37 +60,37 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }
         )
             .when('/repeatedMeasures',
-            {templateUrl: 'partials/repeatedMeasuresScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/repeatedMeasuresView.html', controller: 'StudyDesignController' }
         )
             .when('/hypothesis',
-            {templateUrl: 'partials/hypothesisScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/hypothesisView.html', controller: 'StudyDesignController' }
         )
             .when('/means',
-            {templateUrl: 'partials/meansScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/meansView.html', controller: 'StudyDesignController' }
         )
             .when('/meansScale',
-            {templateUrl: 'partials/scaleFactorsForMeansScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/scaleFactorsForMeansView.html', controller: 'StudyDesignController' }
         )
             .when('/variabilityWithin',
-            {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/variabilityView.html', controller: 'StudyDesignController' }
         )
             .when('/variabilityCovariate',
-            {templateUrl: 'partials/variabilityScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/variabilityView.html', controller: 'StudyDesignController' }
         )
             .when('/variabilityScale',
-            {templateUrl: 'partials/scaleFactorsForVariabilityScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/scaleFactorsForVariabilityView.html', controller: 'StudyDesignController' }
         )
             .when('/test',
-            {templateUrl: 'partials/statisticalTestScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/statisticalTestView.html', controller: 'StudyDesignController' }
         )
             .when('/powerMethod',
-            {templateUrl: 'partials/powerMethodScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/powerMethodView.html', controller: 'StudyDesignController' }
         )
             .when('/confidenceIntervals',
-            {templateUrl: 'partials/confidenceIntervalsScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'StudyDesignController' }
         )
             .when('/plotOptions',
-            {templateUrl: 'partials/plotOptionsScreen.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/plotOptionsView.html', controller: 'StudyDesignController' }
 
         )
             .otherwise({ redirectTo: '/' });
