@@ -147,6 +147,123 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         };
     })
 
+
+/**
+ * Controller managing the scale factor for variance list
+ */
+    .controller('scaleFactorForVarianceController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newScaleFactorForVariance = undefined;
+            $scope.editedScaleFactorForVariance= undefined;
+        }
+        /**
+         * Add a new scale factor for variance
+         */
+        $scope.addScaleFactorForVariance = function () {
+            var newScale = $scope.newScaleFactorForVariance;
+            if (newScale != undefined) {
+                // add the scale factor to the list
+                studyDesignService.sigmaScaleList.push({
+                    id: studyDesignService.sigmaScaleList.length,
+                    value: newScale
+                });
+            }
+            // reset the new factor to null
+            $scope.newScaleFactorForVariance = undefined;
+        };
+
+        /**
+         * Edit an existing scale factor for variance
+         */
+        $scope.editScaleFactorForVariance = function(factor) {
+            $scope.editedScaleFactorForVariance = factor;
+        };
+
+
+        /**
+         * Called when editing is complete
+         * @param scale factor
+         */
+        $scope.doneEditing = function (factor) {
+            $scope.editedScaleFactorForVariance= null;
+            factor.value = factor.value.trim();
+
+            if (!factor.value) {
+                $scope.deleteScaleFactorForVariance(factor);
+            }
+        };
+
+        /**
+         * Delete an existing scale factor value
+         */
+        $scope.deleteScaleFactorForVariance = function(factor) {
+            studyDesignService.sigmaScaleList.splice(
+                studyDesignService.sigmaScaleList.indexOf(factor), 1);
+        };
+    })
+
+
+/**
+ * Controller managing the scale factor for variance list
+ */
+    .controller('scaleFactorForMeansController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newScaleFactorForMeans = undefined;
+            $scope.editedScaleFactorForMeans= undefined;
+        }
+        /**
+         * Add a new scale factor for variance
+         */
+        $scope.addScaleFactorForMeans = function () {
+            var newScale = $scope.newScaleFactorForMeans;
+            if (newScale != undefined) {
+                // add the scale factor to the list
+                studyDesignService.betaScaleList.push({
+                    id: studyDesignService.betaScaleList.length,
+                    value: newScale
+                });
+            }
+            // reset the new factor to null
+            $scope.newScaleFactorForMeans = undefined;
+        };
+
+        /**
+         * Edit an existing scale factor for variance
+         */
+        $scope.editScaleFactorForMeans = function(factor) {
+            $scope.editedScaleFactorForMeans = factor;
+        };
+
+
+        /**
+         * Called when editing is complete
+         * @param scale factor
+         */
+        $scope.doneEditing = function (factor) {
+            $scope.editedScaleFactorForMeans= null;
+            factor.value = factor.value.trim();
+
+            if (!factor.value) {
+                $scope.deleteScaleFactorForMeans(factor);
+            }
+        };
+
+        /**
+         * Delete an existing scale factor value
+         */
+        $scope.deleteScaleFactorForMeans = function(factor) {
+            studyDesignService.betaScaleList.splice(
+                studyDesignService.betaScaleList.indexOf(factor), 1);
+        };
+    })
+
+
 /**
  * Controller managing the smallest group size list
  */

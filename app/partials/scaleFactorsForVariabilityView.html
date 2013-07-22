@@ -17,15 +17,25 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>Scale Factors for Covariance</h3>
+<p>
+    Changes in variability can dramatically affect power. Scale factors allow you to compute power for alternative covariance values by scaling Σe. For example, entering the scale factors 0.5, 1, and 2 would compute power for Σe divided by 2, Σe matrix as entered, and Σe matrix multiplied by 2.
+</p>
+<p>
+    Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
+</p>
+<div class="list-entry">
+    <form name="scaleFactorVarianceForm" class="list-entry-header" novalidate ng-submit="addScaleFactorForVariance()">
+        <input name="newFactor" type="number" placeholder="Scale Factors for Variability" ng-model="newScaleFactorForVariance"
+               min='0.000001' step='0.5' autocomplete="off" autofocus required >
+        <span class="error" ng-show="scaleFactorVarianceForm.newFactor.$error.min">Please enter a positive number</span>
+    </form>
+    <ul class="list-entry-contents">
+        <li ng-repeat="factor in studyDesign.sigmaScaleList">
+            <label ng-dblclick="editScaleFactorForVariance(factor)">{{factor.value}}</label>
+            <button data-ng-click="deleteScaleFactorForVariance(factor)">&times;</button>
+        </li>
+    </ul>
 
-    <title>Scale factors for variability</title>
-</head>
+</div>
 
-<body>
-
-Scale factors for variability
-
-</body>
-</html>

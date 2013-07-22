@@ -69,7 +69,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/meansView.html', controller: 'StudyDesignController' }
         )
             .when('/meansScale',
-            {templateUrl: 'partials/scaleFactorsForMeansView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/scaleFactorsForMeansView.html', controller: 'scaleFactorForMeansController' }
         )
             .when('/variabilityWithin',
             {templateUrl: 'partials/variabilityView.html', controller: 'StudyDesignController' }
@@ -78,7 +78,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/variabilityView.html', controller: 'StudyDesignController' }
         )
             .when('/variabilityScale',
-            {templateUrl: 'partials/scaleFactorsForVariabilityView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/scaleFactorsForVariabilityView.html', controller: 'scaleFactorForVarianceController' }
         )
             .when('/test',
             {templateUrl: 'partials/statisticalTestView.html', controller: 'StudyDesignController' }

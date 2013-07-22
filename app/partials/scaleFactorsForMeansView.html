@@ -17,15 +17,24 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>Scale Factors for Regression Coefficients</h3>
+<p>
+    In power analysis, it is not possible to know the exact values of regression coefficients before the experiment is observed. Scale factors allow you to consider alternative values for the regression coefficients by scaling the B matrix. For example, entering the scale factors 0.5, 1, and 2 would compute power for the B matrix divided by 2, the B as entered, and the B matrix multiplied by 2.
+</p>
+<p>
+    Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
+</p>
+<div class="list-entry">
+    <form name="scaleFactorMeansForm" class="list-entry-header" novalidate ng-submit="addScaleFactorForMeans()">
+        <input name="newFactor" type="number" placeholder="Scale Factors for Means" ng-model="newScaleFactorForMeans"
+               step='0.5' autocomplete="off" autofocus required >
+    </form>
+    <ul class="list-entry-contents">
+        <li ng-repeat="factor in studyDesign.betaScaleList">
+            <label ng-dblclick="editScaleFactorForMeans(factor)">{{factor.value}}</label>
+            <button data-ng-click="deleteScaleFactorForMeans(factor)">&times;</button>
+        </li>
+    </ul>
 
-    <title>Scale factors for means Screen</title>
-</head>
+</div>
 
-<body>
-
-Scale factors for means
-
-</body>
-</html>
