@@ -29,6 +29,7 @@
         <input name="newFactor" type="number" placeholder="Scale Factors for Variability" ng-model="newScaleFactorForVariance"
                min='0.000001' step='0.5' autocomplete="off" autofocus required >
         <span class="error" ng-show="scaleFactorVarianceForm.newFactor.$error.min">Please enter a positive number</span>
+
     </form>
     <ul class="list-entry-contents">
         <li ng-repeat="factor in studyDesign.sigmaScaleList">

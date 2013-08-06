@@ -21,5 +21,43 @@
 <h3>Predictors screen</h3>
 
 <p>
-
+    Describe the predictors which assign independent sampling units into groups, such as gender or treatment. The choice of study design determines the values of fixed predictors (such as drug dose or gender). A common example of a fixed predictor is treatment group, for which the independent sampling unit is randomized to a placebo or an active drug group.
 </p>
+
+<p>
+    For a one sample design, leave the table blank.
+</p>
+
+<p>
+    To enter fixed predictors:
+
+    Enter the name of each predictor into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
+    For example, one might enter "treatment" as a predictor.
+
+    For example, one could select "treatment", then add the values "drug" and "placebo."
+</p>
+
+<div class="list-entry">
+    <form name="predictorsForm" class="list-entry-header" novalidate ng-submit="addPredictors()">
+        <input name="newPredictor" type="text" placeholder="Enter predictor name" ng-model="newPredictorName"
+               autocomplete="off" autofocus required >
+    </form>
+    <ul class="list-entry-contents">
+        <li ng-repeat="factor in studyDesign.betweenParticipantFactorList">
+            <label ng-dblclick="editPredictor(factor)">{{factor.value}}</label>
+            <button data-ng-click="deletePredictor(factor)">&times;</button>
+
+            <form name="categoryForm" class="list-entry-header" novalidate ng-submit="addCategories(factor)">
+                <input name="newCategory" type="text" placeholder="Enter category name" ng-model="newCategoryName"
+                       autocomplete="off" autofocus required >
+            </form>
+            <ul class="list-entry-contents">
+                    <li ng-repeat="category in factor.categoryList">
+                        <label ng-dblclick="editCategory(category)">{{category.value}}</label>
+                        <button data-ng-click="deleteCategory(category)">&times;</button>
+                    </li>
+
+            </ul>
+        </li>
+    </ul>
+</div>

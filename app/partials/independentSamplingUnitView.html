@@ -17,15 +17,33 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>Independent Sampling Unit Screen</h3>
 
-    <title>Independent Sampling Unit Screen</title>
-</head>
+<p>
 
-<body>
+    In a clustered design, the independent sampling unit is a cluster, such as a community, school, or classroom. Observations within a cluster are correlated. The labels for observations within a cluster must be exchangeable. For example, child "id" within classroom can be reassigned arbitrarily. In contrast, observations across time cannot be reassigned and should not be considered clustered observations. Clustering, or repeated measures, or a combination, creates a multilevel design. The common correlation between any pair of cluster members is termed the intraclass correlation or intracluster correlation.
 
-Independent Sampling Unit Screen
+</p>
 
-</body>
-</html>
+<p>
+    To include clustering in the study, click "Add clustering" and follow the prompts. Use the "Remove clustering" button to remove clustering information.
+</p>
+
+<div class="cluster-contents">
+    <form name="clusterForm" novalidate ng-submit="addClusters()">
+        Cluster label: <input type="text" data-ng-model="newClusterName" /><br>
+        Number of Observations per cluster: <input type="number" data-ng-model="newClusterObservation" /><br>
+        Intra-cluster correlation: <input type="number" data-ng-model="newClusterCorrelation" /><br>
+    </form>
+
+    <ul class="cluster-contents">
+        <li ng-repeat="factor in studyDesign.clusteringTree">
+            <label ng-dblclick="editCluster(factor)">{{factor.value}}</label>
+            <button data-ng-click="deleteCluster(factor)">&times;</button>
+        </li>
+    </ul>
+
+</div>
+
+</form>
+

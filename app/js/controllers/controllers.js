@@ -127,7 +127,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
 
         /**
          * Called when editing is complete
-         * @param power
+         * @param alpha
          */
         $scope.doneEditing = function (alpha) {
             $scope.editedTypeIErrorRate = null;
@@ -139,7 +139,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         };
 
         /**
-         * Delete an existing nominal power value
+         * Delete an existing alpha value
          */
         $scope.deleteTypeIErrorRate = function(alpha) {
             studyDesignService.alphaList.splice(
@@ -149,7 +149,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
 
 
 /**
- * Controller managing the scale factor for variance list
+ * Controller managing the scale factor for covariance
  */
     .controller('scaleFactorForVarianceController', function($scope, studyDesignService) {
 
@@ -160,7 +160,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
             $scope.editedScaleFactorForVariance= undefined;
         }
         /**
-         * Add a new scale factor for variance
+         * Add a new scale factor for covariance
          */
         $scope.addScaleFactorForVariance = function () {
             var newScale = $scope.newScaleFactorForVariance;
@@ -176,7 +176,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         };
 
         /**
-         * Edit an existing scale factor for variance
+         * Edit an existing scale factor for covariance
          */
         $scope.editScaleFactorForVariance = function(factor) {
             $scope.editedScaleFactorForVariance = factor;
@@ -185,7 +185,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
 
         /**
          * Called when editing is complete
-         * @param scale factor
+         * @param factor
          */
         $scope.doneEditing = function (factor) {
             $scope.editedScaleFactorForVariance= null;
@@ -207,7 +207,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
 
 
 /**
- * Controller managing the scale factor for variance list
+ * Controller managing the scale factor for means
  */
     .controller('scaleFactorForMeansController', function($scope, studyDesignService) {
 
@@ -218,7 +218,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
             $scope.editedScaleFactorForMeans= undefined;
         }
         /**
-         * Add a new scale factor for variance
+         * Add a new scale factor for means
          */
         $scope.addScaleFactorForMeans = function () {
             var newScale = $scope.newScaleFactorForMeans;
@@ -234,7 +234,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         };
 
         /**
-         * Edit an existing scale factor for variance
+         * Edit an existing scale factor for means
          */
         $scope.editScaleFactorForMeans = function(factor) {
             $scope.editedScaleFactorForMeans = factor;
@@ -243,7 +243,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
 
         /**
          * Called when editing is complete
-         * @param scale factor
+         * @param factor
          */
         $scope.doneEditing = function (factor) {
             $scope.editedScaleFactorForMeans= null;
@@ -263,6 +263,152 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         };
     })
 
+/**
+ * Controller managing the relative group sizes list
+ */
+    .controller('relativeGroupSizesController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newRelativeGroupSize = undefined;
+            $scope.editedRelativeGroupSize = undefined;
+        }
+
+    })
+
+/**
+ * Controller managing the covariates
+ */
+    .controller('covariatesController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+        }
+
+        /**
+         * Add the normal distributed predictor
+         */
+        $scope.addCovariates = function () {
+            var newDesign = $scope.newcovariateDesign;
+            if (newDesign != undefined) {
+                // add the normal distributed predictor
+                studyDesignService.gaussianCovariate = newDesign;
+            }
+
+        };
+
+    })
+
+/**
+ * Controller managing the relative group sizes
+ */
+    .controller('relativeSizesController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newRelativeGroupSize = undefined;
+            $scope.editedRelativeGroupSize = undefined;
+        }
+
+        /**
+         * Add the new group size to the list
+         */
+        $scope.addRelativeSizes = function () {
+            var newGroupSize = $scope.newRelativeGroupSize;
+            if (newGroupSize != undefined) {
+                // add the normal distributed predictor
+                studyDesignService.relativeGroupSizeList = newGroupSize;
+            }
+            // reset the new distributed predictor
+            $scope.newRelativeGroupSize = undefined;
+        };
+
+    })
+
+/**
+ * Controller managing the predictors
+ */
+    .controller('predictorsController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newPredictorName = undefined;
+            $scope.editedPredictorDesign = undefined;
+            $scope.newCategoryName = undefined;
+
+        }
+
+        /**
+         * Add a new predictor name
+         */
+        $scope.addPredictors = function () {
+            var newPredictor = $scope.newPredictorName;
+            newPredictor.categoryList = [];
+            if (newPredictor != undefined) {
+                // add the predictor to the list
+                studyDesignService.betweenParticipantFactorList.push({
+                    id: studyDesignService.betweenParticipantFactorList.length,
+                    value: newPredictor
+                });
+            }
+            // reset the new sample size to null
+            $scope.newPredictorName = undefined;
+            //newPredictorVariable = newPredictor;
+        };
+
+        /**
+         * Add a new category name
+         */
+        $scope.addCategories = function (factor) {
+
+            var newCategory = $scope.newCategoryName;
+            window.alert(factor.value+",  "+ $scope.newCategoryName);
+            if (newCategory != undefined) {
+                // add the category to the predictor list
+                     factor.categoryList.push({id:factor.categoryList.length,
+                     value:newCategory});
+            }
+            // reset the new sample size to null
+            $scope.newCategoryName = undefined;
+        };
+
+    })
+
+
+/**
+ * Controller managing the clusters
+ */
+    .controller('clusteringController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newClusterName = undefined;
+        }
+
+        /**
+         * Add a new cluster name
+         */
+        $scope.addClusters = function () {
+            var newCluster = $scope.newClusterName;
+            if (newCluster != undefined) {
+                // add the predictor to the list
+                studyDesignService.clusteringTree.push({
+                    id: studyDesignService.clusteringTree.length,
+                    value: newCluster
+                });
+            }
+            // reset the new sample size to null
+            $scope.newClusterName = undefined;
+        };
+
+
+
+    })
 
 /**
  * Controller managing the smallest group size list

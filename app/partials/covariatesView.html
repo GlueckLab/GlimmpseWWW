@@ -17,15 +17,30 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>Controlling for a single, normally distributed predictor</h3>
 
-    <title>Covariate Screen</title>
-</head>
+<p>
+    A common experimental design is an analysis of covariance, which includes one or more fixed predictors and one or more continous control variables, the "covariates." For example, one might run an experiment with 10 males and 10 females, with an indicator variable for gender as a fixed predictor and age as a covariate.
+</p>
 
-<body>
+<p>
+    A common special case uses a series of repeated measurements on a continuous outcome. The first measurement, observed prior to treatment, is used as a baseline covariate. The other repeated measurements are outcomes in the general linear multivariate model.
+</p>
 
-Covariate Screen
 
-</body>
-</html>
+<p>
+    GLIMMPSE can calculate power for hypotheses concerning the fixed predictors, optionally controlling for a single normally distributed predictor. If you plan to include a single normally distributed predictor in your model, click the check box below.
+</p>
+
+<p>
+    At present, the GLIMMPSE software does not calculate power for multiple normally distributed predictors nor non-normally distributed predictors.
+</p>
+
+<div>
+    <div><input type="checkbox" name="newCovariateDesign"
+                data-ng-model="studyDesign.gaussianCovariate">Control for a single, normally distributed predictor.</input></div>
+    <ng-true-value="YES" ng-false-value="NO">
+    </div>
+</div>
+
+</form>

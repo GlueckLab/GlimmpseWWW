@@ -42,13 +42,13 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/typeIErrorView.html', controller: 'typeIErrorRateController' }
         )
             .when('/predictors',
-            {templateUrl: 'partials/predictorsView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/predictorsView.html', controller: 'predictorsController' }
         )
             .when('/covariates',
-            {templateUrl: 'partials/covariatesView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/covariatesView.html', controller: 'covariatesController' }
         )
             .when('/isu',
-            {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'clusteringController' }
         )
             .when('/relativeGroupSize',
             {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'StudyDesignController' }

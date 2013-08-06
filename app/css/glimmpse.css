@@ -515,8 +515,19 @@ button:focus {
     color: red;
 }
 
+.cluster-contents {
+    border-width:medium;
+    border-style:solid;
+}
 
-
+table.table-entry-contents {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #999999;
+    border-collapse: collapse;
+}
 
 
 
