@@ -237,11 +237,16 @@ button:focus {
 /**** The calculate button ****/
 #calculate-grid {
     width: 200px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-left: 10px;
     /* border: 1px solid #cccccc;    */
-    padding-top: 5px;
-    padding-bottom: 5px;
+}
+
+#calculate-grid button:disabled {
+    color: white;
+    background: #808080;
+    border: 2px solid #707070;
+    text-shadow: 0px 1px 3px #404040;
 }
 
 #calculate-grid button {
@@ -261,13 +266,11 @@ button:focus {
     width: 180px;
     height: 40px;
     margin-left: 10px;
-
-
 }
 
 #content, #results-content {
      width: 700px;
-     min-height: 500px;
+     min-height: 546px;
      padding: 10px 10px;
      margin-left: 5px;
      margin-right: 10px;
@@ -310,7 +313,7 @@ button:focus {
 #accordion .ui-accordion-header, .results-nav {
     margin: 0px;
 
-    border: 1px solid #cccccc;
+    /*border: 1px solid #cccccc;   */
     background: rgb(239,239,239); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(239,239,239,1) 0%, rgba(245,245,245,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(239,239,239,1)), color-stop(100%,rgba(245,245,245,1))); /* Chrome,Safari4+ */
@@ -323,12 +326,12 @@ button:focus {
 }
 
 #accordion .ui-accordion-header a, .results-nav a {
-    color: #555555;
+    color: #999999;
     /*text-shadow: 1px 1px 1px #545454;   */
     margin: 0px;
     line-height: 32px;
     display: block;
-    font-size: 10pt;
+    font-size: 12pt;
     width: 100%;
     text-indent: 10px;
 }
@@ -364,11 +367,10 @@ button:focus {
     background: #3BA6E9;
 }
 
-
-
 #accordion .ui-accordion-content {
     border-right: 1px solid #ccc;
     border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     width: 100%;
     background-color: white;
     color: #777;
@@ -378,17 +380,50 @@ button:focus {
 
 #accordion .ui-accordion-content > * {
     margin: 0px;
+    border-bottom: 1px solid #eee;
 }
 #accordion .ui-accordion-content a {
     width: 100%;
     color: black;
     text-align: left;
     margin-left: 10px;
-    margin-top: 2px;
-    text-size: 10pt;
+    font-size: 10pt;
+    line-height: 24pt;
 }
 
+#accordion .ui-accordion-content label {
+    width: 100%;
+    color: #ccc;
+    text-align: left;
+    margin-left: 10px;
+    text-size: 10pt;
+    text-decoration: none;
+    line-height: 24pt;
+}
 
+#accordion .ui-accordion-content .active a {
+    font-weight: bold;
+    color: #2B5F89;
+}
+#accordion .ui-accordion-content .active {
+    border-left: 4px solid #FF8C11; /* #2B5F89;  */
+}
+
+.disabled {
+    background: url('../img/complete_icon_grayscale.png') no-repeat right;
+}
+
+.blocked {
+  background: url('../img/blocked_icon_grayscale.png') no-repeat right;
+}
+
+.complete {
+    background: url('../img/complete_icon.png') no-repeat right;
+}
+
+.incomplete {
+    background: url('../img/incomplete_icon_grayscale.png') no-repeat right;
+}
 
 .toolbox {
     width: 180px;

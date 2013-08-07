@@ -101,5 +101,6 @@ glimmpseApp.factory('studyDesignService', function() {
     studyDesignInstance.matrixSet = [];
 
     return studyDesignInstance;
+
 });
 
