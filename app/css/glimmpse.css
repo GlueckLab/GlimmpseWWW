@@ -410,7 +410,8 @@ button:focus {
     color: #2B5F89;
 }
 #accordion .ui-accordion-content .active {
-    border-left: 4px solid #FF8C11; /* #2B5F89;  */
+    border-left: 4px solid #2B5F89;  /* #87CD7C; #FF8C11;  */
+    /*background-color: #F0F4F7;     */
 }
 
 .disabled {

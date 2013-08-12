@@ -358,14 +358,28 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
     $scope.getStatePowerMethod = function() {
         // TODO: finish
         if ($scope.studyDesign.gaussianCovariate) {
-           /* if ($scope.studyDesign.powerMethodList.length > 0 &&
-                $scope.studyDesign.) {
-
+            if ($scope.studyDesign.powerMethodList.length > 0) {
+                var quantileChecked = false;
+                for(var i in $scope.studyDesign.powerMethodList) {
+                    if ($scope.studyDesign.powerMethodList[i].value == 'quantile') {
+                        quantileChecked = true;
+                        break;
+                    }
+                }
+                if (quantileChecked) {
+                    if ($scope.studyDesign.quantileList.length > 0) {
+                        return 'complete';
+                    } else {
+                        return 'incomplete';
+                    }
+                } else {
+                    return 'complete';
+                }
             } else {
                 return 'incomplete';
             }
-               */
-            return 'complete';
+
+
         } else {
             return 'disabled';
         }
@@ -921,6 +935,16 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.betaFixedSigmaEstimated = (
+                studyDesignService.confidenceIntervalDescriptions != null &&
+                studyDesignService.confidenceIntervalDescriptions.betaFixed &&
+                !studyDesignService.confidenceIntervalDescriptions.sigmaFixed
+                );
+            $scope.betaEstimatedSigmaEstimated = (
+                studyDesignService.confidenceIntervalDescriptions != null &&
+                !studyDesignService.confidenceIntervalDescriptions.betaFixed &&
+                !studyDesignService.confidenceIntervalDescriptions.sigmaFixed
+                );
         }
 
         /**
@@ -945,6 +969,90 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         }
     })
 
+    /**
+     * Controller for power methods view
+     */
+    .controller('powerMethodController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newQuantile = undefined;
+            $scope.unconditionalChecked = false;
+            $scope.quantileChecked = false;
+            for(var i in studyDesignService.powerMethodList) {
+                var method = studyDesignService.powerMethodList[i];
+                if (method.value == 'unconditional') {
+                    $scope.unconditionalChecked = true;
+                } else if (method.value == 'quantile') {
+                    $scope.quantileChecked = true;
+                }
+            }
+        }
+
+        /**
+         * Add or remote power methods from the power methods list
+         * depending on the checkbox status
+         *
+         * @param methodName name of the method
+         * @param checked
+         */
+        $scope.updateMethodList = function(methodName, checked) {
+            var method = $scope.findMethod(methodName);
+            if (checked == true) {
+                if (method == null) {
+                    // add the power to the list
+                    studyDesignService.powerMethodList.push({
+                        idx: 0,
+                        value: methodName
+                    });
+                }
+            } else {
+                if (method != null) {
+                    studyDesignService.powerMethodList.splice(
+                        studyDesignService.powerMethodList.indexOf(method), 1);
+                }
+            }
+        }
+
+        /**
+         * Local the method object matching the specified method name
+         * @param name
+         * @returns {*}
+         */
+        $scope.findMethod = function(name) {
+            // javascript looping is weird.  This loops over the indices.
+            for(var i in studyDesignService.powerMethodList) {
+                if (name == studyDesignService.powerMethodList[i].value) {
+                    return studyDesignService.powerMethodList[i];
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Add a new quantile
+         */
+        $scope.addQuantile = function () {
+            var newQuantile = $scope.newQuantile;
+            if (newQuantile != undefined) {
+                // add the power to the list
+                studyDesignService.quantileList.push({
+                    id: studyDesignService.quantileList.length,
+                    value: newQuantile
+                });
+            }
+            // reset the new response to null
+            $scope.newQuantile = undefined;
+        };
+
+        /**
+         * Delete an existing quantile
+         */
+        $scope.deleteQuantile = function(quantile) {
+            studyDesignService.quantileList.splice(
+                studyDesignService.quantileList.indexOf(quantile), 1);
+        };
+    })
 /**
  * Main study design controller
   */

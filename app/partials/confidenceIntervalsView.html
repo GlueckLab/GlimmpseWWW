@@ -28,7 +28,7 @@ for power values using the techniques described by
 </p>
 <p>
 <div class="input-group">
-<input id="noCI" type="checkbox" checked="true" ng-click="toggleConfidenceIntervalDescription()">
+<input id="noCI" type="checkbox" ng-checked="studyDesign.confidenceIntervalDescriptions == null" ng-click="toggleConfidenceIntervalDescription()">
     Don't include confidence intervals for power
     </input>
 </div>
@@ -37,12 +37,12 @@ for power values using the techniques described by
             <div class="input-description">Select the assumptions for the confidence intervals:</div>
             <div class="input-group">
                 <div>
-                    <input type="radio" name="ciAssumptions" ng-click="setAssumptions(true, false)">
+                    <input type="radio" name="ciAssumptions" ng-checked="betaFixedSigmaEstimated" ng-click="setAssumptions(true, false)">
                     <b>B</b> is fixed, but <b>Σ</b><sub>e</sub> is estimated
                     </input>
                 </div>
                 <div>
-                    <input type="radio" name="ciAssumptions" ng-click="setAssumptions(false, false)">
+                    <input type="radio" name="ciAssumptions" ng-checked="betaEstimatedSigmaEstimated" ng-click="setAssumptions(false, false)">
                     Both <b>B</b> and <b>Σ</b><sub>e</sub> are estimated
                     </input>
                 </div>
