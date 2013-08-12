@@ -51,6 +51,7 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
     $scope.calculateAllowed = function() {
         var nominalPowerState = $scope.getStateNominalPower();
         var relativeGroupSizeState = $scope.getStateRelativeGroupSize();
+        var smallestGroupSize = $scope.getStateSmallestGroupSize();
         var covariateVariabilityState = $scope.getStateCovariateVariability();
         var powerMethodState = $scope.getStatePowerMethod();
         return (
@@ -61,7 +62,7 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
                 ($scope.getStateCovariate() == 'complete') &&
                 ($scope.getStateClustering() == 'complete') &&
                 (relativeGroupSizeState == 'complete' || relativeGroupSizeState == 'disabled') &&
-                ($scope.getStateSmallestGroupSize() == 'complete') &&
+                (smallestGroupSize == 'complete' || smallestGroupSize == 'disabled') &&
                 ($scope.getStateResponseVariables() == 'complete') &&
                 ($scope.getStateRepeatedMeasures() == 'complete') &&
                 ($scope.getStateHypothesis() == 'complete') &&
@@ -380,8 +381,20 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
      * @returns disabled, complete, or incomplete
      */
     $scope.getStateConfidenceIntervals = function() {
-        // TODO: finish
-        return 'complete';
+        if ($scope.studyDesign.confidenceIntervalDescriptions == null) {
+            return 'complete';
+        } else {
+            if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed != undefined &&
+                $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed != undefined &&
+                $scope.studyDesign.confidenceIntervalDescriptions.upperTailProbability != undefined &&
+                $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability != undefined &&
+                $scope.studyDesign.confidenceIntervalDescriptions.sampleSize != undefined &&
+                $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix != undefined) {
+                return 'complete';
+            } else {
+                return 'incomplete';
+            }
+        }
     }
 
     /**
@@ -899,6 +912,37 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             studyDesignService.responseList.splice(
                 studyDesignService.responseList.indexOf(response), 1);
         };
+    })
+
+    /*
+    * Controller for the confidence intervals view
+     */
+    .controller('confidenceIntervalController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+        }
+
+        /**
+         * Toggle the confidence interval description on and off
+         */
+        $scope.toggleConfidenceIntervalDescription = function() {
+            if ($scope.studyDesign.confidenceIntervalDescriptions != null) {
+                $scope.studyDesign.confidenceIntervalDescriptions = null;
+            } else {
+                $scope.studyDesign.confidenceIntervalDescriptions = {};
+            }
+        }
+
+        /**
+         * Set the assumptions regarding estimation of beta and sigma
+         */
+        $scope.setAssumptions = function(betaFixed, sigmaFixed) {
+             if ($scope.studyDesign.confidenceIntervalDescriptions != null) {
+                 $scope.studyDesign.confidenceIntervalDescriptions.betaFixed = betaFixed;
+                 $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed = sigmaFixed;
+             }
+        }
     })
 
 /**

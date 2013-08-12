@@ -87,7 +87,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/powerMethodView.html', controller: 'StudyDesignController' }
         )
             .when('/confidenceIntervals',
-            {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'confidenceIntervalController' }
         )
             .when('/plotOptions',
             {templateUrl: 'partials/plotOptionsView.html', controller: 'StudyDesignController' }

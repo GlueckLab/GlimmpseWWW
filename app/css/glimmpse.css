@@ -56,6 +56,10 @@ button:focus {
     border: 1px solid #CC0000;
 }
 
+.box {
+    border: 1px solid #CBD1D6;
+    padding: 10px;
+}
 .rounded-box {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -564,7 +568,15 @@ table.table-entry-contents {
     border-collapse: collapse;
 }
 
+.input-description {
+    margin: 10px 0px;
+}
 
+.input-group {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 0px 20px;
+}
 
 /**** GLIMMPSE Application Styles ****/
 
