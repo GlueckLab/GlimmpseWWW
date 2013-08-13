@@ -84,10 +84,10 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/statisticalTestView.html', controller: 'StudyDesignController' }
         )
             .when('/powerMethod',
-            {templateUrl: 'partials/powerMethodView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/powerMethodView.html', controller: 'powerMethodController' }
         )
             .when('/confidenceIntervals',
-            {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'confidenceIntervalController' }
         )
             .when('/plotOptions',
             {templateUrl: 'partials/plotOptionsView.html', controller: 'StudyDesignController' }

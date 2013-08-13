@@ -1,0 +1,78 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+
+<h3 xmlns="http://www.w3.org/1999/html">Power Calculation Method</h3>
+<p>
+    For designs including a baseline covariate, two methods are available to calculate power:
+    unconditional power and quantile power. One can think of the random covariate values
+    as having been sampled from a normal distribution. Thus there are many possible realizations
+    of the same experiment, and each realization may have a different power. The unconditional
+    power is defined as the average of the possible power values (Gatsonis and Sampson, 1989; Glueck and Muller, 2003).
+    The <i>100 x vth</i> quantile power is the power value chosen so that power as small or smaller occurs
+    in <i>100 x v</i> percent of all possible realizations of the experiment.
+</p>
+<p>
+    For a detailed description of unconditional and quantile power, please see
+    <a href="http://www.ncbi.nlm.nih.gov/pubmed/2813654">Gatsonis and Sampson (1989)</a> and
+    <a href="http://www.ncbi.nlm.nih.gov/pubmed/12898543">Glueck and Muller (2003)</a>.
+</p>
+
+<div>
+    <div class="input-description">
+        Select one or more power methods below:
+    </div>
+    <div class="input-group">
+        <div>
+            <input type="checkbox" ng-model="unconditionalChecked"
+                   data-ng-click="updateMethodList('unconditional',unconditionalChecked)">
+            Unconditional
+            </input>
+        </div>
+        <div>
+            <input type="checkbox" ng-model="quantileChecked"
+                   data-ng-click="updateMethodList('quantile',quantileChecked)">
+            Quantile
+            </input>
+        </div>
+        <div ng-show="quantileChecked">
+            <div>
+                <p>For quantile power, one or more quantiles must be entered in the list below.</p>
+            </div>
+            <div class="list-entry">
+                <form name="quantileForm" class="list-entry-header" novalidate ng-submit="addQuantile()">
+                    <input name="newQuantile" type="number" placeholder="Enter a quantile" ng-model="newQuantile"
+                           min='0' max='1' step='0.01' autocomplete="off" autofocus required >
+                    <span class="error" ng-show="quantileForm.newQuantile.$error.min">Please enter a number between 0 and 1</span>
+                    <span class="error" ng-show="quantileForm.newQuantile.$error.max">Please enter a number between 0 and 1</span>
+                </form>
+                <ul class="list-entry-contents">
+                    <li ng-repeat="quantile in studyDesign.quantileList">
+                        <label>{{quantile.value}}</label>
+                        <button data-ng-click="deleteQuantile(quantile)">&times;</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="studyDesign.debug==true">Methods: {{studyDesign.powerMethodList}}, Quantiles: {{studyDesign.quantileList}}</div>
+</div>
+
+
+

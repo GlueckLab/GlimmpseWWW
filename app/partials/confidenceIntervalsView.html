@@ -1,4 +1,3 @@
-<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -17,15 +16,99 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-    <title>Confidence Intervals Screen</title>
-</head>
-
-<body>
-
-Confidence Intervals Screen
-
-</body>
-</html>
+<h3>Confidence Interval Options</h3>
+<p>
+If the means (<b>B</b>) or the error covariance (<b>Σ</b><sub>e</sub>) are sample estimates,
+then the power values produced from these matrices will be random quantities.
+To account for this randomness, GLIMMPSE can calculate confidence intervals
+for power values using the techniques described by
+<a href="http://www.bios.unc.edu/~muller/articles/9501.pdf">Taylor and Muller (1995)</a>,
+<a href="http://www.sph.unc.edu/bios/theses_and_dissertations_836_6180.html">Gribbin (2007)</a>, and
+<a href="http://www.sph.unc.edu/bios/theses_and_dissertations_836_6180.html">Park (2007)</a>.
+</p>
+<p>
+<div class="input-group">
+<input id="noCI" type="checkbox" ng-checked="studyDesign.confidenceIntervalDescriptions == null" ng-click="toggleConfidenceIntervalDescription()">
+    Don't include confidence intervals for power
+    </input>
+</div>
+</p>
+        <div ng-show="studyDesign.confidenceIntervalDescriptions != null">
+            <div class="input-description">Select the assumptions for the confidence intervals:</div>
+            <div class="input-group">
+                <div>
+                    <input type="radio" name="ciAssumptions" ng-checked="betaFixedSigmaEstimated" ng-click="setAssumptions(true, false)">
+                    <b>B</b> is fixed, but <b>Σ</b><sub>e</sub> is estimated
+                    </input>
+                </div>
+                <div>
+                    <input type="radio" name="ciAssumptions" ng-checked="betaEstimatedSigmaEstimated" ng-click="setAssumptions(false, false)">
+                    Both <b>B</b> and <b>Σ</b><sub>e</sub> are estimated
+                    </input>
+                </div>
+            </div>
+            <div class="input-description">
+                Enter the upper and lower tail probabilities for the confidence intervals.  We typically recommend
+                    the value 0.05 for the lower tail probability and 0 for the upper tail probability.
+            </div>
+            <div class="input-group">
+                <form name="ciProbabilityForm">
+                <table>
+                    <tr>
+                        <td>
+                            Lower Tail Probability:
+                        </td>
+                        <td>
+                            <input name="lowerTailProbability" type="number" min="0" max="0.5" step="0.01"
+                                                          ng-model="studyDesign.confidenceIntervalDescriptions.lowerTailProbability" />
+                            <span class="error" ng-show="ciProbabilityForm.lowerTailProbability.$error.max">Please enter a number between 0 and 0.5</span>
+                            <span class="error" ng-show="ciProbabilityForm.lowerTailProbability.$error.min">Please enter a number between 0 and 0.5</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Upper Tail Probability:
+                        </td>
+                        <td>
+                            <input name="upperTailProbability" type="number" min="0" max="0.5" step="0.01"
+                                                          ng-model="studyDesign.confidenceIntervalDescriptions.upperTailProbability"/>
+                            <span class="error" ng-show="ciProbabilityForm.upperTailProbability.$error.max">Please enter a number between 0 and 0.5</span>
+                            <span class="error" ng-show="ciProbabilityForm.upperTailProbability.$error.min">Please enter a number between 0 and 0.5</span>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+            <div class="input-description">
+                Describe the data from which you obtained the values for <b>B</b> and <b>Σ</b><sub>e</sub>.
+            </div>
+            <div class="input-group">
+                <form name="ciDataForm">
+                    <table>
+                        <tr>
+                            <td>
+                                Total sample size:
+                            </td>
+                            <td>
+                                <input name="totalSampleSize" type="number" min="2" step="1"
+                                                         ng-model="studyDesign.confidenceIntervalDescriptions.sampleSize" />
+                                <span class="error" ng-show="ciDataForm.totalSampleSize.$error.min">Please enter an integer greater than 1</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Rank of the design matrix:
+                            </td>
+                            <td>
+                                <input name="rank" type="number" min="1" step="1"
+                                       ng-model="studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix"/>
+                                <span class="error" ng-show="ciDataForm.rank.$error.min">Please enter an integer greater than 0</span>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div ng-show="studyDesign.debug==true">
+            {{studyDesign.confidenceIntervalDescriptions}}
+        </div>

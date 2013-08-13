@@ -24,6 +24,8 @@
 glimmpseApp.factory('studyDesignService', function() {
     var studyDesignInstance = {};
 
+    studyDesignInstance.debug = false;
+
     /* Unique id for the study design */
     studyDesignInstance.uuid = [];
 
@@ -101,5 +103,6 @@ glimmpseApp.factory('studyDesignService', function() {
     studyDesignInstance.matrixSet = [];
 
     return studyDesignInstance;
+
 });
 
