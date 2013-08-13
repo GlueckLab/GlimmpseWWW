@@ -264,153 +264,6 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
     })
 
 /**
- * Controller managing the relative group sizes list
- */
-    .controller('relativeGroupSizesController', function($scope, studyDesignService) {
-
-        init();
-        function init() {
-            $scope.studyDesign = studyDesignService;
-            $scope.newRelativeGroupSize = undefined;
-            $scope.editedRelativeGroupSize = undefined;
-        }
-
-    })
-
-/**
- * Controller managing the covariates
- */
-    .controller('covariatesController', function($scope, studyDesignService) {
-
-        init();
-        function init() {
-            $scope.studyDesign = studyDesignService;
-        }
-
-        /**
-         * Add the normal distributed predictor
-         */
-        $scope.addCovariates = function () {
-            var newDesign = $scope.newcovariateDesign;
-            if (newDesign != undefined) {
-                // add the normal distributed predictor
-                studyDesignService.gaussianCovariate = newDesign;
-            }
-
-        };
-
-    })
-
-/**
- * Controller managing the relative group sizes
- */
-    .controller('relativeSizesController', function($scope, studyDesignService) {
-
-        init();
-        function init() {
-            $scope.studyDesign = studyDesignService;
-            $scope.newRelativeGroupSize = undefined;
-            $scope.editedRelativeGroupSize = undefined;
-        }
-
-        /**
-         * Add the new group size to the list
-         */
-        $scope.addRelativeSizes = function () {
-            var newGroupSize = $scope.newRelativeGroupSize;
-            if (newGroupSize != undefined) {
-                // add the normal distributed predictor
-                studyDesignService.relativeGroupSizeList = newGroupSize;
-            }
-            // reset the new distributed predictor
-            $scope.newRelativeGroupSize = undefined;
-        };
-
-    })
-
-/**
- * Controller managing the predictors
- */
-    .controller('predictorsController', function($scope, studyDesignService) {
-
-        init();
-        function init() {
-            $scope.studyDesign = studyDesignService;
-            $scope.newPredictorName = undefined;
-            $scope.editedPredictorDesign = undefined;
-            $scope.newCategoryName = undefined;
-
-        }
-
-        /**
-         * Add a new predictor name
-         */
-        $scope.addPredictors = function () {
-            var newPredictor = $scope.newPredictorName;
-            newPredictor.categoryList = [];
-            if (newPredictor != undefined) {
-                // add the predictor to the list
-                studyDesignService.betweenParticipantFactorList.push({
-                    id: studyDesignService.betweenParticipantFactorList.length,
-                    value: newPredictor
-                });
-            }
-            // reset the new sample size to null
-            $scope.newPredictorName = undefined;
-            //newPredictorVariable = newPredictor;
-        };
-
-        /**
-         * Add a new category name
-         */
-        $scope.addCategories = function (factor) {
-
-            var newCategory = $scope.newCategoryName;
-            window.alert(factor.value+",  "+ $scope.newCategoryName);
-            if (newCategory != undefined) {
-                // add the category to the predictor list
-                     factor.categoryList.push({id:factor.categoryList.length,
-                     value:newCategory});
-            }
-            // reset the new sample size to null
-            $scope.newCategoryName = undefined;
-        };
-
-    })
-
-
-/**
- * Controller managing the clusters
- */
-    .controller('clusteringController', function($scope, studyDesignService) {
-
-        init();
-        function init() {
-            $scope.studyDesign = studyDesignService;
-            $scope.newClusterName = undefined;
-        }
-
-        /**
-         * Add a new cluster name
-         */
-        $scope.addClusters = function () {
-            var newCluster = $scope.newClusterName;
-            if (newCluster != undefined) {
-                // add the predictor to the list
-                studyDesignService.clusteringTree.push({
-                    id: studyDesignService.clusteringTree.length,
-                    value: newCluster
-                });
-            }
-            // reset the new sample size to null
-            $scope.newClusterName = undefined;
-        };
-
-
-
-    })
-
-/**
  * Controller managing the smallest group size list
  */
     .controller('sampleSizeController', function($scope, studyDesignService) {
@@ -484,7 +337,7 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         $scope.addResponse = function () {
             var newOutcome = $scope.newResponse;
             if (newOutcome.length > 0) {
-                // add the power to the list
+                // add the response to the list
                 studyDesignService.responseList.push({
                     id: studyDesignService.responseList.length,
                     value: newOutcome
@@ -521,6 +374,227 @@ glimmpseApp.controller('solutionTypeController', function($scope, studyDesignSer
         $scope.deleteResponse = function(response) {
             studyDesignService.responseList.splice(
                 studyDesignService.responseList.indexOf(response), 1);
+        };
+    })
+
+/**
+ * Controller managing the predictors
+ */
+    .controller('predictorsController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.newPredictorName = undefined;
+            $scope.editedPredictor = undefined;
+        }
+
+        /**
+         * Add a new predictor name
+         */
+        $scope.addPredictors = function () {
+            var newPredictor = $scope.newPredictorName;
+            if (newPredictor != undefined) {
+                // add the predictor to the list
+                studyDesignService.betweenParticipantFactorList.push({
+                    id: studyDesignService.betweenParticipantFactorList.length,
+                    value: newPredictor
+                });
+            }
+            // reset the new sample size to null
+            $scope.newPredictorName = undefined;
+        };
+
+        /**
+         * Edit an existing predictor variable
+         */
+        $scope.editPredictor = function(factor) {
+            $scope.editedPredictor = factor;
+        };
+
+
+        /**
+         * Called when editing is complete
+         * @param factor
+         */
+        $scope.doneEditing = function (factor) {
+            $scope.editedPredictor = null;
+            factor.value = factor.value.trim();
+
+            if (!factor.value) {
+                $scope.deletePredictor(factor);
+            }
+        };
+
+        /**
+         * Delete an existing predictor variable
+         */
+        $scope.deletePredictor = function(factor) {
+            studyDesignService.betweenParticipantFactorList.splice(
+                studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
+        };
+    })
+
+/**
+ * Controller managing the covariates
+ */
+    .controller('covariatesController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+        }
+    })
+
+
+/**
+ * Controller managing the statistical tests
+ */
+    .controller('statisticalTestsController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.tests= {hotelling: false, pillai: false, wilks: false, box: false, geisser: false, huynh: false, uncorrected: false};
+        }
+
+        /**
+         * Add the statistical test
+         */
+        $scope.addStatisticalTest = function () {
+
+            if (newTest != undefined) {
+                // add the statistical test to the list
+                studyDesignService.statisticalTestList.push({
+                    id: studyDesignService.statisticalTestList.length,
+                    value: newTest
+                });
+            }
+
+        }
+
+    })
+
+/**
+ * Controller managing the clusters
+ */
+    .controller('clusteringController', function($scope, studyDesignService) {
+
+        init();
+         function init() {
+         $scope.studyDesign = studyDesignService;
+         }
+
+        $scope.addCluster = function() {
+
+            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
+            if (newCluster.value != '' && studyDesignService.clusteringTree.length < 1) {
+
+                studyDesignService.clusteringTree.push({
+                id: studyDesignService.clusteringTree.length,
+                value: newCluster
+                })
+            }
+        };
+
+        $scope.removeCluster = function(clusterToRemove) {
+            var index = studyDesignService.clusteringTree.indexOf(clusterToRemove);
+            studyDesignService.clusteringTree.splice(index, 1);
+
+        };
+
+        $scope.addSubgroup = function(cluster) {
+            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
+            cluster.list= [];
+            cluster.list.push({
+                id: cluster.list.length,
+                value: newCluster
+            })
+        };
+
+        $scope.removeSubgroup = function(cluster, subgroupToRemove) {
+            var index = cluster.list.indexOf(subgroupToRemove);
+            cluster.list.splice(index, 1);
+        };
+
+        $scope.addSubSubgroup = function(subgroup) {
+
+            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
+            subgroup.list= [];
+            subgroup.list.push({
+                id: subgroup.list.length,
+                value: newCluster
+            })
+        };
+
+    })
+
+/**
+ * Controller managing repeated measures
+ */
+    .controller('repeatedMeasuresController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+        }
+
+        $scope.addMeasure = function() {
+
+            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
+            if (newMeasure.units != '' && studyDesignService.repeatedMeasuresTree.length < 1) {
+                studyDesignService.repeatedMeasuresTree.push({
+                    id: studyDesignService.repeatedMeasuresTree.length,
+                    value: newMeasure
+                })
+            }
+        };
+
+        $scope.removeMeasure = function(measureToRemove) {
+            var index = studyDesignService.repeatedMeasuresTree.indexOf(measureToRemove);
+            studyDesignService.repeatedMeasuresTree.splice(index, 1);
+
+        };
+
+        $scope.addSublevel = function(measure) {
+            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
+            measure.list= [];
+            measure.list.push({
+                id: measure.list.length,
+                value: newMeasure
+            })
+        };
+
+        $scope.removeSublevel = function(measure, sublevelToRemove) {
+            var index = measure.list.indexOf(sublevelToRemove);
+            measure.list.splice(index, 1);
+        };
+
+        $scope.addSubSublevel = function(sublevel) {
+
+            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
+            sublevel.list= [];
+            sublevel.list.push({
+                id: sublevel.list.length,
+                value: newMeasure
+            })
+        };
+
+    })
+
+/**
+ * Controller managing the covariates
+ */
+    .controller('meansViewController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+        }
+
+        $scope.addMeans = function() {
+             //window.alert("wohoo!");
+
         };
     })
 

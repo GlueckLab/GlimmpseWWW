@@ -17,15 +17,58 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Means Screen</title>
-</head>
+<h3>Means</h3>
 
-<body>
+<p>
+    The table below shows the mean values for each outcome within each study subgroup. The study subgroups are listed along the left hand side of the table, and the outcomes are listed across the top.
+</p>
 
-Means Screen
+<p>
+    Enter the mean values you expect to observe for each outcome within each study subgroup. The table should contain at least one value that is non-zero. Also, at least two subgroups should have means which differ by a scientifically meaningful amount.
+</p>
 
-</body>
-</html>
+
+<div ng-controller=meansViewController>
+    <form name="meansViewController" novalidate  ng-submit="addMeans()">
+<table class="table-entry-contents">
+
+        <tr>
+            <th ng-repeat="variable in studyDesign.responseList">{{variable.value}}</th>
+        </tr>
+        <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
+        <td ng-repeat="variable in studyDesign.responseList"> <input name="mvalue" type="text" placeholder="" ng-model="meanValue"
+                    autocomplete="off" autofocus required >
+        </td>
+
+        </tr>
+</table>
+
+    <p ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+        Select the time (location, etc.) from the list(s) below. This will allow you to edit the means at the selected time (location, etc.).
+    </p>
+
+        <ul type="none">
+
+        <li ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+
+            {{measure.units}} <select>
+                <option>Numeric</option>
+                <option>Ordinal</option>
+                <option>Categorical</option>
+            </select>
+
+        </li>
+        <li ng-repeat="level in measure.list">
+            {{level.units}} <select data-ng-model="">
+            <option>Numeric</option>
+            <option>Ordinal</option>
+            <option>Categorical</option>
+        </select>
+
+        </li> <br/>
+
+        </ul>
+    </form>
+
+</div>

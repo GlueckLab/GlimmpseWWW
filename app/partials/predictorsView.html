@@ -47,17 +47,8 @@
             <label ng-dblclick="editPredictor(factor)">{{factor.value}}</label>
             <button data-ng-click="deletePredictor(factor)">&times;</button>
 
-            <form name="categoryForm" class="list-entry-header" novalidate ng-submit="addCategories(factor)">
-                <input name="newCategory" type="text" placeholder="Enter category name" ng-model="newCategoryName"
-                       autocomplete="off" autofocus required >
-            </form>
-            <ul class="list-entry-contents">
-                    <li ng-repeat="category in factor.categoryList">
-                        <label ng-dblclick="editCategory(category)">{{category.value}}</label>
-                        <button data-ng-click="deleteCategory(category)">&times;</button>
-                    </li>
 
-            </ul>
         </li>
     </ul>
 </div>
+

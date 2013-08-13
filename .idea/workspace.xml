@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" name="Default" comment="" />
+    <list default="true" id="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/app.js" afterPath="$PROJECT_DIR$/app/js/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/controllers/controllers.js" afterPath="$PROJECT_DIR$/app/js/controllers/controllers.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/covariatesView.html" afterPath="$PROJECT_DIR$/app/partials/covariatesView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/hypothesisView.html" afterPath="$PROJECT_DIR$/app/partials/hypothesisView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/independentSamplingUnitView.html" afterPath="$PROJECT_DIR$/app/partials/independentSamplingUnitView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/meansView.html" afterPath="$PROJECT_DIR$/app/partials/meansView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/predictorsView.html" afterPath="$PROJECT_DIR$/app/partials/predictorsView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/repeatedMeasuresView.html" afterPath="$PROJECT_DIR$/app/partials/repeatedMeasuresView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/statisticalTestView.html" afterPath="$PROJECT_DIR$/app/partials/statisticalTestView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/partials/variabilityView.html" afterPath="$PROJECT_DIR$/app/partials/variabilityView.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="GlimmpseWWW.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375759166351" ignored="false" />
+    <file path="/Dummy.txt" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376366600597" ignored="false" />
     <file path="/scaleFactorsForVariabilityView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1374594717440" ignored="false" />
-    <file path="/controllers.js" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375301321881" ignored="false" />
+    <file path="/controllers.js" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376412978877" ignored="false" />
     <file path="/scaleFactorsForMeansView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1374523558026" ignored="false" />
-    <file path="/predictorsView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375760159829" ignored="false" />
+    <file path="/predictorsView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375769149908" ignored="false" />
     <file path="/relativeGroupSizesView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375137113824" ignored="false" />
-    <file path="/covariatesView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375162095381" ignored="false" />
-    <file path="/independentSamplingUnitView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375132784082" ignored="false" />
+    <file path="/covariatesView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375932698361" ignored="false" />
+    <file path="/independentSamplingUnitView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376374035841" ignored="false" />
     <file path="/glimmpse.css" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375134025721" ignored="false" />
+    <file path="/hypothesisView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375806350048" ignored="false" />
+    <file path="/meansView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376424025958" ignored="false" />
+    <file path="/statisticalTestView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1375937331456" ignored="false" />
+    <file path="/repeatedMeasuresView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376410789566" ignored="false" />
+    <file path="/variabilityView.html" changelist="8fc85437-0d2f-4606-ac9d-fe104aa22a8f" time="1376282431735" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,34 +52,25 @@
       <file leaf-file-name="controllers.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/js/controllers/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="327" column="46" selection-start="9781" selection-end="9781" vertical-scroll-proportion="0.0">
+            <state line="592" column="36" selection-start="17692" selection-end="17692" vertical-scroll-proportion="-65.8">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="predictorsView.html" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/partials/predictorsView.html">
+      <file leaf-file-name="repeatedMeasuresView.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/partials/repeatedMeasuresView.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="9" selection-start="2889" selection-end="2889" vertical-scroll-proportion="1.1771218">
+            <state line="51" column="69" selection-start="2390" selection-end="2390" vertical-scroll-proportion="-27.11111">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="studyDesignService.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/js/services/studyDesignService.js">
+      <file leaf-file-name="meansView.html" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/partials/meansView.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="91" column="38" selection-start="3052" selection-end="3052" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="independentSamplingUnitView.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/partials/independentSamplingUnitView.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="60" selection-start="1791" selection-end="1791" vertical-scroll-proportion="-0.8055556">
+            <state line="46" column="60" selection-start="2028" selection-end="2028" vertical-scroll-proportion="0.40169904">
               <folding />
             </state>
           </provider>
@@ -88,22 +96,27 @@
       <list>
         <option value="$PROJECT_DIR$/app/partials/scaleFactorsForMeansView.html" />
         <option value="$PROJECT_DIR$/app/partials/typeIErrorView.html" />
-        <option value="$PROJECT_DIR$/app/partials/scaleFactorsForVariabilityView.html" />
-        <option value="$PROJECT_DIR$/app/js/app.js" />
-        <option value="$PROJECT_DIR$/app/partials/independentSamplingUnitView.html" />
         <option value="$PROJECT_DIR$/app/css/glimmpse.css" />
         <option value="$PROJECT_DIR$/app/partials/relativeGroupSizesView.html" />
-        <option value="$PROJECT_DIR$/app/partials/covariatesView.html" />
-        <option value="$PROJECT_DIR$/app/js/controllers/controllers.js" />
+        <option value="$PROJECT_DIR$/app/partials/hypothesisView.html" />
+        <option value="$PROJECT_DIR$/app/partials/scaleFactorsForVariabilityView.html" />
         <option value="$PROJECT_DIR$/app/partials/predictorsView.html" />
+        <option value="$PROJECT_DIR$/app/partials/covariatesView.html" />
+        <option value="$PROJECT_DIR$/app/partials/variabilityView.html" />
+        <option value="$PROJECT_DIR$/app/partials/statisticalTestView.html" />
+        <option value="$PROJECT_DIR$/app/partials/independentSamplingUnitView.html" />
+        <option value="$PROJECT_DIR$/app/partials/repeatedMeasuresView.html" />
+        <option value="$PROJECT_DIR$/app/js/app.js" />
+        <option value="$PROJECT_DIR$/app/js/controllers/controllers.js" />
+        <option value="$PROJECT_DIR$/app/partials/meansView.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1296" />
-    <option name="height" value="776" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -195,7 +208,29 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="img" />
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GlimmpseWWW" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GlimmpseWWW" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -226,6 +261,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="vcs.Git" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHub/PortableGit_015aa71ef18c047ce8509ffb2f9e4bb0e3e73f13/bin/git.exe" />
     <property name="FullScreen" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -275,16 +311,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="776" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21002387" sideWeight="0.67001116" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16657881" sideWeight="0.6709887" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32901135" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -357,90 +393,114 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/partials/smallestGroupSizeView.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/statisticalTestView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="88" selection-start="841" selection-end="841" vertical-scroll-proportion="0.0" />
+        <state line="51" column="4" selection-start="3150" selection-end="3150" vertical-scroll-proportion="-15.638889" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/typeIErrorView.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/hypothesisView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="81" selection-start="1057" selection-end="1057" vertical-scroll-proportion="0.24550898" />
+        <state line="23" column="80" selection-start="968" selection-end="968" vertical-scroll-proportion="-2.4166667">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/meansView.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/goalTypeView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.28502995" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-1.2389706">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/js/app.js">
+    <entry file="file://$PROJECT_DIR$/app/partials/home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="94" selection-start="2030" selection-end="2030" vertical-scroll-proportion="0.0" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/index.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/nominalPowerView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-4.8686132" />
+        <state line="38" column="73" selection-start="2010" selection-end="2018" vertical-scroll-proportion="-11.277778">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/partials/scaleFactorsForMeansView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="46" selection-start="1787" selection-end="1787" vertical-scroll-proportion="-11.305555" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/lib/listEntryWidget.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/css/glimmpse.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="518" column="18" selection-start="13089" selection-end="13089" vertical-scroll-proportion="0.05206463" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/partials/scaleFactorsForVariabilityView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="52" selection-start="2131" selection-end="2131" vertical-scroll-proportion="0.5184502" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-1.2389706">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/covariatesView.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/typeIErrorView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="45" selection-start="2198" selection-end="2198" vertical-scroll-proportion="0.46494466" />
+        <state line="33" column="112" selection-start="1651" selection-end="1868" vertical-scroll-proportion="-4.7777777">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/solvingForView.html">
+    <entry file="file://$PROJECT_DIR$/app/css/glimmpse.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="7" selection-start="1498" selection-end="1789" vertical-scroll-proportion="0.46494466" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/relativeGroupSizesView.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="48" selection-start="1599" selection-end="1607" vertical-scroll-proportion="-4.0277777" />
+        <state line="521" column="2" selection-start="13122" selection-end="13122" vertical-scroll-proportion="0.03372093">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/js/services/studyDesignService.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="38" selection-start="3052" selection-end="3052" vertical-scroll-proportion="0.0">
+        <state line="81" column="44" selection-start="2720" selection-end="2720" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/js/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="75" selection-start="2908" selection-end="2908" vertical-scroll-proportion="0.2325315">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/partials/independentSamplingUnitView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="60" selection-start="1791" selection-end="1791" vertical-scroll-proportion="-0.8055556">
+        <state line="43" column="46" selection-start="2422" selection-end="2573" vertical-scroll-proportion="-0.2815534">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/js/controllers/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="327" column="46" selection-start="9781" selection-end="9781" vertical-scroll-proportion="0.0">
+        <state line="592" column="36" selection-start="17692" selection-end="17692" vertical-scroll-proportion="-65.8">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/partials/predictorsView.html">
+    <entry file="file://$PROJECT_DIR$/app/partials/relativeGroupSizesView.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="9" selection-start="2889" selection-end="2889" vertical-scroll-proportion="1.1771218">
+        <state line="32" column="51" selection-start="1471" selection-end="1471" vertical-scroll-proportion="5.111111">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/partials/repeatedMeasuresView.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="69" selection-start="2390" selection-end="2390" vertical-scroll-proportion="-27.11111">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/partials/meansView.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="60" selection-start="2028" selection-end="2028" vertical-scroll-proportion="0.40169904">
           <folding />
         </state>
       </provider>

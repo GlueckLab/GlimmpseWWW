@@ -17,15 +17,95 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>
+    Repeated Measures
+</h3>
 
-    <title>Repeated Measures Screen</title>
-</head>
+<p>
+    Repeated measures are present when a response variable is measured on each research participant on two or more occasions or under two or more conditions.
+</p>
 
-<body>
+<p>
+    If the study includes repeated measurements, click “Add repeated measures” and follow the prompts. The text entered in the "Units" text box indicates the dimension over which measures were taken (ex. time, days, locations, etc.). The choice of "Type" indicates whether the repeated measures are numeric (ex. time), ordinal (ex. 1st, 2nd, 3rd), or categorical (ex. arm, leg, hand).
+</p>
 
-Repeated Measures Screen
+<p>
+    You may specify up to 3 levels of repeated measures.
+</p>
 
-</body>
-</html>
+<div ng-controller="repeatedMeasuresController">
+    <button ng-show="studyDesign.repeatedMeasuresTree.length==0" data-ng-click="addMeasure()">Add Repeated Measures</button>
+    <button ng-show="studyDesign.repeatedMeasuresTree.length==1" data-ng-click="removeMeasure(measure)">Remove Repeated Measures</button>
+
+    <ul type=none>
+
+    <li ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+        <form name="repeatedMeasuresForm" class="cluster-contents">
+
+            Units <input name="units" type="text" placeholder="Enter measure name" ng-model="measure.units"
+                                  autocomplete="off" autofocus required > <br/>
+            Type <select ng-model="measure.type">
+                <option>Numeric</option>
+                <option>Ordinal</option>
+                <option>Categorical</option>
+            </select>     <br/>
+
+
+            Number of Measurements <input name="nOfMeasurements" type="number" placeholder="" ng-model="measure.nOfMeasurements"
+                                              min='2' step='1' autocomplete="off" autofocus required > <br/>
+            <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">Please enter an integer greater than or equal to 2</span>
+
+        </form>
+
+        <button data-ng-click="addSublevel(measure)">Add Level</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <ul type=none>
+            <li ng-repeat="sublevel in measure.list">
+                <form name="repeatedMeasuresForm" class="cluster-contents">
+                    Units <input name="units" type="text" placeholder="Enter level name" ng-model="sublevel.units"
+                                          autocomplete="off" autofocus required > <br/>
+                    Type <select ng-model="sublevel.type">
+                    <option>Numeric</option>
+                    <option>Ordinal</option>
+                    <option>Categorical</option>
+                </select>     <br/>
+
+                    Number of Measurements  <input name="nOfMeasurements" type="number" placeholder="" ng-model="sublevel.nOfMeasurements"
+                                                       min='2' step='1' autocomplete="off" autofocus required >   <br/>
+                    <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">Please enter an integer greater than or equal to 2</span>
+
+                </form>
+                <button data-ng-click="addSubSublevel(sublevel)">Add Level</button>
+                <button data-ng-click="removeSublevel(measure, sublevel)">Remove Level</button>
+                <ul type=none>
+                    <li ng-repeat="subsublevel in sublevel.list">
+
+                        <form name="repeatedMeasuresForm" class="cluster-contents">
+                            Cluster label: <input name="units" type="text" placeholder="Enter level name" ng-model="subsublevel.units"
+                                                  autocomplete="off" autofocus required > <br/>
+                            Type <select ng-model="measure.type">
+                            <option>Numeric</option>
+                            <option>Ordinal</option>
+                            <option>Categorical</option>
+                            </select>     <br/>
+
+                            Number of Measurements  <input name="nOfMeasurements" type="number" placeholder="" ng-model="subsublevel.nOfMeasurements"
+                                                           min='2' step='1' autocomplete="off" autofocus required >   <br/>
+                            <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">Please enter an integer greater than or equal to 2</span>
+                        </form>
+
+                        <button data-ng-click="removeSublevel(sublevel, subsublevel)">Remove Level</button>
+                    </li>
+
+                </ul>
+
+            </li>
+
+        </ul>
+
+
+
+    </li>
+    </ul>
+
+</div>

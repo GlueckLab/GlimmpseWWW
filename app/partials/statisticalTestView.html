@@ -17,15 +17,38 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Statistical Test Screen</title>
-</head>
+<h3> Statistical Tests </h3>
+<p>
+Select the statistical tests to include in your calculations. For study designs with a single outcome, power is the same regardless of the test selected.
+Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated Measures are supported for designs which include a baseline covariate.
+</p>
 
-<body>
+<p>
+    Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated Measures are supported for designs which include a baseline covariate.
+</p>
 
-Statistical Test Screen
+<p>
+    Click here to learn more about selecting an appropriate test.
+</p>
 
-</body>
-</html>
+<div>
+
+
+    <div><input name="hotellingTest" type="checkbox" ng-model="hotellingTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Hotelling-Lawley Trace</input></div>
+    <div><input name="pillaiTest" type="checkbox" ng-model="pillaiTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Pillai-Bartlett Trace</input></div>
+    <div><input name="wilksTest" type="checkbox" ng-model="wilksTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Wilks Likelihood Ratio</input></div>
+    <div><input name="boxCorrectionTest" type="checkbox" ng-model="boxCorrectionTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Box Correction</input></div>
+    <div><input name="GeisserGreenCorrectionTest" type="checkbox" ng-model="GeisserGreenCorrectionTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Geisser-Greenhouse Correction</input></div>
+    <div><input name="HuynhFeldtCorrectionTest" type="checkbox" ng-model="HuynhFeldtCorrectionTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Huynh-Feldt Correction</input></div>
+    <div><input name="uncorrectedTest" type="checkbox" ng-model="uncorrectedTest"
+               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures, uncorrected</input></div>
+
+
+</div>

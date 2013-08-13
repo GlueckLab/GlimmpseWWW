@@ -60,13 +60,13 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }
         )
             .when('/repeatedMeasures',
-            {templateUrl: 'partials/repeatedMeasuresView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/repeatedMeasuresView.html', controller: 'repeatedMeasuresController' }
         )
             .when('/hypothesis',
             {templateUrl: 'partials/hypothesisView.html', controller: 'StudyDesignController' }
         )
             .when('/means',
-            {templateUrl: 'partials/meansView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/meansView.html', controller: 'meansViewController' }
         )
             .when('/meansScale',
             {templateUrl: 'partials/scaleFactorsForMeansView.html', controller: 'scaleFactorForMeansController' }
