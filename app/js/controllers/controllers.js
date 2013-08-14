@@ -955,6 +955,8 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
              //window.alert("wohoo!");
 
         };
+
+
     })
 
     /*

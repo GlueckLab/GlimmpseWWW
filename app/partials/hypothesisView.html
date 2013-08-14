@@ -32,3 +32,62 @@
     To specify a hypothesis, select the radio button matching the type of hypothesis you wish to test, and then enter the requested details. Note that trends within an interaction hypothesis may be specified by selecting the "Interaction" button. For more information about the type of hypothesis, click the magnifying glass icon.
 </p>
 
+
+<div class="input-group">
+
+    <table ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+
+        <tr>
+
+            <th>
+               <input type="radio" ng-model="grandMean"> Grand Mean
+
+            </th>
+
+            <th>
+               <input type="radio" ng-model="mainEffect"> Main Effect
+
+            </th>
+
+            <th>
+                <input type="radio" ng-model="trend"> Trend
+
+            </th>
+
+            <th>
+                <input type="radio" ng-model="interaction"> Interaction
+
+            </th>
+
+        </tr>
+
+        <tr>
+
+           <p>
+               Enter the known mean values for each response below.
+
+           </p>
+
+            <table>
+
+                <tr ng-repeat="response in studyDesign.responseList">
+                    <td>
+                          <label> {{response.value}} </label>
+
+                    </td>
+
+                    <input name="mvalue" type="text" placeholder="" ng-model="meanValue"
+                           autocomplete="off" autofocus required >
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </tr>
+
+
+    </table>
+
+</div>
