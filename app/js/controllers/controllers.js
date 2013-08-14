@@ -891,46 +891,24 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
         $scope.addCluster = function() {
 
-            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
-            if (newCluster.value != '' && studyDesignService.clusteringTree.length < 1) {
-
+             if (studyDesignService.clusteringTree.length < 3) {
                 studyDesignService.clusteringTree.push({
-                id: studyDesignService.clusteringTree.length,
-                value: newCluster
+                idx: studyDesignService.clusteringTree.length,
+                node: 0, parent: 0
                 })
-            }
+             }
+        };
+        /**
+         *
+         */
+        $scope.removeCluster = function() {
+
+            studyDesignService.clusteringTree.pop();
         };
 
-        $scope.removeCluster = function(clusterToRemove) {
-            var index = studyDesignService.clusteringTree.indexOf(clusterToRemove);
-            studyDesignService.clusteringTree.splice(index, 1);
-
+        $scope.removeClustering = function() {
+            studyDesignService.clusteringTree = [];
         };
-
-        $scope.addSubgroup = function(cluster) {
-            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
-            cluster.list= [];
-            cluster.list.push({
-                id: cluster.list.length,
-                value: newCluster
-            })
-        };
-
-        $scope.removeSubgroup = function(cluster, subgroupToRemove) {
-            var index = cluster.list.indexOf(subgroupToRemove);
-            cluster.list.splice(index, 1);
-        };
-
-        $scope.addSubSubgroup = function(subgroup) {
-
-            var newCluster = {value:'clusterName', nOfObs:'1', corr:'0.1'};
-            subgroup.list= [];
-            subgroup.list.push({
-                id: subgroup.list.length,
-                value: newCluster
-            })
-        };
-
     })
 
 /**
@@ -945,43 +923,20 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
         $scope.addMeasure = function() {
 
-            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
-            if (newMeasure.units != '' && studyDesignService.repeatedMeasuresTree.length < 1) {
+            if (studyDesignService.repeatedMeasuresTree.length < 3) {
                 studyDesignService.repeatedMeasuresTree.push({
-                    id: studyDesignService.repeatedMeasuresTree.length,
-                    value: newMeasure
+                    idx: studyDesignService.repeatedMeasuresTree.length,
+                    node: 0, parent: 0
                 })
             }
         };
 
-        $scope.removeMeasure = function(measureToRemove) {
-            var index = studyDesignService.repeatedMeasuresTree.indexOf(measureToRemove);
-            studyDesignService.repeatedMeasuresTree.splice(index, 1);
-
+        $scope.removeMeasure = function() {
+            studyDesignService.repeatedMeasuresTree.pop();
         };
 
-        $scope.addSublevel = function(measure) {
-            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
-            measure.list= [];
-            measure.list.push({
-                id: measure.list.length,
-                value: newMeasure
-            })
-        };
-
-        $scope.removeSublevel = function(measure, sublevelToRemove) {
-            var index = measure.list.indexOf(sublevelToRemove);
-            measure.list.splice(index, 1);
-        };
-
-        $scope.addSubSublevel = function(sublevel) {
-
-            var newMeasure = {units:'measureName', type:'Numeric', nOfMeasurements:'2'};
-            sublevel.list= [];
-            sublevel.list.push({
-                id: sublevel.list.length,
-                value: newMeasure
-            })
+        $scope.removeMeasuring = function() {
+            studyDesignService.repeatedMeasuresTree = [];
         };
 
     })

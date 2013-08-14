@@ -31,75 +31,66 @@
 
 <div ng-controller="clusteringController">
 
-    <button ng-show="studyDesign.clusteringTree.length==0" data-ng-click="addCluster()">Add Clustering</button>
-    <button ng-show="studyDesign.clusteringTree.length==1" data-ng-click="removeCluster(cluster)">Remove Clustering</button>
+    <button ng-show="studyDesign.clusteringTree.length <= 0" data-ng-click="addCluster()">Add Clustering</button>
+    <button ng-show="studyDesign.clusteringTree.length > 0" data-ng-click="removeClustering()">Remove Clustering</button>
     <ul type=none>
 
         <li ng-repeat="cluster in studyDesign.clusteringTree">
-            <form name="clusteringForm" class="cluster-contents">
+            <form name="clusteringForm">
+            <div class="input-group">
+            <table>
+               <tr>
+                   <td>
+                       Cluster label:
+                   </td>
+                   <td>
+                       <input name="clusterName" type="text" placeholder="Enter cluster name" ng-model="cluster.groupName"
+                              autocomplete="off" autofocus required >
+                   </td>
 
-            Cluster label: <input name="clusterName" type="text" placeholder="Enter cluster name" ng-model="cluster.value"
-                  autocomplete="off" autofocus required > <br/>
-            Number of observations or sub-clusters  <br/>
-            within each cluster of this type: <input name="nOfObs" type="number" placeholder="" ng-model="cluster.nOfObs"
-                   min='1' step='1' autocomplete="off" autofocus required > <br/>
-                <span class="error" ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</span>
+               </tr>
 
-            Intra-cluster Correlation: <input name="corr" type="number" placeholder="" ng-model="cluster.corr"
-                                 min='-1' max='1' step='0.1' autocomplete="off" autofocus required > <br/>
-                <span class="error" ng-show="clusteringForm.corr.$error.min">Please enter a number between -1 and 1</span>
-                <span class="error" ng-show="clusteringForm.corr.$error.max">Please enter a number between -1 and 1</span>
-        </form>
-            <button data-ng-click="addSubgroup(cluster)">Add Subgroup</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <!--<button  data-ng-click="removeCluster(cluster)">Remove Subgroup</button>  !-->
+                <tr>
+                    <td>
+                        Number of observations or sub-clusters  <br/>
+                        within each cluster of this type:
+                    </td>
+                    <td>
+                        <input name="nOfObs" type="number" placeholder="" ng-model="cluster.groupSize"
+                               min='1' step='1' autocomplete="off" autofocus required > <br/>
+                        <span class="error" ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</span>
+                    </td>
 
+                </tr>
 
-         <ul type=none>
-            <li ng-repeat="subgroup in cluster.list">
-                <form name="clusteringForm" class="cluster-contents">
-                Cluster label: <input name="clusterName" type="text" placeholder="Enter cluster name" ng-model="subgroup.value"
-                                      autocomplete="off" autofocus required > <br/>
-                Number of observations or sub-clusters <br/>
-                within each cluster of this type: <input name="nOfObs" type="number" placeholder="" ng-model="subgroup.nOfObs"
-                                                         min='1' step='1' autocomplete="off" autofocus required >   <br/>
-                <span class="error" ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</span>
-                Intra-cluster Correlation:  <input name="corr" type="number" placeholder="" ng-model="subgroup.corr"
-                                                   min='-1' max='1' step='0.1' autocomplete="off" autofocus required >   <br/>
-                    <span class="error" ng-show="clusteringForm.corr.$error.min">Please enter a number between -1 and 1</span>
-                    <span class="error" ng-show="clusteringForm.corr.$error.max">Please enter a number between -1 and 1</span>
-                </form>
-                <button data-ng-click="addSubSubgroup(subgroup)">Add Subgroup</button>
-                <button data-ng-click="removeSubgroup(cluster, subgroup)">Remove Subgroup</button>
+                <tr>
+                    <td>
+                        Intra-cluster Correlation:
+                    </td>
+                    <td>
+                        <input name="corr" type="number" placeholder="" ng-model="cluster.intraClusterCorrelation"
+                               min='-1' max='1' step='0.1' autocomplete="off" autofocus required > <br/>
+                        <span class="error" ng-show="clusteringForm.corr.$error.min">Please enter a number between -1 and 1</span>
+                        <span class="error" ng-show="clusteringForm.corr.$error.max">Please enter a number between -1 and 1</span>
+                    </td>
 
-                <ul type=none>
-                    <li ng-repeat="subsubgroup in subgroup.list">
+                </tr>
 
-                        <form name="clusteringForm" class="cluster-contents">
-                            Cluster label: <input name="clusterName" type="text" placeholder="Enter cluster name" ng-model="subsubgroup.value"
-                                                  autocomplete="off" autofocus required > <br/>
-                            Number of observations or sub-clusters <br/>
-                            within each cluster of this type: <input name="nOfObs" type="number" placeholder="" ng-model="subsubgroup.nOfObs"
-                                                                     min='1' step='1' autocomplete="off" autofocus required >   <br/>
-                            <span class="error" ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</span>
-                            Intra-cluster Correlation:  <input name="corr" type="number" placeholder="" ng-model="subsubgroup.corr"
-                                                               min='-1' max='1' step='0.1' autocomplete="off" autofocus required >   <br/>
-                            <span class="error" ng-show="clusteringForm.corr.$error.min">Please enter a number between -1 and 1</span>
-                            <span class="error" ng-show="clusteringForm.corr.$error.max">Please enter a number between -1 and 1</span>
-                        </form>
+            </table>
 
-                        <button data-ng-click="removeSubgroup(subgroup, subsubgroup)">Remove Subgroup</button>
-                    </li>
-
-                </ul>
-
-            </li>
-
-            </ul>
-
-
-
+            </div>
+            </form>
         </li>
     </ul>
+
+    <div>
+    <button ng-show="studyDesign.clusteringTree.length > 0 && studyDesign.clusteringTree.length < 3" data-ng-click="addCluster()">Add Subgroup</button>
+    <button ng-show="studyDesign.clusteringTree.length > 0" data-ng-click="removeCluster()">Remove Subgroup</button>
+    </div>
+
+    <!-- <div ng-show="studyDesign.debug == true">
+        {{studyDesign.clusteringTree}}
+    </div> !-->
 
 </div>
 

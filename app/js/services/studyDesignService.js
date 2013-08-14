@@ -24,7 +24,7 @@
 glimmpseApp.factory('studyDesignService', function() {
     var studyDesignInstance = {};
 
-    studyDesignInstance.debug = false;
+    studyDesignInstance.debug = true;
 
     /* Unique id for the study design */
     studyDesignInstance.uuid = [];
