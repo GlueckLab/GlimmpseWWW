@@ -63,7 +63,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/repeatedMeasuresView.html', controller: 'repeatedMeasuresController' }
         )
             .when('/hypothesis',
-            {templateUrl: 'partials/hypothesisView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/hypothesisView.html', controller: 'hypothesesController' }
         )
             .when('/means',
             {templateUrl: 'partials/meansView.html', controller: 'meansViewController' }

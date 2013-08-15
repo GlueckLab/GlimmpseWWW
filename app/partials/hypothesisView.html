@@ -33,61 +33,167 @@
 </p>
 
 
-<div class="input-group">
-
-    <table ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-
+<div class="input-group" ng-controller="hypothesesController"
+     ng-show="studyDesign.responseList.length > 0">
+    <table>
         <tr>
-
             <th>
-               <input type="radio" ng-model="grandMean"> Grand Mean
-
+               <input type="radio" name="hypothesisChoice" value="grandMean"
+                      ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()">Grand Mean</input>
             </th>
-
-            <th>
-               <input type="radio" ng-model="mainEffect"> Main Effect
-
+            <th ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+               <input type="radio" name="hypothesisChoice" value="mainEffect"
+                      ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()">
+                      Main Effect
+               </input>
             </th>
-
-            <th>
-                <input type="radio" ng-model="trend"> Trend
-
+            <th ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+                <input type="radio" name="hypothesisChoice" value="trend"
+                       ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()"> Trend </input>
             </th>
-
-            <th>
-                <input type="radio" ng-model="interaction"> Interaction
-
+            <th ng-show="studyDesign.repeatedMeasuresTree.length >= 2">
+                <input type="radio" name="hypothesisChoice" value="interaction"
+                       ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()"> Interaction</input>
             </th>
-
         </tr>
-
-        <tr>
-
-           <p>
-               Enter the known mean values for each response below.
-
-           </p>
-
-            <table>
-
-                <tr ng-repeat="response in studyDesign.responseList">
-                    <td>
-                          <label> {{response.value}} </label>
-
-                    </td>
-
-                    <input name="mvalue" type="text" placeholder="" ng-model="meanValue"
-                           autocomplete="off" autofocus required >
-
-                    </td>
-
-                </tr>
-
-            </table>
-
-        </tr>
-
-
     </table>
+</div>
 
+<div class="input-group" ng-show="getHypothesisType()== 'grandMean'">
+    <p>
+        Enter the known mean values for each response below.
+    </p>
+    <table ng-repeat="response in studyDesign.responseList">
+        <tr>
+            <td>
+                {{response.value}}
+            </td>
+            <td>
+                <input name="mvalue" type="text"
+                       placeholder="0" ng-model="hypoValue"
+                       autocomplete="off" autofocus required >
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+    <p>
+        Select one predictor of interest for the main effect hypothesis.
+    </p>
+    <p>
+        Within Participant Factors
+    </p>
+
+    <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+        <li>
+           <input type="radio">{{measure.dimension}}
+        </li>
+    </ul>
+
+
+</div>
+
+<div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+    <p>
+        Select one predictor of interest for the trend hypothesis.
+    </p>
+    <p>
+        Within Participant Factors
+    </p>
+
+    <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+        <li>
+            <input type="radio">{{measure.dimension}}
+        </li>
+    </ul>
+    <p>
+        Select the type of trend for the predictor of interest.
+    </p>
+
+    <div class="input-group">
+        <table>
+            <tr>
+            <td>
+                <input type="radio" name="typeOfTrend" value="none"
+                       ng-model="None">None</input>
+            </td>
+            <td>
+                    No Image
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" name="typeOfTrend" value="baseline"
+                       ng-model="changeFromBaseline">Change from baseline</input>
+                </td>
+                <td>
+                    Add Image
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" name="typeOfTrend" value="polynomial"
+                       ng-model="allPloynomialTrends">All polynomial trends</input>
+                </td>
+                <td>
+                    Add Image
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" name="typeOfTrend" value="linear"
+                       ng-model="linearTrend">Linear Trend</input>
+                </td>
+                <td>
+                    Add Image
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" name="typeOfTrend" value="quadratic"
+                           ng-model="quadraticTrend">Quadratic Trend</input>
+                </td>
+                <td>
+                     Add Image
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" name="typeOfTrend" value="cubic"
+                           ng-model="cubicTrend">Cubic Trend</input>
+                </td>
+                <td>
+                    Add Image
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="input-group">
+
+        <p>
+            Select two or more predictors to include in the interaction
+            hypothesis. To test for a trend in a given factor, click the
+            Edit Trend link and select an appropriate trend.
+        </p>
+
+        <p>
+            Within Participant Factors
+        </p>
+
+        <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+            <li>
+                <input type="checkbox"
+
+                       ng-true-value="YES" ng-false-value="NO">{{measure.dimension}}
+                </input>
+            </li>
+        </ul>
+
+    </div>
+
+     <div ng-show="studyDesign.debug == true">
+            {{studyDesign.hypothesis}}
+        </div>
 </div>

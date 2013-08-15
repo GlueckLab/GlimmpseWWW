@@ -35,22 +35,20 @@
 <div class="input-group">
 
 <table>
-
-        <tr>
+       <tr>
             <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">{{predictor.value}}
             </th>
 
             <th ng-repeat="variable in studyDesign.responseList">{{variable.value}}
             </th>
         </tr>
-
-
         <tr ng-repeat="count in [1, 2, 3, 4]">
                 <td ng-repeat="predictor in studyDesign.betweenParticipantFactorList"><input name="mvalue" type="text" placeholder="" ng-model="meanValue"
                                                                                              autocomplete="off" autofocus required >
                 </td>
 
-                <td ng-repeat="variable in studyDesign.responseList"> <input name="mvalue" type="text" placeholder="" ng-model="meanValue"
+                <td ng-repeat="variable in studyDesign.responseList"> <input name="mvalue" type="text"
+                                                     placeholder="" ng-model="meanValue"
                     autocomplete="off" autofocus required >
                 </td>
 
@@ -66,24 +64,17 @@
     </p>
 
 <div>
-
         <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-
-
             <tr>
                   <td>
                       {{measure.dimension}}
                   </td>
-
                    <td>
                        <select >
                            <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
-
                        </select>
                    </td>
             </tr>
-
-
         </table>
 </div>
 

@@ -87,9 +87,11 @@
         </ul>
 
         <div>
-            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.repeatedMeasuresTree.length < 3"
+            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0
+            && studyDesign.repeatedMeasuresTree.length < 3"
                     data-ng-click="addMeasure()">Add Level</button>
-            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0" data-ng-click="removeMeasure()">Remove Level</button>
+            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0"
+                    data-ng-click="removeMeasure()">Remove Level</button>
         </div>
 
         <!-- <div ng-show="studyDesign.debug == true">

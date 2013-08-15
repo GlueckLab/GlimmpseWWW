@@ -959,6 +959,34 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
     })
 
+/**
+ * Controller managing the covariates
+ */
+    .controller('hypothesesController', function($scope, studyDesignService) {
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.hypothesisOfInterest = undefined;
+        }
+
+        $scope.addHypothesis = function() {
+                var hypothesisChoice = $scope.hypothesisOfInterest;
+
+                studyDesignService.hypothesis.push({
+                    idx: studyDesignService.hypothesis.length,
+                    type: hypothesisChoice
+                })
+        };
+
+        $scope.getHypothesisType = function() {
+            //window.alert(studyDesignService.hypothesis.length);
+            for (var hypo in studyDesignService.hypothesis) {
+                return ;
+            }
+        };
+    })
+
     /*
     * Controller for the confidence intervals view
      */

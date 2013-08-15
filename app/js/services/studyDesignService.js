@@ -94,7 +94,7 @@ glimmpseApp.factory('studyDesignService', function() {
     studyDesignInstance.clusteringTree = [];
 
     /** The hypothesis. */
-    studyDesignInstance.hypothesis = [];
+    studyDesignInstance.hypothesis = [{idx:1, type:'', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
 
     /** The covariance. */
     studyDesignInstance.covariance = [];
