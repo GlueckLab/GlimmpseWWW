@@ -21,179 +21,175 @@
 <h3>Hypotheses</h3>
 
 <p>
-    Power and sample size calculations are typically based on the primary study hypothesis. GLIMMPSE will generate several possible hypotheses based on your study design. Click the forward arrow to continue.
+    Power and sample size calculations are typically based on the primary study hypothesis.
+    GLIMMPSE will generate several possible hypotheses based on your study design.
+    Click the forward arrow to continue.
 </p>
 
 <p>
-    The options below show the hypotheses which are available for the current study design. Select the hypothesis which most closely resembles your primary study hypothesis. This hypothesis will be used to determine power for your study.
+    The options below show the hypotheses which are available for the current study design.
+    Select the hypothesis which most closely resembles your primary study hypothesis.
+    This hypothesis will be used to determine power for your study.
 </p>
 
 <p>
-    To specify a hypothesis, select the radio button matching the type of hypothesis you wish to test, and then enter the requested details. Note that trends within an interaction hypothesis may be specified by selecting the "Interaction" button. For more information about the type of hypothesis, click the magnifying glass icon.
+    To specify a hypothesis, select the radio button matching the type of hypothesis
+    you wish to test, and then enter the requested details. Note that trends within
+    an interaction hypothesis may be specified by selecting the "Interaction" button.
+    For more information about the type of hypothesis, click the magnifying glass icon.
 </p>
 
 
-<div class="input-group" ng-controller="hypothesesController"
+<div class="input-group"
      ng-show="studyDesign.responseList.length > 0">
-    <table>
-        <tr>
-            <th>
-               <input type="radio" name="hypothesisChoice" value="grandMean"
-                      ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()">Grand Mean</input>
-            </th>
-            <th ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-               <input type="radio" name="hypothesisChoice" value="mainEffect"
-                      ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()">
-                      Main Effect
-               </input>
-            </th>
-            <th ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-                <input type="radio" name="hypothesisChoice" value="trend"
-                       ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()"> Trend </input>
-            </th>
-            <th ng-show="studyDesign.repeatedMeasuresTree.length >= 2">
-                <input type="radio" name="hypothesisChoice" value="interaction"
-                       ng-model="hypothesisOfInterest" data-ng-click="addHypothesis()"> Interaction</input>
-            </th>
-        </tr>
-    </table>
-</div>
-
-<div class="input-group" ng-show="getHypothesisType()== 'grandMean'">
-    <p>
-        Enter the known mean values for each response below.
-    </p>
-    <table ng-repeat="response in studyDesign.responseList">
-        <tr>
-            <td>
-                {{response.value}}
-            </td>
-            <td>
-                <input name="mvalue" type="text"
-                       placeholder="0" ng-model="hypoValue"
-                       autocomplete="off" autofocus required >
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-    <p>
-        Select one predictor of interest for the main effect hypothesis.
-    </p>
-    <p>
-        Within Participant Factors
-    </p>
-
-    <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-        <li>
-           <input type="radio">{{measure.dimension}}
-        </li>
-    </ul>
-
-
-</div>
-
-<div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-    <p>
-        Select one predictor of interest for the trend hypothesis.
-    </p>
-    <p>
-        Within Participant Factors
-    </p>
-
-    <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-        <li>
-            <input type="radio">{{measure.dimension}}
-        </li>
-    </ul>
-    <p>
-        Select the type of trend for the predictor of interest.
-    </p>
 
     <div class="input-group">
-        <table>
-            <tr>
-            <td>
-                <input type="radio" name="typeOfTrend" value="none"
-                       ng-model="None">None</input>
-            </td>
-            <td>
-                    No Image
-            </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="radio" name="typeOfTrend" value="baseline"
-                       ng-model="changeFromBaseline">Change from baseline</input>
-                </td>
-                <td>
-                    Add Image
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="radio" name="typeOfTrend" value="polynomial"
-                       ng-model="allPloynomialTrends">All polynomial trends</input>
-                </td>
-                <td>
-                    Add Image
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="radio" name="typeOfTrend" value="linear"
-                       ng-model="linearTrend">Linear Trend</input>
-                </td>
-                <td>
-                    Add Image
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="radio" name="typeOfTrend" value="quadratic"
-                           ng-model="quadraticTrend">Quadratic Trend</input>
-                </td>
-                <td>
-                     Add Image
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="radio" name="typeOfTrend" value="cubic"
-                           ng-model="cubicTrend">Cubic Trend</input>
-                </td>
-                <td>
-                    Add Image
-                </td>
-            </tr>
-        </table>
+        <label>Select the hypothesis type</label>
+           <select data-ng-model="studyDesign.hypothesis[0].type">
+               <option value="Select" selected>Select</option>
+               <option value="GRAND_MEAN">Grand mean</option>
+               <option value="MAIN_EFFECT">Main effect</option>
+               <option value="TREND">Trend</option>
+               <option value="INTERACTION">Interaction</option>
+           </select>
     </div>
 
-    <div class="input-group">
+    <div class="input-group" ng-show="studyDesign.responseList.length > 0">
+        <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'GRAND_MEAN'">
+            <p>
+                Enter the known mean values for each response below.
+            </p>
+            <table ng-repeat="response in studyDesign.responseList">
+                <tr>
+                    <td>
+                        {{response.value}}
+                    </td>
+                    <td>
+                        <input name="mvalue" type="text"
+                               placeholder="0" ng-model="hypoValue"
+                               autocomplete="off" autofocus required >
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 
+    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0
+    && studyDesign.hypothesis[0].type == 'MAIN_EFFECT'">
         <p>
-            Select two or more predictors to include in the interaction
-            hypothesis. To test for a trend in a given factor, click the
-            Edit Trend link and select an appropriate trend.
+            Select one predictor of interest for the main effect hypothesis.
         </p>
-
         <p>
             Within Participant Factors
         </p>
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input type="checkbox"
-
-                       ng-true-value="YES" ng-false-value="NO">{{measure.dimension}}
-                </input>
+                <input type="radio">{{measure.dimension}}
             </li>
         </ul>
-
     </div>
 
-     <div ng-show="studyDesign.debug == true">
-            {{studyDesign.hypothesis}}
+    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0 &&
+    studyDesign.hypothesis[0].type == 'TREND'">
+        <p>
+            Select one predictor of interest for the trend hypothesis.
+        </p>
+        <p>
+            Within Participant Factors
+        </p>
+
+        <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+            <li>
+                <input type="radio">{{measure.dimension}}
+            </li>
+        </ul>
+        <p>
+            Select the type of trend for the predictor of interest.
+        </p>
+
+        <div class="input-group">
+            <table>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="none"
+                               ng-model="None">None</input>
+                    </td>
+                    <td>
+                        No Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="baseline"
+                               ng-model="changeFromBaseline">Change from baseline</input>
+                    </td>
+                    <td>
+                        Add Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="polynomial"
+                               ng-model="allPloynomialTrends">All polynomial trends</input>
+                    </td>
+                    <td>
+                        Add Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="linear"
+                               ng-model="linearTrend">Linear Trend</input>
+                    </td>
+                    <td>
+                        Add Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="quadratic"
+                               ng-model="quadraticTrend">Quadratic Trend</input>
+                    </td>
+                    <td>
+                        Add Image
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="typeOfTrend" value="cubic"
+                               ng-model="cubicTrend">Cubic Trend</input>
+                    </td>
+                    <td>
+                        Add Image
+                    </td>
+                </tr>
+            </table>
         </div>
+        </div>
+
+    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0 &&
+    studyDesign.hypothesis[0].type == 'INTERACTION'">
+
+            <p>
+                Select two or more predictors to include in the interaction
+                hypothesis. To test for a trend in a given factor, click the
+                Edit Trend link and select an appropriate trend.
+            </p>
+
+            <p>
+                Within Participant Factors
+            </p>
+
+            <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+                <li>
+                    <input type="checkbox"
+
+                           ng-true-value="YES" ng-false-value="NO">{{measure.dimension}}
+                    </input>
+                </li>
+            </ul>
+
+        </div>
+
 </div>

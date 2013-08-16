@@ -791,6 +791,7 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             $scope.studyDesign = studyDesignService;
             $scope.newPredictorName = undefined;
             $scope.editedPredictor = undefined;
+            $scope.newCategoryName = undefined;
         }
 
         /**
@@ -836,6 +837,23 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         $scope.deletePredictor = function(factor) {
             studyDesignService.betweenParticipantFactorList.splice(
                 studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
+        };
+
+        /**
+         * Add a new category name
+         */
+        $scope.addCategories = function (factor) {
+            window.alert("in adding category" + $scope.newCategoryName);
+            var newCategory = $scope.newCategoryName;
+            if (newCategory != undefined) {
+                // add the category to the list
+                factor.categoryList.push({
+                    id: factor.categoryList.length,
+                    value: newCategory
+                });
+            }
+            // reset the new sample size to null
+            $scope.newCategoryName = undefined;
         };
     })
 
