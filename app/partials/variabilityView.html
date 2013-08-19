@@ -21,5 +21,140 @@
 </h3>
 
 <p>
-    For a given research participant, responses vary across response variables and across repeated measurements . The amount of variability can dramatically impact power and sample size. Click on each of the tabs below to describe the varibility you expect to observe for the response variables and each within-particpant factor.
+    For a given research participant, responses vary across response variables and across repeated measurements .
+    The amount of variability can dramatically impact power and sample size. Click on each of the tabs below to describe the varibility
+    you expect to observe for the response variables and each within-participant factor.
 </p>
+
+<div class="input-group" ng-show="studyDesign.responseList.length >= 1">
+
+    <div class="input-group">
+        <label>Select the ????</label>
+        <select data-ng-model="studyDesign.covariance.type">
+            <option value="Select" selected>
+                Select
+            </option>
+            <option ng-repeat="measure in studyDesign.repeatedMeasuresTree" value={{measure.dimension}}>
+                {{measure.dimension}}
+            </option>
+            <option value="responses">
+                Responses
+            </option>
+        </select>
+    </div>
+
+    <div ng-show="studyDesign.covariance.type == 'responses'">
+        <p>
+            Enter the standard deviation you expect to observe for each response. Note that GLIMMPSE currently assumes
+            that the standard deviation is constant across repeated measurements.
+        </p>
+
+        <table>
+
+            <tr ng-repeat="response in studyDesign.responseList">
+                <td>
+                    {{response.value}}
+                </td>
+                <td>
+
+                    <input type="text" value="1">
+                    </input>
+
+                </td>
+
+            </tr>
+
+
+        </table>
+
+        <p>
+            Enter the correlations you expect to observe between the responses when observed at the same time (location, etc.)
+        </p>
+        <div class="input-group">
+            <table>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td ng-repeat="response in studyDesign.responseList">
+                        {{measure.dimension}}
+                    </td>
+
+                </tr>
+                <tr ng-repeat="response in studyDesign.responseList">
+                    <td>
+                        {{response.value}}
+
+                    </td>
+                    <td ng-repeat="response in studyDesign.responseList">
+                        <input type="text" value="1">
+                        </input>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <button value="Unstructured covariance" onclick="">
+            Unstructured covariance
+        </button>
+    </div>
+
+    <div class="input-group" ng-show="studyDesign.covariance.type='{{measure.dimension}}'">
+        <h3>
+            Structured Correlation: The Linear Exponential Auto-Regressive Model (LEAR, Simpson et al., 2010)
+        </h3>
+        <p>
+            The LEAR model describes correlation which monotonely decreases with distance between repeated measurements.
+            The model has two correlation parameters, the base correlation and the decay rate. The base correlation
+            describes the correlation between measurements taken 1 unit apart. The decay rate describes the rate of
+            decrease in the base correlation as the distance or time between repeated measurements increases.
+            Our experience with biological and behavioral data lead us to suggest using decay values between 0.05 and 0.5.
+        </p>
+        <table>
+            <tr>
+                <td>
+                    Base Correlation
+                </td>
+
+                <td>
+                    <input type="text" value="">
+                    </input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Decay Rate
+                </td>
+
+                <td>
+                    <input type="text" value="">
+                </td>
+            </tr>
+        </table>
+
+        <div class="input-group">
+            <table>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td ng-repeat="measurement in measure.numberOfMeasurements">
+                        {{measure.dimension}},measurement
+
+                    </td>
+                </tr>
+                <tr ng-repeat="measurement in measure.numberOfMeasurements">
+                    <td>
+                        {{measure.dimension}},measurement
+                    </td>
+                    <td ng-repeat="measurement in measure.numberOfMeasurements">
+                        <input type="text" value="1">
+                        </input>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

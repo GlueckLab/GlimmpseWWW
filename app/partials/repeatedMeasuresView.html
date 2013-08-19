@@ -59,12 +59,10 @@
                                     Type
                                 </td>
                                 <td>
-                                    <select ng-model=
-                                            "measure.repeatedMeasuresDimensionType"
-                                           >
-                                    <option selected>Numeric</option>
-                                    <option>Ordinal</option>
-                                    <option>Categorical</option>
+                                    <select ng-model="measure.repeatedMeasuresDimensionType">
+                                    <option value="numeric">Numeric</option>
+                                    <option value="ordinal">Ordinal</option>
+                                    <option value="categorical">Categorical</option>
                                     </select>
                                 </td>
                             </tr>
@@ -73,8 +71,8 @@
                                     Number of Measurements
                                 </td>
                                 <td>
-                                    <input name="nOfMeasurements" type="number" placeholder="" ng-model=
-                                            "measure.numberOfMeasurements"
+                                    <input name="nOfMeasurements" type="number" ng-model=
+                                            "measure.numberOfMeasurements" ng-change="addSpacingList(measure)"
                                            min='2' autocomplete="off" autofocus required > <br/>
                                     <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">
                                         Please enter an integer greater than or equal to 2</span>
@@ -86,9 +84,10 @@
                                 </td>
                                 <td>
                                     <ul type=none>
-                                       <li ng-repeat="i in [1, 2, 3, 4]">
+                                       <li ng-repeat="i in measure.spacingList">
 
-                                               <input type="text" value="{{i}}">
+                                               <input type="text" value={{i}} ng-change="changeSpacingList(measure,1,4)"
+                                                      autocomplete="off" autofocus required >
                                                </input>
                                        </li>
                                     </ul>
@@ -97,7 +96,7 @@
                             <tr>
                                 <td>
                                 <button ng-show="measure.numberOfMeasurements > 0"
-                                        data-ng-click="resetToEqualSpacing()">
+                                        onclick="addSpacingList(measure)">
                                     Reset to Equal Spacing</button>
                                 </td>
                             </tr>
@@ -115,8 +114,8 @@
                     data-ng-click="removeMeasure()">Remove Level</button>
         </div>
 
-        <!-- <div ng-show="studyDesign.debug == true">
+         <div ng-show="studyDesign.debug == true">
             {{studyDesign.repeatedMeasuresTree}}
-        </div> !-->
+        </div>
 
 </div>

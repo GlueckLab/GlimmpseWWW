@@ -46,11 +46,10 @@
     <div class="input-group">
         <label>Select the hypothesis type</label>
            <select data-ng-model="studyDesign.hypothesis[0].type">
-               <option value="Select" selected>Select</option>
                <option value="GRAND_MEAN">Grand mean</option>
-               <option value="MAIN_EFFECT">Main effect</option>
-               <option value="TREND">Trend</option>
-               <option value="INTERACTION">Interaction</option>
+               <option value="MAIN_EFFECT" ng-show="studyDesign.repeatedMeasuresTree.length >= 1">Main effect</option>
+               <option value="TREND" ng-show="studyDesign.repeatedMeasuresTree.length >= 1">Trend</option>
+               <option value="INTERACTION" ng-show="studyDesign.repeatedMeasuresTree.length > 1">Interaction</option>
            </select>
     </div>
 
@@ -74,8 +73,7 @@
         </div>
     </div>
 
-    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0
-    && studyDesign.hypothesis[0].type == 'MAIN_EFFECT'">
+    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'MAIN_EFFECT'">
         <p>
             Select one predictor of interest for the main effect hypothesis.
         </p>
@@ -93,8 +91,7 @@
 
     </div>
 
-    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0 &&
-    studyDesign.hypothesis[0].type == 'TREND'">
+    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'TREND'">
         <p>
             Select one predictor of interest for the trend hypothesis.
         </p>
@@ -171,8 +168,7 @@
         </div>
         </div>
 
-    <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0 &&
-    studyDesign.hypothesis[0].type == 'INTERACTION'">
+    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'INTERACTION'">
 
             <p>
                 Select two or more predictors to include in the interaction

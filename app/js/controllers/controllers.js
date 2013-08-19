@@ -937,17 +937,34 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.data = [];
+
         }
 
         $scope.addMeasure = function() {
 
             if (studyDesignService.repeatedMeasuresTree.length < 3) {
+
                 studyDesignService.repeatedMeasuresTree.push({
                     idx: studyDesignService.repeatedMeasuresTree.length,
-                    node: 0, parent: 0
+                    node: 0, parent: 0, repeatedMeasuresDimensionType: "numeric"
                 })
             }
         };
+
+        $scope.addSpacingList = function(measure) {
+            $scope.data = [];
+            var nOfMeasurements =  measure.numberOfMeasurements;
+            for (var i=1; i<=nOfMeasurements; i++)
+                $scope.data.push(i);
+            measure.spacingList = $scope.data;
+
+        };
+
+        $scope.changeSpacingList = function(measure, index, newValue) {
+            measure.spacingList[index] = newValue;
+        };
+
 
         $scope.removeMeasure = function() {
             studyDesignService.repeatedMeasuresTree.pop();
@@ -1118,6 +1135,22 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
                 studyDesignService.quantileList.indexOf(quantile), 1);
         };
     })
+
+/**
+ * Controller for variability within view
+ */
+    .controller('variabilityViewController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+
+        }
+
+        /**
+         *
+         */
+    })
+
 /**
  * Main study design controller
   */
