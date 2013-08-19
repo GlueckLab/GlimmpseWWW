@@ -988,20 +988,8 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             $scope.hypothesisOfInterest = undefined;
         }
 
-        $scope.addHypothesis = function() {
-                var hypothesisChoice = $scope.hypothesisOfInterest;
-
-                studyDesignService.hypothesis.push({
-                    idx: studyDesignService.hypothesis.length,
-                    type: hypothesisChoice
-                })
-        };
-
-        $scope.getHypothesisType = function() {
-            //window.alert(studyDesignService.hypothesis.length);
-            for (var hypo in studyDesignService.hypothesis) {
-                return ;
-            }
+        $scope.addPredictorOfInterest = function() {
+            window.alert("In here");
         };
     })
 

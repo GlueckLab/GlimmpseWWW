@@ -85,9 +85,12 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input type="radio">{{measure.dimension}}
+                <input type="radio" value={{measure.dimension}}
+                       ng-model="predictorOfInterest" data-ng-click="addPredictorOfInterest()">
+                {{measure.dimension}}
             </li>
         </ul>
+
     </div>
 
     <div class="input-group" ng-show="studyDesign.repeatedMeasuresTree.length > 0 &&
@@ -101,7 +104,7 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input type="radio">{{measure.dimension}}
+                <input type="radio" >{{measure.dimension}}
             </li>
         </ul>
         <p>
@@ -116,7 +119,7 @@
                                ng-model="None">None</input>
                     </td>
                     <td>
-                        No Image
+
                     </td>
                 </tr>
                 <tr>
@@ -125,7 +128,7 @@
                                ng-model="changeFromBaseline">Change from baseline</input>
                     </td>
                     <td>
-                        Add Image
+                        <img src="img/change_from_baseline.png"/>
                     </td>
                 </tr>
                 <tr>
@@ -134,7 +137,7 @@
                                ng-model="allPloynomialTrends">All polynomial trends</input>
                     </td>
                     <td>
-                        Add Image
+                        <img src="img/all_polynomial_trends.png"/>
                     </td>
                 </tr>
                 <tr>
@@ -143,7 +146,7 @@
                                ng-model="linearTrend">Linear Trend</input>
                     </td>
                     <td>
-                        Add Image
+                        <img src="img/linear_trend_only.png"/>
                     </td>
                 </tr>
                 <tr>
@@ -152,7 +155,7 @@
                                ng-model="quadraticTrend">Quadratic Trend</input>
                     </td>
                     <td>
-                        Add Image
+                        <img src="img/quadratic_trend_only.png"/>
                     </td>
                 </tr>
                 <tr>
@@ -161,7 +164,7 @@
                                ng-model="cubicTrend">Cubic Trend</input>
                     </td>
                     <td>
-                        Add Image
+                        <img src="img/cubic_trend_only.png"/>
                     </td>
                 </tr>
             </table>
@@ -181,12 +184,25 @@
                 Within Participant Factors
             </p>
 
+            <table>
+
+                <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+                    <td>
+                        <input name="measureDimension" value="remember" type="checkbox" onclick="">{{measure.dimension}}
+                    </td>
+                    <td>
+                       <button value="Edit trend" ng-show="remember.checked == 1" onclick="">
+
+                       </button>
+
+                    </td>
+
+                </tr>
+
+            </table>
             <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
                 <li>
-                    <input type="checkbox"
 
-                           ng-true-value="YES" ng-false-value="NO">{{measure.dimension}}
-                    </input>
                 </li>
             </ul>
 

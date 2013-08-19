@@ -62,7 +62,7 @@
                                     <select ng-model=
                                             "measure.repeatedMeasuresDimensionType"
                                            >
-                                    <option>Numeric</option>
+                                    <option selected>Numeric</option>
                                     <option>Ordinal</option>
                                     <option>Categorical</option>
                                     </select>
@@ -78,6 +78,27 @@
                                            min='2' autocomplete="off" autofocus required > <br/>
                                     <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">
                                         Please enter an integer greater than or equal to 2</span>
+                                </td>
+                            </tr>
+                            <tr ng-show="measure.numberOfMeasurements > 0">
+                                <td>
+                                    Spacing
+                                </td>
+                                <td>
+                                    <ul type=none>
+                                       <li ng-repeat="i in [1, 2, 3, 4]">
+
+                                               <input type="text" value="{{i}}">
+                                               </input>
+                                       </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                <button ng-show="measure.numberOfMeasurements > 0"
+                                        data-ng-click="resetToEqualSpacing()">
+                                    Reset to Equal Spacing</button>
                                 </td>
                             </tr>
                         </table>
