@@ -938,6 +938,7 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.data = [];
+            $scope.changedValue = undefined;
 
         }
 
@@ -955,17 +956,17 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         $scope.addSpacingList = function(measure) {
 
 
-            $scope.data = [];
+            //$scope.data = [];
+            measure.spacingList = [];
             var nOfMeasurements =  measure.numberOfMeasurements;
             for (var i=1; i<=nOfMeasurements; i++)
-                $scope.data.push(i);
-            measure.spacingList = $scope.data;
-
+                measure.spacingList.push(i);
 
         };
 
-        $scope.changeSpacingList = function(measure, index, newValue) {
-            measure.spacingList[index] = newValue;
+        $scope.changeSpacingList = function(measure, index) {
+            measure.spacingList[index] = $scope.newValue;
+            //window.alert("inside changing");
         };
 
 
@@ -1006,11 +1007,50 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.hypothesisOfInterest = undefined;
+            $scope.currentBetweenParticipantFactorList = [];
+            $scope.currentWithinParticipantFactorList = [];
+
+
+            $scope.whatIsChecked = [];
+            for (var factor in studyDesignService.betweenParticipantFactorList)
+                {
+                    $scope.whatIsChecked.push({
+                        key:factor.value, selected:'false'
+                        });
+                }
+            for (var measure in studyDesignService.repeatedMeasuresTree)
+            {
+                $scope.whatIsChecked.push({
+                    key:measure.dimension, selected:'false'
+                });
+            }
         }
 
-        $scope.addPredictorOfInterest = function() {
+        $scope.isSelected = function(factor) {
             //window.alert("In here");
+            window.alert($scope.whatIsChecked[factor.value].selected);
+            return $scope.whatIsChecked[factor.value].selected;
         };
+
+        $scope.updateBetweenFactor =function(factor) {
+            if ($scope.isSelected(factor.value)) {
+                studyDesignService.hypothesis[1].betweenParticipantFactorMapList.push({
+                    type:'NONE', betweenFactor:factor
+                });
+            }
+
+        };
+
+        $scope.showTrendDialog = function(factor) {
+          window.alert("I got the dialog showing message");
+        };
+
+        $scope.addPredictorOfInterest = function() {
+
+
+
+        };
+
     })
 
     /*
