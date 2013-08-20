@@ -64,8 +64,8 @@
                         {{response.value}}
                     </td>
                     <td>
-                        <input name="mvalue" type="text"
-                               value="0" ng-model="hypoValue"
+                        <input type="text"
+                               value="0"
                                autocomplete="off" autofocus required >
                     </td>
                 </tr>
@@ -77,14 +77,27 @@
         <p>
             Select one predictor of interest for the main effect hypothesis.
         </p>
+
+        <p>
+            Between Participant Factors
+        </p>
+
+        <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
+            <li>
+                <input name="predictorMainEffect" type="radio" value={{factor.value}}
+                       ng-model="predictorForMainEffect" data-ng-click="addPredictorMainEffect()">
+                {{factor.value}}
+            </li>
+        </ul>
+
         <p>
             Within Participant Factors
         </p>
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input name="predictorForMainEffect" type="radio" value={{measure.dimension}}
-                       ng-model="predictorOfInterest" data-ng-click="addPredictorOfInterest()">
+                <input name="predictorMainEffect" type="radio" value={{measure.dimension}}
+                       ng-model="predictorForMainEffect" data-ng-click="addPredictorMainEffect()">
                 {{measure.dimension}}
             </li>
         </ul>
@@ -95,13 +108,29 @@
         <p>
             Select one predictor of interest for the trend hypothesis.
         </p>
+
+        <p>
+            Between Participant Factors
+        </p>
+
+        <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
+            <li>
+                <input name="predictorTrend" type="radio" value={{factor.value}}
+                       ng-model="predictorForTrend" data-ng-click="addPredictorForTrend()">
+                {{factor.value}}
+            </li>
+        </ul>
+
+
         <p>
             Within Participant Factors
         </p>
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input name="predictorForTrend" type="radio" >{{measure.dimension}}
+                <input name="predictorTrend" type="radio" value="{{measure.dimension}}"
+                       ng-model="predictorForTrend" data-ng-click="addPredictorForTrend()">
+                {{measure.dimension}}
             </li>
         </ul>
         <p>
@@ -112,8 +141,9 @@
             <table>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="none"
-                               checked>None</input>
+                        <input type="radio" name="trendType" value="none" ng-model="typeOfTrend">
+                        None
+                        </input>
                     </td>
                     <td>
 
@@ -122,7 +152,9 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="baseline"
-                               ng-model="changeFromBaseline">Change from baseline</input>
+                               ng-model="typeOfTrend">
+                        Change from baseline
+                        </input>
                     </td>
                     <td>
                         <img src="img/change_from_baseline.png"/>
@@ -131,7 +163,9 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="polynomial"
-                               ng-model="allPloynomialTrends">All polynomial trends</input>
+                               ng-model="typeOfTrend">
+                        All polynomial trends
+                        </input>
                     </td>
                     <td>
                         <img src="img/all_polynomial_trends.png"/>
@@ -140,7 +174,9 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="linear"
-                               ng-model="linearTrend">Linear Trend</input>
+                               ng-model="typeOfTrend">
+                        Linear Trend
+                        </input>
                     </td>
                     <td>
                         <img src="img/linear_trend_only.png"/>
@@ -149,7 +185,9 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="quadratic"
-                               ng-model="quadraticTrend">Quadratic Trend</input>
+                               ng-model="typeOfTrend">
+                        Quadratic Trend
+                        </input>
                     </td>
                     <td>
                         <img src="img/quadratic_trend_only.png"/>
@@ -158,7 +196,9 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="cubic"
-                               ng-model="cubicTrend">Cubic Trend</input>
+                               ng-model="typeOfTrend">
+                        Cubic Trend
+                        </input>
                     </td>
                     <td>
                         <img src="img/cubic_trend_only.png"/>
@@ -177,6 +217,30 @@
             </p>
 
             <p>
+                Between Participant Factors
+            </p>
+
+            <table>
+
+                <tr ng-repeat="factor in studyDesign.betweenParticipantFactorList">
+                    <td>
+                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor)" ng-model="isSelected(factor)">
+                        {{factor.value}}
+                        </input>
+                    </td>
+                    <td>
+                        <button value="Edit trend" ng-show="isSelected(factor)">
+                         Edit Trend
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+
+            <p>
                 Within Participant Factors
             </p>
 
@@ -184,7 +248,8 @@
 
                 <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
                     <td>
-                        <input name="measureDimension" value="remember" type="checkbox" onclick="">{{measure.dimension}}
+                        <input type="checkbox" onclick="updateWithinFactor()">
+                        {{measure.dimension}}
                     </td>
                     <td>
                        <button value="Edit trend" ng-show="remember.checked == 1" onclick="">
@@ -196,12 +261,12 @@
                 </tr>
 
             </table>
-            <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-                <li>
 
-                </li>
-            </ul>
 
         </div>
 
+</div>
+
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.hypothesis}}
 </div>
