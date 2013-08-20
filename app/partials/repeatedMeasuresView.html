@@ -86,8 +86,9 @@
                                     <ul type=none>
                                        <li ng-repeat="i in measure.spacingList">
 
-                                               <input type="text" value={{i}}
+                                               <input type="text" value={{i}} ng-change="changeSpacingList(measure, 1, 4)"
                                                       autocomplete="off" autofocus required >
+
                                                </input>
                                        </li>
                                     </ul>
@@ -96,7 +97,7 @@
                             <tr>
                                 <td>
                                 <button ng-show="measure.numberOfMeasurements > 0"
-                                        onclick="addSpacingList(measure)">
+                                        ng-change="addSpacingList(measure)">
                                     Reset to Equal Spacing</button>
                                 </td>
                             </tr>

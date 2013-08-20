@@ -953,11 +953,14 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         };
 
         $scope.addSpacingList = function(measure) {
+
+
             $scope.data = [];
             var nOfMeasurements =  measure.numberOfMeasurements;
             for (var i=1; i<=nOfMeasurements; i++)
                 $scope.data.push(i);
             measure.spacingList = $scope.data;
+
 
         };
 
