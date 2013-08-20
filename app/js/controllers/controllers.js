@@ -1006,7 +1006,7 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         }
 
         $scope.addPredictorOfInterest = function() {
-            window.alert("In here");
+            //window.alert("In here");
         };
     })
 

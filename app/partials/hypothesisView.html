@@ -65,7 +65,7 @@
                     </td>
                     <td>
                         <input name="mvalue" type="text"
-                               placeholder="0" ng-model="hypoValue"
+                               value="0" ng-model="hypoValue"
                                autocomplete="off" autofocus required >
                     </td>
                 </tr>
@@ -83,7 +83,7 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input type="radio" value={{measure.dimension}}
+                <input name="predictorForMainEffect" type="radio" value={{measure.dimension}}
                        ng-model="predictorOfInterest" data-ng-click="addPredictorOfInterest()">
                 {{measure.dimension}}
             </li>
@@ -101,7 +101,7 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input type="radio" >{{measure.dimension}}
+                <input name="predictorForTrend" type="radio" >{{measure.dimension}}
             </li>
         </ul>
         <p>
@@ -113,7 +113,7 @@
                 <tr>
                     <td>
                         <input type="radio" name="typeOfTrend" value="none"
-                               ng-model="None">None</input>
+                               checked>None</input>
                     </td>
                     <td>
 
