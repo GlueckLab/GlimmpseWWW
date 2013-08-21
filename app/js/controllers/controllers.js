@@ -1007,38 +1007,78 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.hypothesisOfInterest = undefined;
-            $scope.currentBetweenParticipantFactorList = [];
-            $scope.currentWithinParticipantFactorList = [];
+            $scope.varList = [];
 
+            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++)  {
+                $scope.varList.push({
+                    name:studyDesignService.betweenParticipantFactorList[i].value, selected:'false'
+                    });
+            }
 
-            $scope.whatIsChecked = [];
-            for (var factor in studyDesignService.betweenParticipantFactorList)
-                {
-                    $scope.whatIsChecked.push({
-                        key:factor.value, selected:'false'
-                        });
-                }
-            for (var measure in studyDesignService.repeatedMeasuresTree)
-            {
-                $scope.whatIsChecked.push({
-                    key:measure.dimension, selected:'false'
+            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++)  {
+                $scope.varList.push({
+                    name:studyDesignService.repeatedMeasuresTree[i].dimension, selected:'false'
                 });
             }
         }
 
-        $scope.isSelected = function(factor) {
-            //window.alert("In here");
-            window.alert($scope.whatIsChecked[factor.value].selected);
-            return $scope.whatIsChecked[factor.value].selected;
+        $scope.updateBetweenFactor =function(factor, element) {
+               element.checked = !element.checked;
+                if(element.checked == true) {
+                    studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push({
+                    type:'None', betweenParticipantFactor:factor
+                    });
+                    for (var i=0; i < $scope.varList.length; i++) {
+                        if ($scope.varList[i].name == factor.value) {
+                            $scope.varList[i].selected = 'true';
+                        }
+                    }
+                }
+                else {
+                    studyDesignService.hypothesis[0].
+                        betweenParticipantFactorMapList.splice(
+                            studyDesignService.hypothesis[0].
+                                betweenParticipantFactorMapList.indexOf((factor), 1));
+                    for (var i=0; i < $scope.varList.length; i++) {
+                        if ($scope.varList[i].name == factor.value) {
+                            $scope.varList[i].selected = 'false';
+                        }
+                    }
+                }
         };
 
-        $scope.updateBetweenFactor =function(factor) {
-            if ($scope.isSelected(factor.value)) {
-                studyDesignService.hypothesis[1].betweenParticipantFactorMapList.push({
-                    type:'NONE', betweenFactor:factor
-                });
-            }
+        $scope.updateWithinFactor = function(measure, element) {
+                element.checked = !element.checked;
+                if(element.checked == true) {
+                    studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
+                    type:'ALL_POLYNOMIAL', repeatedMeasuresNode:measure
+                    });
+                    for (var i=0; i < $scope.varList.length; i++) {
+                        if ($scope.varList[i].name == measure.dimension) {
+                            $scope.varList[i].selected = 'true';
+                        }
+                    }
+                }
+                else {
+                    studyDesignService.hypothesis[0].
+                        repeatedMeasuresMapTree.splice(
+                            studyDesignService.hypothesis[0].
+                                repeatedMeasuresMapTree.indexOf((measure), 1));
+                    for (var i=0; i < $scope.varList.length; i++) {
+                        if ($scope.varList[i].name == measure.dimension) {
+                            $scope.varList[i].selected = 'false';
+                        }
+                    }
+                }
+        };
 
+        $scope.isSelected = function(varName) {
+
+            for (var i=0; i < $scope.varList.length; i++) {
+                if ($scope.varList[i].name == varName) {
+                    return $scope.varList[i].selected;
+                }
+            }
         };
 
         $scope.showTrendDialog = function(factor) {
@@ -1046,9 +1086,6 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         };
 
         $scope.addPredictorOfInterest = function() {
-
-
-
         };
 
     })

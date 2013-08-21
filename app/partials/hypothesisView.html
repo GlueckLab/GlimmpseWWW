@@ -224,12 +224,14 @@
 
                 <tr ng-repeat="factor in studyDesign.betweenParticipantFactorList">
                     <td>
-                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor)" ng-model="isSelected(factor)">
+                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor, this)"
+                                >
                         {{factor.value}}
                         </input>
                     </td>
                     <td>
-                        <button value="Edit trend" ng-show="isSelected(factor)">
+                        <button value="Edit trend" ng-show="isSelected(factor.value)"
+                                data-ng-click="showTrendDialog()">
                          Edit Trend
                         </button>
 
@@ -248,12 +250,14 @@
 
                 <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
                     <td>
-                        <input type="checkbox" onclick="updateWithinFactor()">
+                        <input type="checkbox" data-ng-click="updateWithinFactor(measure, this)">
                         {{measure.dimension}}
+                        </input>
                     </td>
                     <td>
-                       <button value="Edit trend" ng-show="remember.checked == 1" onclick="">
-
+                       <button value="Edit trend" ng-show="isSelected(measure.dimension)"
+                               data-ng-click="showTrendDialog()">
+                       Edit Trend
                        </button>
 
                     </td>
