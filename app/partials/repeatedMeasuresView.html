@@ -84,10 +84,8 @@
                                 </td>
                                 <td>
                                     <ul type=none>
-                                        <li ng-repeat="i in measure.spacingList">
-
-
-                                            <input type="text" value={{i}}
+                                        <li ng-repeat="spacing in measure.spacingList">
+                                            <input type="text" value="{{spacing.value}}" ng-change="changeSpacingList(measure, spacing)"
                                                    autocomplete="off" autofocus required >
                                             </input>
                                         </li>

@@ -81,7 +81,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/scaleFactorsForVariabilityView.html', controller: 'scaleFactorForVarianceController' }
         )
             .when('/test',
-            {templateUrl: 'partials/statisticalTestView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/statisticalTestView.html', controller: 'statisticalTestsController' }
         )
             .when('/powerMethod',
             {templateUrl: 'partials/powerMethodView.html', controller: 'powerMethodController' }

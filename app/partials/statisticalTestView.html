@@ -32,23 +32,47 @@ Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeate
     Click here to learn more about selecting an appropriate test.
 </p>
 
-<div>
 
 
-    <div><input name="hotellingTest" type="checkbox" ng-model="hotellingTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Hotelling-Lawley Trace</input></div>
-    <div><input name="pillaiTest" type="checkbox" ng-model="pillaiTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Pillai-Bartlett Trace</input></div>
-    <div><input name="wilksTest" type="checkbox" ng-model="wilksTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Wilks Likelihood Ratio</input></div>
-    <div><input name="boxCorrectionTest" type="checkbox" ng-model="boxCorrectionTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Box Correction</input></div>
-    <div><input name="GeisserGreenCorrectionTest" type="checkbox" ng-model="GeisserGreenCorrectionTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Geisser-Greenhouse Correction</input></div>
-    <div><input name="HuynhFeldtCorrectionTest" type="checkbox" ng-model="HuynhFeldtCorrectionTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures with Huynh-Feldt Correction</input></div>
-    <div><input name="uncorrectedTest" type="checkbox" ng-model="uncorrectedTest"
-               ng-true-value="YES" ng-false-value="NO" autocomplete="off" autofocus required >  Univariate Approach to Repeated Measures, uncorrected</input></div>
+    <div>
+    <input type="checkbox"
+                data-ng-click="updateStatisticalTest('HLT', this)">
+        Hotelling-Lawley Trace
+        </input>
+    </div>
 
+    <div>
+    <input type="checkbox"
+               data-ng-click="updateStatisticalTest('PBT', this)">
+        Pillai-Bartlett Trace
+        </input>
+    </div>
+    <div><input type="checkbox"
+               data-ng-click="updateStatisticalTest('WL', this)">
+        Wilks Likelihood Ratio
+        </input>
+    </div>
+    <div><input type="checkbox"
+               data-ng-click="updateStatisticalTest('UNIREPBOX', this)">
+        Univariate Approach to Repeated Measures with Box Correction
+        </input>
+    </div>
+    <div><input type="checkbox"
+               data-ng-click="updateStatisticalTest('UNIREPGG', this)">
+        Univariate Approach to Repeated Measures with Geisser-Greenhouse Correction
+        </input>
+    </div>
+    <div><input type="checkbox"
+               data-ng-click="updateStatisticalTest('UNIREPHF', this)">
+        Univariate Approach to Repeated Measures with Huynh-Feldt Correction
+        </input>
+    </div>
+    <div><input type="checkbox"
+              data-ng-click="updateStatisticalTest('UNIREP', this)">
+        Univariate Approach to Repeated Measures, uncorrected
+        </input>
+    </div>
 
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.statisticalTestList}}
 </div>

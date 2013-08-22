@@ -84,9 +84,10 @@
 
         <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
             <li>
-                <input name="predictorMainEffect" type="radio" value={{factor.value}}
-                       ng-model="predictorForMainEffect" data-ng-click="addPredictorMainEffect()">
+                <input type="radio"  name="predictorMainEffect"
+                       data-ng-click="addBetweenPredictorMainEffect(factor)">
                 {{factor.value}}
+                </input>
             </li>
         </ul>
 
@@ -96,9 +97,10 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input name="predictorMainEffect" type="radio" value={{measure.dimension}}
-                       ng-model="predictorForMainEffect" data-ng-click="addPredictorMainEffect()">
+                <input type="radio"  name="predictorMainEffect"
+                       data-ng-click="addWithinPredictorMainEffect(measure)">
                 {{measure.dimension}}
+                </input>
             </li>
         </ul>
 
@@ -209,19 +211,16 @@
         </div>
 
     <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'INTERACTION'">
-
             <p>
                 Select two or more predictors to include in the interaction
                 hypothesis. To test for a trend in a given factor, click the
                 Edit Trend link and select an appropriate trend.
             </p>
-
             <p>
                 Between Participant Factors
             </p>
 
             <table>
-
                 <tr ng-repeat="factor in studyDesign.betweenParticipantFactorList">
                     <td>
                         <input type="checkbox" data-ng-click="updateBetweenFactor(factor, this)"
@@ -234,23 +233,18 @@
                                 data-ng-click="showTrendDialog()">
                          Edit Trend
                         </button>
-
                     </td>
-
                 </tr>
-
             </table>
-
-
             <p>
                 Within Participant Factors
             </p>
 
             <table>
-
                 <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
                     <td>
-                        <input type="checkbox" data-ng-click="updateWithinFactor(measure, this)">
+                        <input type="checkbox"
+                               data-ng-click="updateWithinFactor(measure, this)">
                         {{measure.dimension}}
                         </input>
                     </td>
@@ -259,14 +253,9 @@
                                data-ng-click="showTrendDialog()">
                        Edit Trend
                        </button>
-
                     </td>
-
                 </tr>
-
             </table>
-
-
         </div>
 
 </div>

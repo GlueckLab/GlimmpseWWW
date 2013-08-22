@@ -877,23 +877,62 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.tests= {hotelling: false, pillai: false, wilks: false, box: false, geisser: false, huynh: false, uncorrected: false};
+            $scope.testsList = [];
+            $scope.testsList.push(
+                {name: 'HLT', selected: false},
+                {name: 'PBT', selected: false},
+                {name: 'WL', selected: false},
+                {name: 'UNIREPBOX', selected: false},
+                {name: 'UNIREPGG', selected: false},
+                {name: 'UNIREPHF', selected: false},
+                {name: 'UNIREP', selected: false}
+            );
         }
 
         /**
-         * Add the statistical test
+         * Update statisticalTestList with insert or delete of a new test
          */
-        $scope.addStatisticalTest = function () {
+        $scope.updateStatisticalTest =function(testName) {
 
-            if (newTest != undefined) {
-                // add the statistical test to the list
-                studyDesignService.statisticalTestList.push({
-                    id: studyDesignService.statisticalTestList.length,
-                    value: newTest
-                });
+                for (var i=0; i < $scope.testsList.length; i++) {
+                    if ($scope.testsList[i].name == testName) {
+                        if ($scope.testsList[i].selected == true)
+                                $scope.testsList[i].selected = !$scope.testsList[i].selected;
+                        else {
+                            $scope.testsList[i].selected = true;
+                        }
+                        if($scope.testsList[i].selected) {
+                                studyDesignService.statisticalTestList.push({
+                                idx:'0', type:testName
+                            });
+                        }
+                        else {
+                            studyDesignService.statisticalTestList.splice(
+                                $scope.getTestIndexByName(testName),1);
+                            for (var i=0; i < $scope.testsList.length; i++) {
+                                if ($scope.testsList[i].name == testName) {
+                                    $scope.testsList[i].selected = false;
+                                }
+                            }
+                        }
+                    }
+                }
+        };
+
+        /**
+         * Use the name of a statistical test to find its index
+         */
+        $scope.getTestIndexByName = function(testName) {
+            //var index = -1;
+            for (var i=0; i < studyDesignService.statisticalTestList.length; i++) {
+                if (testName == studyDesignService.statisticalTestList[i].type) {
+                    //window.alert("found it");
+                    return i;
+                }
+                //else window.alert(studyDesignService.statisticalTestList[i].name + "" + testName);
             }
-
-        }
+            return -1;
+        };
 
     })
 
@@ -917,12 +956,16 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
              }
         };
         /**
-         *
+         *  Remove a cluster from the list
          */
         $scope.removeCluster = function() {
 
             studyDesignService.clusteringTree.pop();
         };
+
+        /**
+         * Remove all levels of clustering
+         */
 
         $scope.removeClustering = function() {
             studyDesignService.clusteringTree = [];
@@ -942,6 +985,9 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
         }
 
+        /**
+         * Add a new repeated measure
+         */
         $scope.addMeasure = function() {
 
             if (studyDesignService.repeatedMeasuresTree.length < 3) {
@@ -953,32 +999,49 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             }
         };
 
+        /**
+         * Add a spacingList to repeated measure
+         */
         $scope.addSpacingList = function(measure) {
-
-
-            //$scope.data = [];
             measure.spacingList = [];
             var nOfMeasurements =  measure.numberOfMeasurements;
             for (var i=1; i<=nOfMeasurements; i++)
-                measure.spacingList.push(i);
+                measure.spacingList.push({
+                    idx:'0', value:i
+                });
 
         };
 
-        $scope.changeSpacingList = function(measure, index) {
-            measure.spacingList[index] = $scope.newValue;
+        /**
+         * Change spacingList values in repeated measure
+         */
+        $scope.changeSpacingList = function(measure, spacingObject) {
+            window.alert(spacingObject.value);
+            //measure.spacingList[spacingObject.value] = ;
             //window.alert("inside changing");
         };
 
-
+        /**
+         * Remove a repeated measure
+         */
         $scope.removeMeasure = function() {
             studyDesignService.repeatedMeasuresTree.pop();
         };
 
+        /**
+         * Add all levels of repeated measures
+         */
         $scope.removeMeasuring = function() {
             studyDesignService.repeatedMeasuresTree = [];
         };
 
     })
+
+/**
+ * Child controller for repeated measures
+ */
+
+
 
 /**
  * Controller managing the covariates
@@ -990,16 +1053,17 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             $scope.studyDesign = studyDesignService;
         }
 
+        /**
+         * Add means
+         */
         $scope.addMeans = function() {
-             //window.alert("wohoo!");
-
         };
 
 
     })
 
 /**
- * Controller managing the covariates
+ * Controller managing the hypotheses
  */
     .controller('hypothesesController', function($scope, studyDesignService) {
 
@@ -1011,17 +1075,20 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
             for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++)  {
                 $scope.varList.push({
-                    name:studyDesignService.betweenParticipantFactorList[i].value, selected:'false'
+                    name:studyDesignService.betweenParticipantFactorList[i].value, selected:false
                     });
             }
 
             for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++)  {
                 $scope.varList.push({
-                    name:studyDesignService.repeatedMeasuresTree[i].dimension, selected:'false'
+                    name:studyDesignService.repeatedMeasuresTree[i].dimension, selected:false
                 });
             }
         }
 
+        /**
+         * Update predictors of interest for between factors
+         */
         $scope.updateBetweenFactor =function(factor, element) {
                element.checked = !element.checked;
                 if(element.checked == true) {
@@ -1030,22 +1097,25 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
                     });
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == factor.value) {
-                            $scope.varList[i].selected = 'true';
+                            $scope.varList[i].selected = true;
                         }
                     }
                 }
                 else {
                     studyDesignService.hypothesis[0].
                         betweenParticipantFactorMapList.splice(
-                            studyDesignService.hypothesis[0].
-                                betweenParticipantFactorMapList.indexOf((factor), 1));
+                            $scope.getBetweenFactorIndexByName(factor), 1);
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == factor.value) {
-                            $scope.varList[i].selected = 'false';
+                            $scope.varList[i].selected = false;
                         }
                     }
                 }
         };
+
+        /**
+         * Update predictors of interest for within factors
+         */
 
         $scope.updateWithinFactor = function(measure, element) {
                 element.checked = !element.checked;
@@ -1055,23 +1125,54 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
                     });
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == measure.dimension) {
-                            $scope.varList[i].selected = 'true';
+                            $scope.varList[i].selected = true;
                         }
                     }
                 }
                 else {
                     studyDesignService.hypothesis[0].
                         repeatedMeasuresMapTree.splice(
-                            studyDesignService.hypothesis[0].
-                                repeatedMeasuresMapTree.indexOf((measure), 1));
+                            $scope.getWithinFactorIndexByName(measure), 1);
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == measure.dimension) {
-                            $scope.varList[i].selected = 'false';
+                            $scope.varList[i].selected = false;
                         }
                     }
                 }
         };
 
+        /**
+         * Use the name of a between factor to find its index
+         */
+        $scope.getBetweenFactorIndexByName = function(factor) {
+
+            for (var i=0; i < studyDesignService.hypothesis[0].betweenParticipantFactorMapList.
+                length; i++) {
+                if (factor.value == studyDesignService.hypothesis[0].
+                    betweenParticipantFactorMapList[i].betweenParticipantFactor.value) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        /**
+         * Use the name of a within factor to find its index
+         */
+        $scope.getWithinFactorIndexByName = function(measure) {
+
+            for (var i=0; i < studyDesignService.hypothesis[0].repeatedMeasuresMapTree.length; i++) {
+                if (measure.dimension == studyDesignService.hypothesis[0].repeatedMeasuresMapTree[i].
+                    repeatedMeasuresNode.dimension) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        /**
+         * Test if the predictor is selected
+         */
         $scope.isSelected = function(varName) {
 
             for (var i=0; i < $scope.varList.length; i++) {
@@ -1081,11 +1182,32 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             }
         };
 
+        /**
+         * Display a dialog box to select trend
+         */
         $scope.showTrendDialog = function(factor) {
-          window.alert("I got the dialog showing message");
+            window.alert("I got the dialog showing message");
         };
 
-        $scope.addPredictorOfInterest = function() {
+        $scope.addBetweenPredictorMainEffect = function(factor) {
+
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList=[];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree = [];
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push(
+                {type:'NONE', betweenParticipantFactor:factor
+                });
+
+
+        };
+
+        $scope.addWithinPredictorMainEffect = function(measure) {
+
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList = [];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree = [];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
+            type:'NONE', repeatedMeasuresNode:measure
+            });
+
         };
 
     })
