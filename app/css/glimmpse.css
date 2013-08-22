@@ -60,6 +60,15 @@ button:focus {
     border: 1px solid #CBD1D6;
     padding: 10px;
 }
+
+.gray-box {
+    background: #E6E6E6;
+}
+
+.white-box {
+    background: white;
+}
+
 .rounded-box {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
@@ -467,14 +476,15 @@ button:focus {
 
 .list-entry-header {
     padding: 6px;
-    background: #4abeeb; /* Old browsers */
-    background: -moz-linear-gradient(top,  #4abeeb 0%, #3999da 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4abeeb), color-stop(100%,#3999da)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  #4abeeb 0%,#3999da 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  #4abeeb 0%,#3999da 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4abeeb', endColorstr='#3999da',GradientType=0 ); /* IE6-9 */
+    background: #49BCEA;
+    /* background: #4abeeb; Old browsers */
+    /*  background: -moz-linear-gradient(top,  #4abeeb 0%, #3999da 100%); FF3.6+ */
+    /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4abeeb), color-stop(100%,#3999da)); Chrome,Safari4+ */
+    /* background: -webkit-linear-gradient(top,  #4abeeb 0%,#3999da 100%);  Chrome10+,Safari5.1+ */
+    /* background: -o-linear-gradient(top,  #4abeeb 0%,#3999da 100%);Opera 11.10+ */
+    /* background: -ms-linear-gradient(top,  #4abeeb 0%,#3999da 100%);IE10+ */
+    /*background: linear-gradient(to bottom,  #4abeeb 0%,#3999da 100%);  W3C */
+    /* filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4abeeb', endColorstr='#3999da',GradientType=0 );  IE6-9 */
 
     -moz-border-radius-topleft: 4px;
     -moz-border-radius-topright: 4px;
@@ -483,9 +493,9 @@ button:focus {
     -khtml-border-radius-topleft: 4px;
     -khtml-border-radius-topright: 4px;
     border-top-left-radius: 4px;
-    border-top-left-radius: 4px;
-}
+    border-top-right-radius: 4px;
 
+}
 
 .list-entry-header .error {
     width: 100%;
@@ -521,6 +531,9 @@ button:focus {
     box-sizing: border-box;
 }
 
+.list-entry-contents .active {
+    background: #DBEAF9;
+}
 .list-entry-contents {
     text-decoration: none;
     margin: 0px 0px;
@@ -532,6 +545,7 @@ button:focus {
     font-size: 18px;
     border-bottom: 1px solid #ccc;
     line-height: 32pt;
+    background: white;
 }
 
 .list-entry-contents label {
@@ -578,6 +592,187 @@ table.table-entry-contents {
     padding: 10px;
     margin: 0px 20px;
 }
+
+
+/**** Dual list entry - currently only used on the Predictors screen ****/
+
+.dual-list-left {
+    width: 300px;
+    padding: 5px;
+    background-color: white;
+}
+
+.dual-list-left ul {
+    list-style: none;
+}
+
+.dual-list-entry-left {
+    padding: 6px;
+    background: #49BCEA;
+    border: 1px solid #999;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -khtml-border-radius-topleft: 4px;
+    -khtml-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+
+.dual-list-entry-left .error {
+    width: 100%;
+    line-height: 24pt;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    -moz-border-radius-bottomleft: 4px;
+    -moz-border-radius-bottomright: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -khtml-border-radius-bottomleft: 4px;
+    -khtml-border-radius-bottomright: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.dual-list-entry-left input {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-size: 20px;
+    font-family: inherit;
+    font-style: italic;
+    line-height: 1.4em;
+    padding: 2px;
+    outline: none;
+    color: inherit;
+    border: 1px solid #999;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.dual-list-contents-left {
+
+}
+
+.dual-list-contents-left .active {
+    background: #DBEAF9;
+}
+
+.dual-list-contents-left .active button
+{
+    background-color: #DBEAF9;
+}
+
+.dual-list-contents-left {
+    text-decoration: none;
+    margin: 0px 0px;
+    padding: 0px;
+}
+
+.dual-list-contents-left li {
+    position: relative;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    line-height: 32pt;
+    background: white;
+}
+
+.dual-list-contents-left label {
+    padding: 15px;
+    margin-left: 45px;
+    display: inline;
+    line-height: 1.2;
+}
+
+.dual-list-right {
+    width: 350px;
+    background: white;
+    padding: 5px;
+}
+
+.dual-list-right ul {
+    list-style: none;
+}
+
+.dual-list-header-right {
+    padding: 7px;
+    border: 1px solid #999;
+    font-weight: bold;
+    background-color: #DBEAF9;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -khtml-border-radius-topleft: 4px;
+    -khtml-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.dual-list-entry-right {
+    background: white;
+    border: 1px solid #999;
+}
+
+.dual-list-entry-right input {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-size: 20px;
+    font-family: inherit;
+    font-style: italic;
+    line-height: 1.4em;
+    padding: 2px;
+    outline: none;
+    color: inherit;
+}
+
+.dual-list-contents-right {
+    text-decoration: none;
+    margin: 0px 0px;
+    padding: 0px;
+}
+
+.dual-list-contents-right li {
+    position: relative;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    line-height: 32pt;
+    background: white;
+}
+
+.dual-list-contents-right label {
+    padding: 15px;
+    margin-left: 45px;
+    display: inline;
+    line-height: 1.2;
+}
+
+
+.dual-list-contents-right button,
+.dual-list-contents-left button
+{
+    float: right;
+    font-size: 18px;
+    margin-top: 8px;
+    background-color: white;
+    color: #999999;
+    font-weight: bold;
+    border: none;
+}
+
+.dual-list-contents-right button:hover,
+.dual-list-contents-left button:hover
+{
+    color: red;
+}
+
+
 
 /**** GLIMMPSE Application Styles ****/
 

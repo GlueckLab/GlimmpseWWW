@@ -134,16 +134,16 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
      * @returns complete or incomplete
      */
     $scope.getStatePredictors = function() {
-        var state = 'complete';
-        if ($scope.studyDesign.betweenParticipantFactorList > 0) {
-            for(factor in $scope.studyDesign.betweenParticipantFactorList) {
-                if (factor.categoryList.length < 2) {
-                    state = 'incomplete';
+        var numFactors = $scope.studyDesign.betweenParticipantFactorList.length;
+        if (numFactors > 0) {
+            for(var i = 0; i < numFactors; i++) {
+                if ($scope.studyDesign.betweenParticipantFactorList[i].categoryList.length < 2) {
+                    return 'incomplete';
                     break;
                 }
             }
         }
-        return state;
+        return 'complete';
     }
 
     /**
@@ -337,8 +337,6 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
      * @returns complete or incomplete
      */
     $scope.getStateStatisticalTest = function() {
-        // TODO: remove when Aarti is done with this view
-        return 'complete';
         if ($scope.studyDesign.statisticalTestList.length > 0) {
             return 'complete';
         } else {
@@ -790,71 +788,79 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newPredictorName = undefined;
-            $scope.editedPredictor = undefined;
             $scope.newCategoryName = undefined;
+            $scope.currentPredictor = undefined;
+        }
+
+        /**
+         * Returns true if the specified predictor is currently active
+         */
+        $scope.isActivePredictor = function(factor) {
+            return ($scope.currentPredictor == factor);
         }
 
         /**
          * Add a new predictor name
          */
-        $scope.addPredictors = function () {
+        $scope.addPredictor = function () {
             var newPredictor = $scope.newPredictorName;
             if (newPredictor != undefined) {
                 // add the predictor to the list
-                studyDesignService.betweenParticipantFactorList.push({
+                var newPredictorObject = {
                     id: studyDesignService.betweenParticipantFactorList.length,
-                    value: newPredictor
-                });
+                    value: newPredictor,
+                    categoryList: []
+                }
+                studyDesignService.betweenParticipantFactorList.push(newPredictorObject);
+                $scope.currentPredictor = newPredictorObject;
             }
             // reset the new sample size to null
             $scope.newPredictorName = undefined;
         };
 
         /**
-         * Edit an existing predictor variable
-         */
-        $scope.editPredictor = function(factor) {
-            $scope.editedPredictor = factor;
-        };
-
-
-        /**
-         * Called when editing is complete
-         * @param factor
-         */
-        $scope.doneEditing = function (factor) {
-            $scope.editedPredictor = null;
-            factor.value = factor.value.trim();
-
-            if (!factor.value) {
-                $scope.deletePredictor(factor);
-            }
-        };
-
-        /**
          * Delete an existing predictor variable
          */
         $scope.deletePredictor = function(factor) {
+            if (factor == $scope.currentPredictor) {
+                $scope.currentPredictor = undefined;
+            }
             studyDesignService.betweenParticipantFactorList.splice(
                 studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
         };
 
         /**
+         * Display the categories for the given factor
+         * @param factor
+         */
+        $scope.showCategories = function(factor) {
+            $scope.currentPredictor = factor;
+        }
+
+        /**
          * Add a new category name
          */
-        $scope.addCategories = function (factor) {
-            window.alert("in adding category" + $scope.newCategoryName);
+        $scope.addCategory = function () {
             var newCategory = $scope.newCategoryName;
-            if (newCategory != undefined) {
+            if ($scope.currentPredictor != undefined &&
+                newCategory != undefined) {
                 // add the category to the list
-                factor.categoryList.push({
-                    id: factor.categoryList.length,
+                $scope.currentPredictor.categoryList.push({
+                    id: 0,
                     value: newCategory
                 });
             }
             // reset the new sample size to null
             $scope.newCategoryName = undefined;
         };
+
+        /**
+         * Delete the specified category
+         */
+        $scope.deleteCategory = function(category) {
+            $scope.currentPredictor.categoryList.splice(
+                $scope.currentPredictor.categoryList.indexOf(category), 1);
+        }
     })
 
 /**
