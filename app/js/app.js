@@ -90,7 +90,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'confidenceIntervalController' }
         )
             .when('/plotOptions',
-            {templateUrl: 'partials/plotOptionsView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/plotOptionsView.html', controller: 'plotOptionsController' }
 
         )
             .otherwise({ redirectTo: '/' });

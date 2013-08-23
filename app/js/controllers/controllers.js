@@ -1353,12 +1353,89 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             $scope.studyDesign = studyDesignService;
 
         }
-
-        /**
-         *
-         */
     })
 
+/**
+ * Controller for the plot options view
+ */
+    .controller('plotOptionsController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.XAxisOptions = [
+                {label: "Total Sample Size", value: "TOTAL_SAMPLE_SIZE"},
+                {label: "Variability Scale Factor", value: "VARIABILITY_SCALE_FACTOR"},
+                {label: "Regression Coefficient Scale Factor", value: "REGRESSION_COEEFICIENT_SCALE_FACTOR"}
+            ];
+            $scope.newDataSeries = {
+                idx: 0,
+                label: "",
+                confidenceLimits: false,
+                statisticalTestTypeEnum: undefined,
+                betaScale: undefined,
+                sigmaScale: undefined,
+                typeIError: undefined,
+                sampleSize: undefined,
+                nominalPower: undefined,
+                powerMethod: undefined,
+                quantile: undefined
+            }
+            if (studyDesignService.powerCurveDescriptions != null) {
+                $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+            } else {
+                $scope.gridData = [];
+            }
+            $scope.dataSeriesGridOptions = {
+                data: 'gridData',
+                jqueryUITheme: true,
+                selectedItems: []
+            };
+        }
+
+        /**
+         *  Toggle the power curve on/off
+         */
+        $scope.togglePowerCurveDescription = function() {
+            if ($scope.studyDesign.powerCurveDescriptions != null) {
+                $scope.studyDesign.powerCurveDescriptions = null;
+            } else {
+                $scope.studyDesign.powerCurveDescriptions = {
+                    idx: 0,
+                    legend: true,
+                    width: 300,
+                    height: 300,
+                    title: null,
+                    horizontalAxisLabelEnum: 'TOTAL_SAMPLE_SIZE',
+                    dataSeriesList: []
+                };
+            }
+        }
+
+        /**
+         * Add data series to the power curve description
+         */
+        $scope.addDataSeries = function() {
+            if (studyDesignService.powerCurveDescriptions != null) {
+                var newDataSeries = $scope.newDataSeries;
+                window.alert(newDataSeries);
+                studyDesignService.powerCurveDescriptions.dataSeriesList.push(newDataSeries);
+                $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+            }
+        }
+
+        /**
+         * Delete the specified data series from the power curve
+         * @param dataSeries
+         */
+        $scope.deleteDataSeries = function() {
+            for(var i = 0; i < dataSeriesGridOptions.selectedItems.length; i++) {
+                var dataSeries = dataSeriesGridOptions.selectedItems[i];
+                studyDesignService.powerCurveDescriptions.dataSeriesList.splice(
+                    studyDesignService.powerCurveDescriptions.dataSeriesList.indexOf(dataSeries), 1);
+            }
+            $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+        }
+    })
 /**
  * Main study design controller
   */
