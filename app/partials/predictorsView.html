@@ -21,9 +21,11 @@
 <h3>Predictors screen</h3>
 
 <p>
-    Describe the predictors which assign independent sampling units into groups, such as gender or treatment. The choice of study design determines the values of fixed predictors (such as drug dose or gender). A common example of a fixed predictor is treatment group, for which the independent sampling unit is randomized to a placebo or an active drug group.
+    Describe the predictors which assign independent sampling units into groups, such as gender or treatment.
+    The choice of study design determines the values of fixed predictors (such as drug dose or gender).
+    A common example of a fixed predictor is treatment group, for which the independent sampling unit is
+    randomized to a placebo or an active drug group.
 </p>
-
 <p>
     For a one sample design, leave the table blank.
 </p>
@@ -37,26 +39,58 @@
     For example, one could select "treatment", then add the values "drug" and "placebo."
 </p>
 
-<div class="list-entry">
-    <form name="predictorsForm" class="list-entry-header" novalidate ng-submit="addPredictors()">
-        <input name="newPredictor" type="text" placeholder="Enter predictor name" ng-model="newPredictorName"
-               autocomplete="off" autofocus required >
-    </form>
-    <ul class="list-entry-contents">
-        <li ng-repeat="factor in studyDesign.betweenParticipantFactorList">
-            <label ng-dblclick="editPredictor(factor)">{{factor.value}}</label>
-            <button data-ng-click="deletePredictor(factor)">&times;</button>
-
-
-
-
-        </li>
-    </ul>
-
-
+<div class="gray-box box rounded-box">
+    <table width="100%">
+        <tr>
+            <td>
+                <!-- Left hand panel showing predictor names -->
+                <div class="dual-list-left">
+                    <form name="predictorsForm" class="dual-list-entry-left" novalidate ng-submit="addPredictor()">
+                        <input name="newPredictor" type="text" placeholder="Enter predictor name" ng-model="newPredictorName"
+                               autocomplete="off" autofocus required >
+                    </form>
+                    <ul class="dual-list-contents-left">
+                        <li ng-repeat="factor in studyDesign.betweenParticipantFactorList" ng-class="{active:isActivePredictor(factor)}"
+                            ng-click="showCategories(factor)">
+                            <label >{{factor.value}}</label>
+                            <button data-ng-click="deletePredictor(factor)">&times;</button>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <!-- Right hand panel showing category names for the selected predictor -->
+                <div class="dual-list-right rounded-box" ng-show="currentPredictor != undefined">
+                    <div class="dual-list-header-right">
+                        Categories: {{currentPredictor.value}}
+                    </div>
+                    <div>
+                        <ul class="dual-list-contents-right">
+                            <li ng-repeat="category in currentPredictor.categoryList">
+                                <label>{{category.value}}</label>
+                                <button data-ng-click="deleteCategory(category)">&times;</button>
+                            </li>
+                        </ul>
+                        <form name="categoriesForm" class="dual-list-entry-right" novalidate ng-submit="addCategory()">
+                            <input name="newCategory" type="text"
+                                   placeholder="Enter category for '{{currentPredictor.value}}'"
+                                   ng-model="newCategoryName"
+                                   autocomplete="off" autofocus required >
+                        </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 
-<div>
-    {{studyDesign.betweenParticipantFactorList}}
+
+<div ng-show="studyDesign.debug == true">
+    <div>
+       {{studyDesign.betweenParticipantFactorList}}
+    </div>
+    <div>
+       current predictor = {{currentPredictor}}
+    </div>
 </div>
 
