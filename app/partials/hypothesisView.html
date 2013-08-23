@@ -117,8 +117,8 @@
 
         <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
             <li>
-                <input name="predictorTrend" type="radio" value={{factor.value}}
-                       ng-model="predictorForTrend" data-ng-click="addPredictorForTrend()">
+                <input type="radio"   name="predictorForTrend"
+                       data-ng-click="addBetweenPredictorForTrend(factor)">
                 {{factor.value}}
             </li>
         </ul>
@@ -130,8 +130,8 @@
 
         <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <li>
-                <input name="predictorTrend" type="radio" value="{{measure.dimension}}"
-                       ng-model="predictorForTrend" data-ng-click="addPredictorForTrend()">
+                <input type="radio"  name="predictorForTrend"
+                       data-ng-click="addWithinPredictorForTrend(measure)">
                 {{measure.dimension}}
             </li>
         </ul>
@@ -143,7 +143,7 @@
             <table>
                 <tr>
                     <td>
-                        <input type="radio" name="trendType" value="none" ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('NONE')">
                         None
                         </input>
                     </td>
@@ -153,8 +153,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="baseline"
-                               ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('CHANGE_FROM_BASELINE')">
                         Change from baseline
                         </input>
                     </td>
@@ -164,8 +163,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="polynomial"
-                               ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('ALL_POLYNOMIAL')">
                         All polynomial trends
                         </input>
                     </td>
@@ -175,8 +173,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="linear"
-                               ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('LINEAR')">
                         Linear Trend
                         </input>
                     </td>
@@ -186,8 +183,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="quadratic"
-                               ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('QUADRATIC')">
                         Quadratic Trend
                         </input>
                     </td>
@@ -197,8 +193,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="radio" name="typeOfTrend" value="cubic"
-                               ng-model="typeOfTrend">
+                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('CUBIC')">
                         Cubic Trend
                         </input>
                     </td>

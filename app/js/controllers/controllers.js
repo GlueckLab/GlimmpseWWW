@@ -1098,9 +1098,11 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         $scope.updateBetweenFactor =function(factor, element) {
                element.checked = !element.checked;
                 if(element.checked == true) {
-                    studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push({
-                    type:'None', betweenParticipantFactor:factor
-                    });
+                    if ($scope.getBetweenFactorIndexByName(factor) == -1) {
+                        studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push({
+                        type:'NONE', betweenParticipantFactor:factor
+                        });
+                    }
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == factor.value) {
                             $scope.varList[i].selected = true;
@@ -1126,9 +1128,11 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         $scope.updateWithinFactor = function(measure, element) {
                 element.checked = !element.checked;
                 if(element.checked == true) {
-                    studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
-                    type:'ALL_POLYNOMIAL', repeatedMeasuresNode:measure
-                    });
+                    if ($scope.getWithinFactorIndexByName(measure) == -1) {
+                        studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
+                        type:'NONE', repeatedMeasuresNode:measure
+                        });
+                    }
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == measure.dimension) {
                             $scope.varList[i].selected = true;
@@ -1192,7 +1196,17 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
          * Display a dialog box to select trend
          */
         $scope.showTrendDialog = function(factor) {
-            window.alert("I got the dialog showing message");
+
+            $scope.centeredPopup(this.href,'myWindow','500','300','yes');
+
+        };
+
+        $scope.centeredPopup = function(url,winName,w,h,scroll) {
+            var LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+            var TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
+            var settings =
+                'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars='+scroll+',resizable'
+            popupWindow = window.open(url,winName,settings)
         };
 
         $scope.addBetweenPredictorMainEffect = function(factor) {
@@ -1214,6 +1228,38 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             type:'NONE', repeatedMeasuresNode:measure
             });
 
+        };
+
+        $scope.addBetweenPredictorForTrend = function(factor) {
+
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList=[];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree = [];
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push(
+                {type:'NONE', betweenParticipantFactor:factor
+                });
+
+
+        };
+
+        $scope.addWithinPredictorForTrend = function(measure) {
+
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList = [];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree = [];
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
+                type:'NONE', repeatedMeasuresNode:measure
+            });
+
+        };
+
+        $scope.updateTypeOfTrend = function(typeOfTrend) {
+              if (studyDesignService.hypothesis[0].betweenParticipantFactorMapList.length < 1) {
+                  window.alert("inside update trend with [] betweenFactor");
+                  studyDesignService.hypothesis[0].repeatedMeasuresMapTree[0].type = typeOfTrend;
+              }
+              else if (studyDesignService.hypothesis[0].repeatedMeasuresMapTree.length < 1) {
+                  window.alert("inside update trend with [] repeatedMeasure");
+                  studyDesignService.hypothesis[0].betweenParticipantFactorMapList[0].type = typeOfTrend;
+              }
         };
 
     })
