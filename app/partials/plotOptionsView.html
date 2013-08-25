@@ -136,14 +136,13 @@
                 </tr>
             </table>
         </form>
-        <div ng-grid="dataSeriesGridOptions"></div>
-
     </div>
-
+    <div class="gridStyle" ng-grid="dataSeriesGridOptions"></div>
 
 
 
 </div>
 <div ng-show="studyDesign.debug==true">
-    {{studyDesign.powerCurveDescriptions}}
+    <div>Curve Description: {{studyDesign.powerCurveDescriptions}}</div>
+    <div>Selected Items: {{dataSeriesGridOptions.selectedItems}}</div>
 </div>
