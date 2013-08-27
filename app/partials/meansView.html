@@ -32,26 +32,26 @@
 <div ng-controller=meansViewController>
     <form name="meansViewController" novalidate  ng-submit="addMeans()">
 
-<div class="input-group">
+<div class="input-group" ng-show="studyDesign.betweenParticipantFactorList.length > 0 &&
+        studyDesign.responseList.length > 0">
 
 <table>
        <tr>
-            <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">{{predictor.value}}
+            <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                {{predictor.value}}
             </th>
 
             <th ng-repeat="variable in studyDesign.responseList">{{variable.value}}
             </th>
         </tr>
-        <tr ng-repeat="count in [1, 2, 3, 4]">
-                <td ng-repeat="predictor in studyDesign.betweenParticipantFactorList"><input name="mvalue" type="text" placeholder="" ng-model="meanValue"
-                                                                                             autocomplete="off" autofocus required >
-                </td>
 
-                <td ng-repeat="variable in studyDesign.responseList"> <input name="mvalue" type="text"
-                                                     placeholder="" ng-model="meanValue"
-                    autocomplete="off" autofocus required >
-                </td>
-
+        <tr ng-repeat="i in groupsList">
+           <td ng-repeat="count in groupsTable">
+                {{count[i]}}
+           </td>
+            <td ng-repeat="variable in studyDesign.responseList">
+                    <input type="text" value="0" autocomplete="off" autofocus required >
+            </td>
         </tr>
 
 

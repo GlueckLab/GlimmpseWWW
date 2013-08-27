@@ -51,7 +51,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'clusteringController' }
         )
             .when('/relativeGroupSize',
-            {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'relativeGroupSizeController' }
         )
             .when('/smallestGroupSize',
             {templateUrl: 'partials/smallestGroupSizeView.html', controller: 'sampleSizeController' }

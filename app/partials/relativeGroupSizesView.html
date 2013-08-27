@@ -29,40 +29,27 @@
 For unequal group sizes, specify the ratio of the group sizes. For example, consider a design with an active drug group and a placebo group. If twice as many study participants receive the placebo, a value of "2" would be selected for the placebo group, and a value of "1" would be selected for the active drug group.
 </p>
 
-
-<table class="table-entry-contents">
-    <form name="relativeSizesForm" novalidate ng-submit="addRelativeSizes()">
-    <tr>
-        <th>Relative Group Size</th><th>Category</th>
-    </tr>
-    <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
-        <td> <input name="groupSize" type="number" ng-model="newRelativeSize"
-                    min='1' max="10" step='1' autocomplete="on" autofocus required >
-
-            </td><td>Item 1B</td>
-
-    </tr>
-
-    <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
-        <td> <input name="groupSize" type="number" ng-model="newRelativeSize"
-                    min='1' max="10" step='1' autocomplete="on" autofocus required >
-        </td><td>Item 1B</td>
-    </tr>
-    <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
-        <td> <input name="groupSize" type="number" ng-model="newRelativeSize"
-                    min='1' max="10" step='1' autocomplete="on" autofocus required >
-        </td><td>Item 1B</td>
-    </tr>
-    <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
-        <td> <input name="groupSize" type="number" ng-model="newRelativeSize"
-                    min='1' max="10" step='1' autocomplete="on" autofocus required >
-        </td><td>Item 1B</td>
-    </tr>
-    <tr onmouseover="this.style.backgroundColor='#ffff66';" onmouseout="this.style.backgroundColor='#d4e3e5';">
-        <td> <input name="groupSize" type="number" ng-model="newRelativeSize"
-                    min='1' max="10" step='1' autocomplete="on" autofocus required >
-        </td><td>Item 1B</td>
-    </tr>
-    </form>
-</table>
+<div ng-controller=relativeGroupSizeController>
+<div class="input-group">
+    <table>
+          <tr>
+              <th>
+                  Relative Group Size
+              </th>
+              <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                  {{predictor.value}}
+              </th>
+          </tr>
+          <tr ng-repeat="i in groupsList">
+              <td>
+                  <input type="number" value="1"
+                         min='1' max="10" step='1' autocomplete="on" autofocus required >
+              </td>
+              <td ng-repeat="count in groupsTable">
+                  {{count[i]}}
+              </td>
+          </tr>
+    </table>
+</div>
+</div>
 

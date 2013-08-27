@@ -1057,6 +1057,46 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.groupsTable = [];
+            $scope.groupsList = [];
+            var lenList = 1;
+
+            var totalPermutations = 1;
+            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
+                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
+                if (len >= 2 )
+                    totalPermutations = totalPermutations * len;
+            }
+            var columnList = [];
+
+            var numRepetitions = totalPermutations;
+            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
+                columnList = [];
+                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
+                if (len >= 2 ) {
+                    numRepetitions /= len;
+                    for (var perm = 0; perm < totalPermutations;) {
+                        for (var cat=0; cat < len; cat++) {
+                            var categoryName = studyDesignService.betweenParticipantFactorList[i].
+                                categoryList[cat].value;
+
+                            for (var z=0; z < numRepetitions; z++) {
+                                columnList.push(categoryName);
+                                perm++;
+                            }
+                        }
+                    }
+                    //window.alert("list is:" + columnList);
+                }
+                $scope.groupsTable.push(columnList);
+                //window.alert("after push, groupsTable:" + $scope.groupsTable);
+            }
+            lenList = columnList.length;
+            $scope.groupsList = [];
+            for (var i = 0; i < lenList; i++) {
+                $scope.groupsList.push(i);
+            }
+            //window.alert("groupsList:" +  $scope.groupsList);
         }
 
         /**
@@ -1064,7 +1104,6 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
          */
         $scope.addMeans = function() {
         };
-
 
     })
 
@@ -1403,6 +1442,58 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
         /**
          *
          */
+    })
+
+/**
+ * Controller for relative group size view
+ */
+    .controller('relativeGroupSizeController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.groupsTable = [];
+            $scope.groupsList = [];
+            var lenList = 1;
+
+            var totalPermutations = 1;
+            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
+                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
+                if (len >= 2 )
+                    totalPermutations = totalPermutations * len;
+            }
+            var columnList = [];
+
+            var numRepetitions = totalPermutations;
+            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
+                columnList = [];
+                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
+                if (len >= 2 ) {
+                    numRepetitions /= len;
+                    for (var perm = 0; perm < totalPermutations;) {
+                        for (var cat=0; cat < len; cat++) {
+                            var categoryName = studyDesignService.betweenParticipantFactorList[i].
+                                categoryList[cat].value;
+
+                            for (var z=0; z < numRepetitions; z++) {
+                                columnList.push(categoryName);
+                                perm++;
+                            }
+                        }
+                    }
+                }
+                $scope.groupsTable.push(columnList);
+            }
+            lenList = columnList.length;
+            $scope.groupsList = [];
+            for (var i = 0; i < lenList; i++) {
+                $scope.groupsList.push(i);
+            }
+        }
+
+        $scope.addRelativeGroupSizes = function() {
+
+        };
+
     })
 
 /**
