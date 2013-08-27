@@ -1,4 +1,3 @@
-<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -17,15 +16,133 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<h3>Power Curve Options</h3>
+<p>
+    To create a power curve, uncheck the box below.  Follow the prompts to define the curve.
+</p>
+<p>
+    <div class="input-group">
+        <input id="noCI" type="checkbox" ng-checked="studyDesign.powerCurveDescriptions == null" ng-click="togglePowerCurveDescription()">
+        Don't create a power curve
+        </input>
+    </div>
+</p>
 
-    <title>Plot Options Screen</title>
-</head>
+<div ng-show="studyDesign.powerCurveDescriptions != null">
+    <div class="input-description">
+        Select the quantity to display on the horizontal axis of the power curve. The vertical axis will display the power value.
+    </div>
+    <div class="input-group" >
+        <select ng-model="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum"
+                ng-options="opt.value as opt.label for opt in XAxisOptions">
+                </select>
+    </div>
+    <div  class="input-description">
+        Add one or more data series to the plot. Select values for each variable below. Click add to include
+        sample size values matching these criteria as a data series on the plot. To remove a data series,
+        highlight it in the list box and click "Delete".
+    </div>
+    {{}}
+    <div class="input-group" >
+        <form name="dataSeriesForm" novalidate ng-submit="addDataSeries()">
+            <table>
+                <tr>
+                    <td>
+                        Label
+                    </td>
+                    <td>
+                        <input name="newDataSeriesLabel" type="text" ng-model="newDataSeries.label"
+                               autocomplete="off" autofocus required >
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum != 'TOTAL_SAMPLE_SIZE' &&
+                            studyDesign.solutionTypeEnum != 'sampleSize'">
+                    <td>
+                        Smallest group size
+                    </td>
+                    <td>
+                        <select name="newDataSeriesSampleSize" ng-model="newDataSeries.sampleSize"
+                                ng-options="sampleSize.value for sampleSize in studyDesign.sampleSizeList"></select>
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.solutionTypeEnum != 'power'">
+                    <td>
+                        Desired Power
+                    </td>
+                    <td>
+                        <select name="newDataSeriesNominalPower" ng-model="newDataSeries.nominalPower"
+                                ng-options="nominalPower.value for nominalPower in studyDesign.nominalPowerList"></select>
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum != 'REGRESSION_COEEFICIENT_SCALE_FACTOR'">
+                    <td>
+                        Regression Coefficient Scale Factor
+                    </td>
+                    <td>
+                        <select name="newDataSeriesBetaScale" ng-model="newDataSeries.betaScale"
+                                ng-options="betaScale.value for betaScale in studyDesign.betaScaleList"></select>
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum != 'VARIABILITY_SCALE_FACTOR'">
+                    <td>
+                        Variability Scale Factor
+                    </td>
+                    <td>
+                        <select name="newDataSeriesSigmaScale" ng-model="newDataSeries.sigmaScale"
+                                ng-options="sigmaScale.value for sigmaScale in studyDesign.sigmaScaleList"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Statistical Test
+                    </td>
+                    <td>
+                        <select name="newDataSeriesTest" ng-model="newDataSeries.statisticalTestTypeEnum"
+                                ng-options="test.type for test in studyDesign.statisticalTestList"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Type I Error Rate
+                    </td>
+                    <td>
+                        <select name="newDataSeriesAlpha" ng-model="newDataSeries.alpha"
+                                ng-options="alpha.value for alpha in studyDesign.alphaList"></select>
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.gaussianCovariate == true">
+                    <td>
+                        Power Method
+                    </td>
+                    <td>
+                        <select name="newDataSeriesPowerMethod" ng-model="newDataSeries.powerMethod"
+                                ng-options="powerMethod.value for powerMethod in studyDesign.powerMethodList"></select>
+                    </td>
+                </tr>
+                <tr ng-show="studyDesign.gaussianCovariate == true">
+                    <td>
+                        Quantile
+                    </td>
+                    <td>
+                        <select name="newDataSeriesQuantile" ng-model="newDataSeries.quantile"
+                                ng-options="quantile.value for quantile in studyDesign.quantileList"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='2'>
+                        <button>Add</button>
+                        <button type='button' data-ng-click="deleteDataSeries()">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="gridStyle" ng-grid="dataSeriesGridOptions"></div>
 
-<body>
 
-Plot options screen
 
-</body>
-</html>
+</div>
+<div ng-show="studyDesign.debug==true">
+    <div>Curve Description: {{studyDesign.powerCurveDescriptions}}</div>
+    <div>Selected Items: {{dataSeriesGridOptions.selectedItems}}</div>
+</div>

@@ -20,7 +20,8 @@
 /**
 * Controller which manages the completion state of the navbar
 */
-glimmpseApp.controller('stateController', function($scope, $location, studyDesignService) {
+glimmpseApp.controller('stateController',
+    function($scope, $location, studyDesignService, powerService) {
 
     /**
      * Initialize the controller
@@ -76,6 +77,10 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
                 ($scope.getStateConfidenceIntervals() == 'complete') &&
                 ($scope.getStatePowerCurve() == 'complete')
         );
+    }
+
+    $scope.calculate = function() {
+
     }
 
     /**
@@ -1438,13 +1443,104 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
             $scope.studyDesign = studyDesignService;
 
         }
-
-        /**
-         *
-         */
     })
 
 /**
+ * Controller for the plot options view
+ */
+    .controller('plotOptionsController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.XAxisOptions = [
+                {label: "Total Sample Size", value: "TOTAL_SAMPLE_SIZE"},
+                {label: "Variability Scale Factor", value: "VARIABILITY_SCALE_FACTOR"},
+                {label: "Regression Coefficient Scale Factor", value: "REGRESSION_COEEFICIENT_SCALE_FACTOR"}
+            ];
+            $scope.newDataSeries = {
+                idx: 0,
+                label: "",
+                confidenceLimits: false,
+                statisticalTestTypeEnum: undefined,
+                betaScale: undefined,
+                sigmaScale: undefined,
+                typeIError: undefined,
+                sampleSize: undefined,
+                nominalPower: undefined,
+                powerMethod: undefined,
+                quantile: undefined
+            }
+            if (studyDesignService.powerCurveDescriptions != null) {
+                $scope.gridData = $scopstudyDesignService.powerCurveDescriptions.dataSeriesList;
+            } else {
+                $scope.gridData = [];
+            }
+            $scope.dataSeriesGridOptions = {
+                data: 'gridData',
+                jqueryUITheme: true,
+                selectedItems: []
+            };
+        }
+
+        /**
+         *  Toggle the power curve on/off
+         */
+        $scope.togglePowerCurveDescription = function() {
+            if ($scope.studyDesign.powerCurveDescriptions != null) {
+                $scope.studyDesign.powerCurveDescriptions = null;
+                $scope.gridData = [];
+            } else {
+                $scope.studyDesign.powerCurveDescriptions = {
+                    idx: 0,
+                    legend: true,
+                    width: 300,
+                    height: 300,
+                    title: null,
+                    horizontalAxisLabelEnum: 'TOTAL_SAMPLE_SIZE',
+                    dataSeriesList: []
+                };
+                $scope.gridData = $scopstudyDesignService.powerCurveDescriptions.dataSeriesList;
+            }
+        }
+
+        /**
+         * Add data series to the power curve description
+         */
+        $scope.addDataSeries = function() {
+            if (studyDesignService.powerCurveDescriptions != null) {
+                studyDesignService.powerCurveDescriptions.dataSeriesList.push({
+                    idx: 0,
+                    label: $scope.newDataSeries.label,
+                    confidenceLimits: $scope.newDataSeries.confidenceLimits,
+                    statisticalTestTypeEnum: $scope.newDataSeries.statisticalTestTypeEnum,
+                    betaScale: $scope.newDataSeries.betaScale,
+                    sigmaScale: $scope.newDataSeries.sigmaScale,
+                    typeIError: $scope.newDataSeries.typeIError,
+                    sampleSize: $scope.newDataSeries.sampleSize,
+                    nominalPower: $scope.newDataSeries.nominalPower,
+                    powerMethod: $scope.newDataSeries.powerMethod,
+                    quantile: $scope.newDataSeries.quantile
+                });
+                $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+            }
+        }
+
+        /**
+         * Delete the specified data series from the power curve
+         * @param dataSeries
+         */
+        $scope.deleteDataSeries = function() {
+            for(var i = 0; i < $scope.dataSeriesGridOptions.selectedItems.length; i++) {
+                var dataSeries = $scope.dataSeriesGridOptions.selectedItems[i];
+                studyDesignService.powerCurveDescriptions.dataSeriesList.splice(
+                    studyDesignService.powerCurveDescriptions.dataSeriesList.indexOf(dataSeries), 1);
+            }
+            $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+        }
+    })
+
+/**
+<<<<<<< HEAD
  * Controller for relative group size view
  */
     .controller('relativeGroupSizeController', function($scope, studyDesignService) {
@@ -1494,6 +1590,87 @@ glimmpseApp.controller('stateController', function($scope, $location, studyDesig
 
         };
 
+    })
+
+ /**
+  * Controller for the results screen
+ */
+    .controller('resultsController', function($scope, studyDesignService, powerService) {
+        init();
+        function init() {
+            $scope.view = undefined;
+            $scope.studyDesign = studyDesignService;
+            $scope.powerResults = undefined;
+            $scope.error = undefined;
+            $scope.fakeData =
+                "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
+                    "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
+                    "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
+                    "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
+                    "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
+                    "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
+                    "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
+                    "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
+                    "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
+                    "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
+                    "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                    "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
+                    "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
+                    "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
+                    "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
+                    "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
+                    ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
+                    "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
+                    "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
+                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
+                    "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
+                    "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
+                    "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
+                    "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
+                    "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
+                    "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
+                    "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
+                    "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
+                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
+                    "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                    "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
+                    "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
+                    "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
+                    "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
+                    "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
+                    "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
+                    "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
+            // get the results
+            if (studyDesignService.solutionTypeEnum == 'power') {
+                //powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
+                powerService.getPower($scope.fakeData).then(function(data) {
+                    $scope.powerResults = data;
+                    $scope.error = undefined;
+                },
+                function(errorMessage){
+                    window.alert("test");
+                    $scope.powerResults = undefined;
+                    $scope.error = errorMessage;
+                });
+            } else {
+                powerService.getSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
+                    $scope.powerResults = data;
+                    $scope.error = undefined;
+                },
+                function(errorMessage){
+                    $scope.powerResults = undefined;
+                    $scope.error = errorMessage;
+                });
+            }
+        }
+
+        /**
+         * Switch between the plot and report views
+         * @param view
+         */
+        $scope.setView = function(view) {
+            $scope.view = view;
+        }
     })
 
 /**

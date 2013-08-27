@@ -338,7 +338,7 @@ button:focus {
 
 }
 
-#accordion .ui-accordion-header a, .results-nav a {
+#accordion .ui-accordion-header a, .results-nav button {
     color: #999999;
     /*text-shadow: 1px 1px 1px #545454;   */
     margin: 0px;
@@ -460,7 +460,12 @@ button:focus {
     margin-right: 10px;
 }
 
-
+/*** Style for data tables ****/
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    height: 240px;
+    margin: 0px 20px;
+}
 
 /**** list input widgets ****/
 .list-entry {
@@ -607,7 +612,7 @@ table.table-entry-contents {
 }
 
 .dual-list-entry-left {
-    padding: 6px;
+    padding: 4px;
     background: #49BCEA;
     border: 1px solid #999;
     -moz-border-radius-topleft: 4px;
@@ -690,9 +695,8 @@ table.table-entry-contents {
 }
 
 .dual-list-right {
-    width: 350px;
+    width: 300px;
     background: white;
-    padding: 5px;
 }
 
 .dual-list-right ul {
@@ -700,7 +704,8 @@ table.table-entry-contents {
 }
 
 .dual-list-header-right {
-    padding: 7px;
+    margin-top: 5px;
+    padding: 6px;
     border: 1px solid #999;
     font-weight: bold;
     background-color: #DBEAF9;
@@ -720,14 +725,10 @@ table.table-entry-contents {
 }
 
 .dual-list-entry-right input {
-    position: relative;
-    margin: 0;
-    width: 100%;
     font-size: 20px;
     font-family: inherit;
     font-style: italic;
     line-height: 1.4em;
-    padding: 2px;
     outline: none;
     color: inherit;
 }
@@ -771,6 +772,14 @@ table.table-entry-contents {
 {
     color: red;
 }
+
+
+
+/** Data table style (also see ng-grid.css for full styles) **/
+.gridStyle {
+
+}
+
 
 
 

@@ -17,12 +17,87 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 /**
  * Global results object
  * Retrieved via JSON from the Power Web Service
  */
-glimmpseApp.factory('powerService', function() {
-    var results;
-    return results;
-});
+
+
+glimmpseApp.factory('powerService',
+    function($http, $q){
+        return {
+            apiPath:'/power/',
+            cachedResults: undefined,
+            cachedError: undefined,
+            /**
+             * Retrieve power results from the power service
+             */
+            getPower: function(studyDesignJSON) {
+                //Creating a deferred object
+                var deferred = $q.defer();
+                //Calling Web API to fetch shopping cart items
+                $http.post(this.apiPath + "power", studyDesignJSON).success(function(response){
+                    //Passing data to deferred's resolve function on successful completion
+                    deferred.resolve(response);
+                }).error(function(response) {
+                    //Sending a friendly error message in case of failure
+                    deferred.reject(response);
+                });
+
+                //Returning the promise object
+                return deferred.promise;
+            },
+
+            /**
+             * read the cached results
+             * @param studyDesignJSON
+             * @param studyDesignJSON
+             * @returns {*|Function|Function|Function|Function|Function|Function}
+             */
+
+            /**
+             *  Retrieve sample size results from the power service
+             */
+            getSampleSize: function(studyDesignJSON, studyDesignJSON) {
+                //Creating a deferred object
+                var deferred = $q.defer();
+
+                //Calling Web API to fetch shopping cart items
+                $http.post(this.apiPath + "samplesize").success(function(data){
+                    //Passing data to deferred's resolve function on successful completion
+                    deferred.resolve(data);
+                }).error(function(){
+                    //Sending a friendly error message in case of failure
+                    deferred.reject("An error occured while fetching items");
+                });
+
+                //Returning the promise object
+                return deferred.promise;
+            },
+
+            /**
+             * Someday, this will do the Jiroutek math.
+             * @param studyDesignJSON
+             * @returns {*|Function|Function|Function|Function|Function|Function}
+             */
+            getConfidenceIntervalWidth: function(studyDesignJSON, studyDesignJSON) {
+                //Creating a deferred object
+                var deferred = $q.defer();
+
+                //Calling Web API to fetch shopping cart items
+                $http.post(this.apiPath + "ciwidth").success(function(data){
+                    //Passing data to deferred's resolve function on successful completion
+                    deferred.resolve(data);
+                }).error(function(){
+                    //Sending a friendly error message in case of failure
+                    deferred.reject("An error occured while fetching items");
+                });
+
+                //Returning the promise object
+                return deferred.promise;
+            }
+
+        }
+    }
+);
+

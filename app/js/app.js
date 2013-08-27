@@ -23,7 +23,7 @@
 /*
 * Main glimmpse application module
  */
-var glimmpseApp = angular.module('glimmpse', [])
+var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
     .config(['$routeProvider', function($routeProvider) {
         /*
         * Main route provider for the study design tab
@@ -90,7 +90,7 @@ var glimmpseApp = angular.module('glimmpse', [])
             {templateUrl: 'partials/confidenceIntervalsView.html', controller: 'confidenceIntervalController' }
         )
             .when('/plotOptions',
-            {templateUrl: 'partials/plotOptionsView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/plotOptionsView.html', controller: 'plotOptionsController' }
 
         )
             .otherwise({ redirectTo: '/' });
