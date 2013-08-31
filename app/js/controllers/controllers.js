@@ -50,6 +50,7 @@ glimmpseApp.controller('stateController',
      * @returns {boolean}
      */
     $scope.calculateAllowed = function() {
+        return true;
         var nominalPowerState = $scope.getStateNominalPower();
         var relativeGroupSizeState = $scope.getStateRelativeGroupSize();
         var smallestGroupSize = $scope.getStateSmallestGroupSize();
@@ -79,8 +80,71 @@ glimmpseApp.controller('stateController',
         );
     }
 
+    /**
+     * Calculate power or sample size results
+     */
     $scope.calculate = function() {
-
+         var fakeData =
+            "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
+                "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
+                "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
+                "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
+                "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
+                "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
+                "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
+                "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
+                "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
+                "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
+                "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
+                "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
+                "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
+                "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
+                "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
+                ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
+                "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
+                "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
+                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
+                "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
+                "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
+                "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
+                "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
+                "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
+                "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
+                "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
+                "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
+                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
+                "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
+                "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
+                "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
+                "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
+                "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
+                "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
+                "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
+        // get the results
+        window.alert("calculate");
+        if (studyDesignService.solutionTypeEnum == 'power') {
+            // TODO: powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
+            // TODO: open processing dialog
+            powerService.calculatePower(fakeData).then(function(data) {
+                    // close processing dialog
+                    // enable results tab
+                },
+                function(errorMessage){
+                    // close processing dialog
+                    window.alert(errorMessage);
+                });
+        } else {
+            powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
+                    $scope.powerResults = data;
+                    $scope.error = undefined;
+                },
+                function(errorMessage){
+                    $scope.powerResults = undefined;
+                    $scope.error = errorMessage;
+                });
+        }
     }
 
     /**
@@ -1600,68 +1664,9 @@ glimmpseApp.controller('stateController',
         function init() {
             $scope.view = undefined;
             $scope.studyDesign = studyDesignService;
-            $scope.powerResults = undefined;
+            $scope.powerService = powerService;
             $scope.error = undefined;
-            $scope.fakeData =
-                "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
-                    "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
-                    "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
-                    "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
-                    "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
-                    "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
-                    "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
-                    "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
-                    "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
-                    "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
-                    "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                    "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
-                    "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
-                    "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
-                    "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
-                    "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
-                    ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
-                    "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
-                    "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
-                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
-                    "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
-                    "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
-                    "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
-                    "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
-                    "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
-                    "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
-                    "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
-                    "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
-                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
-                    "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                    "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
-                    "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
-                    "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
-                    "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
-                    "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
-                    "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
-                    "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
-            // get the results
-            if (studyDesignService.solutionTypeEnum == 'power') {
-                //powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
-                powerService.getPower($scope.fakeData).then(function(data) {
-                    $scope.powerResults = data;
-                    $scope.error = undefined;
-                },
-                function(errorMessage){
-                    window.alert("test");
-                    $scope.powerResults = undefined;
-                    $scope.error = errorMessage;
-                });
-            } else {
-                powerService.getSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
-                    $scope.powerResults = data;
-                    $scope.error = undefined;
-                },
-                function(errorMessage){
-                    $scope.powerResults = undefined;
-                    $scope.error = errorMessage;
-                });
-            }
+
         }
 
         /**

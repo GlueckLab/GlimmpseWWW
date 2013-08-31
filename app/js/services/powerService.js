@@ -32,15 +32,18 @@ glimmpseApp.factory('powerService',
             /**
              * Retrieve power results from the power service
              */
-            getPower: function(studyDesignJSON) {
+            calculatePower: function(studyDesignJSON) {
                 //Creating a deferred object
                 var deferred = $q.defer();
                 //Calling Web API to fetch shopping cart items
                 $http.post(this.apiPath + "power", studyDesignJSON).success(function(response){
                     //Passing data to deferred's resolve function on successful completion
+                    window.alert("hello");
+                    cachedResults = response;
                     deferred.resolve(response);
                 }).error(function(response) {
                     //Sending a friendly error message in case of failure
+                    cachedError = response;
                     deferred.reject(response);
                 });
 
@@ -58,7 +61,7 @@ glimmpseApp.factory('powerService',
             /**
              *  Retrieve sample size results from the power service
              */
-            getSampleSize: function(studyDesignJSON, studyDesignJSON) {
+            calculateSampleSize: function(studyDesignJSON, studyDesignJSON) {
                 //Creating a deferred object
                 var deferred = $q.defer();
 
