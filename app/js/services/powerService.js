@@ -23,84 +23,80 @@
  */
 
 
-glimmpseApp.factory('powerService',
-    function($http, $q){
-        return {
-            apiPath:'/power/',
-            cachedResults: undefined,
-            cachedError: undefined,
-            /**
-             * Retrieve power results from the power service
-             */
-            calculatePower: function(studyDesignJSON) {
-                //Creating a deferred object
-                var deferred = $q.defer();
-                //Calling Web API to fetch shopping cart items
-                $http.post(this.apiPath + "power", studyDesignJSON).success(function(response){
-                    //Passing data to deferred's resolve function on successful completion
-                    window.alert("hello");
-                    cachedResults = response;
-                    deferred.resolve(response);
-                }).error(function(response) {
-                    //Sending a friendly error message in case of failure
-                    cachedError = response;
-                    deferred.reject(response);
-                });
+glimmpseApp.factory('powerService',function($http, $q){
+    var powerServiceInstance = {};
 
-                //Returning the promise object
-                return deferred.promise;
-            },
+    // URI of power service
+    powerServiceInstance.apiPath = '/power/';
 
-            /**
-             * read the cached results
-             * @param studyDesignJSON
-             * @param studyDesignJSON
-             * @returns {*|Function|Function|Function|Function|Function|Function}
-             */
+    // results from last call to one of the calculate functions
+    powerServiceInstance.cachedResults = undefined;
 
-            /**
-             *  Retrieve sample size results from the power service
-             */
-            calculateSampleSize: function(studyDesignJSON, studyDesignJSON) {
-                //Creating a deferred object
-                var deferred = $q.defer();
+    // error information from last call to one of the calculate functions
+    powerServiceInstance.cachedError = undefined;
 
-                //Calling Web API to fetch shopping cart items
-                $http.post(this.apiPath + "samplesize").success(function(data){
-                    //Passing data to deferred's resolve function on successful completion
-                    deferred.resolve(data);
-                }).error(function(){
-                    //Sending a friendly error message in case of failure
-                    deferred.reject("An error occured while fetching items");
-                });
+    /**
+     * Retrieve power results from the power service
+     */
+    powerServiceInstance.calculatePower = function(studyDesignJSON) {
+        //Creating a deferred object
+        var deferred = $q.defer();
+        window.alert("sending power");
+        //Calling Web API to fetch shopping cart items
+        $http.post(this.apiPath + "power", studyDesignJSON).success(function(response){
+            //Passing data to deferred's resolve function on successful completion
+            deferred.resolve(response);
+        }).error(function(response) {
+            //Sending a friendly error message in case of failure
+            deferred.reject(response);
+        });
 
-                //Returning the promise object
-                return deferred.promise;
-            },
+        //Returning the promise object
+        return deferred.promise;
+    };
 
-            /**
-             * Someday, this will do the Jiroutek math.
-             * @param studyDesignJSON
-             * @returns {*|Function|Function|Function|Function|Function|Function}
-             */
-            getConfidenceIntervalWidth: function(studyDesignJSON, studyDesignJSON) {
-                //Creating a deferred object
-                var deferred = $q.defer();
+    /**
+     *  Retrieve sample size results from the power service
+     */
+    powerServiceInstance.calculateSampleSize = function(studyDesignJSON) {
+        //Creating a deferred object
+        var deferred = $q.defer();
 
-                //Calling Web API to fetch shopping cart items
-                $http.post(this.apiPath + "ciwidth").success(function(data){
-                    //Passing data to deferred's resolve function on successful completion
-                    deferred.resolve(data);
-                }).error(function(){
-                    //Sending a friendly error message in case of failure
-                    deferred.reject("An error occured while fetching items");
-                });
+        //Calling Web API to fetch shopping cart items
+        $http.post(this.apiPath + "samplesize").success(function(data){
+            //Passing data to deferred's resolve function on successful completion
+            deferred.resolve(data);
+        }).error(function(){
+                //Sending a friendly error message in case of failure
+                deferred.reject("An error occured while fetching items");
+            });
 
-                //Returning the promise object
-                return deferred.promise;
-            }
+        //Returning the promise object
+        return deferred.promise;
+    };
 
-        }
-    }
-);
+    /**
+     * Someday, this will do the Jiroutek math.
+     * @param studyDesignJSON
+     * @returns {*|Function|Function|Function|Function|Function|Function}
+     */
+    powerServiceInstance.calculateConfidenceIntervalWidth = function(studyDesignJSON) {
+        //Creating a deferred object
+        var deferred = $q.defer();
+
+        //Calling Web API to fetch shopping cart items
+        $http.post(this.apiPath + "ciwidth").success(function(data){
+            //Passing data to deferred's resolve function on successful completion
+            deferred.resolve(data);
+        }).error(function(){
+                //Sending a friendly error message in case of failure
+                deferred.reject("An error occured while fetching items");
+            });
+
+        //Returning the promise object
+        return deferred.promise;
+    };
+
+    return powerServiceInstance;
+});
 
