@@ -28,7 +28,40 @@ glimmpseApp.controller('stateController',
      */
     init();
     function init() {
+        // indicates that the study design has changed since we
+        // last loaded results from the power service
+        $scope.staleResults = true;
+
+        // the study design object
         $scope.studyDesign = studyDesignService;
+
+        // the power service
+        $scope.powerService = powerService;
+
+        // input mode (either guided or matrix)
+        $scope.mode = undefined;
+
+        // view mode (either "Study Design" or "Results"
+        $scope.view = 'studyDesign';
+    }
+
+    $scope.reset = function() {
+        init();
+    }
+    /**
+     * Switch between the study design view and the results view
+     * @param view
+     */
+    $scope.setView = function(view) {
+        $scope.view = view;
+    }
+
+    /**
+     * Switch between matrix and guided mode
+     * @param mode
+     */
+    $scope.setMode = function(mode) {
+        $scope.mode = mode;
     }
 
     /**
@@ -123,20 +156,22 @@ glimmpseApp.controller('stateController',
                 "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
                 "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
         // get the results
-        window.alert("calculate");
         if (studyDesignService.solutionTypeEnum == 'power') {
             // TODO: powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
             // TODO: open processing dialog
-            powerService.calculatePower(fakeData).then(function(data) {
+            $scope.powerService.calculatePower(fakeData).then(function(data) {
                     // close processing dialog
                     // enable results tab
+                    powerService.cachedResults = data;
+                    powerService.cachedError = undefined;
                 },
                 function(errorMessage){
                     // close processing dialog
-                    window.alert(errorMessage);
+                    powerService.cachedResults = undefined;
+                    powerService.cachedError = errorMessage;
                 });
         } else {
-            powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
+            $scope.powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
                     $scope.powerResults = data;
                     $scope.error = undefined;
                 },
@@ -486,6 +521,33 @@ glimmpseApp.controller('stateController',
         // TODO: finish
         return 'complete';
     }
+
+
+    $scope.getStateDesignEssence = function() {
+        // TODO
+    }
+    $scope.getStateBeta = function() {
+        // TODO
+    }
+    $scope.getStateBetweenParticipantContrast = function() {
+        // TODO
+    }
+    $scope.getStateWithinParticipantContrast = function() {
+        // TODO
+    }
+    $scope.getStateThetaNull = function() {
+        // TODO
+    }
+    $scope.getStateSigmaE = function() {
+        // TODO
+    }
+    $scope.getStateSigmaG = function() {
+        // TODO
+    }
+    $scope.getStateSigmaGY = function() {
+        // TODO
+    }
+
 
 })
 
@@ -1604,7 +1666,6 @@ glimmpseApp.controller('stateController',
     })
 
 /**
-<<<<<<< HEAD
  * Controller for relative group size view
  */
     .controller('relativeGroupSizeController', function($scope, studyDesignService) {
@@ -1655,27 +1716,31 @@ glimmpseApp.controller('stateController',
         };
 
     })
+    /**
+     * controller for the design essence screen in matrix mode
+     */
+    .controller('designEssenceController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.data = [
+                [1,2,1],
+                [4,5,6],
+                [7,8,9]
+            ];
+        };
+    })
 
- /**
-  * Controller for the results screen
- */
+    /**
+     * Controller for the results screen
+     */
     .controller('resultsController', function($scope, studyDesignService, powerService) {
         init();
         function init() {
-            $scope.view = undefined;
             $scope.studyDesign = studyDesignService;
             $scope.powerService = powerService;
-            $scope.error = undefined;
+        };
 
-        }
-
-        /**
-         * Switch between the plot and report views
-         * @param view
-         */
-        $scope.setView = function(view) {
-            $scope.view = view;
-        }
     })
 
 /**
