@@ -18,15 +18,16 @@
 -->
 <h3>Power Report</h3>
 
-<div ng-show="powerResults != undefined">
+<div ng-show="powerService.cachedResults != undefined">
     <ul class="list-entry-contents" style="list-style: none">
-        <li ng-repeat="powerResult in powerResults">
+        <li ng-repeat="powerResult in powerService.cachedResults">
             <label>{{powerResult.actualPower}}</label>
         </li>
     </ul>
 </div>
 
-<div ng-show="error != undefined">
-    An error occurred
-    {{error}}
+<div ng-show="powerService.cachedError != undefined">
+    {{powerResult.cachedError}}
 </div>
+
+

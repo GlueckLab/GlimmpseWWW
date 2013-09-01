@@ -16,4 +16,48 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
+<script>
+    $(function() {
+        $('#powerCurve').highcharts({
+            title: {
+                text: 'Power Curve',
+                x: -20 //center
+            },
+            credits: {
+                enabled: false
+            },
+            yAxis: {
+                title: {
+                    text: 'Power'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            legend: {
+                enabled: true
+            },
+            exporting: {
+                enabled: true
+            },
+            series: [{
+                name: 'High Variance',
+                data: [0.2,0.4,0.5,0.7,0.9]
+            }, {
+                name: 'Expected variance',
+                data: [0.3,0.7,0.9,0.95,1.0]
+            }]
+        });
+    });
+</script>
 <h3>Power Curve</h3>
+
+<div id="powerCurve"></div>
