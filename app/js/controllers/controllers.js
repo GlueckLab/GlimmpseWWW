@@ -46,9 +46,56 @@ glimmpseApp.controller('stateController',
     }
 
     $scope.reset = function() {
-        init();
+        if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            init();
+        }
     }
-    /**
+
+
+
+    $scope.uploadFile = function(input) {
+
+        var $form = $(input).parents('form');
+
+        if (input.value == '') {
+            window.alert("No file was selected.  Please try again");
+        }
+
+        $form.ajaxSubmit({
+            type: 'POST',
+            uploadProgress: function(event, position, total, percentComplete) {
+            },
+            error: function(event, statusText, responseText, form) {
+                /*
+                 handle the error ...
+                 */
+                window.alert("The study design file could not be loaded: " + responseText);
+
+            },
+            success: function(responseText, statusText, xhr, form) {
+                // parse the json
+                var uploadedStudyDesign = angular.fromJson(responseText);
+                      window.alert(responseText);
+                if (uploadedStudyDesign == undefined) {
+
+                } else {
+                    // set to the study design object
+
+                    // select the appropriate input mode
+                    if (uploadedStudyDesign.viewTypeEnum == "GUIDED_MODE") {
+                        $scope.setMode('guided');
+                    } else {
+                        $scope.setMode('matrix');
+                    }
+                    $scope.setView('studyDesign');
+                }
+            }
+        });
+
+    }
+
+
+        /**
      * Switch between the study design view and the results view
      * @param view
      */

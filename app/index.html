@@ -42,70 +42,35 @@
 
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jquery-ui.min.js"></script>
+    <script src="lib/jquery.form.min.js"></script>
     <script src="lib/highcharts.js"></script>
     <script src="lib/exporting.js"></script>
+
     <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet" />  -->
     <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
     <link type="text/css" rel="stylesheet" href="css/ng-grid.css">
     <script>
         $(function() {
-            $( "#accordion" ).accordion({
+            $( "#guided-accordion" ).accordion({
+                active: false,
+                autoHeight: false,
+                navigation: true
+            });
+            $( "#matrix-accordion" ).accordion({
                 active: false,
                 autoHeight: false,
                 navigation: true
             });
         });
-        $(function() {
-            $( "#glimmpse-tabs" ).tabs();
-        });
 
-        $(function() {
-            $('#powerCurve').highcharts({
-                title: {
-                    text: 'Power Curve',
-                    x: -20 //center
-                },
-                credits: {
-                    enabled: false
-                },
-                yAxis: {
-                    title: {
-                        text: 'Power'
-                    },
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }]
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'middle',
-                    borderWidth: 0
-                },
-                legend: {
-                    enabled: true
-                },
-                exporting: {
-                    enabled: true
-                },
-                series: [{
-                    name: 'High Variance',
-                    data: [0.2,0.4,0.5,0.7,0.9]
-                }, {
-                    name: 'Expected variance',
-                    data: [0.3,0.7,0.9,0.95,1.0]
-                }]
-            });
-        });
     </script>
 
 
 </head>
 
 <body>
-<div id="layout-grid">
+<div>{{mode}},{{view}}</div>
+<div id="layout-grid" ng-controller="stateController">
     <div id="header">
         <div id="glimmpse-topbar">
             <div id="glimmpse-logo">Glimmpse</div>
@@ -117,179 +82,305 @@
             </div>
         </div>
     </div>
-
-
-    <div id="glimmpse-tabs" class="font-main">
-        <ul>
-            <li><a href="#design-tab" class="active">Study Design</a></li>
-            <li><a href="#result-tab">Results</a></li>
-        </ul>
-        <div id="design-tab" class="tab-contents">
-            <table id="content-table">
+    <!-- Mode selection screen -->
+    <div id="mode-selection" class="font-main" ng-show="mode == undefined">
+        <h3>Start Your Study Design</h3>
+        <p>
+            Welcome to GLIMMPSE. The GLIMMPSE software calculates power and sample size for study designs
+            with normally distributed outcomes. Select one of the options below to begin your power or sample size calculation.
+        </p>
+        <div class="mode-selection-block gray-box rounded-box">
+            <table>
                 <tr>
-                    <td>
-                        <!-- Left navigation bar -->
-		      <div id="navigation-side-panel" ng-controller="stateController">
-                        <div id="calculate-grid" >
-                            <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button>
-                        </div>
-                        <div id="accordion-grid" >
-                            <div class="ui-accordion " id="accordion">
-                                <h3><a href="#">Start</a></h3>
-                                <div>
-                                    <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
-                                        <a href="#/solvingFor">Solving For</a></div>
-                                    <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
-                                        <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
-                                        <label ng-show="studyDesign.solutionTypeEnum=='power'">Desired Power</label>
-                                    </div>
-                                    <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
-                                        <a href="#/typeIError">Type I Error</a>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Sampling Unit</a></h3>
-                                <div>
-                                    <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
-                                        <a href="#/predictors">Study Groups</a>
-                                    </div>
-                                    <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
-                                        <a href="#/covariates">Covariate</a>
-                                    </div>
-                                    <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
-                                        <a href="#/isu">Clustering</a>
-                                    </div>
-                                    <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
-                                        <a href="#/relativeGroupSize" ng-show="getStateRelativeGroupSize()=='complete'">Relative Group Size</a>
-                                        <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
-                                    </div>
-                                    <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
-                                        <a href="#/smallestGroupSize" ng-show="studyDesign.solutionTypeEnum!='samplesize'">Smallest Group Size</a>
-                                        <label ng-show="studyDesign.solutionTypeEnum=='samplesize'">Smallest Group Size</label>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Responses</a></h3>
-                                <div>
-                                    <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
-                                        <a href="#/responseVariables">Response Variables</a>
-                                    </div>
-                                    <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
-                                        <a href="#/repeatedMeasures">Repeated Measures</a>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Hypothesis</a></h3>
-                                <div>
-                                    <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
-                                        <a href="#/hypothesis" ng-show="getStateHypothesis()!='blocked'">Hypothesis</a>
-                                        <label ng-show="getStateHypothesis()=='blocked'">Hypothesis</label>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Means</a></h3>
-                                <div>
-                                    <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
-                                        <a href="#/means" ng-show="getStateMeans()!='blocked'">Means</a>
-                                        <label ng-show="getStateMeans()=='blocked'">Means</label>
-                                    </div>
-                                    <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
-                                        <a href="#/meansScale">Scale Factors</a>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Variability</a></h3>
-                                <div>
-                                    <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
-                                        <a href="#/variabilityWithin" ng-show="getStateWithinVariability()!='blocked'">Within Participant</a>
-                                        <label ng-show="getStateWithinVariability()=='blocked'">Within Participant</label>
-                                    </div>
-                                    <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
-                                        <a href="#/variabilityCovariate">Covariate</a>
-                                        <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
-                                    </div>
-                                    <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
-                                        <a href="#/variabilityScale">Scale Factors</a>
-                                    </div>
-                                </div>
-                                <h3><a href="#">Options</a></h3>
-                                <div>
-                                    <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
-                                        <a href="#/test">Statistical Test</a>
-                                    </div>
-                                    <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
-                                        <a href="#/powerMethod" ng-show="getStatePowerMethod()!='disabled'">Power Method</a>
-                                        <label ng-show="getStatePowerMethod()=='disabled'">Power Method</label>
-                                    </div>
-                                    <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
-                                        <a href="#/confidenceIntervals">Confidence Intervals</a>
-                                    </div>
-                                    <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
-                                        <a href="#/plotOptions" ng-show="getStatePowerCurve()!='blocked'">Power Curve</a>
-                                        <label ng-show="getStatePowerCurve()=='blocked'">Power Curve</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="toolbox font-main">
-                            <div class="toolbox-item">Save Design</div>
-                            <div class="toolbox-item">Cancel</div>
-                            <div class="toolbox-item">Templates</div>
-                            <div class="toolbox-item">Help</div>
-                        </div>
-			</div>
+                    <td class="mode-selection-link-container">
+                        <a href="#/" data-ng-click="setMode('guided')" class="mode-selection-link">Guided Study Design</a>
                     </td>
-                    <!-- Content panel to display individual input screens -->
-                    <td>
-                        <div id="content" class="font-main" ng-view=""></div>
+                    <td class="mode-selection-description rounded-box white-box">
+                        Build common study designs including ANOVA, ANCOVA, and regression with guidance from the
+                        study design wizard. This mode is designed for applied researchers including
+                        physicians, nurses, and other investigators.
                     </td>
                 </tr>
             </table>
         </div>
-        <div id="result-tab" class="tab-contents">
-            <table id="results-table" ng-controller="resultsController">
+        <div class="mode-selection-block gray-box rounded-box">
+            <table>
                 <tr>
                     <td>
-                        <!-- Left navigation bar -->
-                        <div id="results-nav-grid">
-                            <div class="results-nav">
-                                <button type="button" ng-click="setView('report')">Report</button>
-                            </div>
-                            <div class="results-nav">
-                                <button type="button" ng-click="setView('plot')">Plot</button>
-                            </div>
-
-                        </div>
-                        <div class="toolbox font-main">
-                            <div class="toolbox-item">Save Report</div>
-                            <div class="toolbox-item">Save Results as CSV</div>
-                            <div class="toolbox-item">Save Plot</div>
-                            <div class="toolbox-item">View Matrices</div>
-                            <div class="toolbox-item">Help</div>
-                        </div>
+                        <a href="#/" data-ng-click="setMode('matrix')" class="mode-selection-link">Matrix Study Design</a>
                     </td>
-                    <!-- Content panel to display individual input screens -->
+                    <td class="mode-selection-description rounded-box white-box">
+                        Directly enter the matrices for the general linear model. This mode is
+                        designed for users with advanced statistical training.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="mode-selection-block gray-box rounded-box">
+            <table>
+                <tr>
                     <td>
-                        <div id="results-content">
-                            <div class="font-main" ng-show="view == 'report'"
-                                 ng-include="'partials/resultsReportView.html'"></div>
-                            <div class="font-main" ng-show="view == 'plot'">
-                                <div id="powerCurve" ></div>
-
-                             </div>
-                        </div>
+                        <form name="uploadForm" enctype="multipart/form-data" action="/file/upload">
+                            <label class="mode-selection-link">
+                                <span>Upload a Study Design</span>
+                                <input type="file" id="uploader" name="file"
+                                       onchange="angular.element(this).scope().uploadFile(this)" style="display:none;" />
+                            </label>
+                        </form>
+                    </td>
+                    <td class="mode-selection-description rounded-box white-box">
+                        If you have previously saved a study design from GLIMMPSE, you may upload it here.
+                        Click 'Upload a Study Design' to select your study design file.
                     </td>
                 </tr>
             </table>
         </div>
     </div>
-
-
-<div id="footer">
-    <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
-        <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
-    <div>
-        GLIMMPSE version 2.0.1 is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
-        (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
-        Previous funding was received from an American Recovery
-        and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
+    <!-- "tabs" which switch between the study design and results views.
+     It really just swaps out the left navbar because we're all sly like that -->
+    <div id="view-bar" class="font-main" ng-show="mode != undefined">
+        <a href="#/solvingFor" ng-click="setView('studyDesign')" class="{{view == 'studyDesign' && 'active'}}">Study Design</a>
+        <a href="#/results/report" ng-click="setView('results')" class="{{view == 'results' && 'active'}}">Results</a>
     </div>
-</div>
+    <!-- main application panel -->
+    <div id="glimmpse-panel" ng-show="mode != undefined">
+        <table id="content-table">
+            <tr>
+                <td>
+                    <div id="calculate-grid" >
+                        <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button>
+                    </div>
+                    <!-- left navbar for study design view in guided model -->
+                    <div class="accordion-grid" ng-show="mode == 'guided' && view == 'studyDesign'">
+                        <div class="accordion ui-accordion" id="guided-accordion">
+                            <h3><a href="#">Start</a></h3>
+                            <div>
+                                <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
+                                    <a href="#/solvingFor">Solving For</a></div>
+                                <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
+                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
+                                    <label ng-show="studyDesign.solutionTypeEnum == 'power'">Desired Power</label>
+                                </div>
+                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                    <a href="#/typeIError">Type I Error</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Sampling Unit</a></h3>
+                            <div>
+                                <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
+                                    <a href="#/predictors">Study Groups</a>
+                                </div>
+                                <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                                    <a href="#/covariates">Covariate</a>
+                                </div>
+                                <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
+                                    <a href="#/isu">Clustering</a>
+                                </div>
+                                <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
+                                    <a href="#/relativeGroupSize" ng-show="getStateRelativeGroupSize()=='complete'">Relative Group Size</a>
+                                    <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
+                                </div>
+                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                                    <a href="#/smallestGroupSize" ng-show="studyDesign.solutionTypeEnum!='samplesize'">Smallest Group Size</a>
+                                    <label ng-show="studyDesign.solutionTypeEnum=='samplesize'">Smallest Group Size</label>
+                                </div>
+                            </div>
+                            <h3><a href="#">Responses</a></h3>
+                            <div>
+                                <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
+                                    <a href="#/responseVariables">Response Variables</a>
+                                </div>
+                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
+                                    <a href="#/repeatedMeasures">Repeated Measures</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Hypothesis</a></h3>
+                            <div>
+                                <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
+                                    <a href="#/hypothesis" ng-show="getStateHypothesis()!='blocked'">Hypothesis</a>
+                                    <label ng-show="getStateHypothesis()=='blocked'">Hypothesis</label>
+                                </div>
+                            </div>
+                            <h3><a href="#">Means</a></h3>
+                            <div>
+                                <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
+                                    <a href="#/means" ng-show="getStateMeans()!='blocked'">Means</a>
+                                    <label ng-show="getStateMeans()=='blocked'">Means</label>
+                                </div>
+                                <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                                    <a href="#/meansScale">Scale Factors</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Variability</a></h3>
+                            <div>
+                                <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
+                                    <a href="#/variabilityWithin" ng-show="getStateWithinVariability()!='blocked'">Within Participant</a>
+                                    <label ng-show="getStateWithinVariability()=='blocked'">Within Participant</label>
+                                </div>
+                                <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
+                                    <a href="#/variabilityCovariate">Covariate</a>
+                                    <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
+                                </div>
+                                <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                                    <a href="#/variabilityScale">Scale Factors</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Options</a></h3>
+                            <div>
+                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                    <a href="#/test">Statistical Test</a>
+                                </div>
+                                <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
+                                    <a href="#/powerMethod" ng-show="getStatePowerMethod()!='disabled'">Power Method</a>
+                                    <label ng-show="getStatePowerMethod()=='disabled'">Power Method</label>
+                                </div>
+                                <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
+                                    <a href="#/confidenceIntervals">Confidence Intervals</a>
+                                </div>
+                                <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
+                                    <a href="#/plotOptions" ng-show="getStatePowerCurve()!='blocked'">Power Curve</a>
+                                    <label ng-show="getStatePowerCurve()=='blocked'">Power Curve</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- left navbar for study design view in matrix model -->
+                    <div class="accordion-grid"  ng-show="mode == 'matrix' && view == 'studyDesign'">
+                        <div class="accordion ui-accordion" id="matrix-accordion">
+                            <h3><a href="#">Start</a></h3>
+                            <div>
+                                <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
+                                    <a href="#/solvingFor">Solving For</a></div>
+                                <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
+                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
+                                    <label ng-show="studyDesign.solutionTypeEnum=='power'">Desired Power</label>
+                                </div>
+                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                    <a href="#/typeIError">Type I Error</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Design</a></h3>
+                            <div>
+                                <div class="{{isActive('/designEssence') && 'active'}} {{getStateDesignEssence()}}" >
+                                    <a href="#/designEssence">Design Essence</a>
+                                </div>
+                                <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                                    <a href="#/covariates">Covariate</a>
+                                </div>
+                                <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
+                                    <a href="#/relativeGroupSize" ng-show="getStateRelativeGroupSize()=='complete'">Relative Group Size</a>
+                                    <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
+                                </div>
+                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                                    <a href="#/smallestGroupSize" ng-show="studyDesign.solutionTypeEnum!='samplesize'">Smallest Group Size</a>
+                                    <label ng-show="studyDesign.solutionTypeEnum=='samplesize'">Smallest Group Size</label>
+                                </div>
+                            </div>
+                            <h3><a href="#">Coefficients</a></h3>
+                            <div>
+                                <div class="{{isActive('/beta') && 'active'}} {{getStateBeta()}}" >
+                                    <a href="#/beta">Beta Coefficients</a>
+                                </div>
+                                <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                                    <a href="#/meansScale">Beta Scale Factors</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Hypothesis</a></h3>
+                            <div>
+                                <div class="{{isActive('/betweencontrast') && 'active'}} {{getStateBetweenParticipantContrast()}}" >
+                                    <a href="#/betweencontrast">Between Participant Contrast</a>
+                                </div>
+                                <div class="{{isActive('/withincontrast') && 'active'}} {{getStateWithinParticipantContrast()}}" >
+                                    <a href="#/withincontrast">Within Participant Contrast</a>
+                                </div>
+                                <div class="{{isActive('/nullHypothesis') && 'active'}} {{getStateThetaNull()}}" >
+                                    <a href="#/nullHypothesis">Null Hypothesis Matrix</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Variability</a></h3>
+                            <div>
+                                <div class="{{isActive('/sigmaError') && 'active'}} {{getStateSigmaError()}}">
+                                    <a href="#/sigmaError" ng-show="getStateSigmaError()!='blocked'">Error Covariance</a>
+                                    <label ng-show="getStateSigmaError()=='blocked'">Within Participant</label>
+                                </div>
+                                <div class="{{isActive('/sigmaOutcomes') && 'active'}} {{getStateSigmaOutcomes()}}">
+                                    <a href="#/sigmaOutcomes" ng-show="getStateSigmaOutcomes()!='blocked'">Outcomes Covariance</a>
+                                    <label ng-show="getStateSigmaOutcomes()=='blocked'">Within Participant</label>
+                                </div>
+                                <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
+                                    <a href="#/variabilityCovariate">Covariate</a>
+                                    <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
+                                </div>
+                                <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                                    <a href="#/variabilityScale">Scale Factors</a>
+                                </div>
+                            </div>
+                            <h3><a href="#">Options</a></h3>
+                            <div>
+                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                    <a href="#/test">Statistical Test</a>
+                                </div>
+                                <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
+                                    <a href="#/powerMethod" ng-show="getStatePowerMethod()!='disabled'">Power Method</a>
+                                    <label ng-show="getStatePowerMethod()=='disabled'">Power Method</label>
+                                </div>
+                                <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
+                                    <a href="#/confidenceIntervals">Confidence Intervals</a>
+                                </div>
+                                <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
+                                    <a href="#/plotOptions" ng-show="getStatePowerCurve()!='blocked'">Power Curve</a>
+                                    <label ng-show="getStatePowerCurve()=='blocked'">Power Curve</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- left navbar for results view -->
+                    <div class="accordion-grid">
+                        <div id="results-navbar" ng-show="view=='results'">
+                            <div class="{{isActive('/results/report') && 'active'}}" >
+                                <a href="#/results/report">Power Results</a>
+                            </div>
+                            <div class="{{isActive('/results/plot') && 'active'}}" >
+                                <!-- <a href="#/results/plot" ng-show="studyDesign.plotDescription != undefined">Power Curve</a>
+                                <label ng-show="studyDesign.plotDescription == undefined">Power Curve</label>  -->
+                                <a href="#/results/plot" >Power Curve</a>
+                            </div>
+                            <div class="{{isActive('/results/matrices') && 'active'}}" >
+                                <a href="#/results/matrices">View Matrices</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tool bar -->
+                    <div class="toolbox font-main">
+                        <div class="toolbox-item">Save Design</div>
+                        <div class="toolbox-item" ng-show="view=='results'">Save Report</div>
+                        <div class="toolbox-item" ng-show="view=='results'">Save Results as CSV</div>
+                        <div class="toolbox-item" ng-show="view=='results'">Save Plot</div>
+                        <div class="toolbox-item" ng-show="view=='results'">View Matrices</div>
+                        <div class="toolbox-item">Help</div>
+                        <div class="toolbox-item">Templates</div>
+                        <div class="toolbox-item"><a href="#" data-ng-click="reset()">Cancel</a></div>
+                    </div>
+                </td>
+                <td>
+                    <!-- content area for partials -->
+                    <div id="content" class="font-main" ng-view=""></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="footer">
+        <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
+            <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
+        <div>
+            GLIMMPSE version 2.1.0 is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
+            (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
+            Previous funding was received from an American Recovery
+            and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
+        </div>
+    </div>
 
 <!-- Angular.js scripts -->
 
