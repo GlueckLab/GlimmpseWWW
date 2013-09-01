@@ -93,6 +93,24 @@ var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
             {templateUrl: 'partials/plotOptionsView.html', controller: 'plotOptionsController' }
 
         )
+            // matrix mode screens
+            .when('/designEssence',
+            {templateUrl: 'partials/designEssenceView.html', controller: 'designEssenceController' }
+
+        )
+            // results screens
+            .when('/results/report',
+            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsController' }
+
+        )
+            .when('/results/plot',
+            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsController' }
+
+        )
+            .when('/results/matrices',
+            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsController' }
+
+        )
             .otherwise({ redirectTo: '/' });
     }]);
 
