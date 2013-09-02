@@ -21,30 +21,41 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, studyDesignService, powerService) {
+    function($scope, $location, $http, studyDesignService, powerService) {
 
     /**
      * Initialize the controller
      */
     init();
     function init() {
-        // indicates that the study design has changed since we
-        // last loaded results from the power service
-        $scope.staleResults = true;
-
         // the study design object
         $scope.studyDesign = studyDesignService;
 
         // the power service
         $scope.powerService = powerService;
 
-        // input mode (either guided or matrix)
-        $scope.mode = undefined;
+        // json encoded study design
+        $scope.studyDesignJSON = "hello world";
 
         // view mode (either "Study Design" or "Results"
-        $scope.view = 'studyDesign';
+        // input mode (either guided or matrix)
+        /*
+        * Mode indicates if the user selected guided or matrix mode
+        * View indicates if the user is viewing the study design or
+        *   results 'tab'
+        * staleResults indicates that the design has changed since
+        *   the user last clicked calculate.
+         */
+        $scope.state = {
+            mode: undefined,
+            view: 'studyDesign',
+            staleResults: true
+        }
     }
 
+    /**
+     * clear the study design
+     */
     $scope.reset = function() {
         if (confirm('This action will clear any unsaved study design information.  Continue?')) {
             init();
@@ -52,9 +63,12 @@ glimmpseApp.controller('stateController',
     }
 
 
-
+    /**
+     * Upload a study design file
+     * @param input
+     * @param parentScope
+     */
     $scope.uploadFile = function(input) {
-
         var $form = $(input).parents('form');
 
         if (input.value == '') {
@@ -70,37 +84,52 @@ glimmpseApp.controller('stateController',
                  handle the error ...
                  */
                 window.alert("The study design file could not be loaded: " + responseText);
-
+                $form.reset();
             },
             success: function(responseText, statusText, xhr, form) {
                 // parse the json
                 var uploadedStudyDesign = angular.fromJson(responseText);
-                      window.alert(responseText);
-                if (uploadedStudyDesign == undefined) {
 
+                if (uploadedStudyDesign == undefined) {
+                      window.alert("The file did not contain a valid study design");
+                    $scope.$apply(function() {
+                        $scope.state.mode = undefined;
+                        $scope.state.view = 'studyDesign';
+                    });
                 } else {
                     // set to the study design object
 
                     // select the appropriate input mode
-                    if (uploadedStudyDesign.viewTypeEnum == "GUIDED_MODE") {
-                        $scope.setMode('guided');
-                    } else {
-                        $scope.setMode('matrix');
-                    }
-                    $scope.setView('studyDesign');
+                    $scope.$apply(function() {
+                        $scope.state.mode = uploadedStudyDesign.viewTypeEnum;
+                        $scope.state.view = 'studyDesign';
+                    });
                 }
+                $form.reset();
             }
         });
 
     }
 
+    /**
+     * Called prior to submission of save form.  Updates
+     * the value of the study design JSON in a hidden field
+     * in the save form.
+     */
+    $scope.updateStudyDesignJSON = function() {
+        $scope.studyDesignJSON = angular.toJson($scope.studyDesign);
+    }
 
-        /**
+    /**
      * Switch between the study design view and the results view
      * @param view
      */
     $scope.setView = function(view) {
-        $scope.view = view;
+        $scope.state.view = view;
+    }
+
+    $scope.getView = function() {
+        return $scope.state.view;
     }
 
     /**
@@ -108,7 +137,11 @@ glimmpseApp.controller('stateController',
      * @param mode
      */
     $scope.setMode = function(mode) {
-        $scope.mode = mode;
+        $scope.state.mode = mode;
+    }
+
+    $scope.getMode = function() {
+        return $scope.state.mode;
     }
 
     /**
@@ -130,7 +163,6 @@ glimmpseApp.controller('stateController',
      * @returns {boolean}
      */
     $scope.calculateAllowed = function() {
-        return true;
         var nominalPowerState = $scope.getStateNominalPower();
         var relativeGroupSizeState = $scope.getStateRelativeGroupSize();
         var smallestGroupSize = $scope.getStateSmallestGroupSize();
