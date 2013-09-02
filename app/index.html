@@ -360,10 +360,8 @@
                                 <input type="submit" value="Save Design" data-ng-click="updateStudyDesignJSON()"/>
                             </form>
                         </div>
-                        <div class="toolbox-item" ng-show="view=='results'">Save Report</div>
-                        <div class="toolbox-item" ng-show="view=='results'">Save Results as CSV</div>
-                        <div class="toolbox-item" ng-show="view=='results'">Save Plot</div>
-                        <div class="toolbox-item" ng-show="view=='results'">View Matrices</div>
+                        <div class="toolbox-item" ng-show="getView()=='results'">Save Report</div>
+                        <div class="toolbox-item" ng-show="getView()=='results'">Save Results as CSV</div>
                         <div class="toolbox-item">Help</div>
                         <div class="toolbox-item">Templates</div>
                         <div class="toolbox-item"><a href="#" data-ng-click="reset()">Cancel</a></div>
