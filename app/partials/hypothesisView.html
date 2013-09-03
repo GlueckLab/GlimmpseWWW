@@ -245,9 +245,52 @@
                     </td>
                     <td>
                        <button value="Edit trend" ng-show="isSelected(measure.dimension)"
-                               data-ng-click="showTrendDialog()">
+                               ng-click="showTrendDialog(measure)">
                        Edit Trend
                        </button>
+                    </td>
+                    <td>
+                        <div class="dual-list-right rounded-box" ng-show="selectedTrend != undefined">
+                            <div class="input-group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateTypeOfTrend('NONE')">
+                                            None
+                                            </input>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateTypeOfTrend('CHANGE_FROM_BASELINE')">
+                                            Change from baseline
+                                            </input>
+                                        </td>
+                                        <td>
+                                            <img src="img/change_from_baseline.png"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateTypeOfTrend('LINEAR')">
+                                            Linear Trend
+                                            </input>
+                                        </td>
+                                        <td>
+                                            <img src="img/linear_trend_only.png"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             </table>

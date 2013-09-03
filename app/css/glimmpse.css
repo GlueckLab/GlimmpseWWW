@@ -229,6 +229,69 @@ button:focus {
     margin: 0px;
 }
 
+/*
+* Variability tab panel
+*
+* The Measures tab contains measures correlation
+*
+*/
+
+#variability-tabs {
+    width: 600px;
+    min-height: 250px;
+    margin: 0px auto;
+}
+
+#variability-tabs.tab-contents {
+    -moz-box-shadow: 0px 1px 4px #000;
+    -webkit-box-shadow: 0px 1px 4px #000;
+    box-shadow: 0px 1px 4px #000;
+    background: white;
+}
+
+#variability-tabs.ui-tabs {
+    /* position: relative prevents IE scroll bug
+    (element with position: relative inside container
+    with overflow: auto appear as "fixed") */
+    position: relative;
+    padding: 0px;
+    width: 700px;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav {
+    margin: 0;
+    padding-left: 300px;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav li {
+    list-style:none;
+    display:inline;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav li a {
+    padding:5px 10px;
+    display:inline-block;
+    background:#666;
+    color:#fff;
+    text-decoration:none;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+    background:#fff;
+    color:#000;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+#variability-tabs.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
+#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
+    cursor: text;
+}
+#variability-tabs.ui-tabs .ui-tabs-nav li a, /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+#variability-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
+    cursor: pointer;
+}
+#variability-tabs.ui-tabs .ui-tabs-panel {
+    display: block;
+    border-width: 0;
+    padding: 20px 0px;
+    background: white;
+    margin: 0px;
+}
 
 /*
 * Design input panel consisting of left nav and input view

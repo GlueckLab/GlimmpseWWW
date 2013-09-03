@@ -1122,6 +1122,7 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
             $scope.hypothesisOfInterest = undefined;
             $scope.varList = [];
+            $scope.selectedTrend = undefined;
 
             for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++)  {
                 $scope.varList.push({
@@ -1236,12 +1237,14 @@ glimmpseApp.controller('stateController',
             }
         };
 
+
+
         /**
          * Display a dialog box to select trend
          */
-        $scope.showTrendDialog = function(factor) {
+        $scope.showTrendDialog = function(measure) {
 
-            $scope.centeredPopup(this.href,'myWindow','500','300','yes');
+            $scope.selectedTrend = 'NONE';
 
         };
 
