@@ -21,75 +21,82 @@
 <h3>  Variability Due to the Baseline Covariate
 </h3>
 
-<p>
-    Describe the anticipated variability in the baseline covariate.
-    In addition, specify how strongly the baseline covariate is correlated with
-    each response variable.
-</p>
+<div ng-show="studyDesign.responseList.length > 0 && studyDesign.gaussianCovariate == 'YES'">
 
-<p>
-    Enter the standard deviation you expect to observe for the baseline covariate
-</p>
+    <p>
+        Describe the anticipated variability in the baseline covariate.
+        In addition, specify how strongly the baseline covariate is correlated with
+        each response variable.
+    </p>
 
-<input type="text" value="1" onclick="addsigmaGaussianRandom()">
-</input>
+    <p>
+        Enter the standard deviation you expect to observe for the baseline covariate
+    </p>
 
-<p>
-    Enter the correlation you expect to observe between the covariate and each response below
-</p>
-
-<div class="input-group">
-    <table>
-        <tr>
-            <td>
-                Response Variable
-            </td>
-            <td>
-                Correlation with Random Covariate
-            </td>
-        </tr>
-        <tr ng-repeat="response in studyDesign.responseList">
-            <td>
-                {{response.value}}
-            </td>
-            <td>
-                <input type="text" value="0">
-                </input>
-            </td>
-        </tr>
-    </table>
-
-</div>
-
-<p>
-    Your design includes repeated measures.
-    Use the dropdown lists below to select the measurement
-    episode and then update the correlation values.
-</p>
-
-<div class="tab-contents">
-    <table>
-        <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-            <td>
-                {{measure.dimension}}
-            </td>
-            <td>
-                <select >
-                    <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
-                </select>
-            </td>
-
-        </tr>
-    </table>
-</div>
-
-<div><input type="checkbox"
-            data-ng-model="studyDesign.gaussianCovariate"
-            ng-true-value="YES" ng-false-value="NO">
-    Use the same correlation for all outcomes
+    <input type="text" value="1" onclick="addsigmaGaussianRandom()">
     </input>
+
+    <p>
+        Enter the correlation you expect to observe between the covariate and each response below
+    </p>
+
+    <div class="input-group">
+        <table>
+            <tr>
+                <td>
+                    Response Variable
+                </td>
+                <td>
+                    Correlation with Random Covariate
+                </td>
+            </tr>
+            <tr ng-repeat="response in studyDesign.responseList">
+                <td>
+                    {{response.value}}
+                </td>
+                <td>
+                    <input type="text" value="0">
+                    </input>
+                </td>
+            </tr>
+        </table>
+
+    </div>
 </div>
 
-<div ng-show="studyDesign.debug == true">
-    {{studyDesign.matrixSet}}
+<div ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+
+    <p>
+        Your design includes repeated measures.
+        Use the dropdown lists below to select the measurement
+        episode and then update the correlation values.
+    </p>
+
+    <div class="tab-contents">
+        <table>
+            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+                <td>
+                    {{measure.dimension}}
+                </td>
+                <td>
+                    <select >
+                        <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
+                    </select>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+    <div><input type="checkbox"
+                data-ng-model="studyDesign.gaussianCovariate"
+                ng-true-value="YES" ng-false-value="NO">
+        Use the same correlation for all outcomes
+        </input>
+    </div>
+
+    <div ng-show="studyDesign.debug == true">
+        {{studyDesign.matrixSet}}
+    </div>
+
 </div>
