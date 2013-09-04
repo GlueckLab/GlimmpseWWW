@@ -75,7 +75,7 @@ var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
             {templateUrl: 'partials/variabilityView.html', controller: 'variabilityViewController' }
         )
             .when('/variabilityCovariate',
-            {templateUrl: 'partials/variabilityView.html', controller: 'StudyDesignController' }
+            {templateUrl: 'partials/variabilityCovariateView.html', controller: 'variabilityCovariateViewController' }
         )
             .when('/variabilityScale',
             {templateUrl: 'partials/scaleFactorsForVariabilityView.html', controller: 'scaleFactorForVarianceController' }
@@ -91,6 +91,24 @@ var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
         )
             .when('/plotOptions',
             {templateUrl: 'partials/plotOptionsView.html', controller: 'plotOptionsController' }
+
+        )
+            // matrix mode screens
+            .when('/designEssence',
+            {templateUrl: 'partials/designEssenceView.html', controller: 'designEssenceController' }
+
+        )
+            // results screens
+            .when('/results/report',
+            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsController' }
+
+        )
+            .when('/results/plot',
+            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsController' }
+
+        )
+            .when('/results/matrices',
+            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsController' }
 
         )
             .otherwise({ redirectTo: '/' });

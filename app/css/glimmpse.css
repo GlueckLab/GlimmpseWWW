@@ -165,70 +165,101 @@ button:focus {
 
 
 /*
-* Main tab panel - results will be displayed in a new tab each time the
-* user hits calculate (max of 5)
-*
-* The Design tab contains the main input screen
+* Mode selection view
 *
 */
-
-#glimmpse-tabs {
+#mode-selection {
     width: 960px;
-    min-height: 500px;
+    height: 500px;
     margin: 0px auto;
-}
-
-.tab-contents {
     -moz-box-shadow: 0px 1px 4px #000;
     -webkit-box-shadow: 0px 1px 4px #000;
     box-shadow: 0px 1px 4px #000;
     background: white;
+    padding: 20px;
 }
 
-.ui-tabs {
-    /* position: relative prevents IE scroll bug
-    (element with position: relative inside container
-    with overflow: auto appear as "fixed") */
-    position: relative;
-    padding: 0px;
-    width: 960px;
+#mode-selection h3 {
+    margin: 10px 20px;
 }
-.ui-tabs .ui-tabs-nav {
-    margin: 0;
-    padding-left: 575px;
+
+#mode-selection p {
+    margin: 0px 20px;
 }
-.ui-tabs .ui-tabs-nav li {
-    list-style:none;
-    display:inline;
+
+.mode-selection-block {
+    margin: 20px 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
-.ui-tabs .ui-tabs-nav li a {
+
+.mode-selection-description {
+    padding: 10px;
+}
+
+.mode-selection-link {
+    vertical-align:middle;
+    display:inline-block;
+    color: white;
+    background: none repeat scroll 0% 0% #5DC68B;
+    border: 2px solid #58B781;
+    text-shadow: 0px 1px 3px #24603E;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+
+    font-family: "ProximaNovaRegular","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:18px;
+    text-align: center;
+
+    width: 200px;
+    line-height: 4em;
+    margin-right: 10px;
+}
+
+.mode-selection-link:hover {
+    /*background-color:#58B781;  */
+    border: 2px solid #7EC8F1;
+}
+
+
+
+/*
+* Main "tab" panel.  Allows the use to switch between the study design
+* and results display.  Not really tabs, just switchs the left nav
+*/
+#view-bar {
+    margin-left: 570px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    height: 28px;
+}
+
+#view-bar a {
     padding:5px 10px;
     display:inline-block;
     background:#666;
     color:#fff;
     text-decoration:none;
 }
-.ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+
+#view-bar a.active {
     background:#fff;
     color:#000;
 }
-.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
-.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
-.ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
-    cursor: text;
-}
-.ui-tabs .ui-tabs-nav li a, /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
-.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
-    cursor: pointer;
-}
-.ui-tabs .ui-tabs-panel {
-    display: block;
-    border-width: 0;
-    padding: 20px 0px;
+
+#glimmpse-panel {
+    width: 960px;
+    min-height: 500px;
+    margin: 0px auto;
+    -moz-box-shadow: 0px 1px 4px #000;
+    -webkit-box-shadow: 0px 1px 4px #000;
+    box-shadow: 0px 1px 4px #000;
     background: white;
-    margin: 0px;
 }
 
+<<<<<<< HEAD
 /*
 * Variability tab panel
 *
@@ -293,6 +324,8 @@ button:focus {
     margin: 0px;
 }
 
+=======
+>>>>>>> fd8c26a378a6a2bf046c4777d77112034fc12ec5
 /*
 * Design input panel consisting of left nav and input view
 *
@@ -303,7 +336,7 @@ button:focus {
 	background-color: white; 	
 	text-align: left;
 	margin: 0px 0px;
-    padding: 0px 0px;
+    padding: 20px 0px;
 }
 
 #content-table td, #results-table td {
@@ -330,10 +363,10 @@ button:focus {
     background: none repeat scroll 0% 0% #5DC68B;
     border: 2px solid #58B781;
     text-shadow: 0px 1px 3px #24603E;
-    -moz-border-radius: 1px;
-    -webkit-border-radius: 1px;
-    -khtml-border-radius: 1px;
-    border-radius: 1px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
 
     font-family: "ProximaNovaRegular","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size:20px;
@@ -342,6 +375,11 @@ button:focus {
     width: 180px;
     height: 40px;
     margin-left: 10px;
+}
+
+#calculate-grid button:hover {
+    /* background: #58B781;    */
+    border: 2px solid #7EC8F1;
 }
 
 #content, #results-content {
@@ -366,7 +404,7 @@ button:focus {
 
 /**** Navigation Accordion Styles ****/
 
-#accordion-grid {
+.accordion-grid {
     /*border-top: 1px solid #cccccc;
     border-bottom: 1px solid #cccccc; */
     width: 200px;
@@ -374,19 +412,19 @@ button:focus {
     padding-bottom: 10px;
 }
 
-#accordion * {
+.accordion * {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-#accordion {
+.accordion, #results-navbar {
     width: 180px;
     margin-left: 10px;
     font-family: Helvetica, Arial, sans-serif;
 }
 
-#accordion .ui-accordion-header, .results-nav {
+.accordion .ui-accordion-header, #results-navbar a {
     margin: 0px;
 
     /*border: 1px solid #cccccc;   */
@@ -401,7 +439,7 @@ button:focus {
 
 }
 
-#accordion .ui-accordion-header a, .results-nav button {
+.accordion .ui-accordion-header a, #results-navbar a {
     color: #999999;
     /*text-shadow: 1px 1px 1px #545454;   */
     margin: 0px;
@@ -412,13 +450,13 @@ button:focus {
     text-indent: 10px;
 }
 
-#accordion .ui-accordion-header a:hover {
+.accordion .ui-accordion-header a:hover, #results-navbar a:hover {
     background: #2E628B;
     color: white;
     text-shadow: 1px 1px 1px #545454;
 }
 
-#accordion .ui-accordion-header.ui-state-active  {
+.accordion .ui-accordion-header.ui-state-active, #results-navbar .active  {
     color: white; /*#1D5C84;*/
     /*background: #3BA6E9;       */
     border: none;
@@ -433,17 +471,17 @@ button:focus {
 
 }
 
-#accordion .ui-accordion-header.ui-state-active a {
+.accordion .ui-accordion-header.ui-state-active a {
     color: white;
     text-shadow: 1px 1px 1px #3188BF;
 }
 
-#accordion .ui-accordion-header.ui-state-active a:hover {
+.accordion .ui-accordion-header.ui-state-active a:hover {
     color: white; /*#1D5C84;*/
     background: #3BA6E9;
 }
 
-#accordion .ui-accordion-content {
+.accordion .ui-accordion-content {
     border-right: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
@@ -454,11 +492,11 @@ button:focus {
     line-height: 16pt;
 }
 
-#accordion .ui-accordion-content > * {
+.accordion .ui-accordion-content > * {
     margin: 0px;
     border-bottom: 1px solid #eee;
 }
-#accordion .ui-accordion-content a {
+.accordion .ui-accordion-content a {
     width: 100%;
     color: black;
     text-align: left;
@@ -467,7 +505,7 @@ button:focus {
     line-height: 24pt;
 }
 
-#accordion .ui-accordion-content label {
+.accordion .ui-accordion-content label {
     width: 100%;
     color: #ccc;
     text-align: left;
@@ -477,11 +515,11 @@ button:focus {
     line-height: 24pt;
 }
 
-#accordion .ui-accordion-content .active a {
+.accordion .ui-accordion-content .active a {
     font-weight: bold;
     color: #2B5F89;
 }
-#accordion .ui-accordion-content .active {
+.accordion .ui-accordion-content .active {
     border-left: 4px solid #2B5F89;  /* #87CD7C; #FF8C11;  */
     /*background-color: #F0F4F7;     */
 }

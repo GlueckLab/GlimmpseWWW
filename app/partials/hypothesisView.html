@@ -65,7 +65,7 @@
                     </td>
                     <td>
                         <input type="text"
-                               value="0"
+                               value="0"  data-ng-click="addMeansToMatrixSet()"
                                autocomplete="off" autofocus required >
                     </td>
                 </tr>
@@ -225,9 +225,61 @@
                     </td>
                     <td>
                         <button value="Edit trend" ng-show="isSelected(factor.value)"
-                                data-ng-click="showTrendDialog()">
+                                data-ng-click="showTrendDialog(factor.value)">
                          Edit Trend
                         </button>
+                    </td>
+                    <td>
+                        <div id="{{factor.value}}-trend"
+                                style="display:none">
+                            :{{studyDesign.hypothesis[0].betweenParticipantFactorMapList
+                            [getBetweenFactorIndexByName(factor.value)].type}}
+                        </div>
+
+                    </td>
+                    <td>
+                        <div class="dual-list-right rounded-box">
+                            <div id="{{factor.value}}"  style="display:none;">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateBetweenFactorTypeOfTrend('NONE', factor.value)">
+                                            None
+                                            </input>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateBetweenFactorTypeOfTrend
+                                                   ('CHANGE_FROM_BASELINE', factor.value)">
+                                            Change from baseline
+                                            </input>
+                                        </td>
+                                        <td>
+                                            <img src="img/change_from_baseline.png"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="trendTypeInteraction"
+                                                   data-ng-click="updateBetweenFactorTypeOfTrend('LINEAR', factor.value)">
+                                            Linear Trend
+                                            </input>
+                                        </td>
+                                        <td>
+                                            <img src="img/linear_trend_only.png"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             </table>
@@ -245,18 +297,27 @@
                     </td>
                     <td>
                        <button value="Edit trend" ng-show="isSelected(measure.dimension)"
-                               ng-click="showTrendDialog(measure)">
+                               data-ng-click="showTrendDialog(measure.dimension)">
                        Edit Trend
                        </button>
                     </td>
                     <td>
-                        <div class="dual-list-right rounded-box" ng-show="selectedTrend != undefined">
-                            <div class="input-group">
+                        <div id="{{measure.dimension}}-trend"
+                             style="display:none">
+                            :{{studyDesign.hypothesis[0].repeatedMeasuresMapTree
+                            [getWithinFactorIndexByName(measure.dimension)].type}}
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <div class="dual-list-right rounded-box">
+                            <div id="{{measure.dimension}}"  style="display:none;">
                                 <table>
                                     <tr>
                                         <td>
                                             <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateTypeOfTrend('NONE')">
+                                                   data-ng-click="updateWithinFactorTypeOfTrend('NONE', measure.dimension)">
                                             None
                                             </input>
                                         </td>
@@ -267,7 +328,8 @@
                                     <tr>
                                         <td>
                                             <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateTypeOfTrend('CHANGE_FROM_BASELINE')">
+                                                   data-ng-click="updateWithinFactorTypeOfTrend
+                                                   ('CHANGE_FROM_BASELINE', measure.dimension)">
                                             Change from baseline
                                             </input>
                                         </td>
@@ -279,7 +341,7 @@
                                     <tr>
                                         <td>
                                             <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateTypeOfTrend('LINEAR')">
+                                                   data-ng-click="updateWithinFactorTypeOfTrend('LINEAR', measure.dimension)">
                                             Linear Trend
                                             </input>
                                         </td>

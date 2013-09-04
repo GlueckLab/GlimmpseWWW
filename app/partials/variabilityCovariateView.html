@@ -1,0 +1,95 @@
+<!doctype html>
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+
+<h3>  Variability Due to the Baseline Covariate
+</h3>
+
+<p>
+    Describe the anticipated variability in the baseline covariate.
+    In addition, specify how strongly the baseline covariate is correlated with
+    each response variable.
+</p>
+
+<p>
+    Enter the standard deviation you expect to observe for the baseline covariate
+</p>
+
+<input type="text" value="1" onclick="addsigmaGaussianRandom()">
+</input>
+
+<p>
+    Enter the correlation you expect to observe between the covariate and each response below
+</p>
+
+<div class="input-group">
+    <table>
+        <tr>
+            <td>
+                Response Variable
+            </td>
+            <td>
+                Correlation with Random Covariate
+            </td>
+        </tr>
+        <tr ng-repeat="response in studyDesign.responseList">
+            <td>
+                {{response.value}}
+            </td>
+            <td>
+                <input type="text" value="0">
+                </input>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<p>
+    Your design includes repeated measures.
+    Use the dropdown lists below to select the measurement
+    episode and then update the correlation values.
+</p>
+
+<div class="tab-contents">
+    <table>
+        <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+            <td>
+                {{measure.dimension}}
+            </td>
+            <td>
+                <select >
+                    <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
+                </select>
+            </td>
+
+        </tr>
+    </table>
+</div>
+
+<div><input type="checkbox"
+            data-ng-model="studyDesign.gaussianCovariate"
+            ng-true-value="YES" ng-false-value="NO">
+    Use the same correlation for all outcomes
+    </input>
+</div>
+
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.matrixSet}}
+</div>

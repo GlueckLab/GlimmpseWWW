@@ -21,14 +21,127 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, studyDesignService, powerService) {
+    function($scope, $location, $http, studyDesignService, powerService) {
 
     /**
      * Initialize the controller
      */
     init();
     function init() {
+        // the study design object
         $scope.studyDesign = studyDesignService;
+
+        // the power service
+        $scope.powerService = powerService;
+
+        // json encoded study design
+        $scope.studyDesignJSON = "hello world";
+
+        // view mode (either "Study Design" or "Results"
+        // input mode (either guided or matrix)
+        /*
+        * Mode indicates if the user selected guided or matrix mode
+        * View indicates if the user is viewing the study design or
+        *   results 'tab'
+        * staleResults indicates that the design has changed since
+        *   the user last clicked calculate.
+         */
+        $scope.state = {
+            mode: undefined,
+            view: 'studyDesign',
+            staleResults: true
+        }
+    }
+
+    /**
+     * clear the study design
+     */
+    $scope.reset = function() {
+        if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            init();
+        }
+    }
+
+
+    /**
+     * Upload a study design file
+     * @param input
+     * @param parentScope
+     */
+    $scope.uploadFile = function(input) {
+        var $form = $(input).parents('form');
+
+        if (input.value == '') {
+            window.alert("No file was selected.  Please try again");
+        }
+
+        $form.ajaxSubmit({
+            type: 'POST',
+            uploadProgress: function(event, position, total, percentComplete) {
+            },
+            error: function(event, statusText, responseText, form) {
+                /*
+                 handle the error ...
+                 */
+                window.alert("The study design file could not be loaded: " + responseText);
+                $form.reset();
+            },
+            success: function(responseText, statusText, xhr, form) {
+                // parse the json
+                var uploadedStudyDesign = angular.fromJson(responseText);
+
+                if (uploadedStudyDesign == undefined) {
+                      window.alert("The file did not contain a valid study design");
+                    $scope.$apply(function() {
+                        $scope.state.mode = undefined;
+                        $scope.state.view = 'studyDesign';
+                    });
+                } else {
+                    // set to the study design object
+
+                    // select the appropriate input mode
+                    $scope.$apply(function() {
+                        $scope.state.mode = uploadedStudyDesign.viewTypeEnum;
+                        $scope.state.view = 'studyDesign';
+                    });
+                }
+                $form.reset();
+            }
+        });
+
+    }
+
+    /**
+     * Called prior to submission of save form.  Updates
+     * the value of the study design JSON in a hidden field
+     * in the save form.
+     */
+    $scope.updateStudyDesignJSON = function() {
+        $scope.studyDesignJSON = angular.toJson($scope.studyDesign);
+    }
+
+    /**
+     * Switch between the study design view and the results view
+     * @param view
+     */
+    $scope.setView = function(view) {
+        $scope.state.view = view;
+    }
+
+    $scope.getView = function() {
+        return $scope.state.view;
+    }
+
+    /**
+     * Switch between matrix and guided mode
+     * @param mode
+     */
+    $scope.setMode = function(mode) {
+        $scope.state.mode = mode;
+    }
+
+    $scope.getMode = function() {
+        return $scope.state.mode;
     }
 
     /**
@@ -79,8 +192,73 @@ glimmpseApp.controller('stateController',
         );
     }
 
+    /**
+     * Calculate power or sample size results
+     */
     $scope.calculate = function() {
-
+         var fakeData =
+            "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
+                "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
+                "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
+                "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
+                "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
+                "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
+                "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
+                "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
+                "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
+                "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
+                "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
+                "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
+                "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
+                "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
+                "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
+                ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
+                "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
+                "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
+                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
+                "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
+                "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
+                "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
+                "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
+                "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
+                "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
+                "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
+                "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
+                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
+                "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
+                "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
+                "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
+                "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
+                "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
+                "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
+                "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
+                "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
+        // get the results
+        if (studyDesignService.solutionTypeEnum == 'power') {
+            // TODO: powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
+            // TODO: open processing dialog
+            $scope.powerService.calculatePower(fakeData).then(function(data) {
+                    // close processing dialog
+                    // enable results tab
+                    powerService.cachedResults = data;
+                    powerService.cachedError = undefined;
+                },
+                function(errorMessage){
+                    // close processing dialog
+                    powerService.cachedResults = undefined;
+                    powerService.cachedError = errorMessage;
+                });
+        } else {
+            $scope.powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
+                    $scope.powerResults = data;
+                    $scope.error = undefined;
+                },
+                function(errorMessage){
+                    $scope.powerResults = undefined;
+                    $scope.error = errorMessage;
+                });
+        }
     }
 
     /**
@@ -422,6 +600,33 @@ glimmpseApp.controller('stateController',
         // TODO: finish
         return 'complete';
     }
+
+
+    $scope.getStateDesignEssence = function() {
+        // TODO
+    }
+    $scope.getStateBeta = function() {
+        // TODO
+    }
+    $scope.getStateBetweenParticipantContrast = function() {
+        // TODO
+    }
+    $scope.getStateWithinParticipantContrast = function() {
+        // TODO
+    }
+    $scope.getStateThetaNull = function() {
+        // TODO
+    }
+    $scope.getStateSigmaE = function() {
+        // TODO
+    }
+    $scope.getStateSigmaG = function() {
+        // TODO
+    }
+    $scope.getStateSigmaGY = function() {
+        // TODO
+    }
+
 
 })
 
@@ -1138,12 +1343,22 @@ glimmpseApp.controller('stateController',
         }
 
         /**
+         * Update matrixSet with grand mean values
+         */
+        $scope.addMeansToMatrixSet = function() {
+            studyDesignService.matrixSet.push({
+            idx:0,name:'thetaNull',rows:2,columns:1,data:{data:[[25],[35]]}
+            });
+
+        };
+
+        /**
          * Update predictors of interest for between factors
          */
         $scope.updateBetweenFactor =function(factor, element) {
                element.checked = !element.checked;
                 if(element.checked == true) {
-                    if ($scope.getBetweenFactorIndexByName(factor) == -1) {
+                    if ($scope.getBetweenFactorIndexByName(factor.value) == -1) {
                         studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push({
                         type:'NONE', betweenParticipantFactor:factor
                         });
@@ -1157,7 +1372,7 @@ glimmpseApp.controller('stateController',
                 else {
                     studyDesignService.hypothesis[0].
                         betweenParticipantFactorMapList.splice(
-                            $scope.getBetweenFactorIndexByName(factor), 1);
+                            $scope.getBetweenFactorIndexByName(factor.value), 1);
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == factor.value) {
                             $scope.varList[i].selected = false;
@@ -1173,7 +1388,7 @@ glimmpseApp.controller('stateController',
         $scope.updateWithinFactor = function(measure, element) {
                 element.checked = !element.checked;
                 if(element.checked == true) {
-                    if ($scope.getWithinFactorIndexByName(measure) == -1) {
+                    if ($scope.getWithinFactorIndexByName(measure.dimension) == -1) {
                         studyDesignService.hypothesis[0].repeatedMeasuresMapTree.push({
                         type:'NONE', repeatedMeasuresNode:measure
                         });
@@ -1187,7 +1402,7 @@ glimmpseApp.controller('stateController',
                 else {
                     studyDesignService.hypothesis[0].
                         repeatedMeasuresMapTree.splice(
-                            $scope.getWithinFactorIndexByName(measure), 1);
+                            $scope.getWithinFactorIndexByName(measure.dimension), 1);
                     for (var i=0; i < $scope.varList.length; i++) {
                         if ($scope.varList[i].name == measure.dimension) {
                             $scope.varList[i].selected = false;
@@ -1199,11 +1414,11 @@ glimmpseApp.controller('stateController',
         /**
          * Use the name of a between factor to find its index
          */
-        $scope.getBetweenFactorIndexByName = function(factor) {
+        $scope.getBetweenFactorIndexByName = function(factorName) {
 
             for (var i=0; i < studyDesignService.hypothesis[0].betweenParticipantFactorMapList.
                 length; i++) {
-                if (factor.value == studyDesignService.hypothesis[0].
+                if (factorName == studyDesignService.hypothesis[0].
                     betweenParticipantFactorMapList[i].betweenParticipantFactor.value) {
                     return i;
                 }
@@ -1214,10 +1429,10 @@ glimmpseApp.controller('stateController',
         /**
          * Use the name of a within factor to find its index
          */
-        $scope.getWithinFactorIndexByName = function(measure) {
+        $scope.getWithinFactorIndexByName = function(measureName) {
 
             for (var i=0; i < studyDesignService.hypothesis[0].repeatedMeasuresMapTree.length; i++) {
-                if (measure.dimension == studyDesignService.hypothesis[0].repeatedMeasuresMapTree[i].
+                if (measureName == studyDesignService.hypothesis[0].repeatedMeasuresMapTree[i].
                     repeatedMeasuresNode.dimension) {
                     return i;
                 }
@@ -1237,24 +1452,23 @@ glimmpseApp.controller('stateController',
             }
         };
 
-
-
         /**
          * Display a dialog box to select trend
          */
-        $scope.showTrendDialog = function(measure) {
+        $scope.showTrendDialog = function(predictorName) {
+            document.getElementById(predictorName).style.display = "block";
+            document.getElementById(predictorName+"-trend").style.display = "block";
 
-            $scope.selectedTrend = 'NONE';
 
         };
 
-        $scope.centeredPopup = function(url,winName,w,h,scroll) {
+        /*$scope.centeredPopup = function(url,winName,w,h,scroll) {
             var LeftPosition = (screen.width) ? (screen.width-w)/2 : 0;
             var TopPosition = (screen.height) ? (screen.height-h)/2 : 0;
             var settings =
                 'height='+h+',width='+w+',top='+TopPosition+',left='+LeftPosition+',scrollbars='+scroll+',resizable'
             popupWindow = window.open(url,winName,settings)
-        };
+        }; */
 
         $scope.addBetweenPredictorMainEffect = function(factor) {
 
@@ -1300,13 +1514,30 @@ glimmpseApp.controller('stateController',
 
         $scope.updateTypeOfTrend = function(typeOfTrend) {
               if (studyDesignService.hypothesis[0].betweenParticipantFactorMapList.length < 1) {
-                  window.alert("inside update trend with [] betweenFactor");
+                  //window.alert("inside update trend with [] betweenFactor");
+                  //var index = $scope.getWithinFactorIndexByName(divNameToHide);
                   studyDesignService.hypothesis[0].repeatedMeasuresMapTree[0].type = typeOfTrend;
               }
               else if (studyDesignService.hypothesis[0].repeatedMeasuresMapTree.length < 1) {
-                  window.alert("inside update trend with [] repeatedMeasure");
+                  //window.alert("inside update trend with [] repeatedMeasure");
+                  //var index = $scope.getBetweenFactorIndexByName(divNameToHide);
                   studyDesignService.hypothesis[0].betweenParticipantFactorMapList[0].type = typeOfTrend;
               }
+
+        };
+
+        $scope.updateWithinFactorTypeOfTrend = function(typeOfTrend, divNameToHide) {
+            var index = $scope.getWithinFactorIndexByName(divNameToHide);
+            studyDesignService.hypothesis[0].repeatedMeasuresMapTree[index].type = typeOfTrend;
+            document.getElementById(divNameToHide).style.display = "none";
+            document.getElementById(divNameToHide+"-trend").style.display = "block";
+        };
+
+        $scope.updateBetweenFactorTypeOfTrend = function(typeOfTrend, divNameToHide) {
+            var index = $scope.getBetweenFactorIndexByName(divNameToHide);
+            studyDesignService.hypothesis[0].betweenParticipantFactorMapList[index].type = typeOfTrend;
+            document.getElementById(divNameToHide).style.display = "none";
+            document.getElementById(divNameToHide+"-trend").style.display = "block";
         };
 
     })
@@ -1449,6 +1680,25 @@ glimmpseApp.controller('stateController',
     })
 
 /**
+ * Controller for variability covariate within view
+ */
+    .controller('variabilityCovariateViewController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+
+        }
+
+        $scope.addSigmaGaussianRandom = function() {
+            studyDesignService.matrixSet.push({
+                idx:0, name:'sigmaGaussianRandom', rows:1, columns:1,
+                data:{data:[[10]]}
+            });
+        };
+
+    })
+
+/**
  * Controller for the plot options view
  */
     .controller('plotOptionsController', function($scope, studyDesignService) {
@@ -1543,7 +1793,6 @@ glimmpseApp.controller('stateController',
     })
 
 /**
-<<<<<<< HEAD
  * Controller for relative group size view
  */
     .controller('relativeGroupSizeController', function($scope, studyDesignService) {
@@ -1594,86 +1843,31 @@ glimmpseApp.controller('stateController',
         };
 
     })
+    /**
+     * controller for the design essence screen in matrix mode
+     */
+    .controller('designEssenceController', function($scope, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.data = [
+                [1,2,1],
+                [4,5,6],
+                [7,8,9]
+            ];
+        };
+    })
 
- /**
-  * Controller for the results screen
- */
+    /**
+     * Controller for the results screen
+     */
     .controller('resultsController', function($scope, studyDesignService, powerService) {
         init();
         function init() {
-            $scope.view = undefined;
             $scope.studyDesign = studyDesignService;
-            $scope.powerResults = undefined;
-            $scope.error = undefined;
-            $scope.fakeData =
-                "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
-                    "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
-                    "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
-                    "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
-                    "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
-                    "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
-                    "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
-                    "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
-                    "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
-                    "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
-                    "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                    "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
-                    "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
-                    "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
-                    "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
-                    "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
-                    ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
-                    "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
-                    "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
-                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
-                    "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
-                    "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
-                    "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
-                    "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
-                    "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
-                    "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
-                    "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
-                    "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
-                    "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
-                    "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                    "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
-                    "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
-                    "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
-                    "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
-                    "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
-                    "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
-                    "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
-            // get the results
-            if (studyDesignService.solutionTypeEnum == 'power') {
-                //powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
-                powerService.getPower($scope.fakeData).then(function(data) {
-                    $scope.powerResults = data;
-                    $scope.error = undefined;
-                },
-                function(errorMessage){
-                    window.alert("test");
-                    $scope.powerResults = undefined;
-                    $scope.error = errorMessage;
-                });
-            } else {
-                powerService.getSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
-                    $scope.powerResults = data;
-                    $scope.error = undefined;
-                },
-                function(errorMessage){
-                    $scope.powerResults = undefined;
-                    $scope.error = errorMessage;
-                });
-            }
-        }
+            $scope.powerService = powerService;
+        };
 
-        /**
-         * Switch between the plot and report views
-         * @param view
-         */
-        $scope.setView = function(view) {
-            $scope.view = view;
-        }
     })
 
 /**
