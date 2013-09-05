@@ -40,10 +40,16 @@
 
     <div><input type="checkbox" name="newCovariateDesign"
                 data-ng-model="studyDesign.gaussianCovariate"
-                ng-true-value="YES" ng-false-value="NO">Control for a single,
-        normally distributed predictor.</input></div>
+                ng-true-value="YES" ng-false-value="NO"
+                ng-click="setMatrixSet()">
+        Control for a single, normally distributed predictor.
+        </input></div>
 
 
 </div>
+</div>
+
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.matrixSet}}
 </div>
 

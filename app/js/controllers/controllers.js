@@ -957,6 +957,7 @@ glimmpseApp.controller('stateController',
             }
             // reset the new response to null
             $scope.newResponse = '';
+            $scope.updateMatrixSet();
         };
 
         /**
@@ -978,6 +979,8 @@ glimmpseApp.controller('stateController',
             if (!response.value) {
                 $scope.deleteResponse(response);
             }
+
+
         };
 
         /**
@@ -986,6 +989,37 @@ glimmpseApp.controller('stateController',
         $scope.deleteResponse = function(response) {
             studyDesignService.responseList.splice(
                 studyDesignService.responseList.indexOf(response), 1);
+            $scope.updateMatrixSet();
+        };
+
+        $scope.updateMatrixSet = function() {
+            var previousLength = studyDesignService.matrixSet[1].columns;
+            var currentLength = 1;
+            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
+                currentLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
+            }
+            currentLength *= studyDesignService.responseList.length;
+            var difference = currentLength - previousLength;
+            if (difference > 0) {
+                studyDesignService.matrixSet[1].columns = currentLength;
+                studyDesignService.matrixSet[3].rows = currentLength;
+
+                for (var i=0; i < difference; i++) {
+                    studyDesignService.matrixSet[1].data.data[0].push(0);
+                    studyDesignService.matrixSet[2].data.data[0].push(1);
+                    studyDesignService.matrixSet[3].data.data.push([0]);
+                }
+            }
+            else if (difference < 0) {
+                window.alert("diff < 0");
+                studyDesignService.matrixSet[1].columns = currentLength;
+                studyDesignService.matrixSet[3].rows = currentLength;
+                for (var i=difference; i < 0; i++) {
+                    studyDesignService.matrixSet[1].data.data[0].pop();
+                    studyDesignService.matrixSet[2].data.data[0].pop();
+                    studyDesignService.matrixSet[3].data.data.pop();
+                }
+            }
         };
     })
 
@@ -1081,7 +1115,59 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            //$scope.hasCovariate = undefined;
         }
+
+        $scope.setMatrixSet = function() {
+            //studyDesignService.gaussianCovariate = $scope.hasCovariate;
+            if (studyDesignService.gaussianCovariate == 'YES') {
+                //studyDesignService.gaussianCovariate = true;
+                var dataForBeta = [];
+                var dataForBetaRandom = [];
+                var dataForsigmaOutcomeGaussianRandom = [];
+                var totalLength = 1;
+                for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
+                    totalLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
+                }
+                totalLength *= studyDesignService.responseList.length;
+
+                studyDesignService.matrixSet.push({
+                    idx:0, name:'sigmaGaussianRandom', rows:1, columns:1,
+                    data:{data:[[0]]}
+                });
+
+                for (var i=0; i < totalLength; i++) {
+                    dataForBeta.push(0);
+                    dataForBetaRandom.push(1);
+                    dataForsigmaOutcomeGaussianRandom.push([0]);
+                }
+
+                //set the three lists in matrix set
+                studyDesignService.matrixSet.push({
+                    idx:0, name:'beta', rows:1,
+                    columns:totalLength,
+                    data:{data:[dataForBeta]}
+                });
+
+                studyDesignService.matrixSet.push({
+                    idx:0, name:'betaRandom', rows:1,
+                    columns:0,
+                    data:{data:[dataForBetaRandom]}
+                });
+
+                studyDesignService.matrixSet.push({
+                    idx:0, name:'sigmaOutcomeGaussianRandom',
+                    rows:totalLength,
+                    columns:1,
+                    data:{data:dataForsigmaOutcomeGaussianRandom}
+                });
+
+            }
+            else {
+                //studyDesignService.gaussianCovariate = false;
+                studyDesignService.matrixSet = [];
+            }
+        };
     })
 
 
@@ -1211,30 +1297,22 @@ glimmpseApp.controller('stateController',
                 studyDesignService.repeatedMeasuresTree.push({
                     idx: studyDesignService.repeatedMeasuresTree.length,
                     node: 0, parent: 0, repeatedMeasuresDimensionType: "numeric"
-                })
+                });
             }
+            $scope.updateMatrixSet();
         };
 
         /**
-         * Add a spacingList to repeated measure
+         * Update spacingList of repeated measure
          */
-        $scope.addSpacingList = function(measure) {
+        $scope.updateNoOfMeasurements = function(measure) {
             measure.spacingList = [];
             var nOfMeasurements =  measure.numberOfMeasurements;
             for (var i=1; i<=nOfMeasurements; i++)
                 measure.spacingList.push({
                     idx:'0', value:i
                 });
-
-        };
-
-        /**
-         * Change spacingList values in repeated measure
-         */
-        $scope.changeSpacingList = function(measure, spacingObject) {
-            window.alert(spacingObject.value);
-            //measure.spacingList[spacingObject.value] = ;
-            //window.alert("inside changing");
+            $scope.updateMatrixSet();
         };
 
         /**
@@ -1242,6 +1320,7 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeMeasure = function() {
             studyDesignService.repeatedMeasuresTree.pop();
+            $scope.updateMatrixSet();
         };
 
         /**
@@ -1249,14 +1328,40 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeMeasuring = function() {
             studyDesignService.repeatedMeasuresTree = [];
+            $scope.updateMatrixSet();
+        };
+
+        $scope.updateMatrixSet = function() {
+            var previousLength = studyDesignService.matrixSet[1].columns;
+            var currentLength = 1;
+            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
+                currentLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
+            }
+            currentLength *= studyDesignService.responseList.length;
+            var difference = currentLength - previousLength;
+            if (difference > 0) {
+                studyDesignService.matrixSet[1].columns = currentLength;
+                studyDesignService.matrixSet[3].rows = currentLength;
+
+                for (var i=0; i < difference; i++) {
+                    studyDesignService.matrixSet[1].data.data[0].push(0);
+                    studyDesignService.matrixSet[2].data.data[0].push(1);
+                    studyDesignService.matrixSet[3].data.data.push([0]);
+                }
+            }
+            else if (difference < 0) {
+                window.alert("diff < 0");
+                studyDesignService.matrixSet[1].columns = currentLength;
+                studyDesignService.matrixSet[3].rows = currentLength;
+                for (var i=difference; i < 0; i++) {
+                    studyDesignService.matrixSet[1].data.data[0].pop();
+                    studyDesignService.matrixSet[2].data.data[0].pop();
+                    studyDesignService.matrixSet[3].data.data.pop();
+                }
+            }
         };
 
     })
-
-/**
- * Child controller for repeated measures
- */
-
 
 
 /**
@@ -1686,13 +1791,15 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.STDValue = undefined;
 
         }
 
-        $scope.addSigmaGaussianRandom = function() {
+        $scope.addSigmaGaussianRandom = function(STDValue) {
+            var stdValue = $scope.STDValue;
             studyDesignService.matrixSet.push({
                 idx:0, name:'sigmaGaussianRandom', rows:1, columns:1,
-                data:{data:[[10]]}
+                data:{data:[[STDValue]]}
             });
         };
 

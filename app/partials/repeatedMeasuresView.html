@@ -40,7 +40,7 @@
             Remove Repeated Measures</button>
 
         <ul type=none>
-            <li ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+            <li ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
                 <form name="repeatedMeasuresForm">
                     <div class="input-group">
                         <table>
@@ -72,7 +72,7 @@
                                 </td>
                                 <td>
                                     <input name="nOfMeasurements" type="number" ng-model=
-                                            "measure.numberOfMeasurements" ng-change="addSpacingList(measure)"
+                                            "measure.numberOfMeasurements" ng-change="updateNoOfMeasurements(measure)"
                                            min='2' autocomplete="off" autofocus required > <br/>
                                     <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">
                                         Please enter an integer greater than or equal to 2</span>
@@ -84,8 +84,11 @@
                                 </td>
                                 <td>
                                     <ul type=none>
-                                        <li ng-repeat="spacing in measure.spacingList">
-                                            <input type="text" value="{{spacing.value}}" ng-change="changeSpacingList(measure, spacing)"
+                                        <li ng-repeat="spacing in measure.spacingList track by $id($index)">
+                                            <input type="text" value="{{spacing.value}}"
+                                                   ng-model="studyDesign.repeatedMeasuresTree[$parent.$index].
+                                                   spacingList[$index].value"
+
                                                    autocomplete="off" autofocus required >
                                             </input>
                                         </li>
@@ -95,7 +98,7 @@
                             <tr>
                                 <td>
                                 <button ng-show="measure.numberOfMeasurements > 0"
-                                        ng-clicked="addSpacingList(measure)">
+                                        ng-change="addSpacingList(measure)">
                                     Reset to Equal Spacing
                                 </button>
                                 </td>

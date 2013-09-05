@@ -22,7 +22,7 @@
 </h3>
 
 <div ng-show="studyDesign.responseList.length > 0 &&
-studyDesign.gaussianCovariate == 'YES'">
+    studyDesign.gaussianCovariate == 'YES'">
 
     <p>
         Describe the anticipated variability in the baseline covariate.
@@ -56,7 +56,9 @@ studyDesign.gaussianCovariate == 'YES'">
                     {{response.value}}
                 </td>
                 <td>
-                    <input type="text" value="0">
+                    <input name="stdValue" type="text" value="0" ng-model="STDValue"
+                           ng-change="addSigmaGaussianRandom()">
+
                     </input>
                 </td>
             </tr>
@@ -65,7 +67,8 @@ studyDesign.gaussianCovariate == 'YES'">
     </div>
 </div>
 
-<div ng-show="studyDesign.repeatedMeasuresTree.length > 0">
+<div ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.gaussianCovariate == 'YES'
+    && studyDesign.responseList.length > 0">
 
     <p>
         Your design includes repeated measures.
