@@ -21,7 +21,8 @@
 <h3>  Variability Due to the Baseline Covariate
 </h3>
 
-<div ng-show="studyDesign.responseList.length > 0 && studyDesign.gaussianCovariate == 'YES'">
+<div ng-show="studyDesign.responseList.length > 0 &&
+studyDesign.gaussianCovariate == 'YES'">
 
     <p>
         Describe the anticipated variability in the baseline covariate.
@@ -94,9 +95,8 @@
         Use the same correlation for all outcomes
         </input>
     </div>
+</div>
 
-    <div ng-show="studyDesign.debug == true">
-        {{studyDesign.matrixSet}}
-    </div>
-
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.matrixSet}}
 </div>

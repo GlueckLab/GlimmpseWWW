@@ -1696,6 +1696,50 @@ glimmpseApp.controller('stateController',
             });
         };
 
+        $scope.addMatrixSetComponents = function() {
+
+            var dataForBeta = [];
+            var dataForBetaRandom = [];
+            var dataForsigmaOutcomeGaussianRandom = [];
+            var flag = true;
+            for (var i=0; i < studyDesignService.responseList.length; i++) {
+                dataForBeta.push(0);
+                dataForBetaRandom.push(1);
+                dataForsigmaOutcomeGaussianRandom.push(10);
+            }
+            for (var j=0; j < studyDesignService.repeatedMeasuresTree.length; j++) {
+                dataForBeta.push(0);
+                dataForBetaRandom.push(1);
+                if (flag == true) {
+                    dataForsigmaOutcomeGaussianRandom.push(10);
+                }
+                else {
+                    dataForsigmaOutcomeGaussianRandom.push(0);
+                }
+            }
+
+            studyDesignService.matrixSet.push({
+                idx:0, name:'beta', rows:1,
+                columns:studyDesignService.responseList.length,
+                data:{data:[dataForBeta]}
+                });
+
+            studyDesignService.matrixSet.push({
+                idx:0, name:'betaRandom', rows:1,
+                columns:0,
+                data:{data:[dataForBetaRandom]}
+                });
+
+            studyDesignService.matrixSet.push({
+                idx:0, name:'sigmaOutcomeGaussianRandom',
+                rows:studyDesignService.responseList.length,
+                columns:1,
+                data:{data:[dataForsigmaOutcomeGaussianRandom]}
+            });
+            return 1;
+
+        };
+
     })
 
 /**
