@@ -58,6 +58,7 @@ glimmpseApp.controller('stateController',
      */
     $scope.reset = function() {
         if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            $scope.studyDesign.reset();
             init();
         }
     }

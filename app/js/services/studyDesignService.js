@@ -102,6 +102,54 @@ glimmpseApp.factory('studyDesignService', function() {
     /** The matrix set. */
     studyDesignInstance.matrixSet = [];
 
+    /*** Methods ***/
+
+    /**
+     * Extract study design information from the uploaded study design
+     * @param designJSON
+     */
+    studyDesignInstance.fromJSON = function(designJSON) {
+
+    }
+
+    /**
+     * Return the JSON representation of the study design instance
+     */
+    studyDesignInstance.toJSON = function() {
+
+    }
+
+    /**
+     * Reset the study design instance to the default state
+     */
+    studyDesignInstance.reset = function() {
+
+        studyDesignInstance.uuid = [];
+        studyDesignInstance.name = null;
+        studyDesignInstance.gaussianCovariate = false;
+        studyDesignInstance.solutionTypeEnum = 'power';
+        studyDesignInstance.participantLabel = null;
+        studyDesignInstance.viewTypeEnum = null;
+        studyDesignInstance.confidenceIntervalDescriptions = null;
+        studyDesignInstance.powerCurveDescriptions = null;
+        studyDesignInstance.alphaList = [];
+        studyDesignInstance.betaScaleList = [];
+        studyDesignInstance.sigmaScaleList = [];
+        studyDesignInstance.relativeGroupSizeList = [];
+        studyDesignInstance.sampleSizeList = [];
+        studyDesignInstance.statisticalTestList = [];
+        studyDesignInstance.powerMethodList = [];
+        studyDesignInstance.quantileList = [];
+        studyDesignInstance.nominalPowerList = [];
+        studyDesignInstance.responseList = [];
+        studyDesignInstance.betweenParticipantFactorList = [];
+        studyDesignInstance.repeatedMeasuresTree = [];
+        studyDesignInstance.clusteringTree = [];
+        studyDesignInstance.hypothesis = [{idx:1, type:'GRAND_MEAN', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
+        studyDesignInstance.covariance = [];
+        studyDesignInstance.matrixSet = [];
+    }
+
     return studyDesignInstance;
 
 });
