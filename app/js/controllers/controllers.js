@@ -21,7 +21,7 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, $http, $modal,
+    function($scope, $location, $http,
              glimmpseConstants, studyDesignService, powerService) {
 
     /**
