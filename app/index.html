@@ -61,6 +61,18 @@
                 autoHeight: false,
                 navigation: true
             });
+
+//
+//            window.onbeforeunload = function (event) {
+//                var message = 'This action will clear your study design information.  Continue?';
+//                if (typeof event == 'undefined') {
+//                    event = window.event;
+//                }
+//                if (event) {
+//                    event.returnValue = message;
+//                }
+//                return message;
+//            }
         });
 
     </script>
@@ -93,7 +105,7 @@
             <table>
                 <tr>
                     <td class="mode-selection-link-container">
-                        <a href="#/" data-ng-click="setMode('GUIDED_MODE')" class="mode-selection-link">Guided Study Design</a>
+                        <a href="#/" data-ng-click="setMode(glimmpseConstants.modeGuided)" class="mode-selection-link">Guided Study Design</a>
                     </td>
                     <td class="mode-selection-description rounded-box white-box">
                         Build common study designs including ANOVA, ANCOVA, and regression with guidance from the
@@ -107,7 +119,7 @@
             <table>
                 <tr>
                     <td>
-                        <a href="#/" data-ng-click="setMode('MATRIX_MODE')" class="mode-selection-link">Matrix Study Design</a>
+                        <a href="#/" data-ng-click="setMode(glimmpseConstants.modeMatrix)" class="mode-selection-link">Matrix Study Design</a>
                     </td>
                     <td class="mode-selection-description rounded-box white-box">
                         Directly enter the matrices for the general linear model. This mode is
@@ -140,8 +152,10 @@
     <!-- "tabs" which switch between the study design and results views.
      It really just swaps out the left navbar because we're all sly like that -->
     <div id="view-bar" class="font-main" ng-show="getMode() != undefined">
-        <a href="#/solvingFor" ng-click="setView('studyDesign')" class="{{getView() == 'studyDesign' && 'active'}}">Study Design</a>
-        <a href="#/results/report" ng-click="setView('results')" class="{{getView() == 'results' && 'active'}}">Results</a>
+        <a href="#/solvingFor" ng-click="setView(glimmpseConstants.viewTypeStudyDesign)"
+           class="{{getView() == glimmpseConstants.viewTypeStudyDesign && 'active'}}">Study Design</a>
+        <a href="#/results/report" ng-click="setView(glimmpseConstants.viewTypeResults)"
+           class="{{getView() == glimmpseConstants.viewTypeResults && 'active'}}">Results</a>
     </div>
     <!-- main application panel -->
     <div id="glimmpse-panel" ng-show="getMode() != undefined">
@@ -152,15 +166,17 @@
                         <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button>
                     </div>
                     <!-- left navbar for study design view in guided model -->
-                    <div class="accordion-grid" ng-show="getMode() == 'GUIDED_MODE' && getView() == 'studyDesign'">
+                    <div class="accordion-grid"
+                         ng-show="getMode() == glimmpseConstants.modeGuided && getView() == glimmpseConstants.viewTypeStudyDesign">
                         <div class="accordion ui-accordion" id="guided-accordion">
                             <h3><a href="#">Start</a></h3>
                             <div>
                                 <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
                                     <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
-                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
-                                    <label ng-show="studyDesign.solutionTypeEnum == 'power'">Desired Power</label>
+                                    <a href="#/nominalPower"
+                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypePower">Desired Power</a>
+                                    <label ng-show="studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypePower">Desired Power</label>
                                 </div>
                                 <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
                                     <a href="#/typeIError">Type I Error</a>
@@ -182,8 +198,12 @@
                                     <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
                                 </div>
                                 <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
-                                    <a href="#/smallestGroupSize" ng-show="studyDesign.solutionTypeEnum!='samplesize'">Smallest Group Size</a>
-                                    <label ng-show="studyDesign.solutionTypeEnum=='samplesize'">Smallest Group Size</label>
+                                    <a href="#/smallestGroupSize"
+                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypeSampleSize">Smallest Group Size</a>
+                                    <label
+                                            ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypeSampleSize">
+                                        Smallest Group Size
+                                    </label>
                                 </div>
                             </div>
                             <h3><a href="#">Responses</a></h3>
@@ -246,7 +266,8 @@
                         </div>
                     </div>
                     <!-- left navbar for study design view in matrix model -->
-                    <div class="accordion-grid"  ng-show="getMode() == 'MATRIX_MODE' && getView() == 'studyDesign'">
+                    <div class="accordion-grid"
+                         ng-show="getMode() == glimmpseConstants.modeMatrix && getView() == glimmpseConstants.viewTypeStudyDesign">
                         <div class="accordion ui-accordion" id="matrix-accordion">
                             <h3><a href="#">Start</a></h3>
                             <div>
@@ -254,7 +275,7 @@
                                     <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
                                     <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
-                                    <label ng-show="studyDesign.solutionTypeEnum=='power'">Desired Power</label>
+                                    <label ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypePower">Desired Power</label>
                                 </div>
                                 <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
                                     <a href="#/typeIError">Type I Error</a>
@@ -273,8 +294,12 @@
                                     <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
                                 </div>
                                 <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
-                                    <a href="#/smallestGroupSize" ng-show="studyDesign.solutionTypeEnum!='samplesize'">Smallest Group Size</a>
-                                    <label ng-show="studyDesign.solutionTypeEnum=='samplesize'">Smallest Group Size</label>
+                                    <a href="#/smallestGroupSize"
+                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypeSampleSize">Smallest Group Size</a>
+                                    <label
+                                            ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypeSampleSize">
+                                        Smallest Group Size
+                                    </label>
                                 </div>
                             </div>
                             <h3><a href="#">Coefficients</a></h3>
@@ -337,7 +362,7 @@
                     </div>
                     <!-- left navbar for results view -->
                     <div class="accordion-grid">
-                        <div id="results-navbar" ng-show="getView() == 'results'">
+                        <div id="results-navbar" ng-show="getView() == glimmpseConstants.viewTypeResults">
                             <div class="{{isActive('/results/report') && 'active'}}" >
                                 <a href="#/results/report">Power Results</a>
                             </div>
@@ -360,8 +385,8 @@
                                 <input type="submit" value="Save Design" data-ng-click="updateStudyDesignJSON()"/>
                             </form>
                         </div>
-                        <div class="toolbox-item" ng-show="getView()=='results'">Save Report</div>
-                        <div class="toolbox-item" ng-show="getView()=='results'">Save Results as CSV</div>
+                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">Save Report</div>
+                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">Save Results as CSV</div>
                         <div class="toolbox-item">Help</div>
                         <div class="toolbox-item">Templates</div>
                         <div class="toolbox-item"><a href="#" data-ng-click="reset()">Cancel</a></div>
@@ -375,6 +400,9 @@
         </table>
 
     </div>
+
+    <!-- The processing dialog -->
+    <div id="processing-overlay" ng-show="processing">Processing</div>
 
     <div id="footer">
         <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
@@ -390,8 +418,11 @@
 <!-- Angular.js scripts -->
 
 <script src="lib/angular.min.js"></script>
+<script src="lib/ui-bootstrap-0.6.0.min.js"></script>
 <script type="text/javascript" src="lib/ng-grid-2.0.7.min.js"></script>
+<!-- order matters here, so be careful if you edit -->
 <script src="js/app.js"></script>
+<script src="js/services/constants.js"></script>
 <script src="js/services/studyDesignService.js"></script>
 <script src="js/services/powerService.js"></script>
 <script src="js/controllers/controllers.js"></script>

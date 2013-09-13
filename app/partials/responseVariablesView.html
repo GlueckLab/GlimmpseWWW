@@ -34,11 +34,11 @@
     </form>
     <ul class="list-entry-contents">
         <li ng-repeat="response in studyDesign.responseList">
-            <label ng-dblclick="editResponse(response)">{{response.value}}</label>
+            <label ng-dblclick="editResponse(response)">{{response.name}}</label>
             <button data-ng-click="deleteResponse(response)">&times;</button>
         </li>
     </ul>
-<div ng-show="studyDesign.debug == true">
+<div ng-show="glimmpseConstants.debug == true">
             {{studyDesign.responseList}}
         </div>
 

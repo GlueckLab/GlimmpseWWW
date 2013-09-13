@@ -63,7 +63,7 @@ glimmpseApp.factory('powerService',function($http, $q){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(this.apiPath + "samplesize").success(function(data){
+        $http.post(this.apiPath + "samplesize", studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
         }).error(function(){

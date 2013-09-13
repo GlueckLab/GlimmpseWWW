@@ -23,7 +23,34 @@
 /*
 * Main glimmpse application module
  */
-var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
+var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
+    .constant('glimmpseConstants',{
+        // debugging flag
+        debug: true,
+
+        /*** Enum names ***/
+
+        // solution types
+        solutionTypePower: "POWER",
+        solutionTypeSampleSize: "SAMPLE_SIZE",
+
+        // view types
+        viewTypeStudyDesign: "studyDesign",
+        viewTypeResults: "results",
+
+        // input mode types
+        modeGuided: "GUIDED_MODE",
+        modeMatrix: "MATRIX_MODE",
+
+        // statistical tests
+        testHotellingLawleyTrace: "HLT",
+        testWilksLambda: "WL",
+        testPillaiBartlettTrace: "PBT",
+        testUnirep: "UNIREP",
+        testUnirepBox: "UNIREPBOX",
+        testUnirepGG: "UNIREPGG",
+        testUnirepHF: "UNIREPHF"
+    })
     .config(['$routeProvider', function($routeProvider) {
         /*
         * Main route provider for the study design tab
