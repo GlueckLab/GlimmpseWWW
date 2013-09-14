@@ -49,6 +49,7 @@
     <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet" />  -->
     <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
     <link type="text/css" rel="stylesheet" href="css/ng-grid.css">
+
     <script>
         $(function() {
             $( "#guided-accordion" ).accordion({
@@ -166,7 +167,8 @@
                     <div id="calculate-grid" >
                         <!-- <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button> -->
                         <div ng-show="calculateAllowed()">
-                            <a class="calculate-button" href="#/results/report" ng-click="calculate()">Calculate</a>
+                            <a class="calculate-button" href="#/results/report"
+                               ng-click="calculate()">Calculate</a>
                         </div>
                         <div>
                             <button ng-show="!calculateAllowed()" class="calculate-button-disabled"
@@ -282,7 +284,9 @@
                                 <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
                                     <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
-                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!='power'">Desired Power</a>
+                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypePower">
+                                        Desired Power
+                                    </a>
                                     <label ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypePower">Desired Power</label>
                                 </div>
                                 <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
@@ -395,20 +399,24 @@
                                 <button type="submit" data-ng-click="updateStudyDesignJSON()">Save Design</button>
                             </form>
                         </div>
-                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">
+                        <!-- <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">
                             <a href="">Save Report</a>
-                        </div>
+                        </div>  -->
                         <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">
-                            <a href="">
-                                Save Results as CSV
-                            </a>
+                            <form name="saveResultsToCSVForm" method='post' action="/file/saveas" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateResultsCSV()">Save Results as CSV</button>
+                            </form>
                         </div>
                         <div class="toolbox-item">
-                            <a href="" target="_blank">Help</a>
+                            <a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">Help</a>
                         </div>
-                        <div class="toolbox-item">
+                        <!-- <div class="toolbox-item">
                             <a href="#/" target="_blank">Templates</a>
-                        </div>
+                        </div>    -->
                         <div class="toolbox-item">
                             <a href="#" data-ng-click="reset()">Cancel</a>
                         </div>
@@ -440,6 +448,8 @@
             <div ng-repeat="view in incompleteViews">
                 {{view}}
             </div>
+        </div>
+        <div class="modal-footer">
             <button data-ng-click="close()">OK</button>
         </div>
     </script>
