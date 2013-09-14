@@ -23,11 +23,8 @@
  */
 
 
-glimmpseApp.factory('powerService',function($http, $q){
+glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
     var powerServiceInstance = {};
-
-    // URI of power service
-    powerServiceInstance.apiPath = '/power/';
 
     // results from last call to one of the calculate functions
     powerServiceInstance.cachedResults = undefined;
@@ -35,15 +32,21 @@ glimmpseApp.factory('powerService',function($http, $q){
     // error information from last call to one of the calculate functions
     powerServiceInstance.cachedError = undefined;
 
+    // results from last call to get matrices
+    powerServiceInstance.cachedMatrixHtml = undefined;
+
+    // error information from last call to one of the calculate functions
+    powerServiceInstance.cachedMatrixError = undefined;
+
     /**
      * Retrieve power results from the power service
      */
     powerServiceInstance.calculatePower = function(studyDesignJSON) {
         //Creating a deferred object
         var deferred = $q.defer();
-        window.alert("sending power");
+
         //Calling Web API to fetch shopping cart items
-        $http.post(this.apiPath + "power", studyDesignJSON).success(function(response){
+        $http.post(glimmpseConstants.uriPower, studyDesignJSON).success(function(response){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(response);
         }).error(function(response) {
@@ -63,12 +66,12 @@ glimmpseApp.factory('powerService',function($http, $q){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(this.apiPath + "samplesize", studyDesignJSON).success(function(data){
+        $http.post(glimmpseConstants.uriSampleSize, studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
-        }).error(function(){
+        }).error(function(response) {
                 //Sending a friendly error message in case of failure
-                deferred.reject("An error occured while fetching items");
+                deferred.reject(response);
             });
 
         //Returning the promise object
@@ -85,17 +88,49 @@ glimmpseApp.factory('powerService',function($http, $q){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(this.apiPath + "ciwidth").success(function(data){
+        $http.post(glimmpseConstants.uriCIWidth).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
-        }).error(function(){
+        }).error(function(response){
                 //Sending a friendly error message in case of failure
-                deferred.reject("An error occured while fetching items");
+                deferred.reject(response);
             });
 
         //Returning the promise object
         return deferred.promise;
     };
+
+
+    /**
+     *  Retrieve sample size results from the power service
+     */
+    powerServiceInstance.getMatrices = function(studyDesignJSON) {
+        //Creating a deferred object
+        var deferred = $q.defer();
+
+        //Calling Web API to fetch shopping cart items
+        $http.post(glimmpseConstants.uriMatrices, studyDesignJSON).success(function(data){
+            //Passing data to deferred's resolve function on successful completion
+            deferred.resolve(data);
+        }).error(function(response){
+                //Sending a friendly error message in case of failure
+                deferred.reject(response);
+            });
+
+        //Returning the promise object
+        return deferred.promise;
+    };
+
+
+    /**
+     * Clear cached results
+     */
+    powerServiceInstance.clearCache = function() {
+        powerServiceInstance.cachedResults = undefined;
+        powerServiceInstance.cachedError = undefined;
+        powerServiceInstance.cachedMatrixHtml = undefined;
+        powerServiceInstance.cachedMatrixError = undefined;
+    }
 
     return powerServiceInstance;
 });
