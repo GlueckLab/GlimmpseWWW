@@ -157,13 +157,21 @@
         <a href="#/results/report" ng-click="setView(glimmpseConstants.viewTypeResults)"
            class="{{getView() == glimmpseConstants.viewTypeResults && 'active'}}">Results</a>
     </div>
+
     <!-- main application panel -->
     <div id="glimmpse-panel" ng-show="getMode() != undefined">
         <table id="content-table">
             <tr>
                 <td>
                     <div id="calculate-grid" >
-                        <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button>
+                        <!-- <button id="calculate-button" ng-disabled="!calculateAllowed()" ng-click="calculate()">Calculate</button> -->
+                        <div ng-show="calculateAllowed()">
+                            <a class="calculate-button" href="#/results/report" ng-click="calculate()">Calculate</a>
+                        </div>
+                        <div>
+                            <button ng-show="!calculateAllowed()" class="calculate-button-disabled"
+                                    data-ng-click="showIncompleteItemsDialog()">Calculate</button>
+                        </div>
                     </div>
                     <!-- left navbar for study design view in guided model -->
                     <div class="accordion-grid"
@@ -377,24 +385,38 @@
                         </div>
                     </div>
                     <!-- Tool bar -->
-                    <div class="toolbox font-main">
-                        <div class="toolbox-item">
+                    <div class="toolbox font-main rounded-box">
+                        <div class="toolbox-item" >
                             <form name="saveForm" method='post' action="/file/saveas" target="_blank">
-                                <input type="hidden" name="filename" value="study.json"/>
-                                <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                <input type="submit" value="Save Design" data-ng-click="updateStudyDesignJSON()"/>
+                                <div>
+                                    <input type="hidden" name="filename" value="study.json"/>
+                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateStudyDesignJSON()">Save Design</button>
                             </form>
                         </div>
-                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">Save Report</div>
-                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">Save Results as CSV</div>
-                        <div class="toolbox-item">Help</div>
-                        <div class="toolbox-item">Templates</div>
-                        <div class="toolbox-item"><a href="#" data-ng-click="reset()">Cancel</a></div>
+                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">
+                            <a href="">Save Report</a>
+                        </div>
+                        <div class="toolbox-item" ng-show="getView()==glimmpseConstants.viewTypeResults">
+                            <a href="">
+                                Save Results as CSV
+                            </a>
+                        </div>
+                        <div class="toolbox-item">
+                            <a href="" target="_blank">Help</a>
+                        </div>
+                        <div class="toolbox-item">
+                            <a href="#/" target="_blank">Templates</a>
+                        </div>
+                        <div class="toolbox-item">
+                            <a href="#" data-ng-click="reset()">Cancel</a>
+                        </div>
                     </div>
                 </td>
                 <td>
                     <!-- content area for partials -->
-                    <div id="content" class="font-main" ng-view=""></div>
+                    <div id="content" class="font-main rounded-box" ng-view=""></div>
                 </td>
             </tr>
         </table>
@@ -402,8 +424,28 @@
     </div>
 
     <!-- The processing dialog -->
-    <div id="processing-overlay" ng-show="processing">Processing</div>
+    <script type="text/ng-template" id="processingDialog.html">
+        <div class="modal-body">
+            <div class="processing">Processing</div>
+        </div>
+    </script>
 
+
+    <!-- The processing dialog -->
+    <script type="text/ng-template" id="incompleteDialog.html">
+        <div class="modal-header">
+            The following items are incomplete
+        </div>
+        <div class="modal-body">
+            <div ng-repeat="view in incompleteViews">
+                {{view}}
+            </div>
+            <button data-ng-click="close()">OK</button>
+        </div>
+    </script>
+
+
+    <!-- footer -->
     <div id="footer">
         <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
             <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
@@ -415,12 +457,14 @@
         </div>
     </div>
 
-<!-- Angular.js scripts -->
-
-<script src="lib/angular.min.js"></script>
-<script src="lib/ui-bootstrap-0.6.0.min.js"></script>
-<script type="text/javascript" src="lib/ng-grid-2.0.7.min.js"></script>
 <!-- order matters here, so be careful if you edit -->
+<!-- Angular.js scripts -->
+<script src="lib/angular.min.js"></script>
+<script src="lib/ng-grid-2.0.7.min.js"></script>
+<script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
+
+
+<!-- app specific scripts -->
 <script src="js/app.js"></script>
 <script src="js/services/constants.js"></script>
 <script src="js/services/studyDesignService.js"></script>

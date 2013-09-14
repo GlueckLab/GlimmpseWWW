@@ -21,7 +21,7 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, $http,
+    function($scope, $location, $http, $modal,
              glimmpseConstants, studyDesignService, powerService) {
 
     /**
@@ -43,6 +43,13 @@ glimmpseApp.controller('stateController',
 
         // set to true during processing
         $scope.processing = false;
+
+        // modal dialog
+        $scope.waitDialog = undefined;
+
+        // list of incomplete views
+        $scope.incompleteViews = [];
+
         // view mode (either "Study Design" or "Results"
         // input mode (either guided or matrix)
         /*
@@ -58,6 +65,103 @@ glimmpseApp.controller('stateController',
             staleResults: true
         }
     }
+
+    /**
+     * Convenience routine to determine if a screen is done
+     * @param state
+     * @returns {boolean}
+     */
+    $scope.testDone = function(state) {
+        return (state == 'complete' || state == 'disabled');
+    }
+
+
+    /**
+     *  Display the incomplete items dialog
+     */
+    $scope.showIncompleteItemsDialog = function () {
+
+        $scope.incompleteViews = [];
+        if (!$scope.testDone($scope.getStateSolvingFor())) { $scope.incompleteViews.push("Solving For")}
+        if (!$scope.testDone($scope.getStateNominalPower())) { $scope.incompleteViews.push("Desired Power")}
+        if (!$scope.testDone($scope.getStateTypeIError())) { $scope.incompleteViews.push("Type I Error")}
+        if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Study Groups")}
+        if (!$scope.testDone($scope.getStateCovariate())) { $scope.incompleteViews.push("Covariate")}
+        if (!$scope.testDone($scope.getStateClustering())) { $scope.incompleteViews.push("Clustering")}
+        if (!$scope.testDone($scope.getStateRelativeGroupSize())) { $scope.incompleteViews.push("Relative Group Size")}
+        if (!$scope.testDone($scope.getStateSmallestGroupSize())) { $scope.incompleteViews.push("Smallest Group Size")}
+        if (!$scope.testDone($scope.getStateResponseVariables())) { $scope.incompleteViews.push("Response Variables")}
+        if (!$scope.testDone($scope.getStateRepeatedMeasures())) { $scope.incompleteViews.push("Repeated Measures")}
+        if (!$scope.testDone($scope.getStateHypothesis())) { $scope.incompleteViews.push("Hypothesis")}
+        if (!$scope.testDone($scope.getStateMeans())) { $scope.incompleteViews.push("Means")}
+        if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Scale Factor (means)")}
+        if (!$scope.testDone($scope.getStateWithinVariability())) { $scope.incompleteViews.push("Within Participant Variability")}
+        if (!$scope.testDone($scope.getStateCovariateVariability())) { $scope.incompleteViews.push("Covariate Variability")}
+        if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factor (variability)")}
+        if (!$scope.testDone($scope.getStateStatisticalTest())) { $scope.incompleteViews.push("Statistical Test")}
+        if (!$scope.testDone($scope.getStatePowerMethod())) { $scope.incompleteViews.push("Power Method")}
+        if (!$scope.testDone($scope.getStateConfidenceIntervals())) { $scope.incompleteViews.push("Confidence Intervals")}
+        if (!$scope.testDone($scope.getStatePowerCurve())) { $scope.incompleteViews.push("Power Curve")}
+
+        var incompleteItemsDialog = $modal.open({
+                templateUrl: 'incompleteDialog.html',
+                controller:   function ($scope, $modalInstance, incompleteViews) {
+                    $scope.incompleteViews = incompleteViews;
+                    $scope.close = function () {
+                        $modalInstance.close();
+                    }
+                },
+                resolve: {
+                    incompleteViews: function () {
+                        return $scope.incompleteViews;
+                    }
+                }
+            }
+        );
+    }
+
+
+        $scope.items = ['item1', 'item2', 'item3'];
+
+        $scope.open = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'incompleteDialog.html',
+                controller: function ($scope, $modalInstance, items) {
+
+                    $scope.incompleteViews = items;
+
+                    $scope.ok = function () {
+                        $modalInstance.close();
+                    };
+                },
+                resolve: {
+                    items: function () {
+                        return $scope.items;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                $scope.selected = selectedItem;
+            }, function () {
+                window.alert('Modal dismissed at: ' + new Date());
+            });
+        };
+
+
+    /**
+     *  Display the processing dialog
+     */
+    $scope.showWaitDialog = function () {
+        $scope.waitDialog = $modal.open({
+                templateUrl: 'processingDialog.html',
+                controller: function ($scope) {},
+                backdrop: 'static'
+            }
+        );
+    }
+
 
     /**
      * clear the study design
@@ -81,6 +185,7 @@ glimmpseApp.controller('stateController',
         if (input.value == '') {
             window.alert("No file was selected.  Please try again");
         }
+        $scope.showWaitDialog();
 
         $form.ajaxSubmit({
             type: 'POST',
@@ -91,7 +196,8 @@ glimmpseApp.controller('stateController',
                  handle the error ...
                  */
                 window.alert("The study design file could not be loaded: " + responseText);
-                $form.reset();
+                $form[0].reset();
+                $scope.waitDialog.close();
             },
             success: function(responseText, statusText, xhr, form) {
                 // select the appropriate input mode
@@ -107,7 +213,8 @@ glimmpseApp.controller('stateController',
                     $scope.state.mode = $scope.studyDesign.viewTypeEnum;
                     $scope.state.view = 'studyDesign';
                 });
-                $form.reset();
+                $scope.waitDialog.close();
+                $form[0].reset();
             }
         });
 
@@ -198,67 +305,36 @@ glimmpseApp.controller('stateController',
      * Calculate power or sample size results
      */
     $scope.calculate = function() {
-         var fakeData =
-            "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
-                "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
-                "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
-                "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
-                "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
-                "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
-                "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
-                "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
-                "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
-                "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
-                "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
-                "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
-                "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
-                "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
-                "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
-                ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
-                "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
-                "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
-                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
-                "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
-                "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
-                "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
-                "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
-                "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
-                "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
-                "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
-                "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
-                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
-                "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
-                "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
-                "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
-                "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
-                "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
-                "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
-                "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
         // get the results
         if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
-            // TODO: open processing dialog
+            $scope.showWaitDialog()
             $scope.powerService.calculatePower(angular.toJson($scope.studyDesign)).then(function(data) {
                     // close processing dialog
                     // enable results tab
                     powerService.cachedResults = data;
                     powerService.cachedError = undefined;
+                    $scope.waitDialog.close();
+                    $scope.setView(glimmpseConstants.viewTypeResults);
                 },
                 function(errorMessage){
                     // close processing dialog
                     powerService.cachedResults = undefined;
                     powerService.cachedError = errorMessage;
+                    $scope.waitDialog.close();
+                    $scope.setView(glimmpseConstants.viewTypeResults);
                 });
         } else {
             $scope.powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
                     powerService.cachedResults = data;
                     powerService.cachedError = undefined;
-                    window.alert("data=" + data);
+                    $scope.waitDialog.close();
+                    $scope.setView(glimmpseConstants.viewTypeResults);
                 },
                 function(errorMessage){
                     powerService.cachedResults = undefined;
                     powerService.cachedError = errorMessage;
+                    $scope.waitDialog.close();
+                    $scope.setView(glimmpseConstants.viewTypeResults);
                 });
         }
     }

@@ -83,7 +83,7 @@ button:focus {
 }
 
 .font-main {
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
 }
 
 .font-serif {
@@ -347,14 +347,8 @@ button:focus {
     /* border: 1px solid #cccccc;    */
 }
 
-#calculate-grid button:disabled {
-    color: white;
-    background: #808080;
-    border: 2px solid #707070;
-    text-shadow: 0px 1px 3px #404040;
-}
-
-#calculate-grid button {
+.calculate-button, .calculate-button-disabled {
+    display: block;
     color: white;
     background: none repeat scroll 0% 0% #5DC68B;
     border: 2px solid #58B781;
@@ -364,16 +358,23 @@ button:focus {
     -khtml-border-radius: 6px;
     border-radius: 6px;
 
-    font-family: "ProximaNovaRegular","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size:20px;
     text-align: center;
 
     width: 180px;
-    height: 40px;
+    line-height: 40px;
     margin-left: 10px;
 }
 
-#calculate-grid button:hover {
+.calculate-button-disabled {
+    color: white;
+    background: #808080;
+    border: 2px solid #707070;
+    text-shadow: 0px 1px 3px #404040;
+}
+
+.calculate-button:hover {
     /* background: #58B781;    */
     border: 2px solid #7EC8F1;
 }
@@ -405,7 +406,7 @@ button:focus {
     border-bottom: 1px solid #cccccc; */
     width: 200px;
     margin-left: 10px;
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;  */
 }
 
 .accordion * {
@@ -539,15 +540,42 @@ button:focus {
 .toolbox {
     width: 180px;
     margin-left: 20px;
-    margin-top: 10px;
+    margin-top: 20px;
     font-family: Helvetica, Arial, sans-serif;
     border: 1px solid #CBD1D6;
     color: black;
 }
 
 .toolbox-item {
+    border: none;
+    background: white;
+    margin: 0;
+    padding: 0px 2px;
+}
+
+
+.toolbox-item a, .toolbox-item button {
     font-size: 10pt;
-    margin: 5px 5px;
+    color: black;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    background: white;
+    margin: 2px;
+    padding: 0px;
+    border: none;
+    line-height: 1.2em;
+}
+
+button::-moz-focus-inner {
+    padding: 0;
+    border: 0
+}
+
+
+.toolbox-item a:hover, .toolbox-item button:hover {
+    color: #2B5F89;
+    cursor: pointer;
 }
 
 #results-nav-grid {
@@ -877,30 +905,76 @@ table.table-entry-contents {
 
 }
 
-.processing-overlay {
-    background-color: white;
-    color: black;
-    border: 1px solid gray;
-    padding: 20px;
-    display: block;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 400px;
-    height: 300px;
-
+.modal-backdrop{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:1040;
+    background-color:#000000;
 }
 
-.processing-overlay label {
-    background: #fff url(../img/glimmpse.png) no-repeat 10px 12px;
-    padding: 10px;
-    border: 2px solid  #005C84;
-    width: 230px;
-    height: 40px;
-    position: relative;
+.modal-backdrop.fade{
+    opacity:0;
 }
 
+.modal-backdrop,.modal-backdrop.fade.in{
+    opacity:0.8;
+    filter:alpha(opacity=80);
+}
 
+.modal{
+    position:fixed;
+    top:10%;
+    left:40%;
+    z-index:1050;
+    background-color:#ffffff;
+    border:1px solid #999;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border-radius:6px;
+    -webkit-box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    -webkit-background-clip:padding-box;
+    -moz-background-clip:padding-box;
+    background-clip:padding-box;outline:none;
+    padding: 15px;
+}
+.modal.fade{
+    -webkit-transition:opacity .3s linear, top .3s ease-out;
+    -moz-transition:opacity .3s linear, top .3s ease-out;
+    -o-transition:opacity .3s linear, top .3s ease-out;
+    transition:opacity .3s linear, top .3s ease-out;
+    top:-25%;
+}
+.modal.fade.in{
+    top:10%;
+}
+.modal-header{
+    padding:9px 15px;border-bottom:1px solid #eee;
+}
+.modal-header .close{
+    margin-top:2px;
+}
+.modal-header h3{
+    margin:0;
+    line-height:30px;
+}
+.modal-body {
+   padding: 10px;
+}
+.modal-body button {
+    margin: 10px 0px;
+    width: 50px;
+    line-height: 2em;
+}
+.processing {
+    background: url('../img/processing.gif') no-repeat right;
+    padding-right: 50px;
+    line-height:50px;
+}
 
 
 /**** GLIMMPSE Application Styles ****/
