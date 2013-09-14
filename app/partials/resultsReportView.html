@@ -16,18 +16,16 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Power Report</h3>
+<h3>Power Results</h3>
 
-<div ng-show="powerService.cachedResults != undefined">
-    <ul class="list-entry-contents" style="list-style: none">
-        <li ng-repeat="powerResult in powerService.cachedResults">
-            <label>{{powerResult.actualPower}}</label>
-        </li>
-    </ul>
+<div class="processing rounded-box" ng-show="processing==true">
+    <label>Processing</label>
+</div>
+<div class="gridStyle" ng-show="errorMessage == undefined && processing == false"
+     ng-grid="resultsGridOptions"></div>
+
+<div ng-show="errorMessage != undefined && processing == false">
+    {{errorMessage}}
 </div>
 
-<div ng-show="powerService.cachedError != undefined">
-    {{powerResult.cachedError}}
-</div>
-
-
+<div ng-show="glimmpseConstants.debug">{{gridData}}</div>

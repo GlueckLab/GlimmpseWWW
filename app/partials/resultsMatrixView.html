@@ -18,3 +18,11 @@
 -->
 <h3>Matrices Used in Calculations</h3>
 
+<div class="processing rounded-box" ng-show="processing==true">
+    <label>Processing</label>
+</div>
+<div ng-bind-html-unsafe="matrixHTML"></div>
+
+<div ng-show="errorMessage != undefined">
+    {{errorMessage}}
+</div>
