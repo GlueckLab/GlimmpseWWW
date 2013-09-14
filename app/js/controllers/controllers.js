@@ -21,7 +21,7 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, $http, $modal,
+    function($scope, $rootScope, $location, $http, $modal,
              glimmpseConstants, studyDesignService, powerService) {
 
     /**
@@ -41,8 +41,8 @@ glimmpseApp.controller('stateController',
         // json encoded study design
         $scope.studyDesignJSON = "";
 
-        // set to true during processing
-        $scope.processing = false;
+        // results csv
+        $scope.resultsCSV = "";
 
         // modal dialog
         $scope.waitDialog = undefined;
@@ -66,13 +66,16 @@ glimmpseApp.controller('stateController',
         }
     }
 
+
+
     /**
      * Convenience routine to determine if a screen is done
      * @param state
      * @returns {boolean}
      */
     $scope.testDone = function(state) {
-        return (state == 'complete' || state == 'disabled');
+        return (state == glimmpseConstants.stateComplete ||
+            state == glimmpseConstants.stateDisabled);
     }
 
 
@@ -120,36 +123,6 @@ glimmpseApp.controller('stateController',
         );
     }
 
-
-        $scope.items = ['item1', 'item2', 'item3'];
-
-        $scope.open = function () {
-
-            var modalInstance = $modal.open({
-                templateUrl: 'incompleteDialog.html',
-                controller: function ($scope, $modalInstance, items) {
-
-                    $scope.incompleteViews = items;
-
-                    $scope.ok = function () {
-                        $modalInstance.close();
-                    };
-                },
-                resolve: {
-                    items: function () {
-                        return $scope.items;
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-            }, function () {
-                window.alert('Modal dismissed at: ' + new Date());
-            });
-        };
-
-
     /**
      *  Display the processing dialog
      */
@@ -169,6 +142,7 @@ glimmpseApp.controller('stateController',
     $scope.reset = function() {
         if (confirm('This action will clear any unsaved study design information.  Continue?')) {
             $scope.studyDesign.reset();
+            $scope.powerService.clearCache();
             init();
         }
     }
@@ -180,6 +154,8 @@ glimmpseApp.controller('stateController',
      * @param parentScope
      */
     $scope.uploadFile = function(input) {
+        $location.path('/')
+
         var $form = $(input).parents('form');
 
         if (input.value == '') {
@@ -211,7 +187,7 @@ glimmpseApp.controller('stateController',
                     }
 
                     $scope.state.mode = $scope.studyDesign.viewTypeEnum;
-                    $scope.state.view = 'studyDesign';
+                    $scope.state.view = glimmpseConstants.viewTypeStudyDesign;
                 });
                 $scope.waitDialog.close();
                 $form[0].reset();
@@ -227,6 +203,40 @@ glimmpseApp.controller('stateController',
      */
     $scope.updateStudyDesignJSON = function() {
         $scope.studyDesignJSON = angular.toJson($scope.studyDesign);
+    }
+
+    /**
+     * Called prior to submission of save form.  Updates
+     * the value of the study design JSON in a hidden field
+     * in the save form.
+     */
+    $scope.updateResultsCSV = function() {
+        // add header row
+        var resultsCSV = "desiredPower,actualPower,totalSampleSize,alpha,betaScale,sigmaScale,test,powerMethod,quantile," +
+            "ciLower,ciUpper,errorCode,errorMessage\n";
+        if ($scope.powerService.cachedResults != undefined) {
+            for(var i = 0; i < $scope.powerService.cachedResults.length; i++) {
+                var result = $scope.powerService.cachedResults[i];
+                resultsCSV +=
+                        result.nominalPower.value + "," +
+                        result.actualPower + "," +
+                        result.totalSampleSize + "," +
+                        result.alpha.alphaValue + "," +
+                        result.betaScale.value + "," +
+                        result.sigmaScale.value + "," +
+                        result.test.type + "," +
+                        result.powerMethod.powerMethodEnum + "," +
+                        (result.quantile != null ? result.quantile.value : "") + "," +
+                        (result.confidenceInterval != null ? result.confidenceInterval.lowerLimit : "") + "," +
+                        (result.confidenceInterval != null ? result.confidenceInterval.upperLimit : "") + "," +
+                        (result.errorCode != null ? result.errorCode : "") + "," +
+                        (result.errorMessage != null ? result.errorMessage : "") + "\n"
+                ;
+
+            }
+        }
+        $scope.resultsCSV = resultsCSV;
+
     }
 
     /**
@@ -272,71 +282,62 @@ glimmpseApp.controller('stateController',
      * @returns {boolean}
      */
     $scope.calculateAllowed = function() {
-        var nominalPowerState = $scope.getStateNominalPower();
-        var relativeGroupSizeState = $scope.getStateRelativeGroupSize();
-        var smallestGroupSize = $scope.getStateSmallestGroupSize();
-        var covariateVariabilityState = $scope.getStateCovariateVariability();
-        var powerMethodState = $scope.getStatePowerMethod();
-        return (
-                ($scope.getStateSolvingFor() == 'complete') &&
-                (nominalPowerState == 'complete' || nominalPowerState == 'disabled') &&
-                ($scope.getStateTypeIError() == 'complete') &&
-                ($scope.getStatePredictors() == 'complete') &&
-                ($scope.getStateCovariate() == 'complete') &&
-                ($scope.getStateClustering() == 'complete') &&
-                (relativeGroupSizeState == 'complete' || relativeGroupSizeState == 'disabled') &&
-                (smallestGroupSize == 'complete' || smallestGroupSize == 'disabled') &&
-                ($scope.getStateResponseVariables() == 'complete') &&
-                ($scope.getStateRepeatedMeasures() == 'complete') &&
-                ($scope.getStateHypothesis() == 'complete') &&
-                ($scope.getStateMeans() == 'complete') &&
-                ($scope.getStateScaleFactorsForMeans() == 'complete') &&
-                (covariateVariabilityState == 'complete' || covariateVariabilityState == 'disabled') &&
-                ($scope.getStateCovariateVariability() == 'complete') &&
-                ($scope.getStateScaleFactorsForVariability() == 'complete') &&
-                ($scope.getStateStatisticalTest() == 'complete') &&
-                (powerMethodState == 'complete' || powerMethodState == 'disabled') &&
-                ($scope.getStateConfidenceIntervals() == 'complete') &&
-                ($scope.getStatePowerCurve() == 'complete')
-        );
+        if ($scope.getMode() == glimmpseConstants.modeGuided) {
+            return (
+                $scope.testDone($scope.getStateSolvingFor()) &&
+                $scope.testDone($scope.getStateNominalPower()) &&
+                $scope.testDone($scope.getStateTypeIError()) &&
+                $scope.testDone($scope.getStatePredictors()) &&
+                $scope.testDone($scope.getStateCovariate()) &&
+                $scope.testDone($scope.getStateClustering()) &&
+                $scope.testDone($scope.getStateRelativeGroupSize()) &&
+                $scope.testDone($scope.getStateSmallestGroupSize()) &&
+                $scope.testDone($scope.getStateResponseVariables()) &&
+                $scope.testDone($scope.getStateRepeatedMeasures()) &&
+                $scope.testDone($scope.getStateHypothesis()) &&
+                $scope.testDone($scope.getStateMeans()) &&
+                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
+                $scope.testDone($scope.getStateWithinVariability()) &&
+                $scope.testDone($scope.getStateCovariateVariability()) &&
+                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
+                $scope.testDone($scope.getStateStatisticalTest()) &&
+                $scope.testDone($scope.getStatePowerMethod()) &&
+                $scope.testDone($scope.getStateConfidenceIntervals()) &&
+                $scope.testDone($scope.getStatePowerCurve())
+                );
+        } else if ($scope.getMode() == glimmpseConstants.modeMatrix) {
+            return (
+                $scope.testDone($scope.getStateSolvingFor()) &&
+                $scope.testDone($scope.getStateNominalPower()) &&
+                $scope.testDone($scope.getStateTypeIError()) &&
+                $scope.testDone($scope.getStateDesignEssence()) &&
+                $scope.testDone($scope.getStateCovariate()) &&
+                $scope.testDone($scope.getStateRelativeGroupSize()) &&
+                $scope.testDone($scope.getStateSmallestGroupSize()) &&
+                $scope.testDone($scope.getStateBeta()) &&
+                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
+                $scope.testDone($scope.getStateBetweenParticipantContrast()) &&
+                $scope.testDone($scope.getStateWithinParticipantContrast()) &&
+                $scope.testDone($scope.getStateThetaNull()) &&
+                $scope.testDone($scope.getStateSigmaE()) &&
+                $scope.testDone($scope.getStateSigmaG()) &&
+                $scope.testDone($scope.getStateSigmaYG()) &&
+                $scope.testDone($scope.getStateSigmaY()) &&
+                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
+                $scope.testDone($scope.getStatePowerMethod()) &&
+                $scope.testDone($scope.getStateConfidenceIntervals()) &&
+                $scope.testDone($scope.getStatePowerCurve())
+
+                );
+        }
     }
 
     /**
-     * Calculate power or sample size results
+     * Clear the cached results so the results view will reload
      */
     $scope.calculate = function() {
-        // get the results
-        if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
-            $scope.showWaitDialog()
-            $scope.powerService.calculatePower(angular.toJson($scope.studyDesign)).then(function(data) {
-                    // close processing dialog
-                    // enable results tab
-                    powerService.cachedResults = data;
-                    powerService.cachedError = undefined;
-                    $scope.waitDialog.close();
-                    $scope.setView(glimmpseConstants.viewTypeResults);
-                },
-                function(errorMessage){
-                    // close processing dialog
-                    powerService.cachedResults = undefined;
-                    powerService.cachedError = errorMessage;
-                    $scope.waitDialog.close();
-                    $scope.setView(glimmpseConstants.viewTypeResults);
-                });
-        } else {
-            $scope.powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
-                    powerService.cachedResults = data;
-                    powerService.cachedError = undefined;
-                    $scope.waitDialog.close();
-                    $scope.setView(glimmpseConstants.viewTypeResults);
-                },
-                function(errorMessage){
-                    powerService.cachedResults = undefined;
-                    powerService.cachedError = errorMessage;
-                    $scope.waitDialog.close();
-                    $scope.setView(glimmpseConstants.viewTypeResults);
-                });
-        }
+        powerService.clearCache();
+        $scope.setView(glimmpseConstants.viewTypeResults);
     }
 
     /**
@@ -700,9 +701,12 @@ glimmpseApp.controller('stateController',
     $scope.getStateSigmaG = function() {
         // TODO
     }
-    $scope.getStateSigmaGY = function() {
+    $scope.getStateSigmaYG = function() {
         // TODO
     }
+        $scope.getStateSigmaY = function() {
+            // TODO
+        }
 
 
 })
@@ -2071,20 +2075,139 @@ glimmpseApp.controller('stateController',
                 [4,5,6],
                 [7,8,9]
             ];
+
+            window.alert("design controller");
         };
     })
 
     /**
      * Controller for the results screen
      */
-    .controller('resultsController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+    .controller('resultsReportController',
+        function($scope, glimmpseConstants, studyDesignService, powerService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.powerService = powerService;
+            $scope.processing = false;
+            $scope.errorMessage = undefined;
+            $scope.gridData;
+
+            $scope.columnDefs = [
+                { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
+                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
+                { field: 'nominalPower.value', displayName: 'Target Power', width: 200},
+                { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
+                { field: 'test.type', displayName: 'Test', width: 200},
+                { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
+                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200}
+            ];
+
+            // build grid options
+            $scope.resultsGridOptions = {
+                data: 'gridData',
+                columnDefs: 'columnDefs',
+                selectedItems: []
+            };
+
+            if (powerService.cachedResults == undefined && powerService.cachedError == undefined) {
+
+                $scope.processing = true;
+                // need to recalculate power
+                if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
+                    $scope.powerService.calculatePower(angular.toJson(studyDesignService))
+                        .then(function(data) {
+                            $scope.$apply(function() {
+                                powerService.cachedResults = angular.fromJson(data);
+                                powerService.cachedError = undefined;
+                                $scope.processing = false;
+                                $scope.gridData = powerService.cachedResults;
+                            })
+
+                        },
+                        function(errorMessage){
+                            // close processing dialog
+                            powerService.cachedResults = undefined;
+                            powerService.cachedError = errorMessage;
+                            $scope.processing = false;
+                            $scope.gridData = undefined;
+                        });
+                } else if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
+                    $scope.powerService.calculateSampleSize(angular.toJson(studyDesignService))
+                        .then(function(data) {
+                            powerService.cachedResults = angular.fromJson(data);
+                            powerService.cachedError = undefined;
+                            $scope.processing = false;
+                            $scope.gridData = powerService.cachedResults;
+                        },
+                        function(errorMessage){
+                            // close processing dialog
+                            powerService.cachedResults = undefined;
+                            powerService.cachedError = errorMessage;
+                            $scope.processing = false;
+                            $scope.gridData = undefined;
+                            $scope.errorMessage = errorMessage;
+                        });
+                } else {
+                    $scope.errorMessage =
+                        "Invalid study design.  Cannot solve for '" + studyDesignService.solutionTypeEnum+ "'";
+                    $scope.gridData = undefined;
+                }
+            } else {
+                $scope.gridData = powerService.cachedResults;
+                $scope.errorMessage = powerService.cachedError;
+            }
+
         };
 
     })
+
+    .controller('resultsPlotController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.powerService = powerService;
+
+        };
+
+    })
+
+    .controller('resultsMatrixController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.powerService = powerService;
+            $scope.processing = false;
+            $scope.errorMessage = undefined;
+            $scope.matrixHTML = undefined;
+
+            if (powerService.cachedMatrixHtml == undefined && powerService.cachedMatrixError == undefined) {
+
+                $scope.processing = true;
+                // need to reload matrices
+                $scope.powerService.getMatrices(angular.toJson(studyDesignService))
+                    .then(function(data) {
+                        powerService.cachedMatrixHtml = data;
+                        powerService.cachedMatrixError = undefined;
+                        $scope.processing = false;
+                        $scope.matrixHTML = data;
+                    },
+                    function(errorMessage){
+                        powerService.cachedMatrixHtml = undefined;
+                        powerService.cachedMatrixError = errorMessage;
+                        $scope.processing = false;
+                        $scope.matrixHTML = undefined;
+                    });
+
+            } else {
+                $scope.matrixHTML = powerService.cachedMatrixHtml;
+                $scope.errorMessage = powerService.cachedMatrixError;
+            }
+        };
+
+    })
+
+
 
 /**
  * Main study design controller
