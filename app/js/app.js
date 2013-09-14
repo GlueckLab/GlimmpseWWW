@@ -28,7 +28,21 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
         // debugging flag
         debug: true,
 
+        /*** URIs for web services ***/
+        uriPower: "/power/power",
+        uriSampleSize: "/power/samplesize",
+        uriCIWidth: "/power/ciwidth",
+        uriMatrices: "/power/matrix/html",
+        uriUpload: "/file/upload",
+        uriSave: "/file/save",
+
         /*** Enum names ***/
+
+        // view states
+        stateDisabled: "disabled",
+        stateBlocked: "blocked",
+        stateIncomplete: "incomplete",
+        stateComplete: "complete",
 
         // solution types
         solutionTypePower: "POWER",
@@ -49,9 +63,12 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
         testUnirep: "UNIREP",
         testUnirepBox: "UNIREPBOX",
         testUnirepGG: "UNIREPGG",
-        testUnirepHF: "UNIREPHF"
+        testUnirepHF: "UNIREPHF",
+
+        // matrix names
+        matrixXEssence: ""
     })
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', function($routeProvider, studyDesignService, powerService) {
         /*
         * Main route provider for the study design tab
          */
@@ -127,15 +144,15 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
         )
             // results screens
             .when('/results/report',
-            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsReportController' }
 
         )
             .when('/results/plot',
-            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsPlotController' }
 
         )
             .when('/results/matrices',
-            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsMatrixController' }
 
         )
             .otherwise({ redirectTo: '/' });
