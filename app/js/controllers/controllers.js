@@ -155,6 +155,7 @@ glimmpseApp.controller('stateController',
      */
     $scope.uploadFile = function(input) {
         $location.path('/')
+        powerService.clearCache();
 
         var $form = $(input).parents('form');
 
@@ -2117,13 +2118,10 @@ glimmpseApp.controller('stateController',
                 if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
                     $scope.powerService.calculatePower(angular.toJson(studyDesignService))
                         .then(function(data) {
-                            $scope.$apply(function() {
-                                powerService.cachedResults = angular.fromJson(data);
-                                powerService.cachedError = undefined;
-                                $scope.processing = false;
-                                $scope.gridData = powerService.cachedResults;
-                            })
-
+                            powerService.cachedResults = angular.fromJson(data);
+                            powerService.cachedError = undefined;
+                            $scope.processing = false;
+                            $scope.gridData = powerService.cachedResults;
                         },
                         function(errorMessage){
                             // close processing dialog
@@ -2163,12 +2161,191 @@ glimmpseApp.controller('stateController',
     })
 
     .controller('resultsPlotController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+
+        /**
+         * Function for doing an ordered insert of data points
+         * @param a
+         * @param b
+         * @returns {number}
+         */
+        $scope.sortByX = function(a,b) {
+            return a[0] > b[0] ? 1 : -1;
+        }
+
+        /**
+         * See if the result matches the data series description
+         */
+        $scope.isMatch = function(seriesDescription, result, hasCovariate) {
+            var match = (
+                seriesDescription.statisticalTestTypeEnum == result.test.type &&
+                seriesDescription.typeIError == result.alpha.alphaValue &&
+                (!hasCovariate || seriesDescription.powerMethod == result.powerMethod.powerMethodEnum) &&
+                (!hasCovariate || seriesDescription.quantile == result.quantile.value)
+            );
+
+            if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisTotalSampleSize) {
+                match = match &&
+                    seriesDescription.betaScale == result.betaScale.value &&
+                    seriesDescription.sigmaScale == result.sigmaScale.value;
+            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisBetaScale) {
+                match = match &&
+                    seriesDescription.sampleSize == result.totalSampleSize &&
+                    seriesDescription.sigmaScale == result.sigmaScale.value;
+
+            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisSigmaScale) {
+                match = match &&
+                    seriesDescription.sampleSize == result.totalSampleSize &&
+                    seriesDescription.betaScale == result.betaScale.value;
+
+            }
+
+            return match;
+        }
+
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.powerService = powerService;
+            $scope.noPlotRequested = (studyDesignService.powerCurveDescriptions == null ||
+                                        studyDesignService.powerCurveDescriptions.dataSeriesList.length <= 0);
+            $scope.showCurve = (!$scope.noPlotRequested &&
+                                powerService.cachedResults != undefined &&
+                                powerService.cachedResults.length > 0);
 
-        };
+            // highchart configuration
+            $scope.chartConfig = {
+                options: {
+                    credits: {
+                        enabled: false
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Power'
+                        },
+                        min: 0,
+                        max: 1,
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#ff0000'
+                            //'#808080'
+                        }]
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    legend: {
+                        enabled: true
+                    },
+                    exporting: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        series: {
+                            lineWidth: 1
+                        }
+                    }
+                },
+                title: {
+                    text: 'Power Curve',
+                    x: -20 //center
+                },
+                xAxis: {
+                    title: {
+                        text: 'Tsdcsdcotal Sample Size'
+                    }
+                },
+                series: []
+            }
+
+            if ($scope.showCurve == true) {
+                // set the title
+                if (studyDesignService.powerCurveDescriptions.title != null &&
+                    studyDesignService.powerCurveDescriptions.title.length > 0) {
+                    $scope.chartConfig.title.text = studyDesignService.powerCurveDescriptions.title;
+                }
+
+                // set the axis
+                if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisTotalSampleSize) {
+                    $scope.chartConfig.xAxis.title.text = 'Total Sample Size';
+
+                } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisBetaScale) {
+                    $scope.chartConfig.xAxis.title.text = 'Regresssion Coefficient Scale Factor';
+
+                } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisSigmaScale) {
+                    $scope.chartConfig.xAxis.title.text = 'Variability Scale Factor';
+                }
+
+                // add the data series
+                $scope.chartConfig.series = [];
+                for(var i = 0; i < studyDesignService.powerCurveDescriptions.dataSeriesList.length; i++) {
+                    var seriesDescription = studyDesignService.powerCurveDescriptions.dataSeriesList[i];
+                    var newSeries = {
+                        name: seriesDescription.label,
+                        data: []
+                    };
+                    // for lower confidence limits
+                    var lowerSeries = {
+                        data: []
+                    };
+                    // for upper confidence limits
+                    var upperSeries = {
+                        data: []
+                    };
+
+                    for(var j = 0; j < powerService.cachedResults.length; j++) {
+                        var result = powerService.cachedResults[j];
+
+                        if ($scope.isMatch(seriesDescription, result, studyDesignService.gaussianCovariate)) {
+                            var point = [];
+                            var lowerPoint = [];
+                            var upperPoint = [];
+
+                            if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisTotalSampleSize) {
+                                point.push(result.totalSampleSize);
+
+                            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisBetaScale) {
+                                point.push(result.betaScale.value);
+
+                            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisSigmaScale) {
+                                point.push(result.sigmaScale.value);
+                            }
+
+                            point.push(result.actualPower);
+                            newSeries.data.push(point);
+
+                            if (seriesDescription.confidenceLimits == true) {
+                                lowerPoint.push(point[0]);
+                                lowerPoint.push(result.confidenceLimits.lower) ;
+                                lowerSeries.data.push(lowerPoint);
+                                upperPoint.push(point[0]) ;
+                                upperPoint.push(result.confidenceLimits.upper) ;
+                                upperSeries.data.push(upperPoint);
+
+                            }
+
+
+                        }
+                    }
+
+
+                    $scope.chartConfig.series.push(newSeries);
+
+                }
+            }
+        }
 
     })
 

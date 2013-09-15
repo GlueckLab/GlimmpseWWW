@@ -23,10 +23,10 @@
 /*
 * Main glimmpse application module
  */
-var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
+var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highcharts-ng'])
     .constant('glimmpseConstants',{
         // debugging flag
-        debug: true,
+        debug: false,
 
         /*** URIs for web services ***/
         uriPower: "/power/power",
@@ -66,7 +66,13 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid'])
         testUnirepHF: "UNIREPHF",
 
         // matrix names
-        matrixXEssence: ""
+        matrixXEssence: "",
+
+        // plot axis names
+        xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
+        xAxisBetaScale: "VARIABILITY SCALE FACTOR",
+        xAxisSigmaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR"
+
     })
     .config(['$routeProvider', function($routeProvider, studyDesignService, powerService) {
         /*
