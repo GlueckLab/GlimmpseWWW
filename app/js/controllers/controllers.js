@@ -2258,7 +2258,7 @@ glimmpseApp.controller('stateController',
                 },
                 xAxis: {
                     title: {
-                        text: 'Tsdcsdcotal Sample Size'
+                        text: 'Total Sample Size'
                     }
                 },
                 series: []
@@ -2341,6 +2341,7 @@ glimmpseApp.controller('stateController',
                     }
 
 
+                    newSeries.data.sort($scope.sortByX);
                     $scope.chartConfig.series.push(newSeries);
 
                 }
