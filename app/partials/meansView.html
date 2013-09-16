@@ -64,14 +64,14 @@
     </p>
 
 <div>
-        <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+        <table ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
             <tr>
                   <td>
                       {{measure.dimension}}
                   </td>
                    <td>
                        <select >
-                           <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
+                           <option ng-repeat="number in measure.spacingList track by $id($index)">{{number.value}}</option>
                        </select>
                    </td>
             </tr>

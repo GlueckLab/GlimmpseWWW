@@ -34,7 +34,7 @@
         Enter the standard deviation you expect to observe for the baseline covariate
     </p>
 
-    <input type="text" value="1" onclick="addsigmaGaussianRandom()">
+    <input type="numeric" value="1" data-ng-model="studyDesign.matrixSet[0].data.data[0][0]">
     </input>
 
     <p>
@@ -51,14 +51,14 @@
                     Correlation with Random Covariate
                 </td>
             </tr>
-            <tr ng-repeat="response in studyDesign.responseList">
+            <tr ng-repeat="response in studyDesign.responseList track by $id($index)">
                 <td>
                     {{response.value}}
                 </td>
                 <td>
-                    <input name="stdValue" type="text" value="0" ng-model="STDValue"
-                           ng-change="addSigmaGaussianRandom()">
-
+                    <input type="numeric" value="0"
+                           ng-model="STDForCovariate"
+                           ng-change="updateSTDForCovariates('updatedSTDValue')">
                     </input>
                 </td>
             </tr>
@@ -78,14 +78,26 @@
 
     <div class="tab-contents">
         <table>
-            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
+            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
                 <td>
                     {{measure.dimension}}
                 </td>
                 <td>
-                    <select >
-                        <option ng-repeat="number in [1, 2, 3]">{{number}}</option>
+                    <select>
+                            <option ng-repeat="number in
+                                measure.spacingList" value="{{number.value}}"
+                                ng-change="updateSTDForCovariates('updatedTimeFrame')"
+                                ng-model="currentOption"    >
+                                {{number.value}}
+
+                            </option>
+
                     </select>
+                            <!-- value="GRAND_MEAN">Grand mean</option>
+                            ng-options="opt.value for opt in
+                            measure.spacingList"
+
+                    </select>         !-->
                 </td>
 
             </tr>
@@ -93,8 +105,9 @@
     </div>
 
     <div><input type="checkbox"
-                data-ng-model="studyDesign.gaussianCovariate"
-                ng-true-value="YES" ng-false-value="NO">
+                ng-model="hasSameCorrelation"
+                ng-true-value="YES" ng-false-value="NO"
+                ng-change="SameCorrelationForOutcomes()">
         Use the same correlation for all outcomes
         </input>
     </div>

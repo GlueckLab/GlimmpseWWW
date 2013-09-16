@@ -1791,60 +1791,57 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.STDValue = undefined;
-
+            $scope.hasSameCorrelation = undefined;
+            $scope.STDForCovariate = 0;
+            $scope.currentOption = 1;
         }
 
-        $scope.addSigmaGaussianRandom = function(STDValue) {
-            var stdValue = $scope.STDValue;
-            studyDesignService.matrixSet.push({
-                idx:0, name:'sigmaGaussianRandom', rows:1, columns:1,
-                data:{data:[[STDValue]]}
-            });
+        $scope.SameCorrelationForOutcomes = function() {
+            var indexOfList = -1;
+            if ($scope.hasSameCorrelation != undefined) {
+                indexOfList = $scope.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
+                var responseListLength = studyDesignService.responseList.length;
+                var lengthToChange =  studyDesignService.matrixSet[indexOfList].data.data.length;
+                for (var j=responseListLength+1; j < lengthToChange;) {
+                    for (var i=0; i < responseListLength; i++) {
+                        studyDesignService.matrixSet[indexOfList].data.data[j][0] =
+                            studyDesignService.matrixSet[indexOfList].data.data[i][0];
+                        j++;
+                    }
+                }
+            }
         };
 
-        $scope.addMatrixSetComponents = function() {
+        $scope.updateSTDForCovariates = function(whatToUpdate) {
 
-            var dataForBeta = [];
-            var dataForBetaRandom = [];
-            var dataForsigmaOutcomeGaussianRandom = [];
-            var flag = true;
-            for (var i=0; i < studyDesignService.responseList.length; i++) {
-                dataForBeta.push(0);
-                dataForBetaRandom.push(1);
-                dataForsigmaOutcomeGaussianRandom.push(10);
-            }
-            for (var j=0; j < studyDesignService.repeatedMeasuresTree.length; j++) {
-                dataForBeta.push(0);
-                dataForBetaRandom.push(1);
-                if (flag == true) {
-                    dataForsigmaOutcomeGaussianRandom.push(10);
-                }
-                else {
-                    dataForsigmaOutcomeGaussianRandom.push(0);
+            var indexToUpdate = -1;
+            if (whatToUpdate == 'updatedTimeFrame')  {
+                window.alert("got it from time" + $scope.currentOption);
+                for (var i=0; i < studyDesignService.responseList.length; i++) {
+                    indexToUpdate = studyDesignService.responseList.length*$scope.
+                        currentOption+i;
+                    studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
+                        =$scope.STDForCovariate;
                 }
             }
+            else {
+                window.alert("got it from response");
+                indexToUpdate = studyDesignService.responseList.length*$scope.
+                    currentOption+i;
+                studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
+                    =$scope.STDForCovariate;
+            }
+        };
 
-            studyDesignService.matrixSet.push({
-                idx:0, name:'beta', rows:1,
-                columns:studyDesignService.responseList.length,
-                data:{data:[dataForBeta]}
-                });
-
-            studyDesignService.matrixSet.push({
-                idx:0, name:'betaRandom', rows:1,
-                columns:0,
-                data:{data:[dataForBetaRandom]}
-                });
-
-            studyDesignService.matrixSet.push({
-                idx:0, name:'sigmaOutcomeGaussianRandom',
-                rows:studyDesignService.responseList.length,
-                columns:1,
-                data:{data:[dataForsigmaOutcomeGaussianRandom]}
-            });
-            return 1;
-
+        $scope.getMatrixSetListIndexByName = function(listName) {
+            var index = -1;
+            for (var i=0; i < studyDesignService.matrixSet.length; i++) {
+                if (studyDesignService.matrixSet[i].name == listName) {
+                    index = i;
+                    return i;
+                }
+            }
+            return index;
         };
 
     })
