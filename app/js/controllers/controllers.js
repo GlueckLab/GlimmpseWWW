@@ -21,7 +21,8 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $location, $http, studyDesignService, powerService) {
+    function($scope, $rootScope, $location, $http, $modal,
+             glimmpseConstants, studyDesignService, powerService) {
 
     /**
      * Initialize the controller
@@ -34,8 +35,20 @@ glimmpseApp.controller('stateController',
         // the power service
         $scope.powerService = powerService;
 
+        // constants
+        $scope.glimmpseConstants = glimmpseConstants;
+
         // json encoded study design
-        $scope.studyDesignJSON = "hello world";
+        $scope.studyDesignJSON = "";
+
+        // results csv
+        $scope.resultsCSV = "";
+
+        // modal dialog
+        $scope.waitDialog = undefined;
+
+        // list of incomplete views
+        $scope.incompleteViews = [];
 
         // view mode (either "Study Design" or "Results"
         // input mode (either guided or matrix)
@@ -53,11 +66,83 @@ glimmpseApp.controller('stateController',
         }
     }
 
+
+
+    /**
+     * Convenience routine to determine if a screen is done
+     * @param state
+     * @returns {boolean}
+     */
+    $scope.testDone = function(state) {
+        return (state == glimmpseConstants.stateComplete ||
+            state == glimmpseConstants.stateDisabled);
+    }
+
+
+    /**
+     *  Display the incomplete items dialog
+     */
+    $scope.showIncompleteItemsDialog = function () {
+
+        $scope.incompleteViews = [];
+        if (!$scope.testDone($scope.getStateSolvingFor())) { $scope.incompleteViews.push("Solving For")}
+        if (!$scope.testDone($scope.getStateNominalPower())) { $scope.incompleteViews.push("Desired Power")}
+        if (!$scope.testDone($scope.getStateTypeIError())) { $scope.incompleteViews.push("Type I Error")}
+        if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Study Groups")}
+        if (!$scope.testDone($scope.getStateCovariate())) { $scope.incompleteViews.push("Covariate")}
+        if (!$scope.testDone($scope.getStateClustering())) { $scope.incompleteViews.push("Clustering")}
+        if (!$scope.testDone($scope.getStateRelativeGroupSize())) { $scope.incompleteViews.push("Relative Group Size")}
+        if (!$scope.testDone($scope.getStateSmallestGroupSize())) { $scope.incompleteViews.push("Smallest Group Size")}
+        if (!$scope.testDone($scope.getStateResponseVariables())) { $scope.incompleteViews.push("Response Variables")}
+        if (!$scope.testDone($scope.getStateRepeatedMeasures())) { $scope.incompleteViews.push("Repeated Measures")}
+        if (!$scope.testDone($scope.getStateHypothesis())) { $scope.incompleteViews.push("Hypothesis")}
+        if (!$scope.testDone($scope.getStateMeans())) { $scope.incompleteViews.push("Means")}
+        if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Scale Factor (means)")}
+        if (!$scope.testDone($scope.getStateWithinVariability())) { $scope.incompleteViews.push("Within Participant Variability")}
+        if (!$scope.testDone($scope.getStateCovariateVariability())) { $scope.incompleteViews.push("Covariate Variability")}
+        if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factor (variability)")}
+        if (!$scope.testDone($scope.getStateStatisticalTest())) { $scope.incompleteViews.push("Statistical Test")}
+        if (!$scope.testDone($scope.getStatePowerMethod())) { $scope.incompleteViews.push("Power Method")}
+        if (!$scope.testDone($scope.getStateConfidenceIntervals())) { $scope.incompleteViews.push("Confidence Intervals")}
+        if (!$scope.testDone($scope.getStatePowerCurve())) { $scope.incompleteViews.push("Power Curve")}
+
+        var incompleteItemsDialog = $modal.open({
+                templateUrl: 'incompleteDialog.html',
+                controller:   function ($scope, $modalInstance, incompleteViews) {
+                    $scope.incompleteViews = incompleteViews;
+                    $scope.close = function () {
+                        $modalInstance.close();
+                    }
+                },
+                resolve: {
+                    incompleteViews: function () {
+                        return $scope.incompleteViews;
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     *  Display the processing dialog
+     */
+    $scope.showWaitDialog = function () {
+        $scope.waitDialog = $modal.open({
+                templateUrl: 'processingDialog.html',
+                controller: function ($scope) {},
+                backdrop: 'static'
+            }
+        );
+    }
+
+
     /**
      * clear the study design
      */
     $scope.reset = function() {
         if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            $scope.studyDesign.reset();
+            $scope.powerService.clearCache();
             init();
         }
     }
@@ -69,11 +154,15 @@ glimmpseApp.controller('stateController',
      * @param parentScope
      */
     $scope.uploadFile = function(input) {
+        $location.path('/')
+        powerService.clearCache();
+
         var $form = $(input).parents('form');
 
         if (input.value == '') {
             window.alert("No file was selected.  Please try again");
         }
+        $scope.showWaitDialog();
 
         $form.ajaxSubmit({
             type: 'POST',
@@ -84,28 +173,25 @@ glimmpseApp.controller('stateController',
                  handle the error ...
                  */
                 window.alert("The study design file could not be loaded: " + responseText);
-                $form.reset();
+                $form[0].reset();
+                $scope.waitDialog.close();
             },
             success: function(responseText, statusText, xhr, form) {
-                // parse the json
-                var uploadedStudyDesign = angular.fromJson(responseText);
+                // select the appropriate input mode
+                $scope.$apply(function() {
 
-                if (uploadedStudyDesign == undefined) {
-                      window.alert("The file did not contain a valid study design");
-                    $scope.$apply(function() {
-                        $scope.state.mode = undefined;
-                        $scope.state.view = 'studyDesign';
-                    });
-                } else {
-                    // set to the study design object
+                    // parse the json
+                    try {
+                        $scope.studyDesign.fromJSON(responseText)
+                    } catch(err) {
+                        window.alert("The file did not contain a valid study design");
+                    }
 
-                    // select the appropriate input mode
-                    $scope.$apply(function() {
-                        $scope.state.mode = uploadedStudyDesign.viewTypeEnum;
-                        $scope.state.view = 'studyDesign';
-                    });
-                }
-                $form.reset();
+                    $scope.state.mode = $scope.studyDesign.viewTypeEnum;
+                    $scope.state.view = glimmpseConstants.viewTypeStudyDesign;
+                });
+                $scope.waitDialog.close();
+                $form[0].reset();
             }
         });
 
@@ -118,6 +204,40 @@ glimmpseApp.controller('stateController',
      */
     $scope.updateStudyDesignJSON = function() {
         $scope.studyDesignJSON = angular.toJson($scope.studyDesign);
+    }
+
+    /**
+     * Called prior to submission of save form.  Updates
+     * the value of the study design JSON in a hidden field
+     * in the save form.
+     */
+    $scope.updateResultsCSV = function() {
+        // add header row
+        var resultsCSV = "desiredPower,actualPower,totalSampleSize,alpha,betaScale,sigmaScale,test,powerMethod,quantile," +
+            "ciLower,ciUpper,errorCode,errorMessage\n";
+        if ($scope.powerService.cachedResults != undefined) {
+            for(var i = 0; i < $scope.powerService.cachedResults.length; i++) {
+                var result = $scope.powerService.cachedResults[i];
+                resultsCSV +=
+                        result.nominalPower.value + "," +
+                        result.actualPower + "," +
+                        result.totalSampleSize + "," +
+                        result.alpha.alphaValue + "," +
+                        result.betaScale.value + "," +
+                        result.sigmaScale.value + "," +
+                        result.test.type + "," +
+                        result.powerMethod.powerMethodEnum + "," +
+                        (result.quantile != null ? result.quantile.value : "") + "," +
+                        (result.confidenceInterval != null ? result.confidenceInterval.lowerLimit : "") + "," +
+                        (result.confidenceInterval != null ? result.confidenceInterval.upperLimit : "") + "," +
+                        (result.errorCode != null ? result.errorCode : "") + "," +
+                        (result.errorMessage != null ? result.errorMessage : "") + "\n"
+                ;
+
+            }
+        }
+        $scope.resultsCSV = resultsCSV;
+
     }
 
     /**
@@ -163,102 +283,62 @@ glimmpseApp.controller('stateController',
      * @returns {boolean}
      */
     $scope.calculateAllowed = function() {
-        var nominalPowerState = $scope.getStateNominalPower();
-        var relativeGroupSizeState = $scope.getStateRelativeGroupSize();
-        var smallestGroupSize = $scope.getStateSmallestGroupSize();
-        var covariateVariabilityState = $scope.getStateCovariateVariability();
-        var powerMethodState = $scope.getStatePowerMethod();
-        return (
-                ($scope.getStateSolvingFor() == 'complete') &&
-                (nominalPowerState == 'complete' || nominalPowerState == 'disabled') &&
-                ($scope.getStateTypeIError() == 'complete') &&
-                ($scope.getStatePredictors() == 'complete') &&
-                ($scope.getStateCovariate() == 'complete') &&
-                ($scope.getStateClustering() == 'complete') &&
-                (relativeGroupSizeState == 'complete' || relativeGroupSizeState == 'disabled') &&
-                (smallestGroupSize == 'complete' || smallestGroupSize == 'disabled') &&
-                ($scope.getStateResponseVariables() == 'complete') &&
-                ($scope.getStateRepeatedMeasures() == 'complete') &&
-                ($scope.getStateHypothesis() == 'complete') &&
-                ($scope.getStateMeans() == 'complete') &&
-                ($scope.getStateScaleFactorsForMeans() == 'complete') &&
-                (covariateVariabilityState == 'complete' || covariateVariabilityState == 'disabled') &&
-                ($scope.getStateCovariateVariability() == 'complete') &&
-                ($scope.getStateScaleFactorsForVariability() == 'complete') &&
-                ($scope.getStateStatisticalTest() == 'complete') &&
-                (powerMethodState == 'complete' || powerMethodState == 'disabled') &&
-                ($scope.getStateConfidenceIntervals() == 'complete') &&
-                ($scope.getStatePowerCurve() == 'complete')
-        );
+        if ($scope.getMode() == glimmpseConstants.modeGuided) {
+            return (
+                $scope.testDone($scope.getStateSolvingFor()) &&
+                $scope.testDone($scope.getStateNominalPower()) &&
+                $scope.testDone($scope.getStateTypeIError()) &&
+                $scope.testDone($scope.getStatePredictors()) &&
+                $scope.testDone($scope.getStateCovariate()) &&
+                $scope.testDone($scope.getStateClustering()) &&
+                $scope.testDone($scope.getStateRelativeGroupSize()) &&
+                $scope.testDone($scope.getStateSmallestGroupSize()) &&
+                $scope.testDone($scope.getStateResponseVariables()) &&
+                $scope.testDone($scope.getStateRepeatedMeasures()) &&
+                $scope.testDone($scope.getStateHypothesis()) &&
+                $scope.testDone($scope.getStateMeans()) &&
+                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
+                $scope.testDone($scope.getStateWithinVariability()) &&
+                $scope.testDone($scope.getStateCovariateVariability()) &&
+                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
+                $scope.testDone($scope.getStateStatisticalTest()) &&
+                $scope.testDone($scope.getStatePowerMethod()) &&
+                $scope.testDone($scope.getStateConfidenceIntervals()) &&
+                $scope.testDone($scope.getStatePowerCurve())
+                );
+        } else if ($scope.getMode() == glimmpseConstants.modeMatrix) {
+            return (
+                $scope.testDone($scope.getStateSolvingFor()) &&
+                $scope.testDone($scope.getStateNominalPower()) &&
+                $scope.testDone($scope.getStateTypeIError()) &&
+                $scope.testDone($scope.getStateDesignEssence()) &&
+                $scope.testDone($scope.getStateCovariate()) &&
+                $scope.testDone($scope.getStateRelativeGroupSize()) &&
+                $scope.testDone($scope.getStateSmallestGroupSize()) &&
+                $scope.testDone($scope.getStateBeta()) &&
+                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
+                $scope.testDone($scope.getStateBetweenParticipantContrast()) &&
+                $scope.testDone($scope.getStateWithinParticipantContrast()) &&
+                $scope.testDone($scope.getStateThetaNull()) &&
+                $scope.testDone($scope.getStateSigmaE()) &&
+                $scope.testDone($scope.getStateSigmaG()) &&
+                $scope.testDone($scope.getStateSigmaYG()) &&
+                $scope.testDone($scope.getStateSigmaY()) &&
+                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
+                $scope.testDone($scope.getStatePowerMethod()) &&
+                $scope.testDone($scope.getStateConfidenceIntervals()) &&
+                $scope.testDone($scope.getStatePowerCurve())
+
+                );
+        }
     }
 
     /**
-     * Calculate power or sample size results
+     * Clear the cached results so the results view will reload
      */
     $scope.calculate = function() {
-         var fakeData =
-            "{\"uuid\":null,\"name\":null,\"gaussianCovariate\":false,\"solutionTypeEnum\":" +
-                "\"POWER\",\"participantLabel\":\"participant\",\"viewTypeEnum\":" +
-                "\"GUIDED_MODE\",\"confidenceIntervalDescriptions\":null,\"powerCurveDescriptions\":" +
-                "{\"idx\":0,\"legend\":false,\"width\":300,\"height\":300,\"title\":null," +
-                "\"horizontalAxisLabelEnum\":\"TOTAL_SAMPLE_SIZE\",\"dataSeriesList\":" +
-                "[{\"idx\":0,\"label\":\"Power by Total N\",\"confidenceLimits\":false," +
-                "\"statisticalTestTypeEnum\":\"HLT\",\"betaScale\":1,\"sigmaScale\":1," +
-                "\"typeIError\":0.05,\"sampleSize\":-1,\"nominalPower\":-1,\"powerMethod" +
-                "\":null,\"quantile\":-1}]},\"alphaList\":[{\"idx\":0,\"alphaValue\":0.05}]," +
-                "\"betaScaleList\":[{\"idx\":0,\"value\":1}],\"sigmaScaleList\":[{\"idx\":0," +
-                "\"value\":1}],\"relativeGroupSizeList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                "\"value\":1}],\"sampleSizeList\":[{\"idx\":0,\"value\":3},{\"idx\":0,\"value\":4}," +
-                "{\"idx\":0,\"value\":5},{\"idx\":0,\"value\":6},{\"idx\":0,\"value\":7},{\"idx\":0," +
-                "\"value\":8},{\"idx\":0,\"value\":9},{\"idx\":0,\"value\":10}],\"statisticalTestList\":" +
-                "[{\"idx\":0,\"type\":\"HLT\"}],\"powerMethodList\":null,\"quantileList\":null," +
-                "\"nominalPowerList\":null,\"responseList\":[{\"idx\":0,\"name\":\"alcohol behavior scale\"}]" +
-                ",\"betweenParticipantFactorList\":[{\"idx\":0,\"predictorName\":\"treatment\",\"categoryList\":" +
-                "[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0,\"category\":\"delayed program " +
-                "control\"}]}],\"repeatedMeasuresTree\":[{\"idx\":0,\"dimension\":\"grade\"," +
-                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3,\"node" +
-                "\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0,\"value\":2}," +
-                "{\"idx\":0,\"value\":3}]}],\"clusteringTree\":[{\"idx\":0,\"groupName\":\"community\"," +
-                "\"groupSize\":10,\"intraClusterCorrelation\":0.01,\"node\":1,\"parent\":0}],\"hypothesis\":" +
-                "[{\"idx\":0,\"type\":\"INTERACTION\",\"betweenParticipantFactorMapList\":[{\"type\":" +
-                "\"NONE\",\"betweenParticipantFactor\":{\"idx\":0,\"predictorName\":\"treatment\"," +
-                "\"categoryList\":[{\"idx\":0,\"category\":\"home based program\"},{\"idx\":0," +
-                "\"category\":\"delayed program control\"}]}}],\"repeatedMeasuresMapTree\":[{\"type\":" +
-                "\"ALL_POLYNOMIAL\",\"repeatedMeasuresNode\":{\"idx\":0,\"dimension\":\"grade\"," +
-                "\"repeatedMeasuresDimensionType\":\"NUMERICAL\",\"numberOfMeasurements\":3," +
-                "\"node\":0,\"parent\":null,\"spacingList\":[{\"idx\":0,\"value\":1},{\"idx\":0," +
-                "\"value\":2},{\"idx\":0,\"value\":3}]}}]}],\"covariance\":[{\"idx\":0,\"type\":" +
-                "\"LEAR_CORRELATION\",\"name\":\"grade\",\"standardDeviationList\":[{\"idx\":0," +
-                "\"value\":1}],\"rho\":0.3,\"delta\":0.3,\"rows\":3,\"columns\":3,\"blob\":null}," +
-                "{\"idx\":0,\"type\":\"UNSTRUCTURED_CORRELATION\",\"name\":\"__RESPONSE_COVARIANCE__" +
-                "\",\"standardDeviationList\":[{\"idx\":0,\"value\":0.3}],\"rho\":-2,\"delta\":-1," +
-                "\"rows\":1,\"columns\":1,\"blob\":{\"data\":[[1]]}}],\"matrixSet\":[{\"idx\":0," +
-                "\"name\":\"beta\",\"rows\":2,\"columns\":3,\"data\":{\"data\":[[0,0,-0.25],[0,0,0]]}}]}";
-        // get the results
-        if (studyDesignService.solutionTypeEnum == 'power') {
-            // TODO: powerService.getPower(angular.toJson($scope.studyDesign)).then(function(data) {
-            // TODO: open processing dialog
-            $scope.powerService.calculatePower(fakeData).then(function(data) {
-                    // close processing dialog
-                    // enable results tab
-                    powerService.cachedResults = data;
-                    powerService.cachedError = undefined;
-                },
-                function(errorMessage){
-                    // close processing dialog
-                    powerService.cachedResults = undefined;
-                    powerService.cachedError = errorMessage;
-                });
-        } else {
-            $scope.powerService.calculateSampleSize(angular.toJson($scope.studyDesign)).then(function(data) {
-                    $scope.powerResults = data;
-                    $scope.error = undefined;
-                },
-                function(errorMessage){
-                    $scope.powerResults = undefined;
-                    $scope.error = errorMessage;
-                });
-        }
+        powerService.clearCache();
+        $scope.setView(glimmpseConstants.viewTypeResults);
     }
 
     /**
@@ -284,7 +364,7 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateNominalPower = function() {
         if ($scope.studyDesign.solutionTypeEnum == undefined ||
-           $scope.studyDesign.solutionTypeEnum == 'power') {
+           $scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
             return 'disabled';
         } else if ($scope.studyDesign.nominalPowerList.length > 0) {
             return 'complete';
@@ -348,8 +428,7 @@ glimmpseApp.controller('stateController',
      * @returns complete or incomplete
      */
     $scope.getStateClustering = function() {
-        if ($scope.studyDesign.clusteringTree.length <= 0
-            ){
+        if ($scope.studyDesign.clusteringTree.length <= 0){
             return 'complete';
         } else {
             return 'incomplete';
@@ -384,7 +463,7 @@ glimmpseApp.controller('stateController',
      * @returns complete, incomplete, or disabled
      */
     $scope.getStateSmallestGroupSize = function() {
-        if ($scope.studyDesign.solutionTypeEnum == 'samplesize') {
+        if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
             return 'disabled';
         } else if ($scope.studyDesign.sampleSizeList.length > 0) {
             return 'complete';
@@ -623,9 +702,12 @@ glimmpseApp.controller('stateController',
     $scope.getStateSigmaG = function() {
         // TODO
     }
-    $scope.getStateSigmaGY = function() {
+    $scope.getStateSigmaYG = function() {
         // TODO
     }
+        $scope.getStateSigmaY = function() {
+            // TODO
+        }
 
 
 })
@@ -634,11 +716,12 @@ glimmpseApp.controller('stateController',
 /**
  * Controller to get/set what the user is solving for
  */
-.controller('solutionTypeController', function($scope, studyDesignService) {
+.controller('solutionTypeController', function($scope, glimmpseConstants, studyDesignService) {
 
     init();
     function init() {
         $scope.studyDesign = studyDesignService;
+        $scope.glimmpseConstants = glimmpseConstants;
     }
 
 })
@@ -647,13 +730,14 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the nominal power list
  */
-.controller('nominalPowerController', function($scope, studyDesignService) {
+.controller('nominalPowerController', function($scope, glimmpseConstants, studyDesignService) {
 
     init();
     function init() {
         $scope.studyDesign = studyDesignService;
         $scope.newNominalPower = undefined;
         $scope.editedNominalPower = undefined;
+        $scope.glimmpseConstants = glimmpseConstants;
     }
     /**
      * Add a new nominal power value
@@ -663,7 +747,7 @@ glimmpseApp.controller('stateController',
         if (newPower != undefined) {
             // add the power to the list
             studyDesignService.nominalPowerList.push({
-                id: studyDesignService.nominalPowerList.length,
+                idx: studyDesignService.nominalPowerList.length,
                 value: newPower
             });
         }
@@ -705,13 +789,14 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the Type I error rate list
  */
-.controller('typeIErrorRateController', function($scope, studyDesignService) {
+.controller('typeIErrorRateController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newTypeIErrorRate = undefined;
             $scope.editedTypeIErrorRate = undefined;
+            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new type I error rate
@@ -721,33 +806,12 @@ glimmpseApp.controller('stateController',
             if (newAlpha != undefined) {
             // add the power to the list
                 studyDesignService.alphaList.push({
-                    id: studyDesignService.alphaList.length,
-                    value: newAlpha
+                    idx: studyDesignService.alphaList.length,
+                    alphaValue: newAlpha
                 });
             }
             // reset the new power to null
             $scope.newTypeIErrorRate = undefined;
-        };
-
-        /**
-         * Edit an existing type I error rate
-         */
-        $scope.editTypeIErrorRate = function(alpha) {
-            $scope.editedTypeIErrorRate = alpha;
-        };
-
-
-        /**
-         * Called when editing is complete
-         * @param alpha
-         */
-        $scope.doneEditing = function (alpha) {
-            $scope.editedTypeIErrorRate = null;
-            alpha.value = alpha.value.trim();
-
-            if (!alpha.value) {
-                $scope.deleteTypeIErrorRate(alpha);
-            }
         };
 
         /**
@@ -763,13 +827,14 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the scale factor for covariance
  */
-    .controller('scaleFactorForVarianceController', function($scope, studyDesignService) {
+    .controller('scaleFactorForVarianceController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newScaleFactorForVariance = undefined;
             $scope.editedScaleFactorForVariance= undefined;
+            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new scale factor for covariance
@@ -779,7 +844,7 @@ glimmpseApp.controller('stateController',
             if (newScale != undefined) {
                 // add the scale factor to the list
                 studyDesignService.sigmaScaleList.push({
-                    id: studyDesignService.sigmaScaleList.length,
+                    idx: studyDesignService.sigmaScaleList.length,
                     value: newScale
                 });
             }
@@ -821,13 +886,14 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the scale factor for means
  */
-    .controller('scaleFactorForMeansController', function($scope, studyDesignService) {
+    .controller('scaleFactorForMeansController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newScaleFactorForMeans = undefined;
             $scope.editedScaleFactorForMeans= undefined;
+            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new scale factor for means
@@ -837,7 +903,7 @@ glimmpseApp.controller('stateController',
             if (newScale != undefined) {
                 // add the scale factor to the list
                 studyDesignService.betaScaleList.push({
-                    id: studyDesignService.betaScaleList.length,
+                    idx: studyDesignService.betaScaleList.length,
                     value: newScale
                 });
             }
@@ -878,13 +944,14 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the smallest group size list
  */
-    .controller('sampleSizeController', function($scope, studyDesignService) {
+    .controller('sampleSizeController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newSampleSize = undefined;
             $scope.editedSampleSize = undefined;
+            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new sample size
@@ -894,7 +961,7 @@ glimmpseApp.controller('stateController',
             if (newN != undefined) {
                 // add the power to the list
                 studyDesignService.sampleSizeList.push({
-                    id: studyDesignService.sampleSizeList.length,
+                    idx: studyDesignService.sampleSizeList.length,
                     value: newN
                 });
             }
@@ -935,14 +1002,16 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the response variables list
  */
-    .controller('responseController', function($scope, studyDesignService) {
+    .controller('responseController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.newResponse = '';
             $scope.editedResponse = '';
+            $scope.glimmpseConstants = glimmpseConstants;
         }
+
         /**
          * Add a new response variable
          */
@@ -951,8 +1020,8 @@ glimmpseApp.controller('stateController',
             if (newOutcome.length > 0) {
                 // add the response to the list
                 studyDesignService.responseList.push({
-                    id: studyDesignService.responseList.length,
-                    value: newOutcome
+                    idx: studyDesignService.responseList.length,
+                    name: newOutcome
                 });
             }
             // reset the new response to null
@@ -1026,7 +1095,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the predictors
  */
-    .controller('predictorsController', function($scope, studyDesignService) {
+    .controller('predictorsController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
@@ -1034,6 +1103,7 @@ glimmpseApp.controller('stateController',
             $scope.newPredictorName = undefined;
             $scope.newCategoryName = undefined;
             $scope.currentPredictor = undefined;
+            $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**
@@ -1051,8 +1121,8 @@ glimmpseApp.controller('stateController',
             if (newPredictor != undefined) {
                 // add the predictor to the list
                 var newPredictorObject = {
-                    id: studyDesignService.betweenParticipantFactorList.length,
-                    value: newPredictor,
+                    idx: studyDesignService.betweenParticipantFactorList.length,
+                    predictorName: newPredictor,
                     categoryList: []
                 }
                 studyDesignService.betweenParticipantFactorList.push(newPredictorObject);
@@ -1090,8 +1160,8 @@ glimmpseApp.controller('stateController',
                 newCategory != undefined) {
                 // add the category to the list
                 $scope.currentPredictor.categoryList.push({
-                    id: 0,
-                    value: newCategory
+                    idx: 0,
+                    category: newCategory
                 });
             }
             // reset the new sample size to null
@@ -1110,11 +1180,12 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the covariates
  */
-    .controller('covariatesController', function($scope, studyDesignService) {
+    .controller('covariatesController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.glimmpseConstants = glimmpseConstants;
             //$scope.hasCovariate = undefined;
         }
 
@@ -1174,74 +1245,73 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the statistical tests
  */
-    .controller('statisticalTestsController', function($scope, studyDesignService) {
+    .controller('statisticalTestsController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.testsList = [];
-            $scope.testsList.push(
-                {name: 'HLT', selected: false},
-                {name: 'PBT', selected: false},
-                {name: 'WL', selected: false},
-                {name: 'UNIREPBOX', selected: false},
-                {name: 'UNIREPGG', selected: false},
-                {name: 'UNIREPHF', selected: false},
-                {name: 'UNIREP', selected: false}
-            );
+            $scope.glimmpseConstants = glimmpseConstants;
+
+            /**
+             * Use the name of a statistical test to find its index
+             * (note we define this in the init routine so we can use
+             * it during the setup of the selection list)
+             */
+            $scope.getTestIndexByName = function(testType) {
+                //var index = -1;
+                for (var i=0; i < studyDesignService.statisticalTestList.length; i++) {
+                    if (testType == studyDesignService.statisticalTestList[i].type) {
+                        return i;
+                    }
+                }
+                return -1;
+            };
+
+            // lists of indicators of which test is selected
+            $scope.testsList = [
+                {label: "Hotelling Lawley Trace",
+                    type: glimmpseConstants.testHotellingLawleyTrace,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testHotellingLawleyTrace) != -1)},
+                {label: "Pillai-Bartlett Trace",
+                    type: glimmpseConstants.testPillaiBartlettTrace,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testPillaiBartlettTrace) != -1)},
+                {label: "Wilks Likelihood Ratio",
+                    type: glimmpseConstants.testWilksLambda,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testWilksLambda) != -1)},
+                {label: "Univariate Approach to Repeated Measures with Box Correction",
+                    type: glimmpseConstants.testUnirepBox,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testUnirepBox) != -1)},
+                {label: "Univariate Approach to Repeated Measures with Geisser-Greenhouse Correction",
+                    type: glimmpseConstants.testUnirepGG,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testUnirepGG) != -1)},
+                {label: "Univariate Approach to Repeated Measures with Huynh-Feldt Correction",
+                    type: glimmpseConstants.testUnirepHF,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testUnirepHF) != -1)},
+                {label: "Univariate Approach to Repeated Measures, uncorrected",
+                    type: glimmpseConstants.testUnirep,
+                    selected: ($scope.getTestIndexByName(glimmpseConstants.testUnirep) != -1)}
+            ];
         }
 
         /**
          * Update statisticalTestList with insert or delete of a new test
          */
-        $scope.updateStatisticalTest =function(testName) {
-
-                for (var i=0; i < $scope.testsList.length; i++) {
-                    if ($scope.testsList[i].name == testName) {
-                        if ($scope.testsList[i].selected == true)
-                                $scope.testsList[i].selected = !$scope.testsList[i].selected;
-                        else {
-                            $scope.testsList[i].selected = true;
-                        }
-                        if($scope.testsList[i].selected) {
-                                studyDesignService.statisticalTestList.push({
-                                idx:'0', type:testName
-                            });
-                        }
-                        else {
-                            studyDesignService.statisticalTestList.splice(
-                                $scope.getTestIndexByName(testName),1);
-                            for (var i=0; i < $scope.testsList.length; i++) {
-                                if ($scope.testsList[i].name == testName) {
-                                    $scope.testsList[i].selected = false;
-                                }
-                            }
-                        }
-                    }
-                }
-        };
-
-        /**
-         * Use the name of a statistical test to find its index
-         */
-        $scope.getTestIndexByName = function(testName) {
-            //var index = -1;
-            for (var i=0; i < studyDesignService.statisticalTestList.length; i++) {
-                if (testName == studyDesignService.statisticalTestList[i].type) {
-                    //window.alert("found it");
-                    return i;
-                }
-                //else window.alert(studyDesignService.statisticalTestList[i].name + "" + testName);
+        $scope.updateStatisticalTest = function(test) {
+            if (test.selected) {
+                studyDesignService.statisticalTestList.push({
+                    idx:'0', type:test.type
+                });
+            } else {
+                studyDesignService.statisticalTestList.splice(
+                    $scope.getTestIndexByName(test.type),1);
             }
-            return -1;
         };
-
     })
 
 /**
  * Controller managing the clusters
  */
-    .controller('clusteringController', function($scope, studyDesignService) {
+    .controller('clusteringController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
          function init() {
@@ -1277,7 +1347,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing repeated measures
  */
-    .controller('repeatedMeasuresController', function($scope, studyDesignService) {
+    .controller('repeatedMeasuresController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
@@ -1367,7 +1437,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the covariates
  */
-    .controller('meansViewController', function($scope, studyDesignService) {
+    .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
@@ -1425,7 +1495,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the hypotheses
  */
-    .controller('hypothesesController', function($scope, studyDesignService) {
+    .controller('hypothesesController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
@@ -1650,7 +1720,7 @@ glimmpseApp.controller('stateController',
     /*
     * Controller for the confidence intervals view
      */
-    .controller('confidenceIntervalController', function($scope, studyDesignService) {
+    .controller('confidenceIntervalController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1691,7 +1761,7 @@ glimmpseApp.controller('stateController',
     /**
      * Controller for power methods view
      */
-    .controller('powerMethodController', function($scope, studyDesignService) {
+    .controller('powerMethodController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1756,7 +1826,7 @@ glimmpseApp.controller('stateController',
             if (newQuantile != undefined) {
                 // add the power to the list
                 studyDesignService.quantileList.push({
-                    id: studyDesignService.quantileList.length,
+                    idx: studyDesignService.quantileList.length,
                     value: newQuantile
                 });
             }
@@ -1776,7 +1846,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for variability within view
  */
-    .controller('variabilityViewController', function($scope, studyDesignService) {
+    .controller('variabilityViewController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1787,7 +1857,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for variability covariate within view
  */
-    .controller('variabilityCovariateViewController', function($scope, studyDesignService) {
+    .controller('variabilityCovariateViewController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1849,7 +1919,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for the plot options view
  */
-    .controller('plotOptionsController', function($scope, studyDesignService) {
+    .controller('plotOptionsController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1943,7 +2013,7 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for relative group size view
  */
-    .controller('relativeGroupSizeController', function($scope, studyDesignService) {
+    .controller('relativeGroupSizeController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1994,7 +2064,7 @@ glimmpseApp.controller('stateController',
     /**
      * controller for the design essence screen in matrix mode
      */
-    .controller('designEssenceController', function($scope, studyDesignService) {
+    .controller('designEssenceController', function($scope, glimmpseConstants, studyDesignService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -2003,20 +2073,316 @@ glimmpseApp.controller('stateController',
                 [4,5,6],
                 [7,8,9]
             ];
+
+            window.alert("design controller");
         };
     })
 
     /**
      * Controller for the results screen
      */
-    .controller('resultsController', function($scope, studyDesignService, powerService) {
+    .controller('resultsReportController',
+        function($scope, glimmpseConstants, studyDesignService, powerService) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.powerService = powerService;
+            $scope.processing = false;
+            $scope.errorMessage = undefined;
+            $scope.gridData;
+
+            $scope.columnDefs = [
+                { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
+                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
+                { field: 'nominalPower.value', displayName: 'Target Power', width: 200},
+                { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
+                { field: 'test.type', displayName: 'Test', width: 200},
+                { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
+                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200}
+            ];
+
+            // build grid options
+            $scope.resultsGridOptions = {
+                data: 'gridData',
+                columnDefs: 'columnDefs',
+                selectedItems: []
+            };
+
+            if (powerService.cachedResults == undefined && powerService.cachedError == undefined) {
+
+                $scope.processing = true;
+                // need to recalculate power
+                if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypePower) {
+                    $scope.powerService.calculatePower(angular.toJson(studyDesignService))
+                        .then(function(data) {
+                            powerService.cachedResults = angular.fromJson(data);
+                            powerService.cachedError = undefined;
+                            $scope.processing = false;
+                            $scope.gridData = powerService.cachedResults;
+                        },
+                        function(errorMessage){
+                            // close processing dialog
+                            powerService.cachedResults = undefined;
+                            powerService.cachedError = errorMessage;
+                            $scope.processing = false;
+                            $scope.gridData = undefined;
+                        });
+                } else if (studyDesignService.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
+                    $scope.powerService.calculateSampleSize(angular.toJson(studyDesignService))
+                        .then(function(data) {
+                            powerService.cachedResults = angular.fromJson(data);
+                            powerService.cachedError = undefined;
+                            $scope.processing = false;
+                            $scope.gridData = powerService.cachedResults;
+                        },
+                        function(errorMessage){
+                            // close processing dialog
+                            powerService.cachedResults = undefined;
+                            powerService.cachedError = errorMessage;
+                            $scope.processing = false;
+                            $scope.gridData = undefined;
+                            $scope.errorMessage = errorMessage;
+                        });
+                } else {
+                    $scope.errorMessage =
+                        "Invalid study design.  Cannot solve for '" + studyDesignService.solutionTypeEnum+ "'";
+                    $scope.gridData = undefined;
+                }
+            } else {
+                $scope.gridData = powerService.cachedResults;
+                $scope.errorMessage = powerService.cachedError;
+            }
+
         };
 
     })
+
+    .controller('resultsPlotController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+
+        /**
+         * Function for doing an ordered insert of data points
+         * @param a
+         * @param b
+         * @returns {number}
+         */
+        $scope.sortByX = function(a,b) {
+            return a[0] > b[0] ? 1 : -1;
+        }
+
+        /**
+         * See if the result matches the data series description
+         */
+        $scope.isMatch = function(seriesDescription, result, hasCovariate) {
+            var match = (
+                seriesDescription.statisticalTestTypeEnum == result.test.type &&
+                seriesDescription.typeIError == result.alpha.alphaValue &&
+                (!hasCovariate || seriesDescription.powerMethod == result.powerMethod.powerMethodEnum) &&
+                (!hasCovariate || seriesDescription.quantile == result.quantile.value)
+            );
+
+            if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisTotalSampleSize) {
+                match = match &&
+                    seriesDescription.betaScale == result.betaScale.value &&
+                    seriesDescription.sigmaScale == result.sigmaScale.value;
+            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisBetaScale) {
+                match = match &&
+                    seriesDescription.sampleSize == result.totalSampleSize &&
+                    seriesDescription.sigmaScale == result.sigmaScale.value;
+
+            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisSigmaScale) {
+                match = match &&
+                    seriesDescription.sampleSize == result.totalSampleSize &&
+                    seriesDescription.betaScale == result.betaScale.value;
+
+            }
+
+            return match;
+        }
+
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.powerService = powerService;
+            $scope.noPlotRequested = (studyDesignService.powerCurveDescriptions == null ||
+                                        studyDesignService.powerCurveDescriptions.dataSeriesList.length <= 0);
+            $scope.showCurve = (!$scope.noPlotRequested &&
+                                powerService.cachedResults != undefined &&
+                                powerService.cachedResults.length > 0);
+
+            // highchart configuration
+            $scope.chartConfig = {
+                options: {
+                    credits: {
+                        enabled: false
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Power'
+                        },
+                        min: 0,
+                        max: 1,
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#ff0000'
+                            //'#808080'
+                        }]
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    legend: {
+                        enabled: true
+                    },
+                    exporting: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        series: {
+                            lineWidth: 1
+                        }
+                    }
+                },
+                title: {
+                    text: 'Power Curve',
+                    x: -20 //center
+                },
+                xAxis: {
+                    title: {
+                        text: 'Total Sample Size'
+                    }
+                },
+                series: []
+            }
+
+            if ($scope.showCurve == true) {
+                // set the title
+                if (studyDesignService.powerCurveDescriptions.title != null &&
+                    studyDesignService.powerCurveDescriptions.title.length > 0) {
+                    $scope.chartConfig.title.text = studyDesignService.powerCurveDescriptions.title;
+                }
+
+                // set the axis
+                if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisTotalSampleSize) {
+                    $scope.chartConfig.xAxis.title.text = 'Total Sample Size';
+
+                } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisBetaScale) {
+                    $scope.chartConfig.xAxis.title.text = 'Regresssion Coefficient Scale Factor';
+
+                } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                    glimmpseConstants.xAxisSigmaScale) {
+                    $scope.chartConfig.xAxis.title.text = 'Variability Scale Factor';
+                }
+
+                // add the data series
+                $scope.chartConfig.series = [];
+                for(var i = 0; i < studyDesignService.powerCurveDescriptions.dataSeriesList.length; i++) {
+                    var seriesDescription = studyDesignService.powerCurveDescriptions.dataSeriesList[i];
+                    var newSeries = {
+                        name: seriesDescription.label,
+                        data: []
+                    };
+                    // for lower confidence limits
+                    var lowerSeries = {
+                        data: []
+                    };
+                    // for upper confidence limits
+                    var upperSeries = {
+                        data: []
+                    };
+
+                    for(var j = 0; j < powerService.cachedResults.length; j++) {
+                        var result = powerService.cachedResults[j];
+
+                        if ($scope.isMatch(seriesDescription, result, studyDesignService.gaussianCovariate)) {
+                            var point = [];
+                            var lowerPoint = [];
+                            var upperPoint = [];
+
+                            if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisTotalSampleSize) {
+                                point.push(result.totalSampleSize);
+
+                            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisBetaScale) {
+                                point.push(result.betaScale.value);
+
+                            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisSigmaScale) {
+                                point.push(result.sigmaScale.value);
+                            }
+
+                            // toFixed returns a string, so we need to convert back to float
+                            point.push(parseFloat(result.actualPower.toFixed(3)));
+                            newSeries.data.push(point);
+
+                            if (seriesDescription.confidenceLimits == true) {
+                                lowerPoint.push(point[0]);
+                                lowerPoint.push(result.confidenceLimits.lower) ;
+                                lowerSeries.data.push(lowerPoint);
+                                upperPoint.push(point[0]) ;
+                                upperPoint.push(result.confidenceLimits.upper) ;
+                                upperSeries.data.push(upperPoint);
+
+                            }
+
+
+                        }
+                    }
+
+                    newSeries.data.sort($scope.sortByX);
+                    $scope.chartConfig.series.push(newSeries);
+
+                }
+            }
+        }
+
+    })
+
+    .controller('resultsMatrixController', function($scope, glimmpseConstants, studyDesignService, powerService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.powerService = powerService;
+            $scope.processing = false;
+            $scope.errorMessage = undefined;
+            $scope.matrixHTML = undefined;
+
+            if (powerService.cachedMatrixHtml == undefined && powerService.cachedMatrixError == undefined) {
+
+                $scope.processing = true;
+                // need to reload matrices
+                $scope.powerService.getMatrices(angular.toJson(studyDesignService))
+                    .then(function(data) {
+                        powerService.cachedMatrixHtml = data;
+                        powerService.cachedMatrixError = undefined;
+                        $scope.processing = false;
+                        $scope.matrixHTML = data;
+                    },
+                    function(errorMessage){
+                        powerService.cachedMatrixHtml = undefined;
+                        powerService.cachedMatrixError = errorMessage;
+                        $scope.processing = false;
+                        $scope.matrixHTML = undefined;
+                    });
+
+            } else {
+                $scope.matrixHTML = powerService.cachedMatrixHtml;
+                $scope.errorMessage = powerService.cachedMatrixError;
+            }
+        };
+
+    })
+
+
 
 /**
  * Main study design controller

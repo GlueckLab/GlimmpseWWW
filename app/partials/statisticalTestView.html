@@ -20,12 +20,15 @@
 
 <h3> Statistical Tests </h3>
 <p>
-Select the statistical tests to include in your calculations. For study designs with a single outcome, power is the same regardless of the test selected.
-Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated Measures are supported for designs which include a baseline covariate.
+    Select the statistical tests to include in your calculations. For study designs with a
+    single outcome, power is the same regardless of the test selected.
+    Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated
+    Measures are supported for designs which include a baseline covariate.
 </p>
 
 <p>
-    Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated Measures are supported for designs which include a baseline covariate.
+    Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeated Measures
+    are supported for designs which include a baseline covariate.
 </p>
 
 <p>
@@ -33,46 +36,18 @@ Note that only the Hotelling-Lawley Trace and the Univariate Approach to Repeate
 </p>
 
 
-
     <div>
-    <input type="checkbox"
-                data-ng-click="updateStatisticalTest('HLT', this)">
-        Hotelling-Lawley Trace
-        </input>
+        <div ng-repeat="test in testsList">
+            <input type="checkbox"
+                   data-ng-model="test.selected"
+                   data-ng-click="updateStatisticalTest(test)">
+            {{test.label}}
+            </input>
+        </div>
     </div>
 
-    <div>
-    <input type="checkbox"
-               data-ng-click="updateStatisticalTest('PBT', this)">
-        Pillai-Bartlett Trace
-        </input>
-    </div>
-    <div><input type="checkbox"
-               data-ng-click="updateStatisticalTest('WL', this)">
-        Wilks Likelihood Ratio
-        </input>
-    </div>
-    <div><input type="checkbox"
-               data-ng-click="updateStatisticalTest('UNIREPBOX', this)">
-        Univariate Approach to Repeated Measures with Box Correction
-        </input>
-    </div>
-    <div><input type="checkbox"
-               data-ng-click="updateStatisticalTest('UNIREPGG', this)">
-        Univariate Approach to Repeated Measures with Geisser-Greenhouse Correction
-        </input>
-    </div>
-    <div><input type="checkbox"
-               data-ng-click="updateStatisticalTest('UNIREPHF', this)">
-        Univariate Approach to Repeated Measures with Huynh-Feldt Correction
-        </input>
-    </div>
-    <div><input type="checkbox"
-              data-ng-click="updateStatisticalTest('UNIREP', this)">
-        Univariate Approach to Repeated Measures, uncorrected
-        </input>
-    </div>
 
-<div ng-show="studyDesign.debug == true">
-    {{studyDesign.statisticalTestList}}
+<div ng-show="glimmpseConstants.debug == true">
+    <div> Tests: {{studyDesign.statisticalTestList}}</div>
+    <div> Selected: {{testsList}}</div>
 </div>

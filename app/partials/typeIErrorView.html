@@ -35,12 +35,13 @@
     </form>
     <ul class="list-entry-contents">
         <li ng-repeat="alpha in studyDesign.alphaList">
-            <label ng-dblclick="editTypeIErrorRate(alpha)">{{alpha.value}}</label>
+            <label ng-dblclick="editTypeIErrorRate(alpha)">{{alpha.alphaValue}}</label>
             <button data-ng-click="deleteTypeIErrorRate(alpha)">&times;</button>
         </li>
     </ul>
 
 </div>
 
+<div ng-show="glimmpseConstants.debug == true">{{studyDesign.alphaList}}</div>
 
 

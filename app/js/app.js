@@ -23,8 +23,58 @@
 /*
 * Main glimmpse application module
  */
-var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
-    .config(['$routeProvider', function($routeProvider) {
+var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highcharts-ng'])
+    .constant('glimmpseConstants',{
+        // debugging flag
+        debug: false,
+
+        /*** URIs for web services ***/
+        uriPower: "/power/power",
+        uriSampleSize: "/power/samplesize",
+        uriCIWidth: "/power/ciwidth",
+        uriMatrices: "/power/matrix/html",
+        uriUpload: "/file/upload",
+        uriSave: "/file/save",
+
+        /*** Enum names ***/
+
+        // view states
+        stateDisabled: "disabled",
+        stateBlocked: "blocked",
+        stateIncomplete: "incomplete",
+        stateComplete: "complete",
+
+        // solution types
+        solutionTypePower: "POWER",
+        solutionTypeSampleSize: "SAMPLE_SIZE",
+
+        // view types
+        viewTypeStudyDesign: "studyDesign",
+        viewTypeResults: "results",
+
+        // input mode types
+        modeGuided: "GUIDED_MODE",
+        modeMatrix: "MATRIX_MODE",
+
+        // statistical tests
+        testHotellingLawleyTrace: "HLT",
+        testWilksLambda: "WL",
+        testPillaiBartlettTrace: "PBT",
+        testUnirep: "UNIREP",
+        testUnirepBox: "UNIREPBOX",
+        testUnirepGG: "UNIREPGG",
+        testUnirepHF: "UNIREPHF",
+
+        // matrix names
+        matrixXEssence: "",
+
+        // plot axis names
+        xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
+        xAxisBetaScale: "VARIABILITY SCALE FACTOR",
+        xAxisSigmaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR"
+
+    })
+    .config(['$routeProvider', function($routeProvider, studyDesignService, powerService) {
         /*
         * Main route provider for the study design tab
          */
@@ -100,15 +150,15 @@ var glimmpseApp = angular.module('glimmpse', ['ngGrid'])
         )
             // results screens
             .when('/results/report',
-            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsReportView.html', controller: 'resultsReportController' }
 
         )
             .when('/results/plot',
-            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsPlotView.html', controller: 'resultsPlotController' }
 
         )
             .when('/results/matrices',
-            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsController' }
+            {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsMatrixController' }
 
         )
             .otherwise({ redirectTo: '/' });

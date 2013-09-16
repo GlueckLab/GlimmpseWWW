@@ -53,7 +53,7 @@
                     <ul class="dual-list-contents-left">
                         <li ng-repeat="factor in studyDesign.betweenParticipantFactorList" ng-class="{active:isActivePredictor(factor)}"
                             ng-click="showCategories(factor)">
-                            <label >{{factor.value}}</label>
+                            <label >{{factor.predictorName}}</label>
                             <button data-ng-click="deletePredictor(factor)">&times;</button>
                         </li>
                     </ul>
@@ -63,18 +63,18 @@
                 <!-- Right hand panel showing category names for the selected predictor -->
                 <div class="dual-list-right rounded-box" ng-show="currentPredictor != undefined">
                     <div class="dual-list-header-right">
-                        Categories: {{currentPredictor.value}}
+                        Categories: {{currentPredictor.predictorName}}
                     </div>
                     <div>
                         <ul class="dual-list-contents-right">
                             <li ng-repeat="category in currentPredictor.categoryList">
-                                <label>{{category.value}}</label>
+                                <label>{{category.category}}</label>
                                 <button data-ng-click="deleteCategory(category)">&times;</button>
                             </li>
                         </ul>
                         <form name="categoriesForm" class="dual-list-entry-right" novalidate ng-submit="addCategory()">
                             <input name="newCategory" type="text"
-                                   placeholder="Enter category for '{{currentPredictor.value}}'"
+                                   placeholder="Enter category for '{{currentPredictor.predictorName}}'"
                                    ng-model="newCategoryName"
                                    autocomplete="off" autofocus required >
                         </form>

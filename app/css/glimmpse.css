@@ -17,6 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+/*** Some hacks for webkit browsers ***/
+button::-moz-focus-inner {
+    padding: 0;
+    border: 0
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+
 /*** Start page styles ***/
 html {
     background: white;
@@ -83,7 +99,7 @@ button:focus {
 }
 
 .font-main {
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
 }
 
 .font-serif {
@@ -233,7 +249,6 @@ button:focus {
     margin-left: 570px;
     margin-top: 0px;
     margin-bottom: 0px;
-    height: 28px;
 }
 
 #view-bar a {
@@ -259,7 +274,6 @@ button:focus {
     background: white;
 }
 
-<<<<<<< HEAD
 /*
 * Variability tab panel
 *
@@ -324,8 +338,6 @@ button:focus {
     margin: 0px;
 }
 
-=======
->>>>>>> fd8c26a378a6a2bf046c4777d77112034fc12ec5
 /*
 * Design input panel consisting of left nav and input view
 *
@@ -351,14 +363,8 @@ button:focus {
     /* border: 1px solid #cccccc;    */
 }
 
-#calculate-grid button:disabled {
-    color: white;
-    background: #808080;
-    border: 2px solid #707070;
-    text-shadow: 0px 1px 3px #404040;
-}
-
-#calculate-grid button {
+.calculate-button, .calculate-button-disabled {
+    display: block;
     color: white;
     background: none repeat scroll 0% 0% #5DC68B;
     border: 2px solid #58B781;
@@ -368,16 +374,23 @@ button:focus {
     -khtml-border-radius: 6px;
     border-radius: 6px;
 
-    font-family: "ProximaNovaRegular","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size:20px;
     text-align: center;
 
     width: 180px;
-    height: 40px;
+    line-height: 40px;
     margin-left: 10px;
 }
 
-#calculate-grid button:hover {
+.calculate-button-disabled {
+    color: white;
+    background: #808080;
+    border: 2px solid #707070;
+    text-shadow: 0px 1px 3px #404040;
+}
+
+.calculate-button:hover {
     /* background: #58B781;    */
     border: 2px solid #7EC8F1;
 }
@@ -409,7 +422,7 @@ button:focus {
     border-bottom: 1px solid #cccccc; */
     width: 200px;
     margin-left: 10px;
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;  */
 }
 
 .accordion * {
@@ -456,7 +469,7 @@ button:focus {
     text-shadow: 1px 1px 1px #545454;
 }
 
-.accordion .ui-accordion-header.ui-state-active, #results-navbar .active  {
+.accordion .ui-accordion-header.ui-state-active, #results-navbar .active a  {
     color: white; /*#1D5C84;*/
     /*background: #3BA6E9;       */
     border: none;
@@ -543,15 +556,36 @@ button:focus {
 .toolbox {
     width: 180px;
     margin-left: 20px;
-    margin-top: 10px;
+    margin-top: 20px;
     font-family: Helvetica, Arial, sans-serif;
     border: 1px solid #CBD1D6;
     color: black;
 }
 
 .toolbox-item {
+    border: none;
+    background: white;
+    margin: 0;
+    padding: 0px 2px;
+}
+
+
+.toolbox-item a, .toolbox-item button {
     font-size: 10pt;
-    margin: 5px 5px;
+    color: black;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    background: white;
+    margin: 2px;
+    padding: 0px;
+    border: none;
+    line-height: 1.2em;
+}
+
+.toolbox-item a:hover, .toolbox-item button:hover {
+    color: #2B5F89;
+    cursor: pointer;
 }
 
 #results-nav-grid {
@@ -881,7 +915,127 @@ table.table-entry-contents {
 
 }
 
+.modal-backdrop{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:1040;
+    background-color:#999999;
+}
 
+.modal-backdrop.fade{
+    opacity:0;
+}
+
+.modal-backdrop,.modal-backdrop.fade.in{
+    opacity:0.8;
+    filter:alpha(opacity=80);
+}
+
+.modal{
+    position:fixed;
+    top:10%;
+    left:40%;
+    z-index:1050;
+    background-color:#ffffff;
+    border:1px solid #999;
+    -webkit-border-radius:6px;
+    -moz-border-radius:6px;
+    border-radius:6px;
+    -webkit-box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow:0 3px 7px rgba(0, 0, 0, 0.3);
+    -webkit-background-clip:padding-box;
+    -moz-background-clip:padding-box;
+    background-clip:padding-box;outline:none;
+}
+.modal.fade{
+    -webkit-transition:opacity .3s linear, top .3s ease-out;
+    -moz-transition:opacity .3s linear, top .3s ease-out;
+    -o-transition:opacity .3s linear, top .3s ease-out;
+    transition:opacity .3s linear, top .3s ease-out;
+    top:-25%;
+}
+.modal.fade.in{
+    top:10%;
+}
+.modal-header{
+    padding:9px 15px;border-bottom:1px solid #eee;
+}
+.modal-header .close{
+    margin-top:2px;
+}
+.modal-header h3{
+    margin:0;
+    line-height:30px;
+}
+
+.modal-body {
+   padding: 10px;
+}
+
+.modal-footer button {
+    margin: 10px 0px;
+    width: 50px;
+    line-height: 2em;
+}
+
+.modal-footer {
+    padding: 14px 15px 15px;
+    margin-bottom: 0;
+    text-align: right;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+    *zoom: 1;
+    -webkit-box-shadow: inset 0 1px 0 #ffffff;
+    -moz-box-shadow: inset 0 1px 0 #ffffff;
+    box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.modal-footer:before,
+.modal-footer:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+
+.modal-footer:after {
+    clear: both;
+}
+
+.modal-footer .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+
+.modal-footer .btn-group .btn + .btn {
+    margin-left: -1px;
+}
+
+.modal-footer .btn-block + .btn-block {
+    margin-left: 0;
+}
+
+
+.processing {
+    background-image: url('../img/processing.gif');
+    background-repeat: no-repeat;
+    background-color: #DEE6ED; /*#C6D4DF;  */
+    background-position: 2% 50%;
+    margin: 20px 20px;
+    border: 2px solid  #275C87;
+}
+
+.processing label {
+    margin-left: 10%;
+    color: #275C87;
+    line-height: 3em;
+}
 
 
 /**** GLIMMPSE Application Styles ****/
@@ -1693,4 +1847,4 @@ table.table-entry-contents {
 .wizardStepDeckPanelContentsSubpanel {
 	padding: 20px;	
 }
-	
+
