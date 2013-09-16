@@ -2323,7 +2323,8 @@ glimmpseApp.controller('stateController',
                                 point.push(result.sigmaScale.value);
                             }
 
-                            point.push(result.actualPower);
+                            // toFixed returns a string, so we need to convert back to float
+                            point.push(parseFloat(result.actualPower.toFixed(3)));
                             newSeries.data.push(point);
 
                             if (seriesDescription.confidenceLimits == true) {
@@ -2339,7 +2340,6 @@ glimmpseApp.controller('stateController',
 
                         }
                     }
-
 
                     newSeries.data.sort($scope.sortByX);
                     $scope.chartConfig.series.push(newSeries);
