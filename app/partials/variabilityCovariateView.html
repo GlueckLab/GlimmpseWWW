@@ -57,6 +57,7 @@
                 </td>
                 <td>
                     <input type="numeric" value="0"
+                           id ="inputBoxForSTD"
                            ng-model="STDForCovariate"
                            ng-change="updateSTDForCovariates('updatedSTDValue')">
                     </input>
@@ -83,13 +84,11 @@
                     {{measure.dimension}}
                 </td>
                 <td>
-                    <select>
+                    <select id="optionForTime" ng-model="currentOption"
+                            ng-change="updateSTDForCovariates('updatedTimeFrame')">
                             <option ng-repeat="number in
-                                measure.spacingList" value="{{number.value}}"
-                                ng-change="updateSTDForCovariates('updatedTimeFrame')"
-                                ng-model="currentOption"    >
+                                measure.spacingList">
                                 {{number.value}}
-
                             </option>
 
                     </select>

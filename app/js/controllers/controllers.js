@@ -1868,6 +1868,7 @@ glimmpseApp.controller('stateController',
 
         $scope.SameCorrelationForOutcomes = function() {
             var indexOfList = -1;
+
             if ($scope.hasSameCorrelation != undefined) {
                 indexOfList = $scope.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
                 var responseListLength = studyDesignService.responseList.length;
@@ -1885,17 +1886,19 @@ glimmpseApp.controller('stateController',
         $scope.updateSTDForCovariates = function(whatToUpdate) {
 
             var indexToUpdate = -1;
+            var sel = document.getElementById('optionForTime').selectedIndex;
+            var valueSTD = document.getElementById('inputBoxForSTD').value;
+            //window.alert(valueSTD);
             if (whatToUpdate == 'updatedTimeFrame')  {
-                window.alert("got it from time" + $scope.currentOption);
+                //window.alert("got it from time" + sel);
                 for (var i=0; i < studyDesignService.responseList.length; i++) {
-                    indexToUpdate = studyDesignService.responseList.length*$scope.
-                        currentOption+i;
+                    indexToUpdate = studyDesignService.responseList.length*sel+i;
                     studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
-                        =$scope.STDForCovariate;
+                        =valueSTD;
                 }
             }
             else {
-                window.alert("got it from response");
+                //window.alert("got it from response");
                 indexToUpdate = studyDesignService.responseList.length*$scope.
                     currentOption+i;
                 studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
