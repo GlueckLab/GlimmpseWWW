@@ -1452,6 +1452,18 @@ glimmpseApp.controller('stateController',
                 if (len >= 2 )
                     totalPermutations = totalPermutations * len;
             }
+
+            studyDesignService.matrixSet[1].rows = totalPermutations;
+            var numberOfColumns = studyDesignService.matrixSet[1].columns;
+            for (var i=1; i < totalPermutations; i++) {
+                studyDesignService.matrixSet[1].data.data.push([]);
+            }
+            for (var i=1; i < totalPermutations; i++) {
+                for (var j=0; j < numberOfColumns; j++) {
+                    studyDesignService.matrixSet[1].data.data[i].push(0);
+                }
+            }
+
             var columnList = [];
 
             var numRepetitions = totalPermutations;
@@ -1463,7 +1475,7 @@ glimmpseApp.controller('stateController',
                     for (var perm = 0; perm < totalPermutations;) {
                         for (var cat=0; cat < len; cat++) {
                             var categoryName = studyDesignService.betweenParticipantFactorList[i].
-                                categoryList[cat].value;
+                                categoryList[cat].category;
 
                             for (var z=0; z < numRepetitions; z++) {
                                 columnList.push(categoryName);
@@ -1886,23 +1898,30 @@ glimmpseApp.controller('stateController',
         $scope.updateSTDForCovariates = function(whatToUpdate) {
 
             var indexToUpdate = -1;
-            var sel = document.getElementById('optionForTime').selectedIndex;
-            var valueSTD = document.getElementById('inputBoxForSTD').value;
-            //window.alert(valueSTD);
+            var sel = -1;
+            var valueSTD = -1;
+
             if (whatToUpdate == 'updatedTimeFrame')  {
-                //window.alert("got it from time" + sel);
+                window.alert("from time");
                 for (var i=0; i < studyDesignService.responseList.length; i++) {
+                    sel = document.getElementById('optionForTime').selectedIndex;
+                    indexToUpdate = studyDesignService.responseList.length*sel+i;
+                    $scope.STDForCovariate =
+                        studyDesignService.matrixSet[3].data.data[indexToUpdate][0];
+                    //window.alert(valueSTD);
+
+                }
+                //return studyDesignService.matrixSet[3].data.data[indexToUpdate][0];
+            }
+            else {
+                for (var i=0; i < studyDesignService.responseList.length; i++) {
+                    sel = document.getElementById('optionForTime').selectedIndex;
+                    valueSTD = document.getElementById('inputBoxForSTD').value;
                     indexToUpdate = studyDesignService.responseList.length*sel+i;
                     studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
                         =valueSTD;
                 }
-            }
-            else {
-                //window.alert("got it from response");
-                indexToUpdate = studyDesignService.responseList.length*$scope.
-                    currentOption+i;
-                studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
-                    =$scope.STDForCovariate;
+
             }
         };
 
@@ -2022,6 +2041,8 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
             $scope.groupsTable = [];
             $scope.groupsList = [];
+            $scope.relativeGroupSizeList = [];
+
             var lenList = 1;
 
             var totalPermutations = 1;
@@ -2030,6 +2051,31 @@ glimmpseApp.controller('stateController',
                 if (len >= 2 )
                     totalPermutations = totalPermutations * len;
             }
+
+            if (studyDesignService.relativeGroupSizeList.length > 0) {
+                $scope.relativeGroupSizeList = studyDesignService.relativeGroupSizeList;
+            }
+
+            if (studyDesignService.relativeGroupSizeList.length <  totalPermutations) {
+                var difference = totalPermutations -
+                    studyDesignService.relativeGroupSizeList.length;
+                for (var i=0; i < difference; i++) {
+                    studyDesignService.relativeGroupSizeList.push({
+                        idx:0, value:1
+                    });
+                }
+            }
+
+            if (studyDesignService.relativeGroupSizeList.length <  totalPermutations) {
+                for (var i=0; i < totalPermutations; i++) {
+                    studyDesignService.relativeGroupSizeList.push({
+                        idx:0, value:1
+                    });
+                }
+            }
+
+
+
             var columnList = [];
 
             var numRepetitions = totalPermutations;
@@ -2041,7 +2087,7 @@ glimmpseApp.controller('stateController',
                     for (var perm = 0; perm < totalPermutations;) {
                         for (var cat=0; cat < len; cat++) {
                             var categoryName = studyDesignService.betweenParticipantFactorList[i].
-                                categoryList[cat].value;
+                                categoryList[cat].category;
 
                             for (var z=0; z < numRepetitions; z++) {
                                 columnList.push(categoryName);
@@ -2058,10 +2104,6 @@ glimmpseApp.controller('stateController',
                 $scope.groupsList.push(i);
             }
         }
-
-        $scope.addRelativeGroupSizes = function() {
-
-        };
 
     })
     /**

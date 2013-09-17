@@ -37,13 +37,15 @@ For unequal group sizes, specify the ratio of the group sizes. For example, cons
                   Relative Group Size
               </th>
               <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
-                  {{predictor.value}}
+                  {{predictor.predictorName}}
               </th>
           </tr>
           <tr ng-repeat="i in groupsList">
               <td>
-                  <input type="number" value="1"
-                         min='1' max="10" step='1' autocomplete="on" autofocus required >
+                  <input type="number"
+                         min='1' max='10' step='1'
+                         ng-model = "studyDesign.relativeGroupSizeList[i].value"
+                          >
               </td>
               <td ng-repeat="count in groupsTable">
                   {{count[i]}}
@@ -51,5 +53,9 @@ For unequal group sizes, specify the ratio of the group sizes. For example, cons
           </tr>
     </table>
 </div>
+</div>
+
+<div ng-show="studyDesign.debug == true">
+    {{studyDesign.relativeGroupSizeList}}
 </div>
 

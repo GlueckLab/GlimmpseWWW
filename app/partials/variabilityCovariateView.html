@@ -51,12 +51,12 @@
                     Correlation with Random Covariate
                 </td>
             </tr>
-            <tr ng-repeat="response in studyDesign.responseList track by $id($index)">
+            <tr ng-repeat="response in studyDesign.responseList">
                 <td>
-                    {{response.value}}
+                    {{response.name}}
                 </td>
                 <td>
-                    <input type="numeric" value="0"
+                    <input type="numeric"
                            id ="inputBoxForSTD"
                            ng-model="STDForCovariate"
                            ng-change="updateSTDForCovariates('updatedSTDValue')">
