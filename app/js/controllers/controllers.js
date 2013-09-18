@@ -1874,7 +1874,7 @@ glimmpseApp.controller('stateController',
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.hasSameCorrelation = undefined;
-            $scope.STDForCovariate = 0;
+            $scope.STDForCovariate = undefined;
             $scope.currentOption = 1;
         }
 
@@ -1895,32 +1895,28 @@ glimmpseApp.controller('stateController',
             }
         };
 
-        $scope.updateSTDForCovariates = function(whatToUpdate) {
+        $scope.updateSTDForCovariates = function(whatToUpdate, i) {
 
             var indexToUpdate = -1;
             var sel = -1;
             var valueSTD = -1;
 
             if (whatToUpdate == 'updatedTimeFrame')  {
-                window.alert("from time");
-                for (var i=0; i < studyDesignService.responseList.length; i++) {
                     sel = document.getElementById('optionForTime').selectedIndex;
+                if (i != -1)   {
                     indexToUpdate = studyDesignService.responseList.length*sel+i;
-                    $scope.STDForCovariate =
-                        studyDesignService.matrixSet[3].data.data[indexToUpdate][0];
-                    //window.alert(valueSTD);
-
+                    return indexToUpdate;
                 }
-                //return studyDesignService.matrixSet[3].data.data[indexToUpdate][0];
+                else
+                    ;
             }
             else {
-                for (var i=0; i < studyDesignService.responseList.length; i++) {
                     sel = document.getElementById('optionForTime').selectedIndex;
-                    valueSTD = document.getElementById('inputBoxForSTD').value;
+                    valueSTD = document.getElementById('inputBoxForSTD'+i).value;
                     indexToUpdate = studyDesignService.responseList.length*sel+i;
                     studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
                         =valueSTD;
-                }
+                    window.alert($scope.STDForCovariate);
 
             }
         };

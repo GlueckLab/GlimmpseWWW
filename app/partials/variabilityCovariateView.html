@@ -34,11 +34,13 @@
         Enter the standard deviation you expect to observe for the baseline covariate
     </p>
 
-    <input type="numeric" value="1" data-ng-model="studyDesign.matrixSet[0].data.data[0][0]">
+    <input type="numeric" value="1" data-ng-model="studyDesign.matrixSet[0].
+    data.data[0][0]">
     </input>
 
     <p>
-        Enter the correlation you expect to observe between the covariate and each response below
+        Enter the correlation you expect to observe between the covariate
+        and each response below
     </p>
 
     <div class="input-group">
@@ -51,15 +53,16 @@
                     Correlation with Random Covariate
                 </td>
             </tr>
-            <tr ng-repeat="response in studyDesign.responseList">
+            <tr ng-repeat="response in studyDesign.responseList track by $id($index)">
                 <td>
                     {{response.name}}
                 </td>
                 <td>
                     <input type="numeric"
-                           id ="inputBoxForSTD"
-                           ng-model="STDForCovariate"
-                           ng-change="updateSTDForCovariates('updatedSTDValue')">
+                           id ="inputBoxForSTD{{$index}}"
+                           ng-model="studyDesign.matrixSet[3].data.data
+                           [updateSTDForCovariates('updatedTimeFrame', $index)][0]"
+                           ng-change="updateSTDForCovariates('updatedSTDValue', $index)">
                     </input>
                 </td>
             </tr>
@@ -68,7 +71,8 @@
     </div>
 </div>
 
-<div ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.gaussianCovariate == 'YES'
+<div ng-show="studyDesign.repeatedMeasuresTree.length > 0
+    && studyDesign.gaussianCovariate == 'YES'
     && studyDesign.responseList.length > 0">
 
     <p>
@@ -79,24 +83,19 @@
 
     <div class="tab-contents">
         <table>
-            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
+            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
                 <td>
                     {{measure.dimension}}
                 </td>
                 <td>
                     <select id="optionForTime" ng-model="currentOption"
-                            ng-change="updateSTDForCovariates('updatedTimeFrame')">
+                            ng-change="updateSTDForCovariates('updatedTimeFrame', -1)">
                             <option ng-repeat="number in
                                 measure.spacingList">
                                 {{number.value}}
                             </option>
 
                     </select>
-                            <!-- value="GRAND_MEAN">Grand mean</option>
-                            ng-options="opt.value for opt in
-                            measure.spacingList"
-
-                    </select>         !-->
                 </td>
 
             </tr>
