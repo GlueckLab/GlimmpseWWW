@@ -45,16 +45,18 @@
             </th>
         </tr>
 
-        <tr ng-repeat="i in groupsList">
+        <tr ng-repeat="i in groupsList by $id($indexGroupList)">
            <td ng-repeat="count in groupsTable">
                 {{count[i]}}
            </td>
-            <td ng-repeat="variable in studyDesign.responseList">
-                    <input type="text" value="0" autocomplete="off" autofocus required >
+            <td ng-repeat="variable in studyDesign.responseList track by $id($indexResponse)">
+                    <input id="meansValuePerResponse{{$indexResponse}}" type="text" value="0" autocomplete="off"
+                           ng-model="studyDesign.matrixSet[3].data.data
+                           [updateSTDForCovariates('updatedTimeFrame', $parent.$indexGroupList, $indexResponse)][0]"
+                           ng-change="updateMeans('updateStudyDesign', $parent.$indexGroupList, $indexResponse)"
+                           autofocus required >
             </td>
         </tr>
-
-
 </table>
 
 </div>
@@ -64,14 +66,18 @@
     </p>
 
 <div>
-        <table ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
+        <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <tr>
                   <td>
                       {{measure.dimension}}
                   </td>
                    <td>
-                       <select >
-                           <option ng-repeat="number in measure.spacingList track by $id($index)">{{number.value}}</option>
+                       <select id="optionForMeansTime"
+                               ng-change="updateSTDForCovariates('updatedTextBoxes', -1, -1)">
+                           <option
+                                   ng-repeat="number in measure.spacingList">
+                               {{number.value}}
+                           </option>
                        </select>
                    </td>
             </tr>

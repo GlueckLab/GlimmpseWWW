@@ -1455,11 +1455,13 @@ glimmpseApp.controller('stateController',
 
             studyDesignService.matrixSet[1].rows = totalPermutations;
             var numberOfColumns = studyDesignService.matrixSet[1].columns;
-            for (var i=1; i < totalPermutations; i++) {
+            while (studyDesignService.matrixSet[1].data.data.length < totalPermutations) {
                 studyDesignService.matrixSet[1].data.data.push([]);
             }
+
+
             for (var i=1; i < totalPermutations; i++) {
-                for (var j=0; j < numberOfColumns; j++) {
+                while (studyDesignService.matrixSet[1].data.data[i].length < numberOfColumns) {
                     studyDesignService.matrixSet[1].data.data[i].push(0);
                 }
             }
@@ -1499,9 +1501,30 @@ glimmpseApp.controller('stateController',
         /**
          * Add means
          */
-        $scope.addMeans = function() {
-        };
+        $scope.updateMeans = function(source, rowNumber, counter) {
 
+            var sel = -1;
+            var meanValue = -1;
+            var indexToUpdate = -1;
+
+            if (source == 'updateTextBoxes') {
+                sel = document.getElementById('optionForMeansTime').selectedIndex;
+                if (counter != -1)   {
+                    indexToUpdate = studyDesignService.responseList.length*sel+counter;
+                    return indexToUpdate;
+                }
+                else
+                    ;
+            }
+            else {
+                sel = document.getElementById('optionForMeansTime').selectedIndex;
+                meanValue = document.getElementById('meansValuePerResponse'+counter).value;
+                indexToUpdate = studyDesignService.responseList.length*sel+counter;
+                studyDesignService.matrixSet[3].data.data[rowNumber][indexToUpdate]
+                    =meanValue;
+                //window.alert($scope.STDForCovariate);
+            }
+        };
     })
 
 /**
