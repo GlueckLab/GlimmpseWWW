@@ -1444,6 +1444,13 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
             $scope.groupsTable = [];
             $scope.groupsList = [];
+            $scope.startColumn = 0;
+            $scope.numberOfColumns = 0;
+            $scope.rmIndex = [];
+            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
+                $scope.rmIndex.push(0);
+            }
+
             var lenList = 1;
 
             var totalPermutations = 1;
@@ -1455,6 +1462,7 @@ glimmpseApp.controller('stateController',
 
             studyDesignService.matrixSet[1].rows = totalPermutations;
             var numberOfColumns = studyDesignService.matrixSet[1].columns;
+            $scope.numberOfColumns = numberOfColumns;
             while (studyDesignService.matrixSet[1].data.data.length < totalPermutations) {
                 studyDesignService.matrixSet[1].data.data.push([]);
             }
@@ -1488,14 +1496,14 @@ glimmpseApp.controller('stateController',
                     //window.alert("list is:" + columnList);
                 }
                 $scope.groupsTable.push(columnList);
-                window.alert("after push, groupsTable:" + $scope.groupsTable);
+                //window.alert("after push, groupsTable:" + $scope.groupsTable);
             }
             lenList = columnList.length;
             $scope.groupsList = [];
             for (var i = 0; i < lenList; i++) {
                 $scope.groupsList.push(i);
             }
-            window.alert("groupsList:" +  $scope.groupsList);
+            //window.alert("groupsList:" +  $scope.groupsList);
         }
 
         /**
@@ -1520,9 +1528,27 @@ glimmpseApp.controller('stateController',
                 sel = document.getElementById('optionForMeansTime').selectedIndex;
                 meanValue = document.getElementById('meansValuePerResponse'+counter).value;
                 indexToUpdate = studyDesignService.responseList.length*sel+counter;
-                studyDesignService.matrixSet[1].data.data[rowNumber][indexToUpdate]
+                studyDesignService.matrixSet[1].data.data[sel][indexToUpdate]
                     =meanValue;
                 //window.alert($scope.STDForCovariate);
+            }
+        };
+
+        /**
+         * Shift the counter to the left
+         */
+        $scope.shiftLeft = function() {
+            if ($scope.startColumn > 0) {
+                $scope.startColumn = $scope.startColumn-1;
+            }
+        };
+
+        /**
+         * Shift the counter to the right
+         */
+        $scope.shiftRight = function() {
+            if ($scope.startColumn < $scope.numberOfColumns-1) {
+                $scope.startColumn = $scope.startColumn+1;
             }
         };
     })

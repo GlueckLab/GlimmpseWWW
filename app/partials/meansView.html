@@ -52,13 +52,26 @@
             <td ng-repeat="variable in studyDesign.responseList track by $id($index)">
                     <input id="meansValuePerResponse{{$index}}" type="text" value="0"
                            ng-model="studyDesign.matrixSet[1].data.data[$parent.$index]
-                           [updateMeans('updateTextBoxes', $parent.$index, $index)]"
-                           ng-change="updateMeans('updateStudyDesign', $parent.$index, $index)">
+                           [startColumn*studyDesign.responseList.length + $index]"
+                           >
                     </input>
 
             </td>
         </tr>
 </table>
+
+    <div>
+        <button value="left" ng-show="startColumn > 0"
+                ng-click="shiftLeft()">
+            left
+        </button>
+
+        <button value="right"
+                ng-click="shiftRight() < numberOfColumns-studyDesign.responseList.length">
+            right
+        </button>
+        {{startColumn}}
+    </div>
 
 </div>
     <p ng-show="studyDesign.repeatedMeasuresTree.length > 0">
