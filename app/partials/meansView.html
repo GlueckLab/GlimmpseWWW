@@ -30,7 +30,7 @@
 
 
 <div ng-controller=meansViewController>
-    <form name="meansViewController" novalidate  ng-submit="addMeans()">
+   <!-- <form name="meansViewController" novalidate  ng-submit="addMeans()">   !-->
 
 <div class="input-group" ng-show="studyDesign.betweenParticipantFactorList.length > 0 &&
         studyDesign.responseList.length > 0">
@@ -45,26 +45,25 @@
             </th>
         </tr>
 
-        <tr ng-repeat="i in groupsList by $id($indexGroupList)">
-           <td ng-repeat="count in groupsTable">
+        <tr ng-repeat="i in groupsList">
+           <td ng-repeat="count in groupsTable track by $id($index)">
                 {{count[i]}}
            </td>
-            <td ng-repeat="variable in studyDesign.responseList track by $id($indexResponse)">
-                    <input id="meansValuePerResponse{{$indexResponse}}" type="text" value="0" autocomplete="off"
-                           ng-model="studyDesign.matrixSet[3].data.data
-                           [updateSTDForCovariates('updatedTimeFrame', $parent.$indexGroupList, $indexResponse)][0]"
-                           ng-change="updateMeans('updateStudyDesign', $parent.$indexGroupList, $indexResponse)"
-                           autofocus required >
+            <td ng-repeat="variable in studyDesign.responseList track by $id($index)">
+                    <input id="meansValuePerResponse{{$index}}" type="text" value="0"
+                           ng-model="studyDesign.matrixSet[1].data.data[$parent.$index]
+                           [updateMeans('updateTextBoxes', $parent.$index, $index)]"
+                           ng-change="updateMeans('updateStudyDesign', $parent.$index, $index)">
+                    </input>
+
             </td>
         </tr>
 </table>
 
 </div>
-
     <p ng-show="studyDesign.repeatedMeasuresTree.length > 0">
         Select the time (location, etc.) from the list(s) below. This will allow you to edit the means at the selected time (location, etc.).
     </p>
-
 <div>
         <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
             <tr>
@@ -73,9 +72,8 @@
                   </td>
                    <td>
                        <select id="optionForMeansTime"
-                               ng-change="updateSTDForCovariates('updatedTextBoxes', -1, -1)">
-                           <option
-                                   ng-repeat="number in measure.spacingList">
+                               ng-change="updateMeans('updateTextBoxes', -1, -1)">
+                           <option ng-repeat="number in measure.spacingList">
                                {{number.value}}
                            </option>
                        </select>
@@ -87,32 +85,4 @@
         <div ng-show="studyDesign.debug == true">
             {{studyDesign.matrixSet}}
         </div>
-
-        <!--
-        <ul type="none">
-
-        <li ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-
-            {{measure.dimension}} <select>
-                <option>Numeric</option>
-                <option>Ordinal</option>
-                <option>Categorical</option>
-            </select>
-
-        </li>
-        <li ng-repeat="level in measure.list">
-            {{level.units}} <select data-ng-model="">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-        </select>
-
-        </li> <br/>
-
-        </ul>
-
-        !-- >
-
-    </form>
-
 </div>

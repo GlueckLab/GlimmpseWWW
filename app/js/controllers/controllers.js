@@ -1488,14 +1488,14 @@ glimmpseApp.controller('stateController',
                     //window.alert("list is:" + columnList);
                 }
                 $scope.groupsTable.push(columnList);
-                //window.alert("after push, groupsTable:" + $scope.groupsTable);
+                window.alert("after push, groupsTable:" + $scope.groupsTable);
             }
             lenList = columnList.length;
             $scope.groupsList = [];
             for (var i = 0; i < lenList; i++) {
                 $scope.groupsList.push(i);
             }
-            //window.alert("groupsList:" +  $scope.groupsList);
+            window.alert("groupsList:" +  $scope.groupsList);
         }
 
         /**
@@ -1520,7 +1520,7 @@ glimmpseApp.controller('stateController',
                 sel = document.getElementById('optionForMeansTime').selectedIndex;
                 meanValue = document.getElementById('meansValuePerResponse'+counter).value;
                 indexToUpdate = studyDesignService.responseList.length*sel+counter;
-                studyDesignService.matrixSet[3].data.data[rowNumber][indexToUpdate]
+                studyDesignService.matrixSet[1].data.data[rowNumber][indexToUpdate]
                     =meanValue;
                 //window.alert($scope.STDForCovariate);
             }
