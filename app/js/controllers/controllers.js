@@ -1547,7 +1547,7 @@ glimmpseApp.controller('stateController',
          * Shift the counter to the right
          */
         $scope.shiftRight = function() {
-            if ($scope.startColumn < $scope.numberOfColumns-1) {
+            if ($scope.startColumn < $scope.numberOfColumns/studyDesignService.responseList.length-1) {
                 $scope.startColumn = $scope.startColumn+1;
             }
         };

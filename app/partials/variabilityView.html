@@ -39,9 +39,13 @@ $( "#variability-tabs" ).tabs();
        </ul>
 
 
-               <div
-                       id="measure-tab" class="tab-contents">
-                    <p>
+               <div id="measure-tab" class="tab-contents">
+                   <p>
+                       Structured Correlation: The Linear Exponential Auto-Regressive Model
+                       (LEAR, Simpson et al., 2010)
+
+                   </p>
+                   <p>
                         The LEAR model describes correlation which monotonely decreases with distance
                        between repeated measurements. The model has two correlation parameters,
                        the base correlation and the decay rate. The base correlation describes the
@@ -109,7 +113,7 @@ $( "#variability-tabs" ).tabs();
            <table>
                <tr ng-repeat="response in studyDesign.responseList">
                    <td>
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                    <td>
                        <input type="text" value="1">
@@ -126,12 +130,12 @@ $( "#variability-tabs" ).tabs();
                    <td>
                    </td>
                    <td ng-repeat="response in studyDesign.responseList">
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                </tr>
                <tr ng-repeat="response in studyDesign.responseList">
                    <td>
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                    <td ng-repeat="response in studyDesign.responseList">
                        <input type="text" value="1">

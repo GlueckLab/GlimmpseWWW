@@ -67,15 +67,16 @@
         </button>
 
         <button value="right"
-                ng-click="shiftRight() < numberOfColumns-studyDesign.responseList.length">
+                ng-click="shiftRight()">
             right
         </button>
-        {{startColumn}}
+
     </div>
 
 </div>
     <p ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-        Select the time (location, etc.) from the list(s) below. This will allow you to edit the means at the selected time (location, etc.).
+        Select the time (location, etc.) from the list(s) below.
+        This will allow you to edit the means at the selected time (location, etc.).
     </p>
 <div>
         <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
