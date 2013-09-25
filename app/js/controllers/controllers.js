@@ -50,23 +50,13 @@ glimmpseApp.controller('stateController',
         // list of incomplete views
         $scope.incompleteViews = [];
 
-        // view mode (either "Study Design" or "Results"
-        // input mode (either guided or matrix)
-        /*
-        * Mode indicates if the user selected guided or matrix mode
-        * View indicates if the user is viewing the study design or
-        *   results 'tab'
-        * staleResults indicates that the design has changed since
-        *   the user last clicked calculate.
-         */
-        $scope.state = {
-            mode: undefined,
-            view: 'studyDesign',
-            staleResults: true
-        }
+        // View indicates if the user is viewing the study design or results 'tab'
+        $scope.view = 'studyDesign';
+
+        // Mode indicates if the user selected guided or matrix mode
+        $scope.mode = undefined;
+
     }
-
-
 
     /**
      * Convenience routine to determine if a screen is done
@@ -187,8 +177,8 @@ glimmpseApp.controller('stateController',
                         window.alert("The file did not contain a valid study design");
                     }
 
-                    $scope.state.mode = $scope.studyDesign.viewTypeEnum;
-                    $scope.state.view = glimmpseConstants.viewTypeStudyDesign;
+                    $scope.mode = $scope.studyDesign.viewTypeEnum;
+                    $scope.view = glimmpseConstants.viewTypeStudyDesign;
                 });
                 $scope.waitDialog.close();
                 $form[0].reset();
@@ -245,11 +235,11 @@ glimmpseApp.controller('stateController',
      * @param view
      */
     $scope.setView = function(view) {
-        $scope.state.view = view;
+        $scope.view = view;
     }
 
     $scope.getView = function() {
-        return $scope.state.view;
+        return $scope.view;
     }
 
     /**
@@ -257,11 +247,11 @@ glimmpseApp.controller('stateController',
      * @param mode
      */
     $scope.setMode = function(mode) {
-        $scope.state.mode = mode;
+        $scope.mode = mode;
     }
 
     $scope.getMode = function() {
-        return $scope.state.mode;
+        return $scope.mode;
     }
 
     /**
@@ -431,7 +421,16 @@ glimmpseApp.controller('stateController',
         if ($scope.studyDesign.clusteringTree.length <= 0){
             return 'complete';
         } else {
-            return 'incomplete';
+            for(var i=0; i < $scope.studyDesign.clusteringTree.length; i++) {
+                var cluster = $scope.studyDesign.clusteringTree[i];
+                if (cluster.groupName == undefined || cluster.groupName.length <= 0 ||
+                    cluster.groupSize == undefined || cluster.groupSize < 1 ||
+                    cluster.intraClusterCorrelation == undefined ||
+                    cluster.intraClusterCorreation < -1 || cluster.intraClusterCorreation > 1) {
+                    return 'incomplete';
+                }
+            }
+            return 'complete';
         }
     }
 
