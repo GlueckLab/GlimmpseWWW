@@ -1924,6 +1924,10 @@ glimmpseApp.controller('stateController',
             $scope.hasSameCorrelation = undefined;
             $scope.STDForCovariate = undefined;
             $scope.currentOption = 1;
+            $scope.startColumn = 0;
+            $scope.numberOfRows = 0;
+
+            $scope.numberOfRows = studyDesignService.matrixSet[3].rows;
         }
 
         $scope.SameCorrelationForOutcomes = function() {
@@ -1943,7 +1947,7 @@ glimmpseApp.controller('stateController',
             }
         };
 
-        $scope.updateSTDForCovariates = function(whatToUpdate, i) {
+        /*$scope.updateSTDForCovariates = function(whatToUpdate, i) {
 
             var indexToUpdate = -1;
             var sel = -1;
@@ -1967,7 +1971,7 @@ glimmpseApp.controller('stateController',
                     window.alert($scope.STDForCovariate);
 
             }
-        };
+        }; */
 
         $scope.getMatrixSetListIndexByName = function(listName) {
             var index = -1;
@@ -1978,6 +1982,24 @@ glimmpseApp.controller('stateController',
                 }
             }
             return index;
+        };
+
+        /**
+         * Shift up for previous measurement
+         */
+        $scope.shiftUp = function() {
+            if ($scope.startColumn > 0) {
+                $scope.startColumn = $scope.startColumn-1;
+            }
+        };
+
+        /**
+         * Shift down for next measurement
+         */
+        $scope.shiftDown = function() {
+            if ($scope.startColumn < $scope.numberOfRows/studyDesignService.responseList.length-1) {
+                $scope.startColumn = $scope.startColumn+1;
+            }
         };
 
     })

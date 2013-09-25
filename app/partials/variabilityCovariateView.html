@@ -58,15 +58,27 @@
                     {{response.name}}
                 </td>
                 <td>
-                    <input type="numeric"
+                    <input type="numeric" value="0"
                            id ="inputBoxForSTD{{$index}}"
                            ng-model="studyDesign.matrixSet[3].data.data
-                           [updateSTDForCovariates('updatedTimeFrame', $index)][0]"
-                           ng-change="updateSTDForCovariates('updatedSTDValue', $index)">
+                           [startColumn*studyDesign.responseList.length+$index][0]">
                     </input>
                 </td>
             </tr>
         </table>
+
+        <div>
+            <button value="up" ng-show="startColumn > 0"
+                    ng-click="shiftUp()">
+                Up
+            </button>     <br>
+
+            <button value="down"
+                    ng-click="shiftDown()">
+                Down
+            </button>
+            {{startColumn}}
+        </div>
 
     </div>
 </div>
@@ -100,6 +112,9 @@
 
             </tr>
         </table>
+
+
+
     </div>
 
     <div><input type="checkbox"
