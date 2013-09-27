@@ -366,6 +366,20 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         }
     }
 
+    /*
+    * Convenience routine to determine if a power method is
+    * in the list
+     */
+    studyDesignInstance.getPowerMethodIndex = function(powerMethod) {
+        for(var i = 0; i < studyDesignInstance.powerMethodList.length; i++) {
+            var method = studyDesignInstance.powerMethodList[i];
+            if (method.powerMethodEnum == powerMethod) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /**
      * Reset the study design instance to the default state
      */

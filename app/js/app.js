@@ -26,7 +26,7 @@
 var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highcharts-ng'])
     .constant('glimmpseConstants',{
         // debugging flag
-        debug: false,
+        debug: true,
 
         /*** URIs for web services ***/
         uriPower: "/power/power",
@@ -65,8 +65,22 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         testUnirepGG: "UNIREPGG",
         testUnirepHF: "UNIREPHF",
 
+        // power methods
+        powerMethodUnconditional: "UNCONDITIONAL",
+        powerMethodQuantile: "QUANTILE",
+
         // matrix names
-        matrixXEssence: "",
+        matrixXEssence: "design",
+        matrixBeta: "beta",
+        matrixBetaRandom: "betaRandom",
+        matrixBetweenContrast: "betweenSubjectContrast",
+        matrixBetweenContrastRandom: "betweenSubjectContrastRandom",
+        matrixWithinContrast: "withinSubjectContrast",
+        matrixSigmaE: "sigmaError",
+        matrixSigmaY: "sigmaOutcome",
+        matrixSigmaG: "sigmaGaussianRandom",
+        matrixSigmaYG: "sigmaOutcomeGaussianRandom",
+        matrixThetaNull: "thetaNull",
 
         // plot axis names
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",

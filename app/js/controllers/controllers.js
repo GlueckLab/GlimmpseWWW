@@ -671,12 +671,38 @@ glimmpseApp.controller('stateController',
     }
 
     /**
-     *
+     * Determine if the power curve screen is complete
      * @returns {string}
      */
     $scope.getStatePowerCurve = function() {
-        // TODO: finish
-        return 'complete';
+        if ($scope.studyDesign.alphaList.length <= 0 ||
+            $scope.studyDesign.statisticalTestList.length <= 0 ||
+            $scope.studyDesign.betaScaleList.length <= 0 ||
+            $scope.studyDesign.sigmaScaleList.length <= 0 ||
+            ($scope.studyDesign.gaussianCovariate &&
+                ($scope.studyDesign.powerMethodList.length <= 0 ||
+                    ($scope.studyDesign.getPowerMethodIndex(glimmpseConstants.powerMethodQuantile) >= 0 &&
+                        $scope.studyDesign.quantileList.length <= 0
+                    )
+                )
+            ) ||
+            ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypePower &&
+                $scope.studyDesign.sampleSizeList.length <= 0) ||
+            ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize &&
+                $scope.studyDesign.nominalPowerList.length <= 0)
+        ) {
+            return glimmpseConstants.stateBlocked;
+        } else {
+            if ($scope.studyDesign.powerCurveDescriptions == null) {
+                return glimmpseConstants.stateComplete;
+            } else {
+                if ($scope.studyDesign.powerCurveDescriptions.dataSeriesList.length > 0) {
+                    return glimmpseConstants.stateComplete;
+                } else {
+                    return glimmpseConstants.stateIncomplete;
+                }
+            }
+        }
     }
 
 
@@ -2008,37 +2034,198 @@ glimmpseApp.controller('stateController',
  * Controller for the plot options view
  */
     .controller('plotOptionsController', function($scope, glimmpseConstants, studyDesignService) {
+
+        // setter functions passed into generate data series function
+        $scope.setTest = function(current, test) {current.statisticalTestTypeEnum = test.type;}
+        $scope.setBetaScale = function(current, betaScale) {current.betaScale = betaScale.value;}
+        $scope.setSigmaScale = function(current, sigmaScale) {current.sigmaScale = sigmaScale.value;}
+        $scope.setAlpha = function(current, alpha) {current.typeIError = alpha.alphaValue;}
+        $scope.setSampleSize = function(current, sampleSize) {current.sampleSize = sampleSize.value;}
+        $scope.setNominalPower = function(current, power) {current.nominalPower = power.value;}
+        $scope.setPowerMethod = function(current, method) {current.powerMethod = method.powerMethodEnum;}
+        $scope.setQuantile = function(current, quantile) {current.quantile = quantile.value;}
+
+        /**
+         * Recursive function to generate all combinations of the elements in the
+         * list of lists
+         *
+         * @param dataLists - list of all data lists from which to generate permutations
+         * @param dataSeriesList - the list of data series
+         * @param depth - recursion depth
+         * @param current - current data series description
+         */
+        $scope.generateCombinations = function(inputDataLists, dataSeriesList, depth, current)
+        {
+            if(depth == inputDataLists.length)
+            {
+                dataSeriesList.push(
+                    {
+                        idx: 0,
+                        label: '',
+                        confidenceLimits: false,
+                        statisticalTestTypeEnum: current.statisticalTestTypeEnum,
+                        betaScale: current.betaScale,
+                        sigmaScale: current.sigmaScale,
+                        typeIError: current.typeIError,
+                        sampleSize: current.sampleSize,
+                        nominalPower: current.nominalPower,
+                        powerMethod: current.powerMethod,
+                        quantile: current.quantile
+                    }
+                );
+                return;
+            }
+
+            for(var i = 0; i < inputDataLists[depth].data.length; i++)
+            {
+                inputDataLists[depth].setFunction(current, inputDataLists[depth].data[i]);
+                $scope.generateCombinations(inputDataLists, dataSeriesList, depth + 1, current);
+            }
+        }
+
+        /**
+         * Build the possible data series for a given X-axis and
+         * solution type
+         */
+        $scope.buildDataSeries = function() {
+            // set up the recursive generation of data series
+            var dataLists = [
+                {
+                    data: $scope.studyDesign.alphaList,
+                    setFunction: $scope.setAlpha
+                },
+                {
+                    data: $scope.studyDesign.statisticalTestList,
+                    setFunction: $scope.setTest
+                }
+            ];
+
+            $scope.columnDefs = [
+                { field: 'label', displayName: "Label", width: 200,
+                    enableCellEdit: true
+                },
+                { field: 'typeIError', displayName: 'Type I Error Rate', width: 200},
+                { field: 'statisticalTestTypeEnum', displayName: 'Test', width: 200}
+                ];
+
+            // add sample size list or nominal power
+            if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum !=
+                glimmpseConstants.xAxisTotalSampleSize) {
+                if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
+                    dataLists.push(
+                        {
+                            data: $scope.studyDesign.nominalPowerList,
+                            setFunction: $scope.setNominalPower
+                        }
+                    );
+                    $scope.columnDefs({ field: 'nominalPower', displayName: 'Nominal Power', width: 200});
+                } else {
+                    dataLists.push(
+                        {
+                            data: $scope.studyDesign.sampleSizeList,
+                            setFunction: $scope.setSampleSize
+                        }
+                    );
+                }
+            }
+            // add beta scale
+            if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum !=
+                glimmpseConstants.xAxisBetaScale) {
+                dataLists.push(
+                    {
+                        data: $scope.studyDesign.betaScaleList,
+                        setFunction: $scope.setBetaScale
+                    }
+                );
+            }
+            // add sigma scale
+            if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum !=
+                glimmpseConstants.xAxisSigmaScale) {
+                dataLists.push(
+                    {
+                        data: $scope.studyDesign.sigmaScaleList,
+                        setFunction: $scope.setSigmaScale
+                    }
+                );
+            }
+
+            if ($scope.studyDesign.gaussianCovariate) {
+                $scope.numDataSeries *= $scope.studyDesign.powerMethodList.length;
+                if ($scope.studyDesign.quantileList.length > 0) {
+                    $scope.numDataSeries *= $scope.studyDesign.quantileList.length;
+                }
+            }
+
+            // now generate the data series with some mad recursive action
+            $scope.possibleDataSeriesList = [];
+            $scope.generateCombinations(dataLists, $scope.possibleDataSeriesList, 0,
+                {
+                    idx: 0,
+                    label: '',
+                    confidenceLimits: false,
+                    statisticalTestTypeEnum: undefined,
+                    betaScale: undefined,
+                    sigmaScale: undefined,
+                    typeIError: undefined,
+                    sampleSize: undefined,
+                    nominalPower: undefined,
+                    powerMethod: undefined,
+                    quantile: undefined
+                }
+            )
+        }
+
+
+//
+//        $scope.columnDefs = [
+//            { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
+//            { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
+//            { field: 'nominalPower.value', displayName: 'Target Power', width: 200},
+//            { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
+//            { field: 'test.type', displayName: 'Test', width: 200},
+//            { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
+//            { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200}
+//        ];
+//
+//        // build grid options
+//        $scope.resultsGridOptions = {
+//            data: 'gridData',
+//            columnDefs: 'columnDefs',
+//            selectedItems: []
+//        };
+
+        // initialize the controller
         init();
         function init() {
+            $scope.columnDefs = [];
+            $scope.possibleDataSeriesList = [];
             $scope.studyDesign = studyDesignService;
             $scope.XAxisOptions = [
-                {label: "Total Sample Size", value: "TOTAL_SAMPLE_SIZE"},
-                {label: "Variability Scale Factor", value: "VARIABILITY_SCALE_FACTOR"},
-                {label: "Regression Coefficient Scale Factor", value: "REGRESSION_COEEFICIENT_SCALE_FACTOR"}
+                {label: "Total Sample Size", value: glimmpseConstants.xAxisTotalSampleSize},
+                {label: "Variability Scale Factor", value: glimmpseConstants.xAxisSigmaScale},
+                {label: "Regression Coefficient Scale Factor", value: glimmpseConstants.xAxisBetaScale}
             ];
-            $scope.newDataSeries = {
-                idx: 0,
-                label: "",
-                confidenceLimits: false,
-                statisticalTestTypeEnum: undefined,
-                betaScale: undefined,
-                sigmaScale: undefined,
-                typeIError: undefined,
-                sampleSize: undefined,
-                nominalPower: undefined,
-                powerMethod: undefined,
-                quantile: undefined
+
+            $scope.gridOptions = {
+                data: 'possibleDataSeriesList',
+                columnDefs: 'columnDefs',
+                showSelectionCheckbox: true,
+                selectWithCheckboxOnly: true,
+                selectedItems: [],
+                afterSelectionChange: function(data) {
+                    $scope.studyDesign.powerCurveDescriptions.dataSeriesList = $scope.gridOptions.selectedItems;
+                }
             }
-            if (studyDesignService.powerCurveDescriptions != null) {
-                $scope.gridData = $scopstudyDesignService.powerCurveDescriptions.dataSeriesList;
-            } else {
-                $scope.gridData = [];
+
+            if ($scope.studyDesign.powerCurveDescriptions != null) {
+
+                $scope.buildDataSeries();
+                for(var i = 0; i < $scope.possibleDataSeriesList.length; i++) {
+                    // TODO: select the series in the study design
+                }
             }
-            $scope.dataSeriesGridOptions = {
-                data: 'gridData',
-                jqueryUITheme: true,
-                selectedItems: []
-            };
+
+
         }
 
         /**
@@ -2047,7 +2234,7 @@ glimmpseApp.controller('stateController',
         $scope.togglePowerCurveDescription = function() {
             if ($scope.studyDesign.powerCurveDescriptions != null) {
                 $scope.studyDesign.powerCurveDescriptions = null;
-                $scope.gridData = [];
+                $scope.dataSeriesList = [];
             } else {
                 $scope.studyDesign.powerCurveDescriptions = {
                     idx: 0,
@@ -2058,29 +2245,28 @@ glimmpseApp.controller('stateController',
                     horizontalAxisLabelEnum: 'TOTAL_SAMPLE_SIZE',
                     dataSeriesList: []
                 };
-                $scope.gridData = $scopstudyDesignService.powerCurveDescriptions.dataSeriesList;
+                $scope.buildDataSeries();
             }
         }
 
         /**
          * Add data series to the power curve description
          */
-        $scope.addDataSeries = function() {
+        $scope.addDataSeries = function(series) {
             if (studyDesignService.powerCurveDescriptions != null) {
                 studyDesignService.powerCurveDescriptions.dataSeriesList.push({
                     idx: 0,
-                    label: $scope.newDataSeries.label,
-                    confidenceLimits: $scope.newDataSeries.confidenceLimits,
-                    statisticalTestTypeEnum: $scope.newDataSeries.statisticalTestTypeEnum,
-                    betaScale: $scope.newDataSeries.betaScale,
-                    sigmaScale: $scope.newDataSeries.sigmaScale,
-                    typeIError: $scope.newDataSeries.typeIError,
-                    sampleSize: $scope.newDataSeries.sampleSize,
-                    nominalPower: $scope.newDataSeries.nominalPower,
-                    powerMethod: $scope.newDataSeries.powerMethod,
-                    quantile: $scope.newDataSeries.quantile
+                    label: series.label,
+                    confidenceLimits: series.confidenceLimits,
+                    statisticalTestTypeEnum: series.statisticalTestTypeEnum,
+                    betaScale: series.betaScale,
+                    sigmaScale: series.sigmaScale,
+                    typeIError: series.typeIError,
+                    sampleSize: series.sampleSize,
+                    nominalPower: series.nominalPower,
+                    powerMethod: series.powerMethod,
+                    quantile: series.quantile
                 });
-                $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
             }
         }
 
@@ -2089,12 +2275,15 @@ glimmpseApp.controller('stateController',
          * @param dataSeries
          */
         $scope.deleteDataSeries = function() {
+            /*
             for(var i = 0; i < $scope.dataSeriesGridOptions.selectedItems.length; i++) {
                 var dataSeries = $scope.dataSeriesGridOptions.selectedItems[i];
                 studyDesignService.powerCurveDescriptions.dataSeriesList.splice(
                     studyDesignService.powerCurveDescriptions.dataSeriesList.indexOf(dataSeries), 1);
             }
             $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
+            */
+            // TODO
         }
     })
 
