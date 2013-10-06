@@ -16,23 +16,25 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>The Design Essence Matrix</h3>
+<h3>Regression Coefficients: B Matrix</h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    The <b>B</b> matrix contains regression coefficients. Specify the values you expect to
+    see for these coefficients. These values may be determined from pilot data or
+    previous studies. We recommend selecting values which represent scientifically
+    meaningful differences. At least one of the values in the <b>B</b> matrix should be non-zero.
+    Otherwise, power will equal the test size.
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    The number of columns in <b>B</b> indicates the number of outcomes in your study (i.e. the
+    number of columns in <b>Y</b>). To adjust the number of outcomes in your study, change the
+    column dimension in the text box above the matrix data. The number of rows in <b>B</b> must
+    equal the number of columns in Es(<b>X</b>), so it cannot be adjusted on this screen.
+</p>
+<p>
+    Enter values for the regression coefficients in the matrix below.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
+<ng-resizable-matrix ng-model="betaMatrix" rowresizable='false' columnresizable='true'
                      symmetric='false' editdiagonal='true' editoffdiagonal='true'
                      rowlabels='' columnlabels='' ></ng-resizable-matrix>
 
-
-<div>{{designEssenceMatrix}}</div>

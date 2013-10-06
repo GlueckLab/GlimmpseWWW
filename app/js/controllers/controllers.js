@@ -78,19 +78,43 @@ glimmpseApp.controller('stateController',
         if (!$scope.testDone($scope.getStateSolvingFor())) { $scope.incompleteViews.push("Solving For")}
         if (!$scope.testDone($scope.getStateNominalPower())) { $scope.incompleteViews.push("Desired Power")}
         if (!$scope.testDone($scope.getStateTypeIError())) { $scope.incompleteViews.push("Type I Error")}
-        if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Study Groups")}
+
+        if ($scope.mode == glimmpseConstants.modeGuided) {
+            if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Study Groups")}
+        } else {
+            if (!$scope.testDone($scope.getStateDesignEssence())) { $scope.incompleteViews.push("Design Essence")}
+        }
+
         if (!$scope.testDone($scope.getStateCovariate())) { $scope.incompleteViews.push("Covariate")}
-        if (!$scope.testDone($scope.getStateClustering())) { $scope.incompleteViews.push("Clustering")}
-        if (!$scope.testDone($scope.getStateRelativeGroupSize())) { $scope.incompleteViews.push("Relative Group Size")}
+
+        if ($scope.mode == glimmpseConstants.modeGuided) {
+            if (!$scope.testDone($scope.getStateClustering())) { $scope.incompleteViews.push("Clustering")}
+            if (!$scope.testDone($scope.getStateRelativeGroupSize())) { $scope.incompleteViews.push("Relative Group Size")}
+        } else {
+            if (!$scope.testDone($scope.getStateBeta())) { $scope.incompleteViews.push("Beta Coefficients")}
+            if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Beta Scale Factors")}
+        }
+
         if (!$scope.testDone($scope.getStateSmallestGroupSize())) { $scope.incompleteViews.push("Smallest Group Size")}
-        if (!$scope.testDone($scope.getStateResponseVariables())) { $scope.incompleteViews.push("Response Variables")}
-        if (!$scope.testDone($scope.getStateRepeatedMeasures())) { $scope.incompleteViews.push("Repeated Measures")}
-        if (!$scope.testDone($scope.getStateHypothesis())) { $scope.incompleteViews.push("Hypothesis")}
-        if (!$scope.testDone($scope.getStateMeans())) { $scope.incompleteViews.push("Means")}
-        if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Scale Factor (means)")}
-        if (!$scope.testDone($scope.getStateWithinVariability())) { $scope.incompleteViews.push("Within Participant Variability")}
-        if (!$scope.testDone($scope.getStateCovariateVariability())) { $scope.incompleteViews.push("Covariate Variability")}
-        if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factor (variability)")}
+
+        if ($scope.mode == glimmpseConstants.modeGuided) {
+            if (!$scope.testDone($scope.getStateResponseVariables())) { $scope.incompleteViews.push("Response Variables")}
+            if (!$scope.testDone($scope.getStateRepeatedMeasures())) { $scope.incompleteViews.push("Repeated Measures")}
+            if (!$scope.testDone($scope.getStateHypothesis())) { $scope.incompleteViews.push("Hypothesis")}
+            if (!$scope.testDone($scope.getStateMeans())) { $scope.incompleteViews.push("Means")}
+            if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Scale Factors (means)")}
+            if (!$scope.testDone($scope.getStateWithinVariability())) { $scope.incompleteViews.push("Within Participant Variability")}
+            if (!$scope.testDone($scope.getStateCovariateVariability())) { $scope.incompleteViews.push("Covariate Variability")}
+        } else {
+            if (!$scope.testDone($scope.getStateBetweenParticipantContrast())) { $scope.incompleteViews.push("Between Participant Contrast")}
+            if (!$scope.testDone($scope.getStateWithinParticipantContrast())) { $scope.incompleteViews.push("Within Participant Contrast")}
+            if (!$scope.testDone($scope.getStateThetaNull())) { $scope.incompleteViews.push("Null Hypothesis Matrix")}
+            if (!$scope.testDone($scope.getStateSigmaE())) { $scope.incompleteViews.push("Error Covariance")}
+            if (!$scope.testDone($scope.getStateSigmaY())) { $scope.incompleteViews.push("Outcomes Covariance")}
+            if (!$scope.testDone($scope.getStateSigmaYG())) { $scope.incompleteViews.push("Covariate (Variability)")}
+        }
+        if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factors (variability)")}
+
         if (!$scope.testDone($scope.getStateStatisticalTest())) { $scope.incompleteViews.push("Statistical Test")}
         if (!$scope.testDone($scope.getStatePowerMethod())) { $scope.incompleteViews.push("Power Method")}
         if (!$scope.testDone($scope.getStateConfidenceIntervals())) { $scope.incompleteViews.push("Confidence Intervals")}
@@ -248,6 +272,11 @@ glimmpseApp.controller('stateController',
      */
     $scope.setMode = function(mode) {
         $scope.mode = mode;
+        $scope.studyDesign.viewTypeEnum = mode;
+        if ($scope.mode == glimmpseConstants.modeMatrix) {
+            // set the default matrices
+            $scope.studyDesign.initializeDefaultMatrices();
+        }
     }
 
     $scope.getMode = function() {
@@ -707,32 +736,49 @@ glimmpseApp.controller('stateController',
 
 
     $scope.getStateDesignEssence = function() {
-        // TODO
+        return 'complete';
     }
     $scope.getStateBeta = function() {
-        // TODO
+        return 'complete';
     }
     $scope.getStateBetweenParticipantContrast = function() {
-        // TODO
+        return 'complete';
     }
     $scope.getStateWithinParticipantContrast = function() {
-        // TODO
+        return 'complete';
     }
     $scope.getStateThetaNull = function() {
-        // TODO
+        return 'complete';
     }
     $scope.getStateSigmaE = function() {
-        // TODO
+        if ($scope.studyDesign.gaussianCovariate == false) {
+            return 'disabled';
+        } else {
+            return 'complete';
+        }
     }
+
     $scope.getStateSigmaG = function() {
-        // TODO
+        if ($scope.studyDesign.gaussianCovariate == true) {
+            return 'disabled';
+        } else {
+            return 'complete';
+        }
     }
     $scope.getStateSigmaYG = function() {
-        // TODO
-    }
-        $scope.getStateSigmaY = function() {
-            // TODO
+        if ($scope.studyDesign.gaussianCovariate == true) {
+            return 'disabled';
+        } else {
+            return 'complete';
         }
+    }
+    $scope.getStateSigmaY = function() {
+        if ($scope.studyDesign.gaussianCovariate == true) {
+            return 'disabled';
+        } else {
+            return 'complete';
+        }
+    }
 
 
 })
@@ -2361,6 +2407,7 @@ glimmpseApp.controller('stateController',
         }
 
     })
+
     /**
      * controller for the design essence screen in matrix mode
      */
@@ -2368,13 +2415,132 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.data = [
-                [1,2,1],
-                [4,5,6],
-                [7,8,9]
-            ];
+            $scope.designEssenceMatrix = studyDesignService.getMatrixByName(glimmpseConstants.matrixXEssence);
+        };
 
-            window.alert("design controller");
+        $scope.$watch('designEssenceMatrix.columns', function(newValue, oldValue) {
+            if (newValue != oldValue) {
+                // TODO resize beta
+                // TODO resize C
+            }
+        });
+    })
+
+    /**
+     * controller for the beta matrix screen in matrix mode
+     */
+    .controller('betaController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.betaMatrix = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
+        };
+
+        $scope.$watch('betaMatrix.columns', function(newValue, oldValue) {
+            if (newValue != oldValue) {
+                // TODO resize sigmaE or Sigma Y
+                // TODO resize U
+            }
+        });
+    })
+
+    /**
+     * controller for the between participant contrast matrix screen in matrix mode
+     */
+    .controller('betweenContrastController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.betweenContrastMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixBetweenContrast);
+        };
+
+        $scope.$watch('betweenContrastMatrix.rows', function(newValue, oldValue) {
+            if (newValue != oldValue) {
+                // TODO resize theta null
+            }
+        });
+    })
+
+    /**
+     * controller for the within participant contrast matrix screen in matrix mode
+     */
+    .controller('withinContrastController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.withinContrastMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixWithinContrast);
+        };
+
+        $scope.$watch('withinContrastMatrix.rows', function(newValue, oldValue) {
+            if (newValue != oldValue) {
+                // TODO resize theta null
+            }
+        });
+    })
+
+
+    /**
+     * controller for the null hypothesis matrix screen in matrix mode
+     */
+    .controller('thetaNullController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.thetaNullMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixThetaNull);
+        };
+    })
+
+    /**
+     * controller for the error covariance matrix screen in matrix mode
+     */
+    .controller('sigmaEController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.sigmaEMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixSigmaE);
+        };
+    })
+
+    /**
+     * controller for the outcomes covariance matrix screen in matrix mode
+     */
+    .controller('sigmaYController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.sigmaYMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixSigmaY);
+        };
+    })
+
+
+    /**
+     * controller for the outcomes / gaussian random covariance screen in matrix mode
+     */
+    .controller('sigmaCovariateController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.sigmaYGMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+            $scope.sigmaGMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixSigmaG);
+        };
+    })
+
+    /**
+     * controller for the null hypothesis matrix screen in matrix mode
+     */
+    .controller('thetaNullController', function($scope, glimmpseConstants, studyDesignService) {
+        init();
+        function init() {
+            $scope.studyDesign = studyDesignService;
+            $scope.thetaNullMatrix =
+                studyDesignService.getMatrixByName(glimmpseConstants.matrixThetaNull);
         };
     })
 

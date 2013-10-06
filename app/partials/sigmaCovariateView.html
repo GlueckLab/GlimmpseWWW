@@ -30,9 +30,11 @@ desired number of columns in the right-most textbox above the matrix data. Pleas
 coding for this matrix.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
-                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' ></ng-resizable-matrix>
+<ng-resizable-matrix ng-model="designEssenceMatrix" resizable='true' symmetric='false'
+                     editDiagonal='true' editOffDiagonal='true'
+                     rowLabels='' columnLabels=''
+                     onRowResize="updateRowSize()"
+                     onColumnResize="updateColumnSize()" ></ng-resizable-matrix>
 
 
 <div>{{designEssenceMatrix}}</div>

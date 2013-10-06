@@ -16,22 +16,24 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>The Design Essence Matrix</h3>
+<h3>Covariance of Errors: &Sigma;<sub>e</sub> Matrix</h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    For each independent sampling unit, <b>&Sigma;</b><sub>e</sub> is the covariance of the
+    random errors. For univariate designs, <b>&Sigma;</b><sub>e</sub> will be a 1x1 matrix containing the
+    variance of the error term.  More complex structures may be entered for
+    multivariate or repeated measures designs.
+    Values for <b>&Sigma;</b><sub>e</sub> are typically obtained from pilot data or previous studies.
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    <b>&Sigma;</b><sub>e</sub> is a square, symmetric matrix with dimensions equal to the number of columns in <b>B</b>.
+</p>
+<p>
+Enter values for <b>&Sigma;</b><sub>e</sub> in matrix below.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
-                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
+
+<ng-resizable-matrix ng-model="sigmaEMatrix" rowresizable='false' columnresizable='false'
+                     symmetric='true' editdiagonal='true' editoffdiagonal='true'
                      rowlabels='' columnlabels='' ></ng-resizable-matrix>
 
 

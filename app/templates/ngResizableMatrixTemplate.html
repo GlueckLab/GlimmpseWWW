@@ -1,0 +1,46 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<div>
+    <!-- -->
+    <div class='matrix-header'>
+        <input ng-show="rowResizable" name="newRows" type="number"
+               ng-model='matrix.rows' ng-change="resizeRows()"
+               min='1' max='50' step='1' autocomplete="off" autofocus required />
+        <label ng-show="!rowResizable">{{matrix.rows}}</label>
+        &times;
+        <input ng-show="columnResizable" name="newColumns" type="number"
+               ng-model='matrix.columns' ng-change="resizeColumns()"
+               min='1' max='50' step='1' autocomplete="off" autofocus required />
+        <label ng-show="!columnResizable">{{matrix.columns}}</label>
+    </div>
+    <div class='matrix-body'>
+        <table>
+            <tr ng-repeat="row in matrix.data.data track by $id($index)">
+                <td ng-repeat="cell in row track by $id($index)">
+                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+        {{rowResizable}}, {{columnResizable}}     , {{symmetric}}, {{editDiagonal}}
+
+

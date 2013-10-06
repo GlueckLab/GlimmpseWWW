@@ -16,23 +16,25 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>The Design Essence Matrix</h3>
+<h3>Null Hypotheses: &Theta;<sub>0</sub> Matrix</h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    For <b>&Theta;</b> =  <b>CBU</b>, the general linear hypothesis is stated as
+<p>
+    H<sub>0</sub> : <b>&Theta;</b> =  <b>&Theta;</b><sub>0</sub>.
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    In most cases, the <b>&Theta;</b><sub>0</sub> matrix will contain zeros.<p></p>
+    The number of rows in <b>&Theta;</b><sub>0</sub> must equal the number of rows in <b>C</b>,
+    and the number of columns must match the number of columns in <b>U</b>.
+    To ensure conforming matrices, the dimensions of <b>&Theta;</b><sub>0</sub>
+    cannot be adjusted on this screen.
+</p>
+<p>
+    Enter your <b>&Theta;</b><sub>0</sub> matrix below.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
+
+<ng-resizable-matrix ng-model="thetaNullMatrix" rowresizable='false' columnresizable='false'
                      symmetric='false' editdiagonal='true' editoffdiagonal='true'
                      rowlabels='' columnlabels='' ></ng-resizable-matrix>
 
-
-<div>{{designEssenceMatrix}}</div>
