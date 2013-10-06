@@ -194,8 +194,12 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             {templateUrl: 'partials/sigmaYView.html', controller: 'sigmaYController' }
 
         )
-            .when('/sigmaCovariate',
-            {templateUrl: 'partials/sigmaCovariateView.html', controller: 'sigmaCovariateController' }
+            .when('/sigmaG',
+            {templateUrl: 'partials/sigmaGView.html', controller: 'sigmaGController' }
+
+        )
+            .when('/sigmaYG',
+            {templateUrl: 'partials/sigmaYGView.html', controller: 'sigmaYGController' }
 
         )
 
