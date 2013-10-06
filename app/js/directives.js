@@ -92,6 +92,34 @@ glimmpseApp.directive('ngResizableMatrix',function() {
                     }
                 }
             }
+
+            /**
+             * Called when cell contents change to implement symmetric matrices
+             * @param contents
+             * @param row
+             * @param column
+             */
+            $scope.cellChangeHandler = function(contents, row, column) {
+                if ($scope.symmetric) {
+                    $scope.matrix.data.data[column][row] = contents;
+                }
+            }
+
+            /**
+             * Checks
+             * @param row
+             * @param column
+             */
+            $scope.isCellDisabled = function(row, column) {
+                if ($scope.symmetric && column > row) {
+                    return true;
+                } else if (!$scope.editDiagonal && row == column) {
+                    return true;
+                } else if (!$scope.editOffDiagonal && row != column) {
+                    return true;
+                }
+                return false;
+            }
         }]
 
 

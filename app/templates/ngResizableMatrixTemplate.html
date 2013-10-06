@@ -16,31 +16,31 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<div>
-    <!-- -->
+<div class='matrix-container'>
+    <!-- top bar with matrix dimensions -->
     <div class='matrix-header'>
-        <input ng-show="rowResizable" name="newRows" type="number"
+        <input name="newRows" type="number"
                ng-model='matrix.rows' ng-change="resizeRows()"
-               min='1' max='50' step='1' autocomplete="off" autofocus required />
-        <label ng-show="!rowResizable">{{matrix.rows}}</label>
+               min='1' max='50' step='1' autocomplete="off" autofocus required
+               ng-disabled='!rowResizable' />
         &times;
-        <input ng-show="columnResizable" name="newColumns" type="number"
+        <input name="newColumns" type="number"
                ng-model='matrix.columns' ng-change="resizeColumns()"
-               min='1' max='50' step='1' autocomplete="off" autofocus required />
-        <label ng-show="!columnResizable">{{matrix.columns}}</label>
+               min='1' max='50' step='1' autocomplete="off" autofocus required
+               ng-disabled='!columnResizable'/>
     </div>
+    <!-- matrix cells -->
     <div class='matrix-body'>
         <table>
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <td ng-repeat="cell in row track by $id($index)">
-                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]" />
+                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                            ng-disabled='isCellDisabled($parent.$index, $index)'/>
                 </td>
             </tr>
         </table>
     </div>
 </div>
 
-
-        {{rowResizable}}, {{columnResizable}}     , {{symmetric}}, {{editDiagonal}}
 
 

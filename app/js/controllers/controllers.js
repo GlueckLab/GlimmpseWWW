@@ -68,6 +68,17 @@ glimmpseApp.controller('stateController',
             state == glimmpseConstants.stateDisabled);
     }
 
+    /**
+     * Returns true if the state allows the user to load the
+     * specified view
+     *
+     * @param state
+     * @returns {boolean}
+     */
+    $scope.viewAllowed = function(state) {
+        return (state != glimmpseConstants.stateDisabled &&
+            state != glimmpseConstants.stateBlocked);
+    }
 
     /**
      *  Display the incomplete items dialog
@@ -111,6 +122,7 @@ glimmpseApp.controller('stateController',
             if (!$scope.testDone($scope.getStateThetaNull())) { $scope.incompleteViews.push("Null Hypothesis Matrix")}
             if (!$scope.testDone($scope.getStateSigmaE())) { $scope.incompleteViews.push("Error Covariance")}
             if (!$scope.testDone($scope.getStateSigmaY())) { $scope.incompleteViews.push("Outcomes Covariance")}
+            if (!$scope.testDone($scope.getStateSigmaG())) { $scope.incompleteViews.push("Outcomes Covariance")}
             if (!$scope.testDone($scope.getStateSigmaYG())) { $scope.incompleteViews.push("Covariate (Variability)")}
         }
         if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factors (variability)")}
@@ -750,8 +762,9 @@ glimmpseApp.controller('stateController',
     $scope.getStateThetaNull = function() {
         return 'complete';
     }
+
     $scope.getStateSigmaE = function() {
-        if ($scope.studyDesign.gaussianCovariate == false) {
+        if ($scope.studyDesign.gaussianCovariate) {
             return 'disabled';
         } else {
             return 'complete';
@@ -759,21 +772,21 @@ glimmpseApp.controller('stateController',
     }
 
     $scope.getStateSigmaG = function() {
-        if ($scope.studyDesign.gaussianCovariate == true) {
-            return 'disabled';
-        } else {
-            return 'complete';
-        }
-    }
-    $scope.getStateSigmaYG = function() {
-        if ($scope.studyDesign.gaussianCovariate == true) {
+        if (!$scope.studyDesign.gaussianCovariate) {
             return 'disabled';
         } else {
             return 'complete';
         }
     }
     $scope.getStateSigmaY = function() {
-        if ($scope.studyDesign.gaussianCovariate == true) {
+        if (!$scope.studyDesign.gaussianCovariate) {
+            return 'disabled';
+        } else {
+            return 'complete';
+        }
+    }
+    $scope.getStateSigmaYG = function() {
+        if (!$scope.studyDesign.gaussianCovariate) {
             return 'disabled';
         } else {
             return 'complete';

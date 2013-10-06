@@ -185,8 +185,8 @@
                                     <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
                                     <a href="#/nominalPower"
-                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypePower">Desired Power</a>
-                                    <label ng-show="studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypePower">Desired Power</label>
+                                       ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
+                                    <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
                                 </div>
                                 <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
                                     <a href="#/typeIError">Type I Error</a>
@@ -204,14 +204,13 @@
                                     <a href="#/isu">Clustering</a>
                                 </div>
                                 <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
-                                    <a href="#/relativeGroupSize" ng-show="getStateRelativeGroupSize()=='complete'">Relative Group Size</a>
-                                    <label ng-show="getStateRelativeGroupSize()!='complete'">Relative Group Size</label>
+                                    <a href="#/relativeGroupSize" ng-show="viewAllowed(getStateRelativeGroupSize())">Relative Group Size</a>
+                                    <label ng-show="!viewAllowed(getStateRelativeGroupSize())">Relative Group Size</label>
                                 </div>
                                 <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
                                     <a href="#/smallestGroupSize"
-                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypeSampleSize">Smallest Group Size</a>
-                                    <label
-                                            ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypeSampleSize">
+                                       ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
+                                    <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
                                         Smallest Group Size
                                     </label>
                                 </div>
@@ -228,15 +227,15 @@
                             <h3><a href="#">Hypothesis</a></h3>
                             <div>
                                 <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
-                                    <a href="#/hypothesis" ng-show="getStateHypothesis()!='blocked'">Hypothesis</a>
-                                    <label ng-show="getStateHypothesis()=='blocked'">Hypothesis</label>
+                                    <a href="#/hypothesis" ng-show="viewAllowed(getStateHypothesis())">Hypothesis</a>
+                                    <label ng-show="!viewAllowed(getStateHypothesis())">Hypothesis</label>
                                 </div>
                             </div>
                             <h3><a href="#">Means</a></h3>
                             <div>
                                 <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
-                                    <a href="#/means" ng-show="getStateMeans()!='blocked'">Means</a>
-                                    <label ng-show="getStateMeans()=='blocked'">Means</label>
+                                    <a href="#/means" ng-show="viewAllowed(getStateMeans())">Means</a>
+                                    <label ng-show="!viewAllowed(getStateMeans())">Means</label>
                                 </div>
                                 <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
                                     <a href="#/meansScale">Scale Factors</a>
@@ -245,12 +244,12 @@
                             <h3><a href="#">Variability</a></h3>
                             <div>
                                 <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
-                                    <a href="#/variabilityWithin" ng-show="getStateWithinVariability()!='blocked'">Within Participant</a>
-                                    <label ng-show="getStateWithinVariability()=='blocked'">Within Participant</label>
+                                    <a href="#/variabilityWithin" ng-show="viewAllowed(getStateWithinVariability())">Within Participant</a>
+                                    <label ng-show="!viewAllowed(getStateWithinVariability())">Within Participant</label>
                                 </div>
                                 <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
-                                    <a href="#/variabilityCovariate">Covariate</a>
-                                    <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
+                                    <a href="#/variabilityCovariate" ng-show="viewAllowed(getStateCovariateVariability())">Covariate</a>
+                                    <label ng-show="!viewAllowed(getStateCovariateVariability())">Covariate</label>
                                 </div>
                                 <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
                                     <a href="#/variabilityScale">Scale Factors</a>
@@ -262,15 +261,15 @@
                                     <a href="#/test">Statistical Test</a>
                                 </div>
                                 <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
-                                    <a href="#/powerMethod" ng-show="getStatePowerMethod()!='disabled'">Power Method</a>
-                                    <label ng-show="getStatePowerMethod()=='disabled'">Power Method</label>
+                                    <a href="#/powerMethod" ng-show="viewAllowed(getStatePowerMethod())">Power Method</a>
+                                    <label ng-show="!viewAllowed(getStatePowerMethod())">Power Method</label>
                                 </div>
                                 <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
                                     <a href="#/confidenceIntervals">Confidence Intervals</a>
                                 </div>
                                 <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
-                                    <a href="#/plotOptions" ng-show="getStatePowerCurve()!='blocked'">Power Curve</a>
-                                    <label ng-show="getStatePowerCurve()=='blocked'">Power Curve</label>
+                                    <a href="#/plotOptions" ng-show="viewAllowed(getStatePowerCurve())">Power Curve</a>
+                                    <label ng-show="!viewAllowed(getStatePowerCurve())">Power Curve</label>
                                 </div>
                             </div>
                         </div>
@@ -284,10 +283,10 @@
                                 <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
                                     <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
-                                    <a href="#/nominalPower" ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypePower">
+                                    <a href="#/nominalPower" ng-show="viewAllowed(getStateNominalPower())">
                                         Desired Power
                                     </a>
-                                    <label ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypePower">Desired Power</label>
+                                    <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
                                 </div>
                                 <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
                                     <a href="#/typeIError">Type I Error</a>
@@ -303,9 +302,8 @@
                                 </div>
                                 <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
                                     <a href="#/smallestGroupSize"
-                                       ng-show="studyDesign.solutionTypeEnum!=glimmpseConstants.solutionTypeSampleSize">Smallest Group Size</a>
-                                    <label
-                                            ng-show="studyDesign.solutionTypeEnum==glimmpseConstants.solutionTypeSampleSize">
+                                       ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
+                                    <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
                                         Smallest Group Size
                                     </label>
                                 </div>
@@ -333,21 +331,21 @@
                             </div>
                             <h3><a href="#">Variability</a></h3>
                             <div>
-                                <div class="{{isActive('/sigmaE') && 'active'}} {{getStateSigmaError()}}">
-                                    <a href="#/sigmaE" ng-show="getStateSigmaError()!='blocked'">Error Covariance</a>
-                                    <label ng-show="getStateSigmaError()=='blocked'">Within Participant</label>
+                                <div class="{{isActive('/sigmaE') && 'active'}} {{getStateSigmaE()}}">
+                                    <a href="#/sigmaE" ng-show="viewAllowed(getStateSigmaE())">Error Covariance</a>
+                                    <label ng-show="!viewAllowed(getStateSigmaE())">Error Covariance</label>
                                 </div>
-                                <div class="{{isActive('/sigmaY') && 'active'}} {{getStateSigmaOutcomes()}}">
-                                    <a href="#/sigmaY" ng-show="getStateSigmaOutcomes()!='blocked'">Outcomes Covariance</a>
-                                    <label ng-show="getStateSigmaOutcomes()=='blocked'">Within Participant</label>
+                                <div class="{{isActive('/sigmaY') && 'active'}} {{getStateSigmaY()}}">
+                                    <a href="#/sigmaY" ng-show="viewAllowed(getStateSigmaY())">Outcomes Covariance</a>
+                                    <label ng-show="!viewAllowed(getStateSigmaY())">Within Participant</label>
                                 </div>
-                                <div class="{{isActive('/sigmaG') && 'active'}} {{getStateSigmaCovariate()}}" >
-                                    <a href="#/sigmaG">Variance of Covariate</a>
-                                    <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
+                                <div class="{{isActive('/sigmaG') && 'active'}} {{getStateSigmaG()}}" >
+                                    <a href="#/sigmaG" ng-show="viewAllowed(getStateSigmaG())">Variance of Covariate</a>
+                                    <label ng-show="!viewAllowed(getStateSigmaG())">Covariate</label>
                                 </div>
-                                <div class="{{isActive('/sigmaYG') && 'active'}} {{getStateSigmaOutcomesCovariate()}}" >
-                                    <a href="#/sigmaYG">Outcomes and Covariate</a>
-                                    <label ng-show="getStateWithinVariability()=='blocked'">Covariate</label>
+                                <div class="{{isActive('/sigmaYG') && 'active'}} {{getStateSigmaYG()}}" >
+                                    <a href="#/sigmaYG" ng-show="viewAllowed(getStateSigmaYG())">Outcomes and Covariate</a>
+                                    <label ng-show="!viewAllowed(getStateSigmaYG())">Outcomes and Covariate</label>
                                 </div>
                                 <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
                                     <a href="#/variabilityScale">Scale Factors</a>
@@ -359,15 +357,15 @@
                                     <a href="#/test">Statistical Test</a>
                                 </div>
                                 <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
-                                    <a href="#/powerMethod" ng-show="getStatePowerMethod()!='disabled'">Power Method</a>
-                                    <label ng-show="getStatePowerMethod()=='disabled'">Power Method</label>
+                                    <a href="#/powerMethod" ng-show="viewAllowed(getStatePowerMethod())">Power Method</a>
+                                    <label ng-show="!viewAllowed(getStatePowerMethod())">Power Method</label>
                                 </div>
                                 <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
                                     <a href="#/confidenceIntervals">Confidence Intervals</a>
                                 </div>
                                 <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
-                                    <a href="#/plotOptions" ng-show="getStatePowerCurve()!='blocked'">Power Curve</a>
-                                    <label ng-show="getStatePowerCurve()=='blocked'">Power Curve</label>
+                                    <a href="#/plotOptions" ng-show="viewAllowed(getStatePowerCurve())">Power Curve</a>
+                                    <label ng-show="!viewAllowed(getStatePowerCurve())">Power Curve</label>
                                 </div>
                             </div>
                         </div>
