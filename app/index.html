@@ -337,7 +337,7 @@
                                 </div>
                                 <div class="{{isActive('/sigmaY') && 'active'}} {{getStateSigmaY()}}">
                                     <a href="#/sigmaY" ng-show="viewAllowed(getStateSigmaY())">Outcomes Covariance</a>
-                                    <label ng-show="!viewAllowed(getStateSigmaY())">Within Participant</label>
+                                    <label ng-show="!viewAllowed(getStateSigmaY())">Outcomes Covariance</label>
                                 </div>
                                 <div class="{{isActive('/sigmaG') && 'active'}} {{getStateSigmaG()}}" >
                                     <a href="#/sigmaG" ng-show="viewAllowed(getStateSigmaG())">Variance of Covariate</a>
@@ -474,10 +474,10 @@
 
 <!-- app specific scripts -->
 <script src="js/app.js"></script>
-<script src="js/directives.js"></script>
 <script src="js/services/matrixUtilities.js"></script>
 <script src="js/services/studyDesignService.js"></script>
 <script src="js/services/powerService.js"></script>
+<script src="js/directives.js"></script>
 <script src="js/controllers/controllers.js"></script>
 
 </div>

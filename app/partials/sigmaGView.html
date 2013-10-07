@@ -16,25 +16,16 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>The Design Essence Matrix</h3>
+<h3>Variance of the Gaussian Covariate: &sigma;<sup>2</sup><sub>g</sub></h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    The Gaussian covariate is assumed to follow a Gaussian distribution with mean zero
+    and variance &sigma;<sup>2</sup><sub>g</sub>.
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    Enter values for &sigma;<sup>2</sup><sub>g</sub> in the matrix below.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" resizable='true' symmetric='false'
-                     editDiagonal='true' editOffDiagonal='true'
-                     rowLabels='' columnLabels=''
-                     onRowResize="updateRowSize()"
-                     onColumnResize="updateColumnSize()" ></ng-resizable-matrix>
-
-
-<div>{{designEssenceMatrix}}</div>
+<ng-resizable-matrix ng-model="sigmaGMatrix" rowresizable='false' columnresizable='false'
+                     symmetric='true' editdiagonal='true' editoffdiagonal='true'
+                     rowlabels='' columnlabels=''
+                     defaultdiagonal="1" defaultoffdiagonal='0'></ng-resizable-matrix>

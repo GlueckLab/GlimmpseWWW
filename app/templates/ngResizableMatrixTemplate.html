@@ -19,15 +19,17 @@
 <div class='matrix-container'>
     <!-- top bar with matrix dimensions -->
     <div class='matrix-header'>
-        <input name="newRows" type="number"
-               ng-model='matrix.rows' ng-change="resizeRows()"
-               min='1' max='50' step='1' autocomplete="off" autofocus required
-               ng-disabled='!rowResizable' />
-        &times;
-        <input name="newColumns" type="number"
-               ng-model='matrix.columns' ng-change="resizeColumns()"
-               min='1' max='50' step='1' autocomplete="off" autofocus required
-               ng-disabled='!columnResizable'/>
+        <form name="matrix-form" novalidate>
+            <input name="newRows" type="number"
+                   ng-model='matrix.rows' ng-change="resizeRows()"
+                   min='1' max='50' step='1' autocomplete="off" autofocus required
+                   ng-disabled='!rowResizable' />
+            &times;
+            <input name="newColumns" type="number"
+                   ng-model='matrix.columns' ng-change="resizeColumns()"
+                   min='1' max='50' step='1' autocomplete="off" autofocus required
+                   ng-disabled='!columnResizable'/>
+        </form>
     </div>
     <!-- matrix cells -->
     <div class='matrix-body'>
@@ -35,7 +37,8 @@
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <td ng-repeat="cell in row track by $id($index)">
                     <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
-                            ng-disabled='isCellDisabled($parent.$index, $index)'/>
+                            ng-disabled='isCellDisabled($parent.$index, $index)'
+                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>
             </tr>
         </table>

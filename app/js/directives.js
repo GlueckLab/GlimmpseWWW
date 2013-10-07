@@ -36,7 +36,7 @@
  *  columnLabels (required) - array list of column labels
  *
  */
-glimmpseApp.directive('ngResizableMatrix',function() {
+glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
     return {
         restrict: 'E',
         require: '^ngModel',
@@ -49,48 +49,36 @@ glimmpseApp.directive('ngResizableMatrix',function() {
             editDiagonal: '=editdiagonal',
             editOffDiagonal: '=editoffdiagonal',
             rowLabels: '=rowlabels',
-            columnLabels: '=columnlabels'
+            columnLabels: '=columnlabels',
+            defaultDiagonal: '=defaultdiagonal',
+            defaultOffDiagonal: '=defaultoffdiagonal'
         },
 
-        controller: ['$scope', function($scope) {
+        controller: ['$scope', 'matrixUtilities', function($scope, matrixUtilities) {
+
+            init();
+            function init() {
+                $scope.matrixUtils = matrixUtilities;
+            }
 
             /**
              * Add or subtract rows when the user changes the row dimension
              */
             $scope.resizeRows = function() {
-                var currentRows = $scope.matrix.data.data.length;
-                if ($scope.matrix.rows > currentRows) {
-                    for(var r = currentRows; r < $scope.matrix.rows; r++) {
-                        var newRow = [];
-                        for(var c = 0; c < $scope.matrix.columns; c++) {
-                            newRow.push(0);
-                        }
-                        $scope.matrix.data.data.push(newRow);
-                    }
-                } else if ($scope.matrix.rows < currentRows) {
-                    $scope.matrix.data.data.splice($scope.matrix.rows,
-                        currentRows-$scope.matrix.rows);
-                }
+                var oldRows = $scope.matrix.data.data.length;
+                var newRows = $scope.matrix.rows;
+                $scope.matrixUtils.resizeRows($scope.matrix, oldRows, newRows,
+                        $scope.defaultOffDiagonal, $scope.defaultDiagonal);
             }
 
             /**
              * Add or remove columns when the user changes the column dimension
              */
             $scope.resizeColumns = function() {
-                var currentColumns = $scope.matrix.data.data[0].length;
-                if ($scope.matrix.columns > currentColumns) {
-                    for(var r = 0; r < $scope.matrix.rows; r++) {
-                        for(var c = currentColumns; c < $scope.matrix.columns; c++) {
-                            $scope.matrix.data.data[r].push(0);
-                        }
-                    }
-
-                } else if ($scope.matrix.columns < currentColumns) {
-                    for(var r = 0; r < $scope.matrix.rows; r++) {
-                        $scope.matrix.data.data[r].splice($scope.matrix.columns,
-                            currentColumns-$scope.matrix.columns);
-                    }
-                }
+                var oldColumns = $scope.matrix.data.data[0].length;
+                var newColumns = $scope.matrix.columns;
+                $scope.matrixUtils.resizeColumns($scope.matrix, oldColumns, newColumns,
+                    $scope.defaultOffDiagonal, $scope.defaultDiagonal);
             }
 
             /**
@@ -124,4 +112,4 @@ glimmpseApp.directive('ngResizableMatrix',function() {
 
 
     }
-})
+}]);

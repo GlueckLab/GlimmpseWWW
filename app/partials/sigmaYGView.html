@@ -16,25 +16,22 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Covariance of Errors: &Sigma;<sub>e</sub> Matrix</h3>
+<h3>Covariance of Outcomes with Covariate: &Sigma;<sub>yg</sub> Matrix</h3>
 <p>
-    For each independent sampling unit, <b>&Sigma;</b><sub>e</sub> is the covariance of the
-    random errors. For univariate designs, <b>&Sigma;</b><sub>e</sub> will be a 1x1 matrix containing the
-    variance of the error term.  More complex structures may be entered for
-    multivariate or repeated measures designs.
-    Values for <b>&Sigma;</b><sub>e</sub> are typically obtained from pilot data or previous studies.
+    When controlling for a covariate, power increases if the covariate explains some
+    portion of the variance in the outcome. The &Sigma;<sub>yg</sub> matrix defines the strength of
+    he association between the covariate and the outcomes. For univariate designs,
+    &Sigma;<sub>yg</sub> will be a 1x1 matrix containing the covariance between the
+    outcome and the covariate. For multivariate and repeated measures designs, the
+    matrix will be px1, where p is the number of outcomes, and each row contains the
+    covariance between the covariate and the corresponding outcome.
 </p>
 <p>
-    <b>&Sigma;</b><sub>e</sub> is a square, symmetric matrix with dimensions equal to the number of columns in <b>B</b>.
-</p>
-<p>
-    Enter values for <b>&Sigma;</b><sub>e</sub> in matrix below.
+    Enter values for &Sigma;<sub>yg</sub> in matrix below.
 </p>
 
 
 <ng-resizable-matrix ng-model="sigmaYGMatrix" rowresizable='false' columnresizable='false'
-                     symmetric='true' editdiagonal='true' editoffdiagonal='true'
+                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
                      rowlabels='' columnlabels='' ></ng-resizable-matrix>
 
-
-<div>{{designEssenceMatrix}}</div>

@@ -490,6 +490,18 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         }
     }
 
+    /**
+     * Remove a matrix by name
+     */
+    studyDesignInstance.removeMatrixByName = function(name) {
+        for(var i = 0; i < studyDesignInstance.matrixSet.length; i++) {
+            var matrix = studyDesignInstance.matrixSet[i];
+            if (matrix.name == name) {
+                studyDesignInstance.matrixSet.splice(i,1);
+            }
+        }
+    }
+
     return studyDesignInstance;
 
 });
