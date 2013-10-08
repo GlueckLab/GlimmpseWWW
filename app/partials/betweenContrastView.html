@@ -1,0 +1,39 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<h3>Between-Participant Contrast: C Matrix</h3>
+<p>
+    The <b>C</b> matrix defines the contrasts for between-participant effects. The number of rows in the <b>C</b>
+    matrix is at most one fewer than the number of rows in Es(<b>X</b>). The number of columns in <b>C</b> must equal
+    the number of columns in <b>B</b>. To ensure conforming matrices, the number of columns of <b>C</b>
+    cannot be adjusted on this screen.
+</p>
+<p>
+    Enter your between-subject contrast matrix below.
+</p>
+
+
+<ng-resizable-matrix ng-model="betweenContrastMatrix" rowresizable='true' columnresizable='false'
+                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
+                     rowlabels='' columnlabels='' defaultdiagonal='0' defaultoffdiagonal='0'></ng-resizable-matrix>
+
+
+<div ng-show="glimmpseConstants.debug">
+    <div>{{betweenContrastMatrix}}</div>
+    <div>{{studyDesign.getMatrixByName('thetaNull')}}</div>
+</div>

@@ -1,0 +1,37 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<h3>Covariance of Outcomes with Covariate: &Sigma;<sub>yg</sub> Matrix</h3>
+<p>
+    When controlling for a covariate, power increases if the covariate explains some
+    portion of the variance in the outcome. The &Sigma;<sub>yg</sub> matrix defines the strength of
+    he association between the covariate and the outcomes. For univariate designs,
+    &Sigma;<sub>yg</sub> will be a 1x1 matrix containing the covariance between the
+    outcome and the covariate. For multivariate and repeated measures designs, the
+    matrix will be px1, where p is the number of outcomes, and each row contains the
+    covariance between the covariate and the corresponding outcome.
+</p>
+<p>
+    Enter values for &Sigma;<sub>yg</sub> in matrix below.
+</p>
+
+
+<ng-resizable-matrix ng-model="sigmaYGMatrix" rowresizable='false' columnresizable='false'
+                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
+                     rowlabels='' columnlabels='' ></ng-resizable-matrix>
+

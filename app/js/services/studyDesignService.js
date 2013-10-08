@@ -366,6 +366,20 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         }
     }
 
+    /*
+    * Convenience routine to determine if a power method is
+    * in the list
+     */
+    studyDesignInstance.getPowerMethodIndex = function(powerMethod) {
+        for(var i = 0; i < studyDesignInstance.powerMethodList.length; i++) {
+            var method = studyDesignInstance.powerMethodList[i];
+            if (method.powerMethodEnum == powerMethod) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     /**
      * Reset the study design instance to the default state
      */
@@ -415,6 +429,96 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         return index;
     };
 
+    /**
+     * Initialize the default matrices in matrix mode
+     */
+    studyDesignInstance.initializeDefaultMatrices = function() {
+        studyDesignInstance.matrixSet = [];
+        // default design matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixXEssence,
+            rows: glimmpseConstants.matrixDefaultN,
+            columns: glimmpseConstants.matrixDefaultQ,
+            data: {
+                data: [[1,0],[0,1]]
+            }
+        })
+        // default beta matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixBeta,
+            rows: glimmpseConstants.matrixDefaultQ,
+            columns: glimmpseConstants.matrixDefaultP,
+            data: {
+                data: [[1],[0]]
+            }
+        })
+        // default between participant contrast (C) matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixBetweenContrast,
+            rows: glimmpseConstants.matrixDefaultA,
+            columns: glimmpseConstants.matrixDefaultQ,
+            data: {
+                data: [[1, -1]]
+            }
+        })
+        // default within participant contrast (U) matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixWithinContrast,
+            rows: glimmpseConstants.matrixDefaultP,
+            columns: glimmpseConstants.matrixDefaultB,
+            data: {
+                data: [[1]]
+            }
+        })
+        // default null hypothesis (theta null) matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixThetaNull,
+            rows: glimmpseConstants.matrixDefaultA,
+            columns: glimmpseConstants.matrixDefaultB,
+            data: {
+                data: [[0]]
+            }
+        })
+        // default null hypothesis (theta null) matrix
+        studyDesignInstance.matrixSet.push({
+            idx: 0,
+            name: glimmpseConstants.matrixSigmaE,
+            rows: glimmpseConstants.matrixDefaultP,
+            columns: glimmpseConstants.matrixDefaultP,
+            data: {
+                data: [[1]]
+            }
+        })
+    }
+
+    /**
+     * Retrieve a matrix by name
+     */
+    studyDesignInstance.getMatrixByName = function(name) {
+        for(var i = 0; i < studyDesignInstance.matrixSet.length; i++) {
+            var matrix = studyDesignInstance.matrixSet[i];
+            if (matrix.name == name) {
+                return matrix;
+            }
+        }
+    }
+
+    /**
+     * Remove a matrix by name
+     */
+    studyDesignInstance.removeMatrixByName = function(name) {
+        for(var i = 0; i < studyDesignInstance.matrixSet.length; i++) {
+            var matrix = studyDesignInstance.matrixSet[i];
+            if (matrix.name == name) {
+                studyDesignInstance.matrixSet.splice(i,1);
+            }
+        }
+    }
 
     return studyDesignInstance;
 

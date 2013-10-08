@@ -40,13 +40,13 @@
     <div class="input-group">
         <div>
             <input type="checkbox" ng-model="unconditionalChecked"
-                   data-ng-click="updateMethodList('unconditional',unconditionalChecked)">
+                   data-ng-click="updateMethodList(glimmpseConstants.powerMethodUnconditional,unconditionalChecked)">
             Unconditional
             </input>
         </div>
         <div>
             <input type="checkbox" ng-model="quantileChecked"
-                   data-ng-click="updateMethodList('quantile',quantileChecked)">
+                   data-ng-click="updateMethodList(glimmpseConstants.powerMethodQuantile,quantileChecked)">
             Quantile
             </input>
         </div>
@@ -71,7 +71,9 @@
         </div>
     </div>
 
-    <div ng-show="studyDesign.debug==true">Methods: {{studyDesign.powerMethodList}}, Quantiles: {{studyDesign.quantileList}}</div>
+    <div ng-show="glimmpseConstants.debug==true">
+         Methods: {{studyDesign.powerMethodList}}, Quantiles: {{studyDesign.quantileList}}
+    </div>
 </div>
 
 
