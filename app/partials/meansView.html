@@ -50,8 +50,8 @@
                 {{count[i]}}
            </td>
             <td ng-repeat="variable in studyDesign.responseList track by $id($index)">
-                    <input id="meansValuePerResponse{{$index}}" type="text" value="0"
-                           ng-model="studyDesign.matrixSet[1].data.data[$parent.$index]
+                    <input type="text"
+                           ng-model="studyDesign.matrixSet[studyDesign.getMatrixSetListIndexByName('beta')].data.data[$parent.$index]
                            [startColumn*studyDesign.responseList.length + $index]"
                            >
                     </input>
@@ -85,8 +85,7 @@
                       {{measure.dimension}}
                   </td>
                    <td>
-                       <select id="optionForMeansTime"
-                               ng-change="updateMeans('updateTextBoxes', -1, -1)">
+                       <select id="optionForMeansTime">
                            <option ng-repeat="number in measure.spacingList">
                                {{number.value}}
                            </option>
@@ -96,7 +95,7 @@
         </table>
 </div>
 
-        <div ng-show="studyDesign.debug == true">
-            {{studyDesign.matrixSet}}
-        </div>
+    <div ng-show="glimmpseConstants.debug == true">
+        {{studyDesign.matrixSet}}
+    </div>
 </div>

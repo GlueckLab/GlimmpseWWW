@@ -26,7 +26,7 @@
 var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highcharts-ng'])
     .constant('glimmpseConstants',{
         // debugging flag
-        debug: false,
+        debug: true,
 
         /*** URIs for web services ***/
         uriPower: "/power/power",

@@ -397,6 +397,25 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         studyDesignInstance.matrixSet = [];
     }
 
+    /**
+     * Get MatrixSet list by name
+     */
+
+    studyDesignInstance.getMatrixSetListIndexByName = function(listName) {
+        var index = -1;
+        for (var i=0; i < studyDesignInstance.matrixSet.length; i++) {
+            if (studyDesignInstance.matrixSet[i].name == listName) {
+                index = i;
+                //window.alert("foundList:" + listName + i);
+                return i;
+            }
+        }
+
+        //window.alert("NOTfoundList:" + listName + -1);
+        return index;
+    };
+
+
     return studyDesignInstance;
 
 });

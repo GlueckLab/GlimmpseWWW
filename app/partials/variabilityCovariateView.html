@@ -58,10 +58,9 @@
                     {{response.name}}
                 </td>
                 <td>
-                    <input type="numeric" value="0"
-                           id ="inputBoxForSTD{{$index}}"
-                           ng-model="studyDesign.matrixSet[3].data.data
-                           [startColumn*studyDesign.responseList.length+$index][0]">
+                    <input type="numeric"
+                           ng-model="studyDesign.matrixSet[studyDesign.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom')]
+                           .data.data[startColumn*studyDesign.responseList.length+$index][0]">
                     </input>
                 </td>
             </tr>
@@ -100,8 +99,7 @@
                     {{measure.dimension}}
                 </td>
                 <td>
-                    <select id="optionForTime" ng-model="currentOption"
-                            ng-change="updateSTDForCovariates('updatedTimeFrame', -1)">
+                    <select>
                             <option ng-repeat="number in
                                 measure.spacingList">
                                 {{number.value}}
@@ -126,6 +124,6 @@
     </div>
 </div>
 
-<div ng-show="studyDesign.debug == true">
+<div ng-show="glimmpseConstants.debug == true">
     {{studyDesign.matrixSet}}
 </div>

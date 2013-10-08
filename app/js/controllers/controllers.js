@@ -1048,8 +1048,6 @@ glimmpseApp.controller('stateController',
             if (!response.value) {
                 $scope.deleteResponse(response);
             }
-
-
         };
 
         /**
@@ -1062,7 +1060,11 @@ glimmpseApp.controller('stateController',
         };
 
         $scope.updateMatrixSet = function() {
-            var previousLength = studyDesignService.matrixSet[1].columns;
+            var betaMatrixIndex = studyDesignService.getMatrixSetListIndexByName('beta');
+            var sigmaGaussianMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaGaussianRandom');
+            var betaRandomMatrixIndex = studyDesignService.getMatrixSetListIndexByName('betaRandom');
+            var sigmaOGMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
+            var previousLength = studyDesignService.matrixSet[betaMatrixIndex].columns;
             var currentLength = 1;
             for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
                 currentLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
@@ -1070,23 +1072,23 @@ glimmpseApp.controller('stateController',
             currentLength *= studyDesignService.responseList.length;
             var difference = currentLength - previousLength;
             if (difference > 0) {
-                studyDesignService.matrixSet[1].columns = currentLength;
-                studyDesignService.matrixSet[3].rows = currentLength;
+                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
+                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
 
                 for (var i=0; i < difference; i++) {
-                    studyDesignService.matrixSet[1].data.data[0].push(0);
-                    studyDesignService.matrixSet[2].data.data[0].push(1);
-                    studyDesignService.matrixSet[3].data.data.push([0]);
+                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].push(0);
+                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].push(1);
+                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.push([0]);
                 }
             }
             else if (difference < 0) {
                 window.alert("diff < 0");
-                studyDesignService.matrixSet[1].columns = currentLength;
-                studyDesignService.matrixSet[3].rows = currentLength;
+                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
+                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
                 for (var i=difference; i < 0; i++) {
-                    studyDesignService.matrixSet[1].data.data[0].pop();
-                    studyDesignService.matrixSet[2].data.data[0].pop();
-                    studyDesignService.matrixSet[3].data.data.pop();
+                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].pop();
+                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].pop();
+                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.pop();
                 }
             }
         };
@@ -1402,7 +1404,13 @@ glimmpseApp.controller('stateController',
         };
 
         $scope.updateMatrixSet = function() {
-            var previousLength = studyDesignService.matrixSet[1].columns;
+
+            var sigmaGaussianMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaGaussianRandom');
+            var betaMatrixIndex = studyDesignService.getMatrixSetListIndexByName('beta');
+            var betaRandomMatrixIndex = studyDesignService.getMatrixSetListIndexByName('betaRandom');
+            var sigmaOGMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
+
+            var previousLength = studyDesignService.matrixSet[betaMatrixIndex].columns;
             var currentLength = 1;
             for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
                 currentLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
@@ -1410,23 +1418,23 @@ glimmpseApp.controller('stateController',
             currentLength *= studyDesignService.responseList.length;
             var difference = currentLength - previousLength;
             if (difference > 0) {
-                studyDesignService.matrixSet[1].columns = currentLength;
-                studyDesignService.matrixSet[3].rows = currentLength;
+                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
+                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
 
                 for (var i=0; i < difference; i++) {
-                    studyDesignService.matrixSet[1].data.data[0].push(0);
-                    studyDesignService.matrixSet[2].data.data[0].push(1);
-                    studyDesignService.matrixSet[3].data.data.push([0]);
+                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].push(0);
+                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].push(1);
+                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.push([0]);
                 }
             }
             else if (difference < 0) {
                 window.alert("diff < 0");
-                studyDesignService.matrixSet[1].columns = currentLength;
-                studyDesignService.matrixSet[3].rows = currentLength;
+                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
+                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
                 for (var i=difference; i < 0; i++) {
-                    studyDesignService.matrixSet[1].data.data[0].pop();
-                    studyDesignService.matrixSet[2].data.data[0].pop();
-                    studyDesignService.matrixSet[3].data.data.pop();
+                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].pop();
+                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].pop();
+                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.pop();
                 }
             }
         };
@@ -1460,17 +1468,20 @@ glimmpseApp.controller('stateController',
                     totalPermutations = totalPermutations * len;
             }
 
-            studyDesignService.matrixSet[1].rows = totalPermutations;
-            var numberOfColumns = studyDesignService.matrixSet[1].columns;
+            var matrixIndex = studyDesignService.getMatrixSetListIndexByName('beta');
+            //window.alert("returned index -1" + matrixIndex);
+
+            studyDesignService.matrixSet[matrixIndex].rows = totalPermutations;
+            var numberOfColumns = studyDesignService.matrixSet[matrixIndex].columns;
             $scope.numberOfColumns = numberOfColumns;
-            while (studyDesignService.matrixSet[1].data.data.length < totalPermutations) {
-                studyDesignService.matrixSet[1].data.data.push([]);
+            while (studyDesignService.matrixSet[matrixIndex].data.data.length < totalPermutations) {
+                studyDesignService.matrixSet[matrixIndex].data.data.push([]);
             }
 
 
             for (var i=1; i < totalPermutations; i++) {
-                while (studyDesignService.matrixSet[1].data.data[i].length < numberOfColumns) {
-                    studyDesignService.matrixSet[1].data.data[i].push(0);
+                while (studyDesignService.matrixSet[matrixIndex].data.data[i].length < numberOfColumns) {
+                    studyDesignService.matrixSet[matrixIndex].data.data[i].push(0);
                 }
             }
 
@@ -1496,43 +1507,15 @@ glimmpseApp.controller('stateController',
                     //window.alert("list is:" + columnList);
                 }
                 $scope.groupsTable.push(columnList);
-                //window.alert("after push, groupsTable:" + $scope.groupsTable);
+
             }
             lenList = columnList.length;
             $scope.groupsList = [];
             for (var i = 0; i < lenList; i++) {
                 $scope.groupsList.push(i);
             }
-            //window.alert("groupsList:" +  $scope.groupsList);
+
         }
-
-        /**
-         * Add means
-         */
-        $scope.updateMeans = function(source, rowNumber, counter) {
-
-            var sel = -1;
-            var meanValue = -1;
-            var indexToUpdate = -1;
-
-            if (source == 'updateTextBoxes') {
-                sel = document.getElementById('optionForMeansTime').selectedIndex;
-                if (counter != -1)   {
-                    indexToUpdate = studyDesignService.responseList.length*sel+counter;
-                    return indexToUpdate;
-                }
-                else
-                    ;
-            }
-            else {
-                sel = document.getElementById('optionForMeansTime').selectedIndex;
-                meanValue = document.getElementById('meansValuePerResponse'+counter).value;
-                indexToUpdate = studyDesignService.responseList.length*sel+counter;
-                studyDesignService.matrixSet[1].data.data[sel][indexToUpdate]
-                    =meanValue;
-                //window.alert($scope.STDForCovariate);
-            }
-        };
 
         /**
          * Shift the counter to the left
@@ -1928,62 +1911,28 @@ glimmpseApp.controller('stateController',
             $scope.startColumn = 0;
             $scope.numberOfRows = 0;
 
-            $scope.numberOfRows = studyDesignService.matrixSet[3].rows;
+            $scope.matrixIndex = studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
+            $scope.numberOfRows = studyDesignService.matrixSet[matrixIndex].rows;
         }
 
         $scope.SameCorrelationForOutcomes = function() {
-            var indexOfList = -1;
+
 
             if ($scope.hasSameCorrelation != undefined) {
-                indexOfList = $scope.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
+                //indexOfList = studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
                 var responseListLength = studyDesignService.responseList.length;
-                var lengthToChange =  studyDesignService.matrixSet[indexOfList].data.data.length;
+                var lengthToChange =  studyDesignService.matrixSet[matrixIndex].data.data.length;
                 for (var j=responseListLength+1; j < lengthToChange;) {
                     for (var i=0; i < responseListLength; i++) {
-                        studyDesignService.matrixSet[indexOfList].data.data[j][0] =
-                            studyDesignService.matrixSet[indexOfList].data.data[i][0];
+                        studyDesignService.matrixSet[matrixIndex].data.data[j][0] =
+                            studyDesignService.matrixSet[matrixIndex].data.data[i][0];
                         j++;
                     }
                 }
             }
         };
 
-        /*$scope.updateSTDForCovariates = function(whatToUpdate, i) {
 
-            var indexToUpdate = -1;
-            var sel = -1;
-            var valueSTD = -1;
-
-            if (whatToUpdate == 'updatedTimeFrame')  {
-                    sel = document.getElementById('optionForTime').selectedIndex;
-                if (i != -1)   {
-                    indexToUpdate = studyDesignService.responseList.length*sel+i;
-                    return indexToUpdate;
-                }
-                else
-                    ;
-            }
-            else {
-                    sel = document.getElementById('optionForTime').selectedIndex;
-                    valueSTD = document.getElementById('inputBoxForSTD'+i).value;
-                    indexToUpdate = studyDesignService.responseList.length*sel+i;
-                    studyDesignService.matrixSet[3].data.data[indexToUpdate][0]
-                        =valueSTD;
-                    window.alert($scope.STDForCovariate);
-
-            }
-        }; */
-
-        $scope.getMatrixSetListIndexByName = function(listName) {
-            var index = -1;
-            for (var i=0; i < studyDesignService.matrixSet.length; i++) {
-                if (studyDesignService.matrixSet[i].name == listName) {
-                    index = i;
-                    return i;
-                }
-            }
-            return index;
-        };
 
         /**
          * Shift up for previous measurement
