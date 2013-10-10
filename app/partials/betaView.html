@@ -1,0 +1,40 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<h3>Regression Coefficients: B Matrix</h3>
+<p>
+    The <b>B</b> matrix contains regression coefficients. Specify the values you expect to
+    see for these coefficients. These values may be determined from pilot data or
+    previous studies. We recommend selecting values which represent scientifically
+    meaningful differences. At least one of the values in the <b>B</b> matrix should be non-zero.
+    Otherwise, power will equal the test size.
+</p>
+<p>
+    The number of columns in <b>B</b> indicates the number of outcomes in your study (i.e. the
+    number of columns in <b>Y</b>). To adjust the number of outcomes in your study, change the
+    column dimension in the text box above the matrix data. The number of rows in <b>B</b> must
+    equal the number of columns in Es(<b>X</b>), so it cannot be adjusted on this screen.
+</p>
+<p>
+    Enter values for the regression coefficients in the matrix below.
+</p>
+
+<ng-resizable-matrix ng-model="betaMatrix" rowresizable='false' columnresizable='true'
+                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
+                     rowlabels='' columnlabels='' defaultdiagonal='0' defaultoffdiagonal='0'></ng-resizable-matrix>
+

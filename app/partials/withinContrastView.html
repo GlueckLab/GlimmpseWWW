@@ -16,26 +16,19 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>The Design Essence Matrix</h3>
+<h3>Within-Subject Contrast: U Matrix</h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    The U matrix defines the contrasts for within-subject effects. The matrix
+    is necessary for multivariate and repeated measures designs. The number of
+    rows in U must equal the number of columns in B. To ensure conforming matrices,
+    the row dimension of U cannot be adjusted on this screen.
+
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    Enter your within-subject contrast matrix below.
 </p>
 
-<ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
+<ng-resizable-matrix ng-model="withinContrastMatrix" rowresizable='false' columnresizable='true'
                      symmetric='false' editdiagonal='true' editoffdiagonal='true'
                      rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'></ng-resizable-matrix>
 
-
-<div ng-show="glimmpseConstants.debug">
-    <div>{{designEssenceMatrix}}</div>
-    <div>{{studyDesign.getMatrixByName('beta')}}</div>
-</div>

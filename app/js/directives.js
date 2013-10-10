@@ -17,4 +17,99 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-/* No directives yet */
+/**
+ * A resizable matrix directive used in matrix mode, and for
+ * variability specification
+ *
+ * Attributes:
+ *  resizable (required) - true/false.  If true, the user
+ *      can change the row and column dimensions.
+ *  symmetric (required) -  true/false. If true, the matrix
+ *      will be symmetric and the user will only be able to edit the lower
+ *      triangle
+ *  editDiagonal (required) - true/false. If true, diagonal elements
+ *      will be editable
+ *  editOffDiagonal (required) - true/false. If true, off diagonal
+ *      elements will be editable
+ *
+ *  rowLabels (required) - array list with row labels
+ *  columnLabels (required) - array list of column labels
+ *
+ */
+glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
+    return {
+        restrict: 'E',
+        require: '^ngModel',
+        templateUrl: 'templates/ngResizableMatrixTemplate.html',
+        scope: {
+            matrix: '=ngModel',
+            rowResizable: '=rowresizable',
+            columnResizable: '=columnresizable',
+            symmetric: '=symmetric',
+            editDiagonal: '=editdiagonal',
+            editOffDiagonal: '=editoffdiagonal',
+            rowLabels: '=rowlabels',
+            columnLabels: '=columnlabels',
+            defaultDiagonal: '=defaultdiagonal',
+            defaultOffDiagonal: '=defaultoffdiagonal'
+        },
+
+        controller: ['$scope', 'matrixUtilities', function($scope, matrixUtilities) {
+
+            init();
+            function init() {
+                $scope.matrixUtils = matrixUtilities;
+            }
+
+            /**
+             * Add or subtract rows when the user changes the row dimension
+             */
+            $scope.resizeRows = function() {
+                var oldRows = $scope.matrix.data.data.length;
+                var newRows = $scope.matrix.rows;
+                $scope.matrixUtils.resizeRows($scope.matrix, oldRows, newRows,
+                        $scope.defaultOffDiagonal, $scope.defaultDiagonal);
+            }
+
+            /**
+             * Add or remove columns when the user changes the column dimension
+             */
+            $scope.resizeColumns = function() {
+                var oldColumns = $scope.matrix.data.data[0].length;
+                var newColumns = $scope.matrix.columns;
+                $scope.matrixUtils.resizeColumns($scope.matrix, oldColumns, newColumns,
+                    $scope.defaultOffDiagonal, $scope.defaultDiagonal);
+            }
+
+            /**
+             * Called when cell contents change to implement symmetric matrices
+             * @param contents
+             * @param row
+             * @param column
+             */
+            $scope.cellChangeHandler = function(contents, row, column) {
+                if ($scope.symmetric) {
+                    $scope.matrix.data.data[column][row] = contents;
+                }
+            }
+
+            /**
+             * Checks
+             * @param row
+             * @param column
+             */
+            $scope.isCellDisabled = function(row, column) {
+                if ($scope.symmetric && column > row) {
+                    return true;
+                } else if (!$scope.editDiagonal && row == column) {
+                    return true;
+                } else if (!$scope.editOffDiagonal && row != column) {
+                    return true;
+                }
+                return false;
+            }
+        }]
+
+
+    }
+}]);

@@ -26,7 +26,7 @@
 var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highcharts-ng'])
     .constant('glimmpseConstants',{
         // debugging flag
-        debug: false,
+        debug: true,
 
         /*** URIs for web services ***/
         uriPower: "/power/power",
@@ -65,8 +65,30 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         testUnirepGG: "UNIREPGG",
         testUnirepHF: "UNIREPHF",
 
+        // power methods
+        powerMethodUnconditional: "UNCONDITIONAL",
+        powerMethodQuantile: "QUANTILE",
+
         // matrix names
-        matrixXEssence: "",
+        matrixXEssence: "design",
+        matrixBeta: "beta",
+        matrixBetaRandom: "betaRandom",
+        matrixBetweenContrast: "betweenSubjectContrast",
+        matrixBetweenContrastRandom: "betweenSubjectContrastRandom",
+        matrixWithinContrast: "withinSubjectContrast",
+        matrixSigmaE: "sigmaError",
+        matrixSigmaY: "sigmaOutcome",
+        matrixSigmaG: "sigmaGaussianRandom",
+        matrixSigmaYG: "sigmaOutcomeGaussianRandom",
+        matrixThetaNull: "thetaNull",
+
+        // dimension names derived from linear model theory.
+        // ensures that default matrix dimensions conform properly
+        matrixDefaultN: 2,
+        matrixDefaultQ: 2,
+        matrixDefaultP: 1,
+        matrixDefaultA: 1,
+        matrixDefaultB: 1,
 
         // plot axis names
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
@@ -148,6 +170,39 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             {templateUrl: 'partials/designEssenceView.html', controller: 'designEssenceController' }
 
         )
+            .when('/beta',
+            {templateUrl: 'partials/betaView.html', controller: 'betaController' }
+
+        )
+            .when('/betweenContrast',
+            {templateUrl: 'partials/betweenContrastView.html', controller: 'betweenContrastController' }
+
+        )
+            .when('/withinContrast',
+            {templateUrl: 'partials/withinContrastView.html', controller: 'withinContrastController' }
+
+        )
+            .when('/thetaNull',
+            {templateUrl: 'partials/thetaNullView.html', controller: 'thetaNullController' }
+
+        )
+            .when('/sigmaE',
+            {templateUrl: 'partials/sigmaEView.html', controller: 'sigmaEController' }
+
+        )
+            .when('/sigmaY',
+            {templateUrl: 'partials/sigmaYView.html', controller: 'sigmaYController' }
+
+        )
+            .when('/sigmaG',
+            {templateUrl: 'partials/sigmaGView.html', controller: 'sigmaGController' }
+
+        )
+            .when('/sigmaYG',
+            {templateUrl: 'partials/sigmaYGView.html', controller: 'sigmaYGController' }
+
+        )
+
             // results screens
             .when('/results/report',
             {templateUrl: 'partials/resultsReportView.html', controller: 'resultsReportController' }

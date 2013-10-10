@@ -1,0 +1,40 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<h3>Covariance of Errors: &Sigma;<sub>e</sub> Matrix</h3>
+<p>
+    For each independent sampling unit, <b>&Sigma;</b><sub>e</sub> is the covariance of the
+    random errors. For univariate designs, <b>&Sigma;</b><sub>e</sub> will be a 1x1 matrix containing the
+    variance of the error term.  More complex structures may be entered for
+    multivariate or repeated measures designs.
+    Values for <b>&Sigma;</b><sub>e</sub> are typically obtained from pilot data or previous studies.
+</p>
+<p>
+    <b>&Sigma;</b><sub>e</sub> is a square, symmetric matrix with dimensions equal to the number of columns in <b>B</b>.
+</p>
+<p>
+Enter values for <b>&Sigma;</b><sub>e</sub> in matrix below.
+</p>
+
+
+<ng-resizable-matrix ng-model="sigmaEMatrix" rowresizable='false' columnresizable='false'
+                     symmetric='true' editdiagonal='true' editoffdiagonal='true'
+                     rowlabels='' columnlabels='' ></ng-resizable-matrix>
+
+
+<div>{{designEssenceMatrix}}</div>

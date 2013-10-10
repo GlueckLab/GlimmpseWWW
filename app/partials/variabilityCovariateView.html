@@ -59,14 +59,25 @@
                 </td>
                 <td>
                     <input type="numeric"
-                           id ="inputBoxForSTD{{$index}}"
-                           ng-model="studyDesign.matrixSet[3].data.data
-                           [updateSTDForCovariates('updatedTimeFrame', $index)][0]"
-                           ng-change="updateSTDForCovariates('updatedSTDValue', $index)">
+                           ng-model="studyDesign.matrixSet[studyDesign.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom')]
+                           .data.data[startColumn*studyDesign.responseList.length+$index][0]">
                     </input>
                 </td>
             </tr>
         </table>
+
+        <div>
+            <button value="up" ng-show="startColumn > 0"
+                    ng-click="shiftUp()">
+                Up
+            </button>     <br>
+
+            <button value="down"
+                    ng-click="shiftDown()">
+                Down
+            </button>
+            {{startColumn}}
+        </div>
 
     </div>
 </div>
@@ -88,8 +99,7 @@
                     {{measure.dimension}}
                 </td>
                 <td>
-                    <select id="optionForTime" ng-model="currentOption"
-                            ng-change="updateSTDForCovariates('updatedTimeFrame', -1)">
+                    <select>
                             <option ng-repeat="number in
                                 measure.spacingList">
                                 {{number.value}}
@@ -100,6 +110,9 @@
 
             </tr>
         </table>
+
+
+
     </div>
 
     <div><input type="checkbox"
@@ -111,6 +124,6 @@
     </div>
 </div>
 
-<div ng-show="studyDesign.debug == true">
+<div ng-show="glimmpseConstants.debug == true">
     {{studyDesign.matrixSet}}
 </div>
