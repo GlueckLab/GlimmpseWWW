@@ -1568,13 +1568,13 @@ glimmpseApp.controller('stateController',
         $scope.updateBetweenFactor =function(factor, element) {
                element.checked = !element.checked;
                 if(element.checked == true) {
-                    if ($scope.getBetweenFactorIndexByName(factor.value) == -1) {
+                    if ($scope.getBetweenFactorIndexByName(factor.predictorName) == -1) {
                         studyDesignService.hypothesis[0].betweenParticipantFactorMapList.push({
                         type:'NONE', betweenParticipantFactor:factor
                         });
                     }
                     for (var i=0; i < $scope.varList.length; i++) {
-                        if ($scope.varList[i].name == factor.value) {
+                        if ($scope.varList[i].name == factor.predictorName) {
                             $scope.varList[i].selected = true;
                         }
                     }
@@ -1582,9 +1582,9 @@ glimmpseApp.controller('stateController',
                 else {
                     studyDesignService.hypothesis[0].
                         betweenParticipantFactorMapList.splice(
-                            $scope.getBetweenFactorIndexByName(factor.value), 1);
+                            $scope.getBetweenFactorIndexByName(factor.predictorName), 1);
                     for (var i=0; i < $scope.varList.length; i++) {
-                        if ($scope.varList[i].name == factor.value) {
+                        if ($scope.varList[i].name == factor.predictorName) {
                             $scope.varList[i].selected = false;
                         }
                     }

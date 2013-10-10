@@ -39,8 +39,11 @@ $( "#variability-tabs" ).tabs();
        </ul>
 
 
-               <div
-                       id="measure-tab" class="tab-contents">
+               <div id="measure-tab" class="tab-contents">
+                   <h3>
+                       Structured Correlation: The Linear Exponential Auto-Regressive Model
+                       (LEAR, Simpson et al., 2010)
+                   </h3>
                     <p>
                         The LEAR model describes correlation which monotonely decreases with distance
                        between repeated measurements. The model has two correlation parameters,
@@ -79,15 +82,16 @@ $( "#variability-tabs" ).tabs();
                                <td>
 
                                </td>
-                               <td ng-repeat="measurement in measure.numberOfMeasurements in studyDesign.repeatedMeasuresTree>
+                               <td ng-repeat="measurement in measure.numberOfMeasurements in
+                               studyDesign.repeatedMeasuresTree>
 
-                                   {{measure.dimension}},measurement
+                                   {{measure.dimension}},{{measurement}}
 
                                </td>
                            </tr>
                            <tr ng-repeat="measurement in measure.numberOfMeasurements">
                                <td>
-                                   {{measure.dimension}},measurement
+                                   {{measure.dimension}},{{measurement}}
                                </td>
                                <td ng-repeat="measurement in measure.numberOfMeasurements">
                                    <input type="text" value="1">
@@ -95,9 +99,7 @@ $( "#variability-tabs" ).tabs();
                                </td>
                            </tr>
                        </table>
-
                    </div>
-
                 </div>
 
        <div id="responses-tab" class="tab-contents">
@@ -109,7 +111,7 @@ $( "#variability-tabs" ).tabs();
            <table>
                <tr ng-repeat="response in studyDesign.responseList">
                    <td>
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                    <td>
                        <input type="text" value="1">
@@ -126,12 +128,12 @@ $( "#variability-tabs" ).tabs();
                    <td>
                    </td>
                    <td ng-repeat="response in studyDesign.responseList">
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                </tr>
                <tr ng-repeat="response in studyDesign.responseList">
                    <td>
-                       {{response.value}}
+                       {{response.name}}
                    </td>
                    <td ng-repeat="response in studyDesign.responseList">
                        <input type="text" value="1">
@@ -139,7 +141,6 @@ $( "#variability-tabs" ).tabs();
                    </td>
                </tr>
            </table>
-
            <button value="Unstructured covariance" onclick="">
                Unstructured covariance
            </button>
