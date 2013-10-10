@@ -218,8 +218,7 @@
             <table>
                 <tr ng-repeat="factor in studyDesign.betweenParticipantFactorList">
                     <td>
-                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor, this)"
-                                >
+                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor, this)">
                         {{factor.predictorName}}
                         </input>
                     </td>
@@ -228,10 +227,10 @@
                                 data-ng-click="showTrendDialog(factor.predictorName)">
                          Edit Trend
                         </button>
+                        {{isSelected(factor.predictorName)}}
                     </td>
                     <td>
-                        <div id="{{factor.predictorName}}-trend"
-                                style="display:none">
+                        <div ng-show="isSelected(factor.predictorName)">
                             :{{studyDesign.hypothesis[0].betweenParticipantFactorMapList
                             [getBetweenFactorIndexByName(factor.predictorName)].type}}
                         </div>

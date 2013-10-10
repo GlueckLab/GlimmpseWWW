@@ -1634,7 +1634,7 @@ glimmpseApp.controller('stateController',
 
             for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++)  {
                 $scope.varList.push({
-                    name:studyDesignService.betweenParticipantFactorList[i].value, selected:false
+                    name:studyDesignService.betweenParticipantFactorList[i].predictorName, selected:false
                     });
             }
 
