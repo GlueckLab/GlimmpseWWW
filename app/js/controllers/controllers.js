@@ -1868,7 +1868,7 @@ glimmpseApp.controller('stateController',
          * Update the within participant factor list
          * @param map
          */
-        $scope.updateBetweenFactorMultiSelect = function(map) {
+        $scope.updateWithinFactorMultiSelect = function(map) {
             if (map.selected) {
                 if (!$scope.containsWithinFactor(map.factorMap.repeatedMeasuresNode)) {
                     $scope.hypothesis.repeatedMeasuresMapTree.push(map.factorMap);
