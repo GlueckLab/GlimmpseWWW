@@ -1108,9 +1108,26 @@ glimmpseApp.controller('stateController',
                     name: newOutcome
                 });
             }
+
+            // update covariance
+            if (studyDesignService.covariance.length == 0) {
+                //window.alert("update covariance");
+                studyDesignService.covariance.push({
+                    "idx":0,
+                    "type":"UNSTRUCTURED_CORRELATION",
+                    "name":"__RESPONSE_COVARIANCE__",
+                    "standardDeviationList":null,
+                    "rho":-2,"delta":-1,"rows":studyDesignService.responseList.length,
+                    "columns":studyDesignService.responseList.length,
+                    "blob":{"data":null}
+                });
+            }
+
             // reset the new response to null
             $scope.newResponse = '';
             $scope.updateMatrixSet();
+
+
         };
 
         /**
@@ -1166,7 +1183,7 @@ glimmpseApp.controller('stateController',
                 }
             }
             else if (difference < 0) {
-                window.alert("diff < 0");
+                //window.alert("diff < 0");
                 studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
                 studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
                 for (var i=difference; i < 0; i++) {
@@ -1455,7 +1472,20 @@ glimmpseApp.controller('stateController',
                     node: 0, parent: 0, repeatedMeasuresDimensionType: "numeric"
                 });
             }
+            // update covariance
+            if (studyDesignService.covariance[0].name == "__RESPONSE_COVARIANCE__") {
+                studyDesignService.covariance.push({
+                    "idx":0,
+                    "type":"LEAR_CORRELATION",
+                    "name":"tempName",
+                    "standardDeviationList":null,
+                    "rho":"NaN","delta":"NaN","rows":0,
+                    "columns":0,
+                    "blob":{"data":null}});
+            }
+
             $scope.updateMatrixSet();
+
         };
 
         /**
@@ -1980,6 +2010,29 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
 
         }
+
+        $scope.chooseVariabilityType = function() {
+
+            if (studyDesignService.covariance[0].type == "UNSTRUCTURED_COVARIANCE") {
+                studyDesignService.covariance[0].type = "UNSTRUCTURED_CORRELATION";
+            }
+            else if (studyDesignService.covariance[0].type == "UNSTRUCTURED_CORRELATION") {
+                studyDesignService.covariance[0].type = "UNSTRUCTURED_COVARIANCE";
+            }
+
+        };
+
+        $scope.chooseRMCorrelations = function() {
+
+            if (studyDesignService.covariance[1].type == "UNSTRUCTURED_CORRELATION") {
+                studyDesignService.covariance[1].type = "LEAR_CORRELATION";
+            }
+            else if (studyDesignService.covariance[1].type == "LEAR_CORRELATION") {
+                studyDesignService.covariance[1].type = "UNSTRUCTURED_CORRELATION";
+            }
+
+        };
+
     })
 
 /**

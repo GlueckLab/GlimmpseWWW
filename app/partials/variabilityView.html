@@ -17,6 +17,11 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
+<script>
+    $(function() {
+        $( "#variability-tabs" ).tabs();
+    });
+</script>
 
 <h3>  Within Participant Variability
 </h3>
@@ -35,53 +40,51 @@
        </ul>
 
 
-               <div id="measure-tab" class="tab-contents">
+               <div id="measure-tab" class="input-group">
 
-                   <h3>
-                       Structured Correlation: The Linear Exponential Auto-Regressive Model
-                       (LEAR, Simpson et al., 2010)
-                   </h3>
+                   <div ng-show="studyDesign.covariance[1].type == 'LEAR_CORRELATION'"
+                        class="input-group">
+                       <h3>
+                           Structured Correlation: The Linear Exponential Auto-Regressive Model
+                           (LEAR, Simpson et al., 2010)
+                       </h3>
 
-                   <p>
-                       Structured Correlation: The Linear Exponential Auto-Regressive Model
-                       (LEAR, Simpson et al., 2010)
+                       <p>
+                            The LEAR model describes correlation which monotonely decreases with distance
+                           between repeated measurements. The model has two correlation parameters,
+                           the base correlation and the decay rate. The base correlation describes the
+                           correlation between measurements taken 1 unit apart. The decay rate describes
+                           the rate of decrease in the base correlation as the distance or time between
+                           repeated measurements increases. Our experience with biological and behavioral
+                           data lead us to suggest using decay values between 0.05 and 0.5.
+                       </p>
 
-                   </p>
-                   <p>
-                        The LEAR model describes correlation which monotonely decreases with distance
-                       between repeated measurements. The model has two correlation parameters,
-                       the base correlation and the decay rate. The base correlation describes the
-                       correlation between measurements taken 1 unit apart. The decay rate describes
-                       the rate of decrease in the base correlation as the distance or time between
-                       repeated measurements increases. Our experience with biological and behavioral
-                       data lead us to suggest using decay values between 0.05 and 0.5.
-                   </p>
+                       <ng-resizable-matrix ng-model="sigmaEMatrix" rowresizable='false' columnresizable='false'
+                                            symmetric='true' editdiagonal='true' editoffdiagonal='true'
+                                            rowlabels='' columnlabels='' ></ng-resizable-matrix>
 
-                   <ng-resizable-matrix ng-model="sigmaEMatrix" rowresizable='false' columnresizable='false'
-                                        symmetric='true' editdiagonal='true' editoffdiagonal='true'
-                                        rowlabels='' columnlabels='' ></ng-resizable-matrix>
+                       <table>
+                           <tr>
+                               <td>
+                                   Base Correlation
+                               </td>
 
-                   <table>
-                       <tr>
-                           <td>
-                               Base Correlation
-                           </td>
+                               <td>
+                                   <input type="text" value="">
+                                   </input>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td>
+                                   Decay Rate
+                               </td>
 
-                           <td>
-                               <input type="text" value="">
-                               </input>
-                           </td>
-                       </tr>
-                       <tr>
-                           <td>
-                               Decay Rate
-                           </td>
-
-                           <td>
-                               <input type="text" value="">
-                           </td>
-                       </tr>
-                   </table>
+                               <td>
+                                   <input type="text" value="">
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
 
                    <div class="input-group">
                        <table>
@@ -107,49 +110,68 @@
                            </tr>
                        </table>
                    </div>
+                   <button value="Unstructured correlation" ng-click="chooseRMCorrelations()"
+                       ng-show="studyDesign.covariance[1].type == 'LEAR_CORRELATION'">
+                       Unstructured correlation
+                   </button>
+                   <button value="LEAR correlation" ng-click="chooseRMCorrelations()"
+                       ng-show="studyDesign.covariance[1].type == 'UNSTRUCTURED_CORRELATION'">
+                       Structured correlation
+                   </button>
                 </div>
 
-       <div id="responses-tab" class="tab-contents">
-           <p>
-               Enter the standard deviation you expect to observe for each response.
-               Note that GLIMMPSE currently assumes that the standard deviation is
-               constant across repeated measurements.
-           </p>
-           <table>
-               <tr ng-repeat="response in studyDesign.responseList">
-                   <td>
-                       {{response.name}}
-                   </td>
-                   <td>
-                       <input type="text" value="1">
-                       </input>
-                   </td>
-               </tr>
-           </table>
-           <p>
-               Enter the correlations you expect to observe between the responses
-               when observed at the same time (location, etc.)
-           </p>
-           <table>
-               <tr>
-                   <td>
-                   </td>
-                   <td ng-repeat="response in studyDesign.responseList">
-                       {{response.name}}
-                   </td>
-               </tr>
-               <tr ng-repeat="response in studyDesign.responseList">
-                   <td>
-                       {{response.name}}
-                   </td>
-                   <td ng-repeat="response in studyDesign.responseList">
-                       <input type="text" value="1">
-                       </input>
-                   </td>
-               </tr>
-           </table>
-           <button value="Unstructured covariance" onclick="">
+       <div id="responses-tab" class="input-group">
+           <div ng-show="studyDesign.covariance[0].type == 'UNSTRUCTURED_CORRELATION'"
+                class="input-group">
+               <p>
+                   Enter the standard deviation you expect to observe for each response.
+                   Note that GLIMMPSE currently assumes that the standard deviation is
+                   constant across repeated measurements.
+               </p>
+               <table>
+                   <tr ng-repeat="response in studyDesign.responseList">
+                       <td>
+                           {{response.name}}
+                       </td>
+                       <td>
+                           <input type="text" value="1">
+                           </input>
+                       </td>
+                   </tr>
+               </table>
+           </div>
+
+           <div class="input-group">
+               <p>
+                   Enter the correlations you expect to observe between the responses
+                   when observed at the same time (location, etc.)
+               </p>
+               <table>
+                   <tr>
+                       <td>
+                       </td>
+                       <td ng-repeat="response in studyDesign.responseList">
+                           {{response.name}}
+                       </td>
+                   </tr>
+                   <tr ng-repeat="response in studyDesign.responseList">
+                       <td>
+                           {{response.name}}
+                       </td>
+                       <td ng-repeat="response in studyDesign.responseList">
+                           <input type="text" value="1">
+                           </input>
+                       </td>
+                   </tr>
+               </table>
+           </div><br>
+           <button value="Unstructured covariance" ng-click="chooseVariabilityType()"
+                ng-show="studyDesign.covariance[0].type == 'UNSTRUCTURED_CORRELATION'">
                Unstructured covariance
+           </button>
+           <button value="Unstructured correlation" ng-click="chooseVariabilityType()"
+                ng-show="studyDesign.covariance[0].type == 'UNSTRUCTURED_COVARIANCE'">
+               Unstructured correlation
            </button>
        </div>
    </div>
