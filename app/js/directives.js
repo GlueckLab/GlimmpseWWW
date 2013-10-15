@@ -68,7 +68,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                 var oldRows = $scope.matrix.data.data.length;
                 var newRows = $scope.matrix.rows;
                 $scope.matrixUtils.resizeRows($scope.matrix, oldRows, newRows,
-                        $scope.defaultOffDiagonal, $scope.defaultDiagonal);
+                    $scope.defaultOffDiagonal, $scope.defaultDiagonal);
             }
 
             /**
@@ -113,3 +113,30 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
 
     }
 }]);
+
+
+/**
+ * A trend selection panel used for specifying a trend hypothesis
+ *
+ * Attributes
+ *   ng-model: the trend type variable
+ *   name: the radio group
+ *   levels: the number of levels of the factor
+ */
+glimmpseApp.directive('ngTrendSelect',['glimmpseConstants', function() {
+    return {
+        restrict: 'E',
+        require: '^ngModel',
+        templateUrl: 'templates/ngTrendSelectTemplate.html',
+        scope: {
+            type: '=ngModel',
+            radiogroup: "=name",
+            levels: "=levels"
+        },
+        controller: ['$scope', 'glimmpseConstants', function($scope, glimmpseConstants) {
+           $scope.constants = glimmpseConstants;
+        }]
+    }
+}]);
+
+

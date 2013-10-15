@@ -21,7 +21,7 @@
  * Service managing the study design object
  * Currently resides fully on the client side
  */
-glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
+glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, matrixUtilities) {
     var studyDesignInstance = {};
 
     /* Unique id for the study design */
@@ -520,6 +520,72 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         }
     }
 
+    /**
+     * Update the size of the beta matrix.  Note this function
+     * is for use in Guided mode only.
+     *
+     * The size of beta changes whenever predictors, response variables,
+     * or repeated measures change
+     */
+    studyDesignInstance.updateMeans = function() {
+        // calculate Q (number of rows of beta, also the total number of study groups
+        var Q = 1;
+        for(var i = 0; i < studyDesignInstance.betweenParticipantFactorList.length; i++) {
+            var factor = studyDesignInstance.betweenParticipantFactorList[i];
+            if (factor.categoryList != undefined && factor.categoryList.length > 0) {
+                Q *= factor.categoryList.length;
+            }
+        }
+        // calculate P (number of columns of beta, also the total number of
+        // observations on a given independent sampling unit
+        var P = studyDesignInstance.responseList.length;
+        for(var i = 0; i < studyDesignInstance.repeatedMeasuresTree.length; i++) {
+            var rmNode = studyDesignInstance.repeatedMeasuresTree[i];
+            if (rmNode.numberOfMeasurements != undefined) {
+                P *= rmNode.numberOfMeasurements;
+            }
+        }
+           window.alert(Q + " x " + P);
+        // update beta as needed
+        if (Q > 0 && P > 0) {
+            var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+            if (beta == undefined) {
+                beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, Q, P, 0);
+                studyDesignInstance.matrixSet.push(beta);
+            }
+            if (beta.rows != Q) {
+                matrixUtilities.resizeRows(beta, beta.rows, Q, 0, 0);
+            }
+            if (beta.columns != P) {
+                matrixUtilities.resizeColumns(beta, beta.columns, P, 0, 0);
+                if (studyDesignInstance.gaussianCovariate) {
+                    var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                    if (betaRandom == undefined) {
+                        betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, 1, P, 1);
+                    }
+                    if (betaRandom.columns != P) {
+                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, P, 1, 1);
+                    }
+                }
+            }
+
+        } else {
+            // design not valid, so we delete beta
+            studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta)
+        }
+    }
+
+    /**
+     * Update the list of covariance objects.  For Guided mode only.
+     * The covariance objects changes when the response variables
+     * change or when the repeated measures change
+     */
+    studyDesignInstance.updateCovariance = function() {
+        // TODO
+    }
+
+
+    // return the singleton study design class
     return studyDesignInstance;
 
 });

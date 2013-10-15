@@ -1,4 +1,3 @@
-<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -17,349 +16,187 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-
 <h3>Hypotheses</h3>
 
 <p>
     Power and sample size calculations are typically based on the primary study hypothesis.
-    GLIMMPSE will generate several possible hypotheses based on your study design.
-    Click the forward arrow to continue.
-</p>
-
-<p>
     The options below show the hypotheses which are available for the current study design.
-    Select the hypothesis which most closely resembles your primary study hypothesis.
-    This hypothesis will be used to determine power for your study.
+    Specify the hypothesis which most closely resembles your primary study hypothesis.
 </p>
 
 <p>
-    To specify a hypothesis, select the radio button matching the type of hypothesis
-    you wish to test, and then enter the requested details. Note that trends within
+    To specify a hypothesis, select the type of hypothesis from the dropdown list
+    and entered the details.  Note that trends within
     an interaction hypothesis may be specified by selecting the "Interaction" button.
-    For more information about the type of hypothesis, click the magnifying glass icon.
+    For more information about the type of hypothesis, click the "More Info" link.
 </p>
 
 
-<div class="input-group"
-     ng-show="studyDesign.responseList.length > 0">
-
-    <div class="input-group">
-        <label>Select the hypothesis type</label>
-           <select data-ng-model="studyDesign.hypothesis[0].type">
-               <option value="GRAND_MEAN">Grand mean</option>
-               <option value="MAIN_EFFECT" ng-show="studyDesign.repeatedMeasuresTree.length >= 1">Main effect</option>
-               <option value="TREND" ng-show="studyDesign.repeatedMeasuresTree.length >= 1">Trend</option>
-               <option value="INTERACTION" ng-show="studyDesign.repeatedMeasuresTree.length > 1">Interaction</option>
-           </select>
-    </div>
-
-    <div class="input-group" ng-show="studyDesign.responseList.length > 0">
-        <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'GRAND_MEAN'">
-            <p>
-                Enter the known mean values for each response below.
-            </p>
-            <table ng-repeat="response in studyDesign.responseList">
-                <tr>
-                    <td>
-                        {{response.name}}
-                    </td>
-                    <td>
-                        <input type="text"
-                               value="0"  data-ng-click="addMeansToMatrixSet()"
-                               autocomplete="off" autofocus required >
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'MAIN_EFFECT'">
-        <p>
-            Select one predictor of interest for the main effect hypothesis.
-        </p>
-
-        <p>
-            Between Participant Factors
-        </p>
-
-        <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
-            <li>
-                <input type="radio"  name="predictorMainEffect"
-                       data-ng-click="addBetweenPredictorMainEffect(factor)">
-                {{factor.predictorName}}
-                </input>
-            </li>
-        </ul>
-
-        <p>
-            Within Participant Factors
-        </p>
-
-        <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-            <li>
-                <input type="radio"  name="predictorMainEffect"
-                       data-ng-click="addWithinPredictorMainEffect(measure)">
-                {{measure.dimension}}
-                </input>
-            </li>
-        </ul>
-
-    </div>
-
-    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'TREND'">
-        <p>
-            Select one predictor of interest for the trend hypothesis.
-        </p>
-
-        <p>
-            Between Participant Factors
-        </p>
-
-        <ul type=none ng-repeat="factor in studyDesign.betweenParticipantFactorList">
-            <li>
-                <input type="radio"   name="predictorForTrend"
-                       data-ng-click="addBetweenPredictorForTrend(factor)">
-                {{factor.predictorName}}
-            </li>
-        </ul>
-
-
-        <p>
-            Within Participant Factors
-        </p>
-
-        <ul type=none ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-            <li>
-                <input type="radio"  name="predictorForTrend"
-                       data-ng-click="addWithinPredictorForTrend(measure)">
-                {{measure.dimension}}
-            </li>
-        </ul>
-        <p>
-            Select the type of trend for the predictor of interest.
-        </p>
-
-        <div class="input-group">
-            <table>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('NONE')">
-                        None
-                        </input>
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('CHANGE_FROM_BASELINE')">
-                        Change from baseline
-                        </input>
-                    </td>
-                    <td>
-                        <img src="img/change_from_baseline.png"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('ALL_POLYNOMIAL')">
-                        All polynomial trends
-                        </input>
-                    </td>
-                    <td>
-                        <img src="img/all_polynomial_trends.png"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('LINEAR')">
-                        Linear Trend
-                        </input>
-                    </td>
-                    <td>
-                        <img src="img/linear_trend_only.png"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('QUADRATIC')">
-                        Quadratic Trend
-                        </input>
-                    </td>
-                    <td>
-                        <img src="img/quadratic_trend_only.png"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="typeOfTrend" data-ng-click="updateTypeOfTrend('CUBIC')">
-                        Cubic Trend
-                        </input>
-                    </td>
-                    <td>
-                        <img src="img/cubic_trend_only.png"/>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        </div>
-
-    <div class="input-group" ng-show="studyDesign.hypothesis[0].type == 'INTERACTION'">
-            <p>
-                Select two or more predictors to include in the interaction
-                hypothesis. To test for a trend in a given factor, click the
-                Edit Trend link and select an appropriate trend.
-            </p>
-            <p>
-                Between Participant Factors
-            </p>
-
-            <table>
-                <tr ng-repeat="factor in studyDesign.betweenParticipantFactorList">
-                    <td>
-                        <input type="checkbox" data-ng-click="updateBetweenFactor(factor, this)">
-                        {{factor.predictorName}}
-                        </input>
-                    </td>
-                    <td>
-                        <button value="Edit trend" ng-show="isSelected(factor.predictorName)"
-                                data-ng-click="showTrendDialog(factor.predictorName)">
-                         Edit Trend
-                        </button>
-                        {{isSelected(factor.predictorName)}}
-                    </td>
-                    <td>
-                        <div ng-show="isSelected(factor.predictorName)">
-                            :{{studyDesign.hypothesis[0].betweenParticipantFactorMapList
-                            [getBetweenFactorIndexByName(factor.predictorName)].type}}
-                        </div>
-
-                    </td>
-                    <td>
-                        <div class="dual-list-right rounded-box">
-                            <div id="{{factor.predictorName}}"  style="display:none;">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateBetweenFactorTypeOfTrend('NONE', factor.value)">
-                                            None
-                                            </input>
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateBetweenFactorTypeOfTrend
-                                                   ('CHANGE_FROM_BASELINE', factor.predictorName)">
-
-                                            Change from baseline
-                                            </input>
-                                        </td>
-                                        <td>
-                                            <img src="img/change_from_baseline.png"/>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateBetweenFactorTypeOfTrend('LINEAR', factor.value)">
-                                            Linear Trend
-                                            </input>
-                                        </td>
-                                        <td>
-                                            <img src="img/linear_trend_only.png"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-            </table>
-            <p>
-                Within Participant Factors
-            </p>
-
-            <table>
-                <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-                    <td>
-                        <input type="checkbox"
-                               data-ng-click="updateWithinFactor(measure, this)">
-                        {{measure.dimension}}
-                        </input>
-                    </td>
-                    <td>
-                       <button value="Edit trend" ng-show="isSelected(measure.dimension)"
-                               data-ng-click="showTrendDialog(measure.dimension)">
-                       Edit Trend
-                       </button>
-                    </td>
-                    <td>
-                        <div id="{{measure.dimension}}-trend"
-                             style="display:none">
-                            :{{studyDesign.hypothesis[0].repeatedMeasuresMapTree
-                            [getWithinFactorIndexByName(measure.dimension)].type}}
-                        </div>
-
-                    </td>
-
-                    <td>
-                        <div class="dual-list-right rounded-box">
-                            <div id="{{measure.dimension}}"  style="display:none;">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateWithinFactorTypeOfTrend('NONE', measure.dimension)">
-                                            None
-                                            </input>
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateWithinFactorTypeOfTrend
-                                                   ('CHANGE_FROM_BASELINE', measure.dimension)">
-                                            Change from baseline
-                                            </input>
-                                        </td>
-                                        <td>
-                                            <img src="img/change_from_baseline.png"/>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <input type="radio" name="trendTypeInteraction"
-                                                   data-ng-click="updateWithinFactorTypeOfTrend('LINEAR', measure.dimension)">
-                                            Linear Trend
-                                            </input>
-                                        </td>
-                                        <td>
-                                            <img src="img/linear_trend_only.png"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-
-                    </td>
-                </tr>
-            </table>
-        </div>
-
+<div class="input-group">
+    <label class="input-description">Hypothesis type</label>
+    <select data-ng-model="hypothesis.type" ng-options="type.value as type.label for type in validTypeList">
+    </select>
+    <button ng-click="showHypothesisTypeInfo()">More info</button>
 </div>
 
-<div ng-show="studyDesign.debug == true">
-    {{studyDesign.hypothesis}}
+<!-- Grand mean hypothesis view -->
+<div ng-show="hypothesis.type == glimmpseConstants.hypothesisGrandMean">
+    <div class="input-description">
+        Enter the known mean to compare against.
+    </div>
+    <div class="input-group">
+        <input type="number" ng-model="thetaNull" autocomplete="off" autofocus required >
+    </div>
+</div>
+
+<!-- Main effect / Trend hypothesis view -->
+<div ng-show="hypothesis.type == glimmpseConstants.hypothesisMainEffect || hypothesis.type == glimmpseConstants.hypothesisTrend">
+    <div class="input-description">
+        <label ng-show="hypothesis.type == glimmpseConstants.hypothesisMainEffect">
+            Select one predictor of interest for the main effect hypothesis.
+        </label>
+        <label ng-show="hypothesis.type == glimmpseConstants.hypothesisTrend">
+            Select one predictor of interest for the trend hypothesis.
+        </label>
+    </div>
+
+    <div class="input-group">
+        <div ng-show="betweenFactorMapList.length > 0">
+            <div class="input-description">
+                Between Participant Factors
+            </div>
+
+            <div class="input-group">
+                <div ng-repeat="map in betweenFactorMapList">
+                    <input type="radio" name="factorSingleSelect" ng-model="$parent.currentBetweenFactorMap" ng-value="map">
+                    {{map.factorMap.betweenParticipantFactor.predictorName}}
+                    </input>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="withinFactorMapList.length > 0">
+            <div class="input-description">
+                Within Participant Factors
+            </div>
+
+            <div class="input-group">
+                <div ng-repeat="map in withinFactorMapList">
+                    <input type="radio" name="factorSingleSelect" ng-model="$parent.currentWithinFactorMap" ng-value="map">
+                    {{map.factorMap.repeatedMeasuresNode.dimension}}
+                    </input>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="hypothesis.type == glimmpseConstants.hypothesisTrend">
+        <div class="input-description" >
+            Select the type of trend for the predictor of interest.
+        </div>
+        <div class="input-group">
+            <div ng-show="currentBetweenFactorMap != undefined">
+                <ng-trend-select ng-model="currentBetweenFactorMap.factorMap.type"
+                                 name="singleFactorTrendGroup"
+                                 levels="getBetweenLevels(currentBetweenFactorMap.factorMap.betweenParticipantFactor)">
+                </ng-trend-select>
+            </div>
+            <div ng-show="currentWithinFactorMap != undefined">
+                <ng-trend-select ng-model="currentWithinFactorMap.factorMap.type"
+                                 name="singleFactorTrendGroup"
+                                 levels="getWithinLevels(currentWithinFactorMap.factorMap.repeatedMeasuresNode)">
+                </ng-trend-select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interaction hypothesis view -->
+<div ng-show="hypothesis.type == glimmpseConstants.hypothesisInteraction">
+    <div class="input-description">
+        Select two or more predictors to include in the interaction
+        hypothesis. To test for a trend in a given factor, click the
+        "Edit Trend" link and select an appropriate trend.
+    </div>
+
+    <div class="input-group">
+        <div ng-show="betweenFactorMapList.length > 0">
+            <div class="input-description">
+                Between Participant Factors
+            </div>
+
+            <div class="input-group">
+                <table>
+                    <tr ng-repeat="map in betweenFactorMapList">
+                        <td>
+                            <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
+                            {{map.factorMap.betweenParticipantFactor.predictorName}}
+                            </input>
+                        </td>
+                        <td ng-show="map.selected">
+                            <button ng-click="map.showTrends = !map.showTrends">Trend: {{getTrendLabel(map.factorMap.type)}}</button>
+                        </td>
+                        <td>
+                            <div ng-show="map.showTrends" class="input-group">
+                                <ng-trend-select ng-model="map.factorMap.type"
+                                                 name="map.factorMap.betweenParticipantFactor.predictorName"
+                                                 levels="getBetweenLevels(map.factorMap.betweenParticipantFactor)">
+                                </ng-trend-select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div ng-show="withinFactorMapList.length > 0">
+            <div class="input-description">
+                Within Participant Factors
+            </div>
+
+            <div class="input-group">
+                <table>
+                    <tr ng-repeat="map in withinFactorMapList">
+                        <td>
+                            <input type="checkbox" ng-model="map.selected" ng-click="updateWithinFactorMultiSelect(map)">
+                            {{map.factorMap.repeatedMeasuresNode.dimension}}
+                            </input>
+                        </td>
+                        <td ng-show="map.selected">
+                            <button ng-click="map.showTrends = !map.showTrends">Trend: {{getTrendLabel(map.factorMap.type)}}</button>
+                        </td>
+                        <td>
+                            <div ng-show="map.showTrends" class="input-group">
+                                <ng-trend-select ng-model="map.factorMap.type"
+                                                 name="map.factorMap.repeatedMeasuresNode.dimension"
+                                                 levels="getWithinLevels(map.factorMap.repeatedMeasuresNode)">
+                                </ng-trend-select>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div ng-show="glimmpseConstants.debug == true">
+    <div>
+        Between Map list: {{betweenFactorMapList}}
+    </div>
+    <div>
+        Within Map list: {{withinFactorMapList}}
+    </div>
+    <div>
+        Hypothesis: {{studyDesign.hypothesis}}
+    </div>
+    <div>
+        Current Between: {{currentBetweenFactorMap}}
+    </div>
+    <div>
+        Current Within: {{currentWithinFactorMap}}
+    </div>
+
 </div>

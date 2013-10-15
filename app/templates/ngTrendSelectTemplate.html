@@ -1,0 +1,82 @@
+<!--
+* GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+* Copyright (C) 2013 Regents of the University of Colorado.
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<div class='trend-select'>
+    <table>
+        <tr>
+            <td>
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendNone}}">
+                None
+                </input>
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        <tr ng-show="levels > 1">
+            <td>
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendChangeFromBaseline}}">
+                Change from baseline
+                </input>
+            </td>
+            <td>
+                <img src="img/change_from_baseline.png"/>
+            </td>
+        </tr>
+        <tr ng-show="levels > 1">
+            <td>
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendAllPolynomial}}">
+                All polynomial trends
+                </input>
+            </td>
+            <td>
+                <img src="img/all_polynomial_trends.png"/>
+            </td>
+        </tr>
+        <tr ng-show="levels > 1">
+            <td>
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendLinear}}">
+                Linear Trend
+                </input>
+            </td>
+            <td>
+                <img src="img/linear_trend_only.png"/>
+            </td>
+        </tr>
+        <tr ng-show="levels > 2">
+            <td>
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendQuadratic}}">
+                Quadratic Trend
+                </input>
+            </td>
+            <td>
+                <img src="img/quadratic_trend_only.png"/>
+            </td>
+        </tr>
+        <tr ng-show="levels > 3">
+            <td>
+                <input type="radio"  name="{{radiogroup}}" ng-model="type" value="{{constants.trendCubic}}">
+                Cubic Trend
+                </input>
+            </td>
+            <td>
+                <img src="img/cubic_trend_only.png"/>
+            </td>
+        </tr>
+    </table>
+</div>

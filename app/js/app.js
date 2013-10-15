@@ -56,6 +56,20 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         modeGuided: "GUIDED_MODE",
         modeMatrix: "MATRIX_MODE",
 
+        // hypothesis types
+        hypothesisGrandMean: 'GRAND_MEAN',
+        hypothesisMainEffect: 'MAIN_EFFECT',
+        hypothesisTrend: 'TREND',
+        hypothesisInteraction: 'INTERACTION',
+
+        // trend types
+        trendNone: 'NONE',
+        trendChangeFromBaseline: 'CHANGE_FROM_BASELINE',
+        trendAllPolynomial: 'ALL_POLYNOMIAL',
+        trendLinear: 'LINEAR',
+        trendQuadratic: 'QUADRATIC',
+        trendCubic: 'CUBIC',
+
         // statistical tests
         testHotellingLawleyTrace: "HLT",
         testWilksLambda: "WL",
