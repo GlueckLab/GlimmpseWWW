@@ -1260,10 +1260,12 @@ glimmpseApp.controller('stateController',
                     categoryList: []
                 }
                 studyDesignService.betweenParticipantFactorList.push(newPredictorObject);
+                $scope.studyDesign.updateMeans();
                 $scope.currentPredictor = newPredictorObject;
             }
             // reset the new sample size to null
             $scope.newPredictorName = undefined;
+
         };
 
         /**
@@ -1275,6 +1277,7 @@ glimmpseApp.controller('stateController',
             }
             studyDesignService.betweenParticipantFactorList.splice(
                 studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
+            $scope.studyDesign.updateMeans();
         };
 
         /**
@@ -1297,6 +1300,7 @@ glimmpseApp.controller('stateController',
                     idx: 0,
                     category: newCategory
                 });
+                $scope.studyDesign.updateMeans();
             }
             // reset the new sample size to null
             $scope.newCategoryName = undefined;

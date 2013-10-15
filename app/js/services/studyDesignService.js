@@ -21,7 +21,7 @@
  * Service managing the study design object
  * Currently resides fully on the client side
  */
-glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
+glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, matrixUtilities) {
     var studyDesignInstance = {};
 
     /* Unique id for the study design */
@@ -528,7 +528,51 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
      * or repeated measures change
      */
     studyDesignInstance.updateMeans = function() {
-        // TODO
+        // calculate Q (number of rows of beta, also the total number of study groups
+        var Q = 1;
+        for(var i = 0; i < studyDesignInstance.betweenParticipantFactorList.length; i++) {
+            var factor = studyDesignInstance.betweenParticipantFactorList[i];
+            if (factor.categoryList != undefined && factor.categoryList.length > 0) {
+                Q *= factor.categoryList.length;
+            }
+        }
+        // calculate P (number of columns of beta, also the total number of
+        // observations on a given independent sampling unit
+        var P = studyDesignInstance.responseList.length;
+        for(var i = 0; i < studyDesignInstance.repeatedMeasuresTree.length; i++) {
+            var rmNode = studyDesignInstance.repeatedMeasuresTree[i];
+            if (rmNode.numberOfMeasurements != undefined) {
+                P *= rmNode.numberOfMeasurements;
+            }
+        }
+           window.alert(Q + " x " + P);
+        // update beta as needed
+        if (Q > 0 && P > 0) {
+            var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+            if (beta == undefined) {
+                beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, Q, P, 0);
+                studyDesignInstance.matrixSet.push(beta);
+            }
+            if (beta.rows != Q) {
+                matrixUtilities.resizeRows(beta, beta.rows, Q, 0, 0);
+            }
+            if (beta.columns != P) {
+                matrixUtilities.resizeColumns(beta, beta.columns, P, 0, 0);
+                if (studyDesignInstance.gaussianCovariate) {
+                    var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                    if (betaRandom == undefined) {
+                        betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, 1, P, 1);
+                    }
+                    if (betaRandom.columns != P) {
+                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, P, 1, 1);
+                    }
+                }
+            }
+
+        } else {
+            // design not valid, so we delete beta
+            studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta)
+        }
     }
 
     /**
