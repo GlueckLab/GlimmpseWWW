@@ -29,12 +29,12 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         debug: true,
 
         /*** URIs for web services ***/
-        uriPower: "http://glimmpse.samplesizeshop.org/power/power",
-        uriSampleSize: "http://glimmpse.samplesizeshop.org/power/samplesize",
-        uriCIWidth: "http://glimmpse.samplesizeshop.org/power/ciwidth",
-        uriMatrices: "http://glimmpse.samplesizeshop.org/power/matrix/html",
-        uriUpload: "http://glimmpse.samplesizeshop.org/file/upload",
-        uriSave: "http://glimmpse.samplesizeshop.org/file/save",
+        uriPower: "/power/power",
+        uriSampleSize: "/power/samplesize",
+        uriCIWidth: "/power/ciwidth",
+        uriMatrices: "/power/matrix/html",
+        uriUpload: "/file/upload",
+        uriSave: "/file/save",
 
         /*** Enum names ***/
 
