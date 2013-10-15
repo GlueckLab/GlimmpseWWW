@@ -520,6 +520,28 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants) {
         }
     }
 
+    /**
+     * Update the size of the beta matrix.  Note this function
+     * is for use in Guided mode only.
+     *
+     * The size of beta changes whenever predictors, response variables,
+     * or repeated measures change
+     */
+    studyDesignInstance.updateMeans = function() {
+        // TODO
+    }
+
+    /**
+     * Update the list of covariance objects.  For Guided mode only.
+     * The covariance objects changes when the response variables
+     * change or when the repeated measures change
+     */
+    studyDesignInstance.updateCovariance = function() {
+        // TODO
+    }
+
+
+    // return the singleton study design class
     return studyDesignInstance;
 
 });
