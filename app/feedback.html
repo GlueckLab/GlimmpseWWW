@@ -51,7 +51,6 @@
     <script src="lib/bootstrap.min.js"></script>
     <!-- Angular.js scripts -->
     <script src="lib/angular.min.js"></script>
-    <script src="lib/angular-touch.js"></script>
     <script src="lib/ng-grid-2.0.7.min.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <script src="lib/highcharts-ng.js"></script>
@@ -205,83 +204,72 @@
 
     </div>
 
-
-    <!-- main Web application panel -->
+    <!-- main application panel -->
     <div class="white-box shaded-box rounded-box" ng-show="getMode() != undefined">
 
-        <!-- toolbox menu -->
-        <div class="row hpadding30 hmargin15">
-            <div class="pull-left visible-sm visible-xs">
-                <a href="#" class="btn btn-warning" ng-show="!isActive('/')">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    Back
-                </a>
-            </div>
-            <div class="pull-right">
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-cog"></span>
-                        Tools
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu"  role="menu" aria-labelledby="toolbar">
-                        <li role="presentation">
-                            <form name="saveForm" method='post' action="/file/saveas" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <button role="menuitem" type="submit" data-ng-click="updateStudyDesignJSON()">Save Design</button>
-                            </form>
-                        </li>
-                        <!-- <li role="presentation">
-                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                <a href="">Save Report</a>
+    <!-- toolbox menu -->
+    <div class="row">
+        <div class="col-md-offset-10 col-md-1">
+            <div class="dropdown">
+                <button class="toolbox btn dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-cog"></span>
+                    Tools
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu"  role="menu" aria-labelledby="toolbar">
+                    <li role="presentation">
+                        <form name="saveForm" method='post' action="/file/saveas" target="_blank">
+                            <div>
+                                <input type="hidden" name="filename" value="study.json"/>
+                                <input type="hidden" name="data" value='{{studyDesignJSON}}' />
                             </div>
-                        </li>    -->
-                        <li role="presentation">
-                            <form name="saveResultsToCSVForm" method='post' action="/file/saveas" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" role="menuitem" data-ng-click="updateResultsCSV()">Save Results as CSV</button>
-                            </form>
-                        </li>
-                        <li  role="presentation" class="divider"></li>
-                        <li role="presentation">
-                            <a href="#" role="menuitem"  data-ng-click="reset()">Cancel</a>
-                        </li>
-                    </ul>
-                </div>
+                            <button role="menuitem" type="submit" data-ng-click="updateStudyDesignJSON()">Save Design</button>
+                        </form>
+                    </li>
+                    <li role="presentation">
+                        <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                            <a href="">Save Report</a>
+                        </div>
+                    </li>
+                    <li role="presentation">
+                        <form name="saveResultsToCSVForm" method='post' action="/file/saveas" target="_blank">
+                            <div>
+                                <input type="hidden" name="filename" value="results.csv"/>
+                                <input type="hidden" name="data" value='{{resultsCSV}}' />
+                            </div>
+                            <button type="submit" role="menuitem" data-ng-click="updateResultsCSV()">Save Results as CSV</button>
+                        </form>
+                    </li>
+                    <li  role="presentation" class="divider"></li>
+                    <li role="presentation">
+                        <a href="#" role="menuitem"  data-ng-click="reset()">Cancel</a>
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
 
-        <!-- main application page for mobile (small and extra small screens) -->
-        <div class="visible-sm visible-xs">
-            <div ng-view ng-class="slide" class="padding10"></div>
-        </div>
-
-        <!-- main application content-->
-        <div class="row hmargin5 padding0 visible-md visible-lg">
+    <!-- main application content-->
+    <div class="row hmargin5 padding0">
 
         <!-- left nav -->
         <div class="col-md-3">
-            <!-- Calculate button -->
-            <div ng-show="calculateAllowed()">
-                <a class="btn btn-large calculate-button" href="#/results/report"
-                   ng-click="calculate()">
-                    Calculate
-                </a>
-            </div>
-            <div ng-show="!calculateAllowed()" >
-                <!-- The processing dialog -->
-                <button data-ng-click="showIncompleteItemsDialog()"
-                        class="btn btn-large calculate-button-disabled"
-                        data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
+            <div>
+                <!-- Calculate button -->
+                <div ng-show="calculateAllowed()">
+                    <a class="btn btn-large calculate-button" href="#/results/report"
+                       ng-click="calculate()">
+                        Calculate
+                    </a>
+                </div>
+                <div>
+                    <!-- The processing dialog -->
+                    <button ng-show="!calculateAllowed()" data-ng-click="showIncompleteItemsDialog()"
+                            class="btn btn-large calculate-button-disabled"
+                            data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
 
+                </div>
             </div>
-
             <!-- left nav -->
             <div class="vmargin15" >
                 <div class="panel-group" id="nav-accordion" >
@@ -289,16 +277,15 @@
                         <!-- start menu -->
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-start">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#start">
                                     Start
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-start" class="panel-collapse collapse in">
+                        <div id="start" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
-                                    <a href="#/solvingFor">Solving For</a>
-                                </div>
+                                    <a href="#/solvingFor">Solving For</a></div>
                                 <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
                                     <a href="#/nominalPower"
                                        ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
@@ -316,13 +303,12 @@
                         <!-- sampling unit -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-samplingUnit">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#samplingUnit">
                                     Sampling Unit
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-samplingUnit" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
+                        <div id="samplingUnit" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
                                     <a href="#/predictors">Study Groups</a>
@@ -349,12 +335,12 @@
                         <!-- responses panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-responses">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#responses">
                                     Responses
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-responses" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                        <div id="responses" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
                                     <a href="#/responseVariables">Response Variables</a>
@@ -367,13 +353,12 @@
                         <!-- hypothesis panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-hypothesis">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#hypothesis">
                                     Hypothesis
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-hypothesis" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
+                        <div id="hypothesis" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
                                     <a href="#/hypothesis" ng-show="viewAllowed(getStateHypothesis())">Hypothesis</a>
@@ -384,13 +369,12 @@
                         <!-- means panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#means">
                                     Mean
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-means" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
+                        <div id="means" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
                                     <a href="#/means" ng-show="viewAllowed(getStateMeans())">Means</a>
@@ -404,13 +388,12 @@
                         <!-- variability panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-variability">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#variability">
                                     Variability
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-variability" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
+                        <div id="variability" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
                                     <a href="#/variabilityWithin" ng-show="viewAllowed(getStateWithinVariability())">Within Participant</a>
@@ -432,12 +415,12 @@
                         <!-- design -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-design">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#design">
                                     Design
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                        <div id="design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
                                 <div class="{{isActive('/designEssence') && 'active'}} {{getStateDesignEssence()}}" >
                                     <a href="#/designEssence">Design Essence</a>
@@ -458,12 +441,12 @@
                         <!-- Regression coefficients -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-coefficients">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#coefficients">
                                     Coefficients
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                        <div id="coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
                                 <div class="{{isActive('/beta') && 'active'}} {{getStateBeta()}}" >
                                     <a href="#/beta">Beta Coefficients</a>
@@ -477,12 +460,12 @@
                         <!-- Hypothesis -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-contrasts">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#contrasts">
                                     Hypothesis
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                        <div id="contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
                                 <div class="{{isActive('/betweenContrast') && 'active'}} {{getStateBetweenParticipantContrast()}}" >
                                     <a href="#/betweenContrast">Between Participant Contrast</a>
@@ -499,12 +482,12 @@
                         <!-- Variability -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-covariance">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#covariance">
                                     Variability
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                        <div id="covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
                                 <div class="{{isActive('/sigmaE') && 'active'}} {{getStateSigmaE()}}">
                                     <a href="#/sigmaE" ng-show="viewAllowed(getStateSigmaE())">Error Covariance</a>
@@ -533,12 +516,12 @@
                         <!-- options -->
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-options">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#options">
                                     Options
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-options" class="panel-collapse collapse">
+                        <div id="options" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
                                     <a href="#/test">Statistical Test</a>
@@ -561,12 +544,12 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <!-- TODO: disable when results unavailable -->
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results">
+                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#results">
                                     Results
                                 </a>
                             </h4>
                         </div>
-                        <div id="nav-results" class="panel-collapse collapse">
+                        <div id="results" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div class="{{isActive('/results/report') && 'active'}}" >
                                     <a href="#/results/report">Power Results</a>
@@ -588,9 +571,9 @@
 
 
         <!-- main content area with toolbar -->
-        <div class="col-md-9 visible-md visible-lg">
+        <div class="col-md-9">
             <div class="box rounded-box">
-                <div class="padding10" ng-view="""></div>
+                <div class="padding10" ng-view="" ng-show="showContent()"></div>
             </div>
         </div>
     </div>
@@ -625,8 +608,6 @@
 
         </div>
     </div>
-</div>
-
 
 
     <!-- footer -->
@@ -642,6 +623,8 @@
             </div>
         </div>
     </div>
+
+</div>
 
  </div>
 

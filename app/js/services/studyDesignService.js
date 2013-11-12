@@ -545,7 +545,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
                 P *= rmNode.numberOfMeasurements;
             }
         }
-           window.alert(Q + " x " + P);
+          // window.alert(Q + " x " + P);
         // update beta as needed
         if (Q > 0 && P > 0) {
             var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);

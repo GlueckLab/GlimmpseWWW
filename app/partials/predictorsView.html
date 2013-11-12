@@ -39,53 +39,54 @@
     For example, one could select "treatment", then add the values "drug" and "placebo."
 </p>
 
-<div >
-    <div class="box white-box rounded-box">
-    <table width="100%" >
-        <tr>
-            <td>
-                <!-- Left hand panel showing predictor names -->
-                <div class="dual-list-left">
-                    <form name="predictorsForm" class="dual-list-entry-left" novalidate ng-submit="addPredictor()">
-                        <input name="newPredictor" type="text" placeholder="Enter predictor name" ng-model="newPredictorName"
-                               autocomplete="off" autofocus required >
-                    </form>
-                    <ul class="dual-list-contents-left">
-                        <li ng-repeat="factor in studyDesign.betweenParticipantFactorList" ng-class="{active:isActivePredictor(factor)}"
-                            ng-click="showCategories(factor)">
-                            <label >{{factor.predictorName}}</label>
-                            <button data-ng-click="deletePredictor(factor)">&times;</button>
-                        </li>
-                    </ul>
-                </div>
-            </td>
-            <td>
-                <!-- Right hand panel showing category names for the selected predictor -->
-                <div class="dual-list-right rounded-box" ng-show="currentPredictor != undefined">
-                    <div class="dual-list-header-right">
-                        Categories: {{currentPredictor.predictorName}}
-                    </div>
-                    <div>
-                        <ul class="dual-list-contents-right">
-                            <li ng-repeat="category in currentPredictor.categoryList">
-                                <label>{{category.category}}</label>
-                                <button data-ng-click="deleteCategory(category)">&times;</button>
-                            </li>
-                        </ul>
-                        <form name="categoriesForm" class="dual-list-entry-right" novalidate ng-submit="addCategory()">
-                            <input name="newCategory" type="text"
-                                   placeholder="Enter category for '{{currentPredictor.predictorName}}'"
-                                   ng-model="newCategoryName"
-                                   autocomplete="off" autofocus required >
-                        </form>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-    </div>
-</div>
 
+<div class="well">
+   <div class="row">
+
+       <!-- left hand panel showing predictor names -->
+       <div class="col-md-6">
+           <form name="predictorsForm" novalidate ng-submit="addPredictor()">
+               <div class="form-group">
+                   <label>Predictor Name</label>
+                   <input class="form-control" name="newPredictor" type="text"
+                          placeholder="Enter predictor name" ng-model="newPredictorName"
+                          autocomplete="off" autofocus required />
+               </div>
+           </form>
+           <ul class="list-unstyled">
+               <li class="{{isActivePredictor(factor) && 'list-item-active'}} list-item box rounded-box"
+                   ng-repeat="factor in studyDesign.betweenParticipantFactorList"
+                   ng-click="showCategories(factor)">
+                   <label >{{factor.predictorName}}</label>
+                   <button data-ng-click="deletePredictor(factor)" class="glyphicon glyphicon-remove"></button>
+               </li>
+           </ul>
+       </div>
+
+       <!-- Right hand panel showing category names for the selected predictor -->
+       <div class="col-md-6">
+           <div class="category-list white-box padding10 rounded-box" ng-show="currentPredictor != undefined">
+               <form name="categoriesForm" novalidate ng-submit="addCategory()">
+                   <div class="form-group">
+                       <label>Category Names for '{{currentPredictor.predictorName}}'</label>
+                       <input class="form-control" name="newCategory" type="text"
+                              placeholder="Enter category for '{{currentPredictor.predictorName}}'"
+                              ng-model="newCategoryName"
+                              autocomplete="off" autofocus required />
+                   </div>
+               </form>
+               <ul class="list-unstyled">
+                   <li class="list-item box rounded-box"
+                       ng-repeat="category in currentPredictor.categoryList">
+                       <label>{{category.category}}</label>
+                       <button data-ng-click="deleteCategory(category)" class="glyphicon glyphicon-remove"></button>
+                   </li>
+               </ul>
+
+           </div>
+       </div>
+   </div>
+</div>
 
 <div ng-show="glimmpseConstants.debug == true">
     <div>

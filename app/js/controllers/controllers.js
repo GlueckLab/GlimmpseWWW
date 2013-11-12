@@ -188,7 +188,7 @@ glimmpseApp.controller('stateController',
         if (input.value == '') {
             window.alert("No file was selected.  Please try again");
         }
-        $scope.showWaitDialog();
+        //$scope.showWaitDialog();
 
         $form.ajaxSubmit({
             type: 'POST',
@@ -200,7 +200,7 @@ glimmpseApp.controller('stateController',
                  */
                 window.alert("The study design file could not be loaded: " + responseText);
                 $form[0].reset();
-                $scope.waitDialog.close();
+               // $scope.waitDialog.close();
             },
             success: function(responseText, statusText, xhr, form) {
                 // select the appropriate input mode
@@ -216,7 +216,7 @@ glimmpseApp.controller('stateController',
                     $scope.mode = $scope.studyDesign.viewTypeEnum;
                     $scope.view =  $scope.glimmpseConstants.viewTypeStudyDesign;
                 });
-                $scope.waitDialog.close();
+                //$scope.waitDialog.close();
                 $form[0].reset();
             }
         });

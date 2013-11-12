@@ -16,8 +16,328 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
+<div class="visible-sm visible-xs">
+    <!-- left nav -->
+    <div class="col-md-3">
+    <div>
+        <!-- Calculate button -->
+        <div ng-show="calculateAllowed()">
+            <a class="btn btn-large calculate-button" href="#/results/report"
+               ng-click="calculate()">
+                Calculate
+            </a>
+        </div>
+        <div>
+            <!-- The processing dialog -->
+            <button ng-show="!calculateAllowed()" data-ng-click="showIncompleteItemsDialog()"
+                    class="btn btn-large calculate-button-disabled"
+                    data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
 
-<h3>Introduction</h3>
+        </div>
+    </div>
+    <!-- left nav -->
+    <div class="vmargin15" >
+        <div class="panel-group" id="mobile-accordion" >
+            <div class="panel panel-default">
+            <!-- start menu -->
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-start">
+                        Start
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-start" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
+                        <a href="#/solvingFor">Solving For</a></div>
+                    <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
+                        <a href="#/nominalPower"
+                           ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
+                        <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
+                    </div>
+                    <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                        <a href="#/typeIError">Type I Error</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ********* START GUIDED PANELS ********* -->
+
+            <!-- sampling unit -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-samplingUnit">
+                        Sampling Unit
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-samplingUnit" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <div class="panel-body">
+                    <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
+                        <a href="#/predictors">Study Groups</a>
+                    </div>
+                    <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                        <a href="#/covariates">Covariate</a>
+                    </div>
+                    <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
+                        <a href="#/isu">Clustering</a>
+                    </div>
+                    <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
+                        <a href="#/relativeGroupSize" ng-show="viewAllowed(getStateRelativeGroupSize())">Relative Group Size</a>
+                        <label ng-show="!viewAllowed(getStateRelativeGroupSize())">Relative Group Size</label>
+                    </div>
+                    <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                        <a href="#/smallestGroupSize"
+                           ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
+                        <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
+                            Smallest Group Size
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- responses panel -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-responses">
+                        Responses
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-responses" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <div class="panel-body">
+                    <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
+                        <a href="#/responseVariables">Response Variables</a>
+                    </div>
+                    <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
+                        <a href="#/repeatedMeasures">Repeated Measures</a>
+                    </div>
+                </div>
+            </div>
+            <!-- hypothesis panel -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-hypothesis">
+                        Hypothesis
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-hypothesis" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <div class="panel-body">
+                    <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
+                        <a href="#/hypothesis" ng-show="viewAllowed(getStateHypothesis())">Hypothesis</a>
+                        <label ng-show="!viewAllowed(getStateHypothesis())">Hypothesis</label>
+                    </div>
+                </div>
+            </div>
+            <!-- means panel -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-means">
+                        Mean
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-means" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <div class="panel-body">
+                    <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
+                        <a href="#/means" ng-show="viewAllowed(getStateMeans())">Means</a>
+                        <label ng-show="!viewAllowed(getStateMeans())">Means</label>
+                    </div>
+                    <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                        <a href="#/meansScale">Scale Factors</a>
+                    </div>
+                </div>
+            </div>
+            <!-- variability panel -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-variability">
+                        Variability
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-variability" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
+                <div class="panel-body">
+                    <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
+                        <a href="#/variabilityWithin" ng-show="viewAllowed(getStateWithinVariability())">Within Participant</a>
+                        <label ng-show="!viewAllowed(getStateWithinVariability())">Within Participant</label>
+                    </div>
+                    <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
+                        <a href="#/variabilityCovariate" ng-show="viewAllowed(getStateCovariateVariability())">Covariate</a>
+                        <label ng-show="!viewAllowed(getStateCovariateVariability())">Covariate</label>
+                    </div>
+                    <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                        <a href="#/variabilityScale">Scale Factors</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ********* END GUIDED PANELS ********* -->
+
+            <!-- ********* START MATRIX PANELS *********-->
+            <!-- design -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-design">
+                        Design
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <div class="panel-body">
+                    <div class="{{isActive('/designEssence') && 'active'}} {{getStateDesignEssence()}}" >
+                        <a href="#/designEssence">Design Essence</a>
+                    </div>
+                    <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                        <a href="#/covariates">Covariate</a>
+                    </div>
+                    <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                        <a href="#/smallestGroupSize"
+                           ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
+                        <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
+                            Smallest Group Size
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regression coefficients -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-coefficients">
+                        Coefficients
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <div class="panel-body">
+                    <div class="{{isActive('/beta') && 'active'}} {{getStateBeta()}}" >
+                        <a href="#/beta">Beta Coefficients</a>
+                    </div>
+                    <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                        <a href="#/meansScale">Beta Scale Factors</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hypothesis -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-contrasts">
+                        Hypothesis
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <div class="panel-body">
+                    <div class="{{isActive('/betweenContrast') && 'active'}} {{getStateBetweenParticipantContrast()}}" >
+                        <a href="#/betweenContrast">Between Participant Contrast</a>
+                    </div>
+                    <div class="{{isActive('/withinContrast') && 'active'}} {{getStateWithinParticipantContrast()}}" >
+                        <a href="#/withinContrast">Within Participant Contrast</a>
+                    </div>
+                    <div class="{{isActive('/thetaNull') && 'active'}} {{getStateThetaNull()}}" >
+                        <a href="#/thetaNull">Null Hypothesis Matrix</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Variability -->
+            <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-covariance">
+                        Variability
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+                <div class="panel-body">
+                    <div class="{{isActive('/sigmaE') && 'active'}} {{getStateSigmaE()}}">
+                        <a href="#/sigmaE" ng-show="viewAllowed(getStateSigmaE())">Error Covariance</a>
+                        <label ng-show="!viewAllowed(getStateSigmaE())">Error Covariance</label>
+                    </div>
+                    <div class="{{isActive('/sigmaY') && 'active'}} {{getStateSigmaY()}}">
+                        <a href="#/sigmaY" ng-show="viewAllowed(getStateSigmaY())">Outcomes Covariance</a>
+                        <label ng-show="!viewAllowed(getStateSigmaY())">Outcomes Covariance</label>
+                    </div>
+                    <div class="{{isActive('/sigmaG') && 'active'}} {{getStateSigmaG()}}" >
+                        <a href="#/sigmaG" ng-show="viewAllowed(getStateSigmaG())">Variance of Covariate</a>
+                        <label ng-show="!viewAllowed(getStateSigmaG())">Covariate</label>
+                    </div>
+                    <div class="{{isActive('/sigmaYG') && 'active'}} {{getStateSigmaYG()}}" >
+                        <a href="#/sigmaYG" ng-show="viewAllowed(getStateSigmaYG())">Outcomes and Covariate</a>
+                        <label ng-show="!viewAllowed(getStateSigmaYG())">Outcomes and Covariate</label>
+                    </div>
+                    <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                        <a href="#/variabilityScale">Scale Factors</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ********** END MATRIX PANELS ********** -->
+
+            <!-- options -->
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-options">
+                        Options
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-options" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                        <a href="#/test">Statistical Test</a>
+                    </div>
+                    <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
+                        <a href="#/powerMethod" ng-show="viewAllowed(getStatePowerMethod())">Power Method</a>
+                        <label ng-show="!viewAllowed(getStatePowerMethod())">Power Method</label>
+                    </div>
+                    <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
+                        <a href="#/confidenceIntervals">Confidence Intervals</a>
+                    </div>
+                    <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
+                        <a href="#/plotOptions" ng-show="viewAllowed(getStatePowerCurve())">Power Curve</a>
+                        <label ng-show="!viewAllowed(getStatePowerCurve())">Power Curve</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <!-- TODO: disable when results unavailable -->
+                    <a data-toggle="collapse" data-parent="#mobile-accordion" href="#mobile-results">
+                        Results
+                    </a>
+                </h4>
+            </div>
+            <div id="mobile-results" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="{{isActive('/results/report') && 'active'}}" >
+                        <a href="#/results/report">Power Results</a>
+                    </div>
+                    <div class="{{isActive('/results/plot') && 'active'}}" >
+                        <a href="#/results/plot" ng-show="studyDesign.plotDescription != undefined">Power Curve</a>
+                        <label ng-show="studyDesign.plotDescription == undefined">Power Curve</label>
+                        <a href="#/results/plot" >Power Curve</a>
+                    </div>
+                    <div class="{{isActive('/results/matrices') && 'active'}}" >
+                        <a href="#/results/matrices">View Matrices</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+
+<div class="visible-md visible-lg">
+    <h3>Introduction</h3>
     <p>
         The GLIMMPSE wizard will guide you through several steps to design your study.
     </p>
@@ -30,14 +350,15 @@
     <p>
         General steps for a power analysis are listed on the left hand side of the screen. We will ask you to specify:
     </p>
-        <ul>
-            <li>The Type I error rate</li>
-            <li>The independent and dependent variables</li>
-            <li>The primary study hypothesis of interest</li>
-            <li>Choices for group means </li>
-            <li>Choices for standard deviations and correlations for study outcomes </li>
-            <li>The statistical test and additional display options</li>
-        </ul>
-        <p>
-            Select the "Start" menu to begin.
-        </p>
+    <ul>
+        <li>The Type I error rate</li>
+        <li>The independent and dependent variables</li>
+        <li>The primary study hypothesis of interest</li>
+        <li>Choices for group means </li>
+        <li>Choices for standard deviations and correlations for study outcomes </li>
+        <li>The statistical test and additional display options</li>
+    </ul>
+    <p>
+        Select the "Start" menu to begin.
+    </p>
+</div>
