@@ -24,15 +24,20 @@
 <p>
     Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
 </p>
-<div class="list-entry">
-    <form name="scaleFactorMeansForm" class="list-entry-header" novalidate ng-submit="addScaleFactorForMeans()">
-        <input name="newFactor" type="number" placeholder="Scale Factors for Means" ng-model="newScaleFactorForMeans"
-               step='0.5' autocomplete="off" autofocus required >
+
+<div class="well">
+    <form name="scaleFactorMeansForm" novalidate ng-submit="addScaleFactorForMeans()">
+        <div class="form-group">
+            <label>Scale Factor for Means</label>
+            <input class="form-control" name="newFactor" type="number"
+                   placeholder="Scale Factors for Means" ng-model="newScaleFactorForMeans"
+                   step='0.5' autocomplete="off" autofocus required >
+        </div>
     </form>
-    <ul class="list-entry-contents">
-        <li ng-repeat="factor in studyDesign.betaScaleList">
+    <ul class="list-unstyled">
+        <li class="list-item box rounded-box" ng-repeat="factor in studyDesign.betaScaleList">
             <label ng-dblclick="editScaleFactorForMeans(factor)">{{factor.value}}</label>
-            <button data-ng-click="deleteScaleFactorForMeans(factor)">&times;</button>
+            <button data-ng-click="deleteScaleFactorForMeans(factor)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
 

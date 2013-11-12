@@ -30,16 +30,19 @@
     To remove an item, click the "x" next to the item.
 </p>
 
-<div class="list-entry">
-    <form name="samplsSizeForm" class="list-entry-header" novalidate ng-submit="addSampleSize()">
-        <input name="newSampleSize" type="number" placeholder="Enter a sample size value" ng-model="newSampleSize"
-               min='2' step='1' autocomplete="off" autofocus required >
-        <span class="error" ng-show="samplsSizeForm.newSampleSize.$error.min">Please enter an integer greater than 2</span>
+<div class="well">
+    <form name="samplsSizeForm" novalidate ng-submit="addSampleSize()">
+        <div class="form-group">
+            <label>Smallest Group Size</label>
+            <input class="form-control" name="newSampleSize" type="number" placeholder="Enter a sample size value" ng-model="newSampleSize"
+                   min='2' step='1' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="samplsSizeForm.newSampleSize.$error.min">Please enter an integer greater than 2</div>
+        </div>
     </form>
-    <ul class="list-entry-contents">
-        <li ng-repeat="samplesize in studyDesign.sampleSizeList">
+    <ul class="list-unstyled">
+        <li class="list-item box rounded-box" ng-repeat="samplesize in studyDesign.sampleSizeList">
             <label ng-dblclick="editSampleSize(samplesize)">{{samplesize.value}}</label>
-            <button data-ng-click="deleteSampleSize(samplesize)">&times;</button>
+            <button data-ng-click="deleteSampleSize(samplesize)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
 

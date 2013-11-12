@@ -22,22 +22,26 @@
 Enter the desired power values in the list box below. Power values are numbers between 0 and 1.
 Higher values correspond to a greater likelihood of rejecting the null hypothesis.
 Common values are 0.8 or 0.9, although 0.9 or higher is usually preferred.
-</p><p>
+</p>
+<p>
 Type each value into the list box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
 </p>
 
-<div class="list-entry">
-    <form name="nominalPowerForm" class="list-entry-header" novalidate ng-submit="addNominalPower()">
-        <input name="newPower" type="number" placeholder="Enter a power value" ng-model="newNominalPower"
-               min='0' max='1' step='0.01'
-               autocomplete="off" autofocus required >
-        <span class="error" ng-show="nominalPowerForm.newPower.$error.min">Please enter a number between 0 and 1</span>
-        <span class="error" ng-show="nominalPowerForm.newPower.$error.max">Please enter a number between 0 and 1</span>
+<div class="well">
+    <form name="nominalPowerForm" novalidate ng-submit="addNominalPower()">
+        <div class="form-group">
+            <label>Desired Power</label>
+            <input class="form-control" name="newPower" type="number" placeholder="Enter a power value" ng-model="newNominalPower"
+                   min='0' max='1' step='0.01'
+                   autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="nominalPowerForm.newPower.$error.min">Please enter a number between 0 and 1</div>
+            <div class="alert alert-danger" ng-show="nominalPowerForm.newPower.$error.max">Please enter a number between 0 and 1</div>
+        </div>
     </form>
-    <ul class="list-entry-contents">
-        <li ng-repeat="power in studyDesign.nominalPowerList">
+    <ul class="list-unstyled">
+        <li class="list-item box rounded-box" ng-repeat="power in studyDesign.nominalPowerList">
             <label ng-dblclick="editPower(power)">{{power.value}}</label>
-            <button data-ng-click="deleteNominalPower(power)">&times;</button>
+            <button data-ng-click="deleteNominalPower(power)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
 </div>

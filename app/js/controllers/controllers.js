@@ -131,7 +131,7 @@ glimmpseApp.controller('stateController',
         if (!$scope.testDone($scope.getStatePowerMethod())) { $scope.incompleteViews.push("Power Method")}
         if (!$scope.testDone($scope.getStateConfidenceIntervals())) { $scope.incompleteViews.push("Confidence Intervals")}
         if (!$scope.testDone($scope.getStatePowerCurve())) { $scope.incompleteViews.push("Power Curve")}
-
+          /*
         var incompleteItemsDialog = $modal.open({
                 templateUrl: 'incompleteDialog.html',
                 controller:   function ($scope, $modalInstance, incompleteViews) {
@@ -146,7 +146,7 @@ glimmpseApp.controller('stateController',
                     }
                 }
             }
-        );
+        );   */
     }
 
     /**

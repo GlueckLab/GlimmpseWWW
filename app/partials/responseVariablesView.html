@@ -27,17 +27,24 @@
 <p>
     Note that repeated measurement information will be addressed on the next screen.
 </p>
-<div class="list-entry">
-    <form name="responseForm" class="list-entry-header" novalidate ng-submit="addResponse()">
-        <input name="newResponse" type="text" placeholder="Enter a response variable" ng-model="newResponse"
-               autofocus required >
+
+<div class="well">
+    <form name="responseForm" novalidate ng-submit="addResponse()">
+        <div class="form-group">
+            <label>Response Variable Name</label>
+            <input class="form-control" name="newResponse" type="text"
+                   placeholder="Enter a response variable" ng-model="newResponse"
+                   autofocus required >
+        </div>
     </form>
-    <ul class="list-entry-contents">
-        <li ng-repeat="response in studyDesign.responseList">
+    <ul class="list-unstyled">
+        <li class="list-item box rounded-box" ng-repeat="response in studyDesign.responseList">
             <label ng-dblclick="editResponse(response)">{{response.name}}</label>
-            <button data-ng-click="deleteResponse(response)">&times;</button>
+            <button data-ng-click="deleteResponse(response)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
+</div>
+
 <div ng-show="glimmpseConstants.debug == true">
             {{studyDesign.responseList}}
             {{studyDesign.covariance}}

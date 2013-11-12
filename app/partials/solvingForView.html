@@ -26,21 +26,32 @@
 <body>
 
 <h3>Would you like to solve for power or sample size? </h3>
-<p></p>
+<p>
 To begin your calculation, please indicate whether you would like to solve for power or total sample size.
-</p><p>
+</p>
+<p>
 If you have a rough idea of the number of research participants you will be able to recruit, then solving
 for power may be more beneficial.
-</p><p>
+</p>
+<p>
 If you have fewer restrictions on recruitment and would like to ensure a well-powered study,
 then solving for sample size is likely to be more useful.
 </p>
-<div>
-<div><input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypePower}}"
-            data-ng-model="studyDesign.solutionTypeEnum">Power</input></div>
-<div><input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypeSampleSize}}"
-            data-ng-model="studyDesign.solutionTypeEnum">Sample Size</input></div>
-</div>
+<form class="form-group">
+    <div class="radio">
+        <label>
+            <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypePower}}"
+                   data-ng-model="studyDesign.solutionTypeEnum">Power</input>
+        </label>
+    </div>
+    <div class="radio">
+        <label>
+            <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypeSampleSize}}"
+                   data-ng-model="studyDesign.solutionTypeEnum">Sample Size</input>
+        </label>
+    </div>
+</form>
+
 
 </body>
 </html>
