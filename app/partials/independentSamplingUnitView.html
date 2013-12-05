@@ -20,21 +20,49 @@
 <h3>Independent Sampling Unit Screen</h3>
 
 <p>
-
-    In a clustered design, the independent sampling unit is a cluster, such as a community, school, or classroom. Observations within a cluster are correlated. The labels for observations within a cluster must be exchangeable. For example, child "id" within classroom can be reassigned arbitrarily. In contrast, observations across time cannot be reassigned and should not be considered clustered observations. Clustering, or repeated measures, or a combination, creates a multilevel design. The common correlation between any pair of cluster members is termed the intraclass correlation or intracluster correlation.
-
+    In a clustered design, the independent sampling unit is a cluster, such as a community,
+    school, or classroom. Observations within a cluster are correlated. The labels for
+    observations within a cluster must be exchangeable. For example, child "id" within
+    classroom can be reassigned arbitrarily. In contrast, observations across time cannot
+    be reassigned and should not be considered clustered observations. Clustering, or repeated
+    measures, or a combination, creates a multilevel design. The common correlation between
+    any pair of cluster members is termed the intraclass correlation or intracluster correlation.
 </p>
 
 <p>
-    To include clustering in the study, click "Add clustering" and follow the prompts. Use the "Remove clustering" button to remove clustering information.
+    To include clustering in the study, click "Add clustering" and follow the prompts.
+    Use the "Remove clustering" button to remove clustering information.
 </p>
 
 <div ng-controller="clusteringController">
 
-    <button ng-show="studyDesign.clusteringTree.length <= 0" data-ng-click="addCluster()">Add Clustering</button>
-    <button ng-show="studyDesign.clusteringTree.length > 0" data-ng-click="removeClustering()">Remove Clustering</button>
-    <ul type=none>
+    <button class="btn btn-primary vmargin15" ng-show="studyDesign.clusteringTree.length <= 0"
+            data-ng-click="addCluster()">Add Clustering</button>
 
+    <div class="well" ng-repeat="cluster in studyDesign.clusteringTree">
+        <form novalidate name="clusteringForm">
+            <div class="form-group">
+                <label>Cluster name (Level {{$index+1}})</label>
+                <input name="clusterName" class="form-control" type="text" placeholder="Enter cluster name" ng-model="cluster.groupName"
+                       autocomplete="off" autofocus required >
+            </div>
+            <div class="form-group">
+                <label>Number of observations or sub-clusters within clusters of this type</label>
+                <input name="nOfObs" class="form-control" type="number" placeholder="" ng-model="cluster.groupSize"
+                       min='1' step='1' autocomplete="off" autofocus required >
+                <div class="alert alert-danger" class="form-control"  ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</div>
+            </div>
+            <div class="form-group">
+                <label>Intracluster correlation</label>
+                <input name="corr" class="form-control" type="number" placeholder="" ng-model="cluster.intraClusterCorrelation"
+                       min='-1' max='1' step='0.1' autocomplete="off" autofocus required >
+                <div class="alert alert-danger" ng-show="clusteringForm.corr.$error.min">Please enter a number between -1 and 1</div>
+                <div class="alert alert-danger" ng-show="clusteringForm.corr.$error.max">Please enter a number between -1 and 1</div>
+            </div>
+        </form>
+    </div>
+    <!--
+    <ul type=none>
         <li ng-repeat="cluster in studyDesign.clusteringTree">
             <form name="clusteringForm">
             <div class="input-group">
@@ -44,8 +72,7 @@
                        Cluster label:
                    </td>
                    <td>
-                       <input name="clusterName" type="text" placeholder="Enter cluster name" ng-model="cluster.groupName"
-                              autocomplete="off" autofocus required >
+
                    </td>
 
                </tr>
@@ -56,9 +83,7 @@
                         within each cluster of this type:
                     </td>
                     <td>
-                        <input name="nOfObs" type="number" placeholder="" ng-model="cluster.groupSize"
-                               min='1' step='1' autocomplete="off" autofocus required > <br/>
-                        <span class="error" ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</span>
+
                     </td>
 
                 </tr>
@@ -83,9 +108,14 @@
         </li>
     </ul>
 
-    <div>
-    <button ng-show="studyDesign.clusteringTree.length > 0 && studyDesign.clusteringTree.length < 3" data-ng-click="addCluster()">Add Subgroup</button>
-    <button ng-show="studyDesign.clusteringTree.length > 0" data-ng-click="removeCluster()">Remove Subgroup</button>
+    <div>  -->
+    <button class="btn btn-primary" ng-show="studyDesign.clusteringTree.length > 0 && studyDesign.clusteringTree.length < 3"
+            data-ng-click="addCluster()">Add Subgroup</button>
+    <button class="btn btn-warning" ng-show="studyDesign.clusteringTree.length > 0"
+            data-ng-click="removeCluster()">Remove Subgroup</button>
+    <button class="btn btn-danger" ng-show="studyDesign.clusteringTree.length > 0"
+            data-ng-click="removeClustering()">Clear All</button>
+
     </div>
 
     <!-- <div ng-show="studyDesign.debug == true">

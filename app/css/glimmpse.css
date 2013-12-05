@@ -32,6 +32,9 @@ button::-moz-focus-inner {
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
+.scroll {
+    overflow:scroll;
+}
 
 /*** Start page styles ***/
 html {
@@ -298,93 +301,40 @@ button:focus {
     padding: 10px;
 }
 
-
 /*
-* Main "tab" panel.  Allows the use to switch between the study design
-* and results display.  Not really tabs, just switchs the left nav
-*/
-#view-bar {
-    margin-left: 570px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-.view-bar a {
-    padding:5px 10px;
-    display:inline-block;
-    background:#666;
-    color:#fff;
-    text-decoration:none;
-}
-.view-bar a.active {
-    background:#fff;
-    color:#000;
-}
-
-
-/*
-* Variability tab panel
-*
-* The Measures tab contains measures correlation
-*
+* Some styles which override the left nav accordion styling from
+* the bootstrap
 */
 
-#variability-tabs {
-    width: 600px;
-    min-height: 250px;
-    margin: 0px auto;
-}
-
-#variability-tabs.tab-contents {
-    -moz-box-shadow: 0px 1px 4px #000;
-    -webkit-box-shadow: 0px 1px 4px #000;
-    box-shadow: 0px 1px 4px #000;
-    background: white;
-}
-
-#variability-tabs.ui-tabs {
-    /* position: relative prevents IE scroll bug
-    (element with position: relative inside container
-    with overflow: auto appear as "fixed") */
-    position: relative;
+.panel-body {
     padding: 0px;
-    width: 700px;
 }
-#variability-tabs.ui-tabs .ui-tabs-nav {
-    margin: 0;
-    padding-left: 300px;
+
+.panel-body .active {
+    background-color: #428bca;
 }
-#variability-tabs.ui-tabs .ui-tabs-nav li {
-    list-style:none;
-    display:inline;
+
+.panel-body .active a {
+    font-weight: bold;
+    color: white;
 }
-#variability-tabs.ui-tabs .ui-tabs-nav li a {
-    padding:5px 10px;
-    display:inline-block;
-    background:#666;
-    color:#fff;
-    text-decoration:none;
-}
-#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-active a {
-    background:#fff;
-    color:#000;
-}
-#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-active a,
-#variability-tabs.ui-tabs .ui-tabs-nav li.ui-state-disabled a,
-#variability-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
-    cursor: text;
-}
-#variability-tabs.ui-tabs .ui-tabs-nav li a, /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
-#variability-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
-    cursor: pointer;
-}
-#variability-tabs.ui-tabs .ui-tabs-panel {
+
+.panel-body a, .panel-body label {
     display: block;
-    border-width: 0;
-    padding: 20px 0px;
-    background: white;
+    line-height: 2.4em;
+    padding-left: 15px;
+    padding-right: 10px;
+    width: 100%;
+    border-bottom: 1px solid #dddddd;
+    text-decoration: none;
+}
+
+.panel-body label {
+    color: #aaaaaa;
+    font-weight: normal;
     margin: 0px;
 }
+
 
 /**** The calculate button ****/
 
@@ -424,19 +374,27 @@ button:focus {
 
 
 .disabled {
-    background: url('../img/complete_icon_grayscale.png') no-repeat right;
+    background-image: url('../img/complete_icon_grayscale.png');
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .blocked {
-  background: url('../img/blocked_icon_grayscale.png') no-repeat right;
+    background-image: url('../img/blocked_icon_grayscale.png');
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .complete {
-    background: url('../img/complete_icon.png') no-repeat right;
+    background-image: url('../img/complete_icon.png');
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .incomplete {
-    background: url('../img/incomplete_icon_grayscale.png') no-repeat right;
+    background-image: url('../img/incomplete_icon_grayscale.png');
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
 .toolbox {
@@ -526,17 +484,21 @@ button:focus {
 }
 
 .list-item-active {
-    border: 1px solid #3276B1;
+    background-color: #428bca;
+    border-color: #357ebd;
 }
 
 .list-item-active label {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #3276B1;
+    color: white;
+}
+
+.list-item-active button {
+    background-color: #428bca;
+    color: white;
 }
 
 .category-list {
-    border: 1px solid #3276B1;
+    border: 1px solid #357ebd;
 }
 
 

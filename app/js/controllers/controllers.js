@@ -1613,87 +1613,24 @@ glimmpseApp.controller('stateController',
     })
 
 
-/**
- * Controller managing the covariates
- */
+    /**
+     * Controller managing the means view (i.e. beta matrix)
+     */
     .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.groupsTable = [];
-            $scope.groupsList = [];
+            $scope.betaMatrix = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
             $scope.startColumn = 0;
-            $scope.numberOfColumns = 0;
-            $scope.rmIndex = [];
-            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
-                $scope.rmIndex.push(0);
-            }
-
-            var lenList = 1;
-
-            var totalPermutations = 1;
-            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
-                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
-                if (len >= 2 )
-                    totalPermutations = totalPermutations * len;
-            }
-
-            var matrixIndex = studyDesignService.getMatrixSetListIndexByName('beta');
-            //window.alert("returned index -1" + matrixIndex);
-
-            studyDesignService.matrixSet[matrixIndex].rows = totalPermutations;
-            var numberOfColumns = studyDesignService.matrixSet[matrixIndex].columns;
-            $scope.numberOfColumns = numberOfColumns;
-            while (studyDesignService.matrixSet[matrixIndex].data.data.length < totalPermutations) {
-                studyDesignService.matrixSet[matrixIndex].data.data.push([]);
-            }
-
-
-            for (var i=1; i < totalPermutations; i++) {
-                while (studyDesignService.matrixSet[matrixIndex].data.data[i].length < numberOfColumns) {
-                    studyDesignService.matrixSet[matrixIndex].data.data[i].push(0);
-                }
-            }
-
-            var columnList = [];
-
-            var numRepetitions = totalPermutations;
-            for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
-                columnList = [];
-                var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
-                if (len >= 2 ) {
-                    numRepetitions /= len;
-                    for (var perm = 0; perm < totalPermutations;) {
-                        for (var cat=0; cat < len; cat++) {
-                            var categoryName = studyDesignService.betweenParticipantFactorList[i].
-                                categoryList[cat].category;
-
-                            for (var z=0; z < numRepetitions; z++) {
-                                columnList.push(categoryName);
-                                perm++;
-                            }
-                        }
-                    }
-                    //window.alert("list is:" + columnList);
-                }
-                $scope.groupsTable.push(columnList);
-
-            }
-            lenList = columnList.length;
-            $scope.groupsList = [];
-            for (var i = 0; i < lenList; i++) {
-                $scope.groupsList.push(i);
-            }
-
         }
 
         /**
-         * Shift the counter to the left
+         * Shift the start column to the left
          */
         $scope.shiftLeft = function() {
             if ($scope.startColumn > 0) {
-                $scope.startColumn = $scope.startColumn-1;
+                $scope.startColumn = $scope.startColumn - $scope.studyDesign.responseList.length;
             }
         };
 
@@ -1701,8 +1638,8 @@ glimmpseApp.controller('stateController',
          * Shift the counter to the right
          */
         $scope.shiftRight = function() {
-            if ($scope.startColumn < $scope.numberOfColumns/studyDesignService.responseList.length-1) {
-                $scope.startColumn = $scope.startColumn+1;
+            if ($scope.startColumn < $scope.betaMatrix.columns - $scope.studyDesign.responseList.length) {
+                $scope.startColumn = $scope.startColumn + $scope.studyDesign.responseList.length;
             }
         };
     })
