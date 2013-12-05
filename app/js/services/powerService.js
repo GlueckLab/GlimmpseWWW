@@ -130,7 +130,7 @@ glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
         powerServiceInstance.cachedError = undefined;
         powerServiceInstance.cachedMatrixHtml = undefined;
         powerServiceInstance.cachedMatrixError = undefined;
-    }
+    };
 
     return powerServiceInstance;
 });

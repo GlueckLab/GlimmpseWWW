@@ -69,7 +69,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                 var newRows = $scope.matrix.rows;
                 $scope.matrixUtils.resizeRows($scope.matrix, oldRows, newRows,
                     $scope.defaultOffDiagonal, $scope.defaultDiagonal);
-            }
+            };
 
             /**
              * Add or remove columns when the user changes the column dimension
@@ -79,7 +79,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                 var newColumns = $scope.matrix.columns;
                 $scope.matrixUtils.resizeColumns($scope.matrix, oldColumns, newColumns,
                     $scope.defaultOffDiagonal, $scope.defaultDiagonal);
-            }
+            };
 
             /**
              * Called when cell contents change to implement symmetric matrices
@@ -91,7 +91,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                 if ($scope.symmetric) {
                     $scope.matrix.data.data[column][row] = contents;
                 }
-            }
+            };
 
             /**
              * Checks
@@ -107,11 +107,11 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                     return true;
                 }
                 return false;
-            }
+            };
         }]
 
 
-    }
+    };
 }]);
 
 
@@ -136,7 +136,7 @@ glimmpseApp.directive('ngTrendSelect',['glimmpseConstants', function() {
         controller: ['$scope', 'glimmpseConstants', function($scope, glimmpseConstants) {
            $scope.constants = glimmpseConstants;
         }]
-    }
+    };
 }]);
 
 

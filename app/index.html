@@ -40,6 +40,7 @@
         src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
       </script>        -->
 
+    <!-- build:js js/libraries.js -->
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jquery-ui.min.js"></script>
     <script src="lib/jquery.form.min.js"></script>
@@ -55,8 +56,10 @@
     <script src="lib/ng-grid-2.0.7.min.js"></script>
     <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <script src="lib/highcharts-ng.js"></script>
+    <!-- endbuild -->
 
     <!-- app specific scripts -->
+    <!-- build:js js/glimmpse.js -->
     <script src="js/app.js"></script>
     <script src="js/services/matrixUtilities.js"></script>
     <script src="js/services/studyDesignService.js"></script>
@@ -64,12 +67,13 @@
     <script src="js/services/powerService.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/controllers/controllers.js"></script>
+    <!-- endbuild -->
 
-    <!-- <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet" />  -->
-
+    <!-- build:css css/glimmpse.css -->
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="css/ng-grid.css">
     <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
+    <!-- endbuild -->
 
     <script>
         $(function() {
@@ -636,7 +640,7 @@
             <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
                 <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
             <div>
-                GLIMMPSE version 2.1.0 is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
+                GLIMMPSE version @VERSION@ is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
                 (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
                 Previous funding was received from an American Recovery
                 and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.

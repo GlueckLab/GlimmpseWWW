@@ -55,10 +55,10 @@ glimmpseApp.factory('studyDesignMetaData', function($http, glimmpseConstants, st
 
         // now build the columns
         var numRepetitions = totalPermutations;
-        for (var i = 0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
-            var categoryList = studyDesignService.betweenParticipantFactorList[i].categoryList;
+        for (var j = 0; j < studyDesignService.betweenParticipantFactorList.length; j++) {
+            var categoryList = studyDesignService.betweenParticipantFactorList[j].categoryList;
             var column = [];
-            if (categoryList != undefined && categoryList.length >= 2) {
+            if (categoryList !== undefined && categoryList.length >= 2) {
                 numRepetitions /= categoryList.size();
                 for(var perm = 0; perm < totalPermutations; ) {
                     for(var cat = 0; cat < categoryList.length; cat++) {
@@ -72,7 +72,7 @@ glimmpseApp.factory('studyDesignMetaData', function($http, glimmpseConstants, st
             }
             predictorPermutationList.push(column);
         }
-    }
+    };
 
     return metaDataInstance;
 });

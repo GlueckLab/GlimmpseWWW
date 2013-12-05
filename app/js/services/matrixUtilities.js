@@ -46,7 +46,7 @@ glimmpseApp.factory('matrixUtilities',function(){
         } else if (newRows < oldRows) {
             matrix.data.data.splice(newRows, oldRows - newRows);
         }
-    }
+    };
 
     /**
      * Resize the columns of a matrix
@@ -65,11 +65,11 @@ glimmpseApp.factory('matrixUtilities',function(){
             }
 
         } else if (newColumns < oldColumns) {
-            for(var r = 0; r < matrix.rows; r++) {
-                matrix.data.data[r].splice(newColumns, oldColumns-newColumns);
+            for(var rr = 0; rr < matrix.rows; rr++) {
+                matrix.data.data[rr].splice(newColumns, oldColumns-newColumns);
             }
         }
-    }
+    };
 
     /**
      * Create a named identity matrix of the specified size
@@ -86,7 +86,7 @@ glimmpseApp.factory('matrixUtilities',function(){
             data: {
                 data: []
             }
-        }
+        };
         // fill in the data
         for(var r = 0; r < size; r++) {
             var colData = [];
@@ -97,7 +97,7 @@ glimmpseApp.factory('matrixUtilities',function(){
         }
 
         return matrix;
-    }
+    };
 
     /**
      * Create a named matrix with the specified rows and columns filled
@@ -119,7 +119,7 @@ glimmpseApp.factory('matrixUtilities',function(){
             data: {
                 data: []
             }
-        }
+        };
         // fill in the data
         for(var r = 0; r < rows; r++) {
             var colData = [];
@@ -130,7 +130,7 @@ glimmpseApp.factory('matrixUtilities',function(){
         }
 
         return matrix;
-    }
+    };
 
     return matrixUtilitiesInstance;
 });

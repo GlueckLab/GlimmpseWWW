@@ -92,7 +92,13 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
     studyDesignInstance.clusteringTree = [];
 
     /** The hypothesis. */
-    studyDesignInstance.hypothesis = [{idx:1, type:'GRAND_MEAN', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
+    studyDesignInstance.hypothesis = [
+        {
+            idx:1, type:'GRAND_MEAN',
+            betweenParticipantFactorMapList:[],
+            repeatedMeasuresMapTree:[]
+        }
+    ];
 
     /** The covariance. */
     studyDesignInstance.covariance = [];
@@ -113,22 +119,22 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // read uuid
         if (object.hasOwnProperty("uuid") &&
-            (object.uuid == null || object.uuid instanceof Array)) {
-            studyDesignInstance.uuid = object.uuid
+            (object.uuid === null || object.uuid instanceof Array)) {
+            studyDesignInstance.uuid = object.uuid;
         } else {
             throw errorInvalid;
         }
 
         // read name
         if (object.hasOwnProperty("name")) {
-            studyDesignInstance.name = object.name
+            studyDesignInstance.name = object.name;
         } else {
             throw errorInvalid;
         }
 
         // read covariate flag
         if (object.hasOwnProperty("gaussianCovariate") &&
-            (object.gaussianCovariate == true || object.gaussianCovariate == false )) {
+            (object.gaussianCovariate === true || object.gaussianCovariate === false )) {
             studyDesignInstance.gaussianCovariate = object.gaussianCovariate;
         } else {
             throw errorInvalid;
@@ -175,11 +181,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // alpha list
         if (object.hasOwnProperty("alphaList") &&
-            (object.alphaList == null || object.alphaList instanceof Array)) {
-            if (object.alphaList == null) {
+            (object.alphaList === null || object.alphaList instanceof Array)) {
+            if (object.alphaList === null) {
                studyDesignInstance.alphaList = [];
             } else {
-               studyDesignInstance.alphaList = object.alphaList
+               studyDesignInstance.alphaList = object.alphaList;
             }
         } else {
             throw errorInvalid;
@@ -187,11 +193,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // beta scale list
         if (object.hasOwnProperty("betaScaleList") &&
-            (object.betaScaleList == null || object.betaScaleList instanceof Array)) {
-            if (object.betaScaleList == null) {
+            (object.betaScaleList === null || object.betaScaleList instanceof Array)) {
+            if (object.betaScaleList === null) {
                 studyDesignInstance.betaScaleList = [];
             } else {
-                studyDesignInstance.betaScaleList = object.betaScaleList
+                studyDesignInstance.betaScaleList = object.betaScaleList;
             }
         } else {
             throw errorInvalid;
@@ -199,11 +205,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // sigma scale list
         if (object.hasOwnProperty("sigmaScaleList") &&
-            (object.sigmaScaleList == null || object.sigmaScaleList instanceof Array)) {
-            if (object.sigmaScaleList == null) {
+            (object.sigmaScaleList === null || object.sigmaScaleList instanceof Array)) {
+            if (object.sigmaScaleList === null) {
                 studyDesignInstance.sigmaScaleList = [];
             } else {
-                studyDesignInstance.sigmaScaleList = object.sigmaScaleList
+                studyDesignInstance.sigmaScaleList = object.sigmaScaleList;
             }
         } else {
             throw errorInvalid;
@@ -211,11 +217,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // relative group size list
         if (object.hasOwnProperty("relativeGroupSizeList") &&
-            (object.relativeGroupSizeList == null || object.relativeGroupSizeList instanceof Array)) {
-            if (object.relativeGroupSizeList == null) {
+            (object.relativeGroupSizeList === null || object.relativeGroupSizeList instanceof Array)) {
+            if (object.relativeGroupSizeList === null) {
                 studyDesignInstance.relativeGroupSizeList = [];
             } else {
-                studyDesignInstance.relativeGroupSizeList = object.relativeGroupSizeList
+                studyDesignInstance.relativeGroupSizeList = object.relativeGroupSizeList;
             }
         } else {
             throw errorInvalid;
@@ -223,11 +229,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // per group sample size list
         if (object.hasOwnProperty("sampleSizeList") &&
-            (object.sampleSizeList == null || object.sampleSizeList instanceof Array)) {
-            if (object.sampleSizeList == null) {
+            (object.sampleSizeList === null || object.sampleSizeList instanceof Array)) {
+            if (object.sampleSizeList === null) {
                 studyDesignInstance.sampleSizeList = [];
             } else {
-                studyDesignInstance.sampleSizeList = object.sampleSizeList
+                studyDesignInstance.sampleSizeList = object.sampleSizeList;
             }
         } else {
             throw errorInvalid;
@@ -235,11 +241,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // statistical test list
         if (object.hasOwnProperty("statisticalTestList") &&
-            (object.statisticalTestList == null || object.statisticalTestList instanceof Array)) {
-            if (object.statisticalTestList == null) {
+            (object.statisticalTestList === null || object.statisticalTestList instanceof Array)) {
+            if (object.statisticalTestList === null) {
                 studyDesignInstance.statisticalTestList = [];
             } else {
-                studyDesignInstance.statisticalTestList = object.statisticalTestList
+                studyDesignInstance.statisticalTestList = object.statisticalTestList;
             }
         } else {
             throw errorInvalid;
@@ -247,11 +253,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // power method list
         if (object.hasOwnProperty("powerMethodList") &&
-            (object.powerMethodList == null || object.powerMethodList instanceof Array)) {
-            if (object.powerMethodList == null) {
+            (object.powerMethodList === null || object.powerMethodList instanceof Array)) {
+            if (object.powerMethodList === null) {
                 studyDesignInstance.powerMethodList = [];
             } else {
-                studyDesignInstance.powerMethodList = object.powerMethodList
+                studyDesignInstance.powerMethodList = object.powerMethodList;
             }
         } else {
             throw errorInvalid;
@@ -259,11 +265,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // quantile list
         if (object.hasOwnProperty("quantileList") &&
-            (object.quantileList == null || object.quantileList instanceof Array)) {
-            if (object.quantileList == null) {
+            (object.quantileList === null || object.quantileList instanceof Array)) {
+            if (object.quantileList === null) {
                 studyDesignInstance.quantileList = [];
             } else {
-                studyDesignInstance.quantileList = object.quantileList
+                studyDesignInstance.quantileList = object.quantileList;
             }
         } else {
             throw errorInvalid;
@@ -271,11 +277,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // nominal power list
         if (object.hasOwnProperty("nominalPowerList") &&
-            (object.nominalPowerList == null || object.nominalPowerList instanceof Array)) {
-            if (object.nominalPowerList == null) {
+            (object.nominalPowerList === null || object.nominalPowerList instanceof Array)) {
+            if (object.nominalPowerList === null) {
                 studyDesignInstance.nominalPowerList = [];
             } else {
-                studyDesignInstance.nominalPowerList = object.nominalPowerList
+                studyDesignInstance.nominalPowerList = object.nominalPowerList;
             }
         } else {
             throw errorInvalid;
@@ -283,11 +289,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // response list
         if (object.hasOwnProperty("responseList") &&
-            (object.responseList == null || object.responseList instanceof Array)) {
-            if (object.responseList == null) {
+            (object.responseList === null || object.responseList instanceof Array)) {
+            if (object.responseList === null) {
                 studyDesignInstance.responseList = [];
             } else {
-                studyDesignInstance.responseList = object.responseList
+                studyDesignInstance.responseList = object.responseList;
             }
         } else {
             throw errorInvalid;
@@ -295,11 +301,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // between participant factor list
         if (object.hasOwnProperty("betweenParticipantFactorList") &&
-            (object.betweenParticipantFactorList == null || object.betweenParticipantFactorList instanceof Array)) {
-            if (object.betweenParticipantFactorList == null) {
+            (object.betweenParticipantFactorList === null || object.betweenParticipantFactorList instanceof Array)) {
+            if (object.betweenParticipantFactorList === null) {
                 studyDesignInstance.betweenParticipantFactorList = [];
             } else {
-                studyDesignInstance.betweenParticipantFactorList = object.betweenParticipantFactorList
+                studyDesignInstance.betweenParticipantFactorList = object.betweenParticipantFactorList;
             }
         } else {
             throw errorInvalid;
@@ -307,11 +313,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // repeated measures tree
         if (object.hasOwnProperty("repeatedMeasuresTree") &&
-            (object.repeatedMeasuresTree == null || object.repeatedMeasuresTree instanceof Array)) {
-            if (object.repeatedMeasuresTree == null) {
+            (object.repeatedMeasuresTree === null || object.repeatedMeasuresTree instanceof Array)) {
+            if (object.repeatedMeasuresTree === null) {
                 studyDesignInstance.repeatedMeasuresTree = [];
             } else {
-                studyDesignInstance.repeatedMeasuresTree = object.repeatedMeasuresTree
+                studyDesignInstance.repeatedMeasuresTree = object.repeatedMeasuresTree;
             }
         } else {
             throw errorInvalid;
@@ -319,11 +325,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // clustering tree
         if (object.hasOwnProperty("clusteringTree") &&
-            (object.clusteringTree == null || object.clusteringTree instanceof Array)) {
-            if (object.clusteringTree == null) {
+            (object.clusteringTree === null || object.clusteringTree instanceof Array)) {
+            if (object.clusteringTree === null) {
                 studyDesignInstance.clusteringTree = [];
             } else {
-                studyDesignInstance.clusteringTree = object.clusteringTree
+                studyDesignInstance.clusteringTree = object.clusteringTree;
             }
         } else {
             throw errorInvalid;
@@ -331,11 +337,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // hypothesis
         if (object.hasOwnProperty("hypothesis") &&
-            (object.hypothesis == null || object.hypothesis instanceof Array)) {
-            if (object.hypothesis == null) {
+            (object.hypothesis === null || object.hypothesis instanceof Array)) {
+            if (object.hypothesis === null) {
                 studyDesignInstance.hypothesis = [];
             } else {
-                studyDesignInstance.hypothesis = object.hypothesis
+                studyDesignInstance.hypothesis = object.hypothesis;
             }
         } else {
             throw errorInvalid;
@@ -343,11 +349,11 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // covariance
         if (object.hasOwnProperty("covariance") &&
-            (object.covariance == null || object.covariance instanceof Array)) {
-            if (object.covariance == null) {
+            (object.covariance === null || object.covariance instanceof Array)) {
+            if (object.covariance === null) {
                 studyDesignInstance.covariance = [];
             } else {
-                studyDesignInstance.covariance = object.covariance
+                studyDesignInstance.covariance = object.covariance;
             }
         } else {
             throw errorInvalid;
@@ -355,16 +361,16 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         // matrices
         if (object.hasOwnProperty("matrixSet") &&
-            (object.matrixSet == null || object.matrixSet instanceof Array)) {
-            if (object.matrixSet == null) {
+            (object.matrixSet === null || object.matrixSet instanceof Array)) {
+            if (object.matrixSet === null) {
                 studyDesignInstance.matrixSet = [];
             } else {
-                studyDesignInstance.matrixSet = object.matrixSet
+                studyDesignInstance.matrixSet = object.matrixSet;
             }
         } else {
             throw errorInvalid;
         }
-    }
+    };
 
     /*
     * Convenience routine to determine if a power method is
@@ -378,7 +384,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             }
         }
         return -1;
-    }
+    };
 
     /**
      * Reset the study design instance to the default state
@@ -409,7 +415,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
         studyDesignInstance.hypothesis = [{idx:1, type:'GRAND_MEAN', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
         studyDesignInstance.covariance = [];
         studyDesignInstance.matrixSet = [];
-    }
+    };
 
     /**
      * Get MatrixSet list by name
@@ -443,7 +449,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[1,0],[0,1]]
             }
-        })
+        });
         // default beta matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
@@ -453,7 +459,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[1],[0]]
             }
-        })
+        });
         // default between participant contrast (C) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
@@ -463,7 +469,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[1, -1]]
             }
-        })
+        });
         // default within participant contrast (U) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
@@ -473,7 +479,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[1]]
             }
-        })
+        });
         // default null hypothesis (theta null) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
@@ -483,7 +489,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[0]]
             }
-        })
+        });
         // default null hypothesis (theta null) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
@@ -493,8 +499,8 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
             data: {
                 data: [[1]]
             }
-        })
-    }
+        });
+    };
 
     /**
      * Retrieve a matrix by name
@@ -506,7 +512,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
                 return matrix;
             }
         }
-    }
+    };
 
     /**
      * Remove a matrix by name
@@ -518,7 +524,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
                 studyDesignInstance.matrixSet.splice(i,1);
             }
         }
-    }
+    };
 
     /**
      * Update the size of the beta matrix.  Note this function
@@ -532,16 +538,16 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
         var Q = 1;
         for(var i = 0; i < studyDesignInstance.betweenParticipantFactorList.length; i++) {
             var factor = studyDesignInstance.betweenParticipantFactorList[i];
-            if (factor.categoryList != undefined && factor.categoryList.length > 0) {
+            if (factor.categoryList !== undefined && factor.categoryList.length > 0) {
                 Q *= factor.categoryList.length;
             }
         }
         // calculate P (number of columns of beta, also the total number of
         // observations on a given independent sampling unit
         var P = studyDesignInstance.responseList.length;
-        for(var i = 0; i < studyDesignInstance.repeatedMeasuresTree.length; i++) {
-            var rmNode = studyDesignInstance.repeatedMeasuresTree[i];
-            if (rmNode.numberOfMeasurements != undefined) {
+        for(var rmi = 0; rmi < studyDesignInstance.repeatedMeasuresTree.length; rmi++) {
+            var rmNode = studyDesignInstance.repeatedMeasuresTree[rmi];
+            if (rmNode.numberOfMeasurements !== undefined) {
                 P *= rmNode.numberOfMeasurements;
             }
         }
@@ -549,7 +555,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
         // update beta as needed
         if (Q > 0 && P > 0) {
             var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
-            if (beta == undefined) {
+            if (beta === undefined) {
                 beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, Q, P, 0);
                 studyDesignInstance.matrixSet.push(beta);
             }
@@ -560,7 +566,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
                 matrixUtilities.resizeColumns(beta, beta.columns, P, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-                    if (betaRandom == undefined) {
+                    if (betaRandom === undefined) {
                         betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, 1, P, 1);
                     }
                     if (betaRandom.columns != P) {
@@ -571,9 +577,9 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
 
         } else {
             // design not valid, so we delete beta
-            studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta)
+            studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta);
         }
-    }
+    };
 
     /**
      * Update the list of covariance objects.  For Guided mode only.
@@ -582,7 +588,7 @@ glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, mat
      */
     studyDesignInstance.updateCovariance = function() {
         // TODO
-    }
+    };
 
 
     // return the singleton study design class

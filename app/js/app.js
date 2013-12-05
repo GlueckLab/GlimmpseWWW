@@ -18,7 +18,10 @@
  */
 
 
-'use strict';
+(function () {
+    "use strict";
+    // this function is strict...
+}());
 
 /*
 * Main glimmpse application module
