@@ -23,7 +23,7 @@
  */
 
 
-glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
+glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants){
     var powerServiceInstance = {};
 
     // results from last call to one of the calculate functions
@@ -46,7 +46,8 @@ glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(glimmpseConstants.uriPower, studyDesignJSON).success(function(response){
+        $http.post(config.schemePower + config.hostPower + config.uriPower,
+                studyDesignJSON).success(function(response){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(response);
         }).error(function(response) {
@@ -66,7 +67,8 @@ glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(glimmpseConstants.uriSampleSize, studyDesignJSON).success(function(data){
+        $http.post(config.schemePower + config.hostPower + config.uriSampleSize,
+                studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
         }).error(function(response) {
@@ -88,7 +90,8 @@ glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(glimmpseConstants.uriCIWidth).success(function(data){
+        $http.post(config.schemePower + config.hostPower + config.uriCIWidth,
+                studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
         }).error(function(response){
@@ -109,7 +112,8 @@ glimmpseApp.factory('powerService',function($http, $q, glimmpseConstants){
         var deferred = $q.defer();
 
         //Calling Web API to fetch shopping cart items
-        $http.post(glimmpseConstants.uriMatrices, studyDesignJSON).success(function(data){
+        $http.post(config.schemePower + config.hostPower + config.uriMatrices,
+                studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
         }).error(function(response){

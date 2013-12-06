@@ -21,7 +21,7 @@
  * Service managing the study design object
  * Currently resides fully on the client side
  */
-glimmpseApp.factory('studyDesignService', function($http, glimmpseConstants, matrixUtilities) {
+glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtilities) {
     var studyDesignInstance = {};
 
     /* Unique id for the study design */

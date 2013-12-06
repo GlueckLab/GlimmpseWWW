@@ -31,14 +31,6 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         // debugging flag
         debug: true,
 
-        /*** URIs for web services ***/
-        uriPower: "/power/power",
-        uriSampleSize: "/power/samplesize",
-        uriCIWidth: "/power/ciwidth",
-        uriMatrices: "/power/matrix/html",
-        uriUpload: "/file/upload",
-        uriSave: "/file/save",
-
         /*** Enum names ***/
 
         // view states

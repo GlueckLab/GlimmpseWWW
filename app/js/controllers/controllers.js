@@ -21,7 +21,7 @@
 * Controller which manages the completion state of the navbar
 */
 glimmpseApp.controller('stateController',
-    function($scope, $rootScope, $location, $http, $modal,
+    function($scope, $rootScope, $location, $http, $modal, config,
              glimmpseConstants, studyDesignService, powerService) {
 
     /**
@@ -56,6 +56,11 @@ glimmpseApp.controller('stateController',
         // Mode indicates if the user selected guided or matrix mode
         $scope.mode = undefined;
 
+        // url for file upload
+        $scope.uriUpload = config.schemeFile + config.hostFile + config.uriUpload;
+
+        // url for save upload
+        $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
     }
 
     /**
