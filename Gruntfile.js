@@ -19,6 +19,20 @@
 // Grunt file
 module.exports = function(grunt) {
 
+    // load options
+    if (!grunt.option('hostPower')) {
+        grunt.option('hostPower', 'localhost');
+    }
+    if (!grunt.option('hostFile')) {
+        grunt.option('hostFile', 'localhost');
+    }
+
+    grunt.log.writeln("Building release for hosts power=" +
+        grunt.option('hostPower') +
+        ", and file=" + grunt.option('hostFile')
+    );
+
+    // initialize tasks
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         karma: {
@@ -74,6 +88,32 @@ module.exports = function(grunt) {
                 ]
             }
         },
+        replace: {
+            config: {
+                src: ['build/dist/js/glimmpse.js'], // source files array (supports minimatch)
+                overwrite: true,
+                replacements: [
+                    {
+                        from: "hostPower: 'localhost'",
+                        to: "hostPower: '<%= grunt.option('hostPower') %>'"
+                    },
+                    {
+                        from: "hostFile: 'localhost'",
+                        to: "hostFile: '<%= grunt.option('hostFile') %>'"
+                    }
+                ]
+            },
+            version: {
+                src: ['build/dist/index.html', 'build/dist/feedback.html'], // source files array (supports minimatch)
+                dest: 'build/dist/',  // destination directory or file
+                replacements: [
+                    {
+                        from: '@VERSION@',                   // string replacement
+                        to: '<%= pkg.version %>'
+                    }
+                ]
+            }
+        },
         // cleanup the scripts and includes to use minified, concatenated files
         useminPrepare: {
             html: ['app/index.html','app/feedback.html'],
@@ -122,6 +162,8 @@ module.exports = function(grunt) {
 
     });
 
+
+    // load modules
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -133,6 +175,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-zip');
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-text-replace');
 
     // builds the release distribution of the code
     grunt.registerTask('release',
@@ -145,6 +188,7 @@ module.exports = function(grunt) {
             'cssmin',
             'copy:minfiles',
             'usemin',
+            'replace',
             'zip:glimmpse'
         ]
     );
@@ -155,6 +199,7 @@ module.exports = function(grunt) {
             'jshint',
             'clean',
             'copy:dist',
+            'replace',
             'useminPrepare',
             'concat',
             'cssmin',
