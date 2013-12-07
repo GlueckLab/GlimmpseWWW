@@ -261,7 +261,7 @@
                         </li>
                         <li  role="presentation" class="divider"></li>
                         <li role="presentation">
-                            <a href="#" role="menuitem"  data-ng-click="reset()">Cancel</a>
+                            <a href="#" role="menuitem"  data-ng-click="reset()">Clear Study Design</a>
                         </li>
                     </ul>
                 </div>
@@ -315,9 +315,6 @@
                                        ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
                                     <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
                                 </div>
-                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
-                                    <a href="#/typeIError">Type I Error</a>
-                                </div>
                             </div>
                         </div>
 
@@ -328,21 +325,27 @@
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-samplingUnit">
-                                    Sampling Unit
+                                    Model
                                 </a>
                             </h4>
                         </div>
                         <div id="nav-samplingUnit" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
+                                <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
+                                    <a href="#/isu">Clustering</a>
+                                </div>
                                 <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
-                                    <a href="#/predictors">Study Groups</a>
+                                    <a href="#/predictors">Predictors</a>
                                 </div>
                                 <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
                                     <a href="#/covariates">Covariate</a>
                                 </div>
-                                <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
-                                    <a href="#/isu">Clustering</a>
+                                <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
+                                    <a href="#/responseVariables">Response Variables</a>
+                                </div>
+                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
+                                    <a href="#/repeatedMeasures">Repeated Measures</a>
                                 </div>
                                 <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
                                     <a href="#/relativeGroupSize" ng-show="viewAllowed(getStateRelativeGroupSize())">Relative Group Size</a>
@@ -354,24 +357,6 @@
                                     <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
                                         Smallest Group Size
                                     </label>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- responses panel -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-responses">
-                                    Responses
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="nav-responses" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <div class="panel-body">
-                                <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
-                                    <a href="#/responseVariables">Response Variables</a>
-                                </div>
-                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
-                                    <a href="#/repeatedMeasures">Repeated Measures</a>
                                 </div>
                             </div>
                         </div>
@@ -390,13 +375,19 @@
                                     <a href="#/hypothesis" ng-show="viewAllowed(getStateHypothesis())">Hypothesis</a>
                                     <label ng-show="!viewAllowed(getStateHypothesis())">Hypothesis</label>
                                 </div>
+                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                    <a href="#/test">Statistical Test</a>
+                                </div>
+                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                    <a href="#/typeIError">Type I Error</a>
+                                </div>
                             </div>
                         </div>
                         <!-- means panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means">
-                                    Mean
+                                    Means
                                 </a>
                             </h4>
                         </div>
@@ -504,6 +495,12 @@
                                 <div class="{{isActive('/thetaNull') && 'active'}} {{getStateThetaNull()}}" >
                                     <a href="#/thetaNull">Null Hypothesis Matrix</a>
                                 </div>
+                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                    <a href="#/test">Statistical Test</a>
+                                </div>
+                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                    <a href="#/typeIError">Type I Error</a>
+                                </div>
                             </div>
                         </div>
 
@@ -551,9 +548,6 @@
                         </div>
                         <div id="nav-options" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
-                                    <a href="#/test">Statistical Test</a>
-                                </div>
                                 <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
                                     <a href="#/powerMethod" ng-show="viewAllowed(getStatePowerMethod())">Power Method</a>
                                     <label ng-show="!viewAllowed(getStatePowerMethod())">Power Method</label>
@@ -572,7 +566,10 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <!-- TODO: disable when results unavailable -->
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results">
+                                <label ng-show="powerService.cachedResults == undefined">Results</label>
+                                <a data-toggle="collapse" data-parent="#nav-accordion"
+                                   ng-show="powerService.cachedResults != undefined"
+                                   href="#nav-results">
                                     Results
                                 </a>
                             </h4>
@@ -585,7 +582,6 @@
                                 <div class="{{isActive('/results/plot') && 'active'}}" >
                                     <a href="#/results/plot" ng-show="studyDesign.plotDescription != undefined">Power Curve</a>
                                     <label ng-show="studyDesign.plotDescription == undefined">Power Curve</label>
-                                    <a href="#/results/plot" >Power Curve</a>
                                 </div>
                                 <div class="{{isActive('/results/matrices') && 'active'}}" >
                                     <a href="#/results/matrices">View Matrices</a>
@@ -601,7 +597,7 @@
         <!-- main content area with toolbar -->
         <div class="col-md-9 visible-md visible-lg">
             <div class="box rounded-box">
-                <div class="padding10" ng-view="""></div>
+                <div class="padding10" ng-view=""></div>
             </div>
         </div>
     </div>

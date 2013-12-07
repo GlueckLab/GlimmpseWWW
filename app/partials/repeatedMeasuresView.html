@@ -22,50 +22,98 @@
 </h3>
 
 <p>
-    Repeated measures are present when a response variable is measured on each research participant on two or more occasions or under two or more conditions.
+    Repeated measures are present when a response variable is measured on each research
+    participant on two or more occasions or under two or more conditions.
 </p>
 
 <p>
-    If the study includes repeated measurements, click “Add repeated measures” and follow the prompts. The text entered in the "Units" text box indicates the dimension over which measures were taken (ex. time, days, locations, etc.). The choice of "Type" indicates whether the repeated measures are numeric (ex. time), ordinal (ex. 1st, 2nd, 3rd), or categorical (ex. arm, leg, hand).
+    If the study includes repeated measurements, click “Add repeated measures” and follow
+    the prompts. The text entered in the "Units" text box indicates the dimension over
+    which measures were taken (ex. time, days, locations, etc.). The choice of "Type"
+    indicates whether the repeated measures are numeric (ex. time), ordinal (ex. 1st,
+    2nd, 3rd), or categorical (ex. arm, leg, hand).
 </p>
 
 <p>
-    You may specify up to 3 levels of repeated measures.
+    You may specify up to 3 factors of repeated measures.
 </p>
 
-<div ng-controller="repeatedMeasuresController">
-        <button ng-show="studyDesign.repeatedMeasuresTree.length <= 0" data-ng-click="addMeasure()">
-            Add Repeated Measures</button>
-        <button ng-show="studyDesign.repeatedMeasuresTree.length > 0" data-ng-click="removeMeasuring()">
-            Remove Repeated Measures</button>
+<div>
+    <button class="btn btn-primary vmargin15" ng-show="studyDesign.repeatedMeasuresTree.length <= 0"
+            data-ng-click="addLevel()">Add Repeated Measures</button>
+
+    <div class="well" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
+        <form novalidate name="rmForm">
+            <div class="form-group">
+                <label>Units (Level {{$index+1}})</label>
+                <input name="dimension" class="form-control" type="text"
+                       placeholder="Enter the units for this factor of repeated measures (time, scenarios, etc.)"
+                       ng-model="factor.dimension" autocomplete="off" autofocus required >
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select  class="form-control" ng-model="factor.repeatedMeasuresDimensionType"
+                         ng-options="opt.value as opt.label for opt in validTypes" required>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Number of measurements</label>
+                <select class="form-control" ng-model="factor.numberOfMeasurements"
+                        ng-change="updateNumberOfMeasurements(factor)"
+                        ng-options="option as option for option in validNumberOfMeasurements" required>
+                </select>
+            </div>
+            <div class="form-group" ng-show="factor.repeatedMeasuresDimensionType == glimmpseConstants.repeatedMeasuresTypeNumeric">
+                <label>Spacing</label>
+                <input ng-repeat="spacing in factor.spacingList"
+                       class="vmargin5 form-control" type="number" ng-model="spacing.value"
+                       min='1' autofocus required >
+                </input>
+                <div class="vmargin5">
+                    <button class="btn btn-xs btn-primary" ng-click="resetToEqualSpacing(factor)">
+                        Reset to Equal Spacing
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div>
+        <button class="btn btn-primary"
+                ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.repeatedMeasuresTree.length < 3"
+                data-ng-click="addLevel()">Add Level</button>
+        <button class="btn btn-warning" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
+                data-ng-click="removeLevel()">Remove Level</button>
+        <button class="btn btn-danger" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
+                data-ng-click="removeRepeatedMeasures()">Clear All</button>
+    </div>
+
+    <div ng-show="glimmpseConstants.debug == true">
+        <div>
+            RM Tree: {{studyDesign.repeatedMeasuresTree}}
+        </div>
+        <div>
+            Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
+        </div>
+    </div>
+
+</div>
+
+ <!--
+<div>
+        <button class="btn btn-primary vmargin15"
+                ng-show="studyDesign.repeatedMeasuresTree.length <= 0" data-ng-click="addfactor()">
+            Add Repeated Measures
+        </button>
+
 
         <ul type=none>
             <li ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
                 <form name="repeatedMeasuresForm">
                     <div class="input-group">
                         <table>
-                            <tr>
-                                <td>
-                                    Unit
-                                </td>
-                                <td>
-                                    <input name="measureName" type="text" placeholder="Enter measure name"
-                                           ng-model="measure.dimension"
-                                           autocomplete="off" autofocus required >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Type
-                                </td>
-                                <td>
-                                    <select ng-model="measure.repeatedMeasuresDimensionType">
-                                    <option value="numeric">Numeric</option>
-                                    <option value="ordinal">Ordinal</option>
-                                    <option value="categorical">Categorical</option>
-                                    </select>
-                                </td>
-                            </tr>
+
                             <tr>
                                 <td>
                                     Number of Measurements
@@ -110,16 +158,12 @@
         </ul>
 
         <div>
-            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0
-            && studyDesign.repeatedMeasuresTree.length < 3"
-                    data-ng-click="addMeasure()">Add Level</button>
-            <button ng-show="studyDesign.repeatedMeasuresTree.length > 0"
-                    data-ng-click="removeMeasure()">Remove Level</button>
+            <button class="btn btn-primary"
+                    ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.repeatedMeasuresTree.length < 3"
+                    data-ng-click="addfactor()">Add factor</button>
+            <button class="btn btn-warning" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
+                    data-ng-click="removefactor()">Remove factor</button>
+            <button class="btn btn-danger" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
+                    data-ng-click="removeRepeatedMeasures()">Clear All</button>
         </div>
-
-         <div ng-show="glimmpseConstants.debug == true">
-            {{studyDesign.repeatedMeasuresTree}}
-            {{studyDesign.covariance}}
-        </div>
-
-</div>
+          -->

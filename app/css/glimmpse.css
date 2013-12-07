@@ -135,6 +135,10 @@ button:focus {
     margin: 15px 0px;
 }
 
+.vmargin5 {
+    margin: 5px 0px;
+}
+
 .hmargin0 {
     margin-left: 0px;
     margin-right: 0px;

@@ -526,59 +526,72 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         }
     };
 
+
     /**
-     * Update the size of the beta matrix.  Note this function
-     * is for use in Guided mode only.
-     *
-     * The size of beta changes whenever predictors, response variables,
-     * or repeated measures change
+     * Get the total number of responses
      */
-    studyDesignInstance.updateMeans = function() {
-        // calculate Q (number of rows of beta, also the total number of study groups
-        var Q = 1;
-        for(var i = 0; i < studyDesignInstance.betweenParticipantFactorList.length; i++) {
-            var factor = studyDesignInstance.betweenParticipantFactorList[i];
-            if (factor.categoryList !== undefined && factor.categoryList.length > 0) {
-                Q *= factor.categoryList.length;
-            }
-        }
-        // calculate P (number of columns of beta, also the total number of
-        // observations on a given independent sampling unit
-        var P = studyDesignInstance.responseList.length;
+    studyDesignInstance.getNumberOfResponses = function() {
+        // calculate the total number of observations on a given independent sampling unit
+        var numResponses = studyDesignInstance.responseList.length;
         for(var rmi = 0; rmi < studyDesignInstance.repeatedMeasuresTree.length; rmi++) {
             var rmNode = studyDesignInstance.repeatedMeasuresTree[rmi];
             if (rmNode.numberOfMeasurements !== undefined) {
-                P *= rmNode.numberOfMeasurements;
+                numResponses *= rmNode.numberOfMeasurements;
             }
         }
-          // window.alert(Q + " x " + P);
+        return numResponses;
+    };
+
+    /**
+     * Convenience routine to resize the beta matrix
+     */
+    studyDesignInstance.resizeBeta = function(rows, columns) {
         // update beta as needed
-        if (Q > 0 && P > 0) {
+        if (rows > 0 && columns > 0) {
             var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
             if (beta === undefined) {
-                beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, Q, P, 0);
+                beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, rows, columns, 0);
                 studyDesignInstance.matrixSet.push(beta);
             }
-            if (beta.rows != Q) {
-                matrixUtilities.resizeRows(beta, beta.rows, Q, 0, 0);
+            if (beta.rows != rows) {
+                matrixUtilities.resizeRows(beta, beta.rows, rows, 0, 0);
             }
-            if (beta.columns != P) {
-                matrixUtilities.resizeColumns(beta, beta.columns, P, 0, 0);
+            if (beta.columns != columns) {
+                matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
                     if (betaRandom === undefined) {
-                        betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, 1, P, 1);
+                        betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta,
+                            1, columns, 1);
                     }
-                    if (betaRandom.columns != P) {
-                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, P, 1, 1);
+                    if (betaRandom.columns != columns) {
+                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
                     }
                 }
             }
-
         } else {
             // design not valid, so we delete beta
             studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta);
         }
+    };
+
+    /**
+     * Update the relative group sizes list
+     * @param newSize
+     */
+    studyDesignInstance.resizeRelativeGroupSizeList = function(newSize) {
+        if (studyDesignInstance.betweenParticipantFactorList.length > 0) {
+            if (newSize > studyDesignInstance.relativeGroupSizeList.length) {
+                for(var i = studyDesignInstance.relativeGroupSizeList.length; i < newSize; i++) {
+                    studyDesignInstance.relativeGroupSizeList.push({idx:0, value:1});
+                }
+            } else if (newSize < studyDesignInstance.relativeGroupSizeList.length) {
+                studyDesignInstance.relativeGroupSizeList.splice(newSize);
+            }
+        } else {
+            studyDesignInstance.relativeGroupSizeList = [];
+        }
+
     };
 
     /**

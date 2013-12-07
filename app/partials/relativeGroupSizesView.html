@@ -32,19 +32,22 @@ For unequal group sizes, specify the ratio of the group sizes. For example, cons
     would be selected for the active drug group.
 </p>
 
-<div class="well scroll">
-    <table>
+<div class="well">
+    <table class="scroll table table-striped table-bordered table-condensed">
         <tr>
-            <th>
-                Relative Group Size
-            </th>
             <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
                 {{predictor.predictorName}}
             </th>
+            <th>
+                Relative Group Size
+            </th>
         </tr>
-        <tr ng-repeat="i in groupsList">
+        <tr ng-repeat="relativeGroupSize in studyDesign.relativeGroupSizeList">
+            <td ng-repeat="column in metaData.predictorCombinationList">
+                {{column[$parent.$index]}}
+            </td>
             <td>
-                <select ng-model="studyDesign.relativeGroupSizeList[i].value" required>
+                <select ng-model="relativeGroupSize.value" required>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -57,14 +60,11 @@ For unequal group sizes, specify the ratio of the group sizes. For example, cons
                     <option>10</option>
                 </select>
             </td>
-            <td ng-repeat="count in groupsTable">
-                {{count[i]}}
-            </td>
         </tr>
     </table>
 </div>
 
-<div ng-show="studyDesign.debug == true">
-    {{studyDesign.relativeGroupSizeList}}
+<div ng-show="glimmpseConstants.debug == true">
+    Relative Size List: {{studyDesign.relativeGroupSizeList}}
 </div>
 

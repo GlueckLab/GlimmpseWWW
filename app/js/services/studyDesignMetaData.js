@@ -21,31 +21,55 @@
  * Service managing the study design object
  * Currently resides fully on the client side
  */
-glimmpseApp.factory('studyDesignMetaData', function($http, glimmpseConstants, studyDesignService) {
+glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesignService) {
     var metaDataInstance = {};
 
     // TODO: migrate power curve information out of main study design
     // since it is all client-side now
     metaDataInstance.powerCurveDescription = {};
 
-    // all permutations of predictor categories
-    metaDataInstance.predictorPermutationList = [];
+    // all combinations of predictor categories
+    metaDataInstance.predictorCombinationList = [];
 
+    // all combinations of response variables and
+    metaDataInstance.responseCombinationList = [];
+
+    /**
+     * Return the number of predictor combinations
+     */
+    metaDataInstance.getNumberOfPredictorCombinations = function() {
+        if (metaDataInstance.predictorCombinationList.length > 0) {
+            return metaDataInstance.predictorCombinationList[0].length;
+        } else {
+            return 1;
+        }
+    };
+
+    /**
+     * Return the number of predictor combinations
+     */
+    metaDataInstance.getNumberOfResponseCombinations = function() {
+        if (metaDataInstance.responseCombinationList.length > 0) {
+            return metaDataInstance.responseCombinationList[0].length;
+        } else {
+            return 0;
+        }
+    };
 
     /**
      * Rebuild the permutation table for the predictors
      * (used by the relative group size and means screen)
      */
-    metaDataInstance.updatePredictorPermutations = function() {
+    metaDataInstance.updatePredictorCombinations = function() {
         // clear the list
-        metaDataInstance.predictorPermutationList = [];
+        metaDataInstance.predictorCombinationList = [];
 
-        /* calculate the total number of permutations */
-        var totalPermutations = 1;
+        /* calculate the total number of combinations */
+        var totalCombinations = 1;
         for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
             var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
             if (len >= 2 ) {
-                totalPermutations = totalPermutations * len;
+                totalCombinations = totalCombinations * len;
             } else {
                 // user has not completed predictor information, so don't build
                 // the table
@@ -54,24 +78,75 @@ glimmpseApp.factory('studyDesignMetaData', function($http, glimmpseConstants, st
         }
 
         // now build the columns
-        var numRepetitions = totalPermutations;
+        var numRepetitions = totalCombinations;
         for (var j = 0; j < studyDesignService.betweenParticipantFactorList.length; j++) {
             var categoryList = studyDesignService.betweenParticipantFactorList[j].categoryList;
             var column = [];
             if (categoryList !== undefined && categoryList.length >= 2) {
-                numRepetitions /= categoryList.size();
-                for(var perm = 0; perm < totalPermutations; ) {
+                numRepetitions /= categoryList.length;
+                for(var combo = 0; combo < totalCombinations; ) {
                     for(var cat = 0; cat < categoryList.length; cat++) {
-                        var value = categoryList[cat].value;
+                        var value = categoryList[cat].category;
                         for(var rep = 0; rep < numRepetitions; rep++) {
                             column.push(value);
-                            perm++;
+                            combo++;
                         }
                     }
                 }
             }
-            predictorPermutationList.push(column);
+            metaDataInstance.predictorCombinationList.push(column);
         }
+    };
+
+
+    /**
+     * Rebuild the combination table for the responses
+     * Unlike the predictors, the responses are organized into rows
+     */
+    metaDataInstance.updateResponseCombinations = function() {
+        // clear the list
+        metaDataInstance.responseCombinationList = [];
+
+        /* calculate the total number of combinations */
+        var totalCombinations = studyDesignService.responseList.length;
+        if (totalCombinations === 0) {
+            // if there are no response variables, we can't build the table
+            return;
+        }
+        // multiply the repeated measures onto the total response count
+        for (var i = 0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
+            totalCombinations = totalCombinations *
+                studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
+        }
+
+        // now build the rows for the repeated measures
+        var numRepetitions = totalCombinations;
+        for (var rmIdx = 0; rmIdx < studyDesignService.repeatedMeasuresTree.length; rmIdx++) {
+            var spacingList = studyDesignService.repeatedMeasuresTree[rmIdx].spacingList;
+            var row = [];
+            if (spacingList !== undefined && spacingList.length >= 2) {
+                numRepetitions /= spacingList.length;
+                for(var spacingIdx = 0; spacingIdx < spacingList.length; spacingIdx++) {
+                    for(var combo = 0; combo < numRepetitions; ) {
+                        for(var rep = 0; rep < numRepetitions; rep++) {
+                            row.push(spacingList[spacingIdx].value);
+                            combo++;
+                        }
+                    }
+                }
+            }
+            metaDataInstance.responseCombinationList.push(row);
+        }
+        // build the rows for the responses
+        var responseRow = [];
+        numRepetitions = totalCombinations / studyDesignService.responseList.length;
+        for(var repIdx = 0; repIdx < numRepetitions; repIdx++) {
+            for(var responseIdx = 0; responseIdx < studyDesignService.responseList.length; responseIdx++) {
+                responseRow.push(studyDesignService.responseList[responseIdx].name);
+            }
+        }
+        metaDataInstance.responseCombinationList.push(responseRow);
+
     };
 
     return metaDataInstance;

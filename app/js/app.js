@@ -51,6 +51,11 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         modeGuided: "GUIDED_MODE",
         modeMatrix: "MATRIX_MODE",
 
+        // types of repeated measures
+        repeatedMeasuresTypeNumeric: "NUMERICAL",
+        repeatedMeasuresTypeOrdinal: "ORDINAL",
+        repeatedMeasuresTypeCategorical: "CATEGORICAL",
+
         // hypothesis types
         hypothesisGrandMean: 'GRAND_MEAN',
         hypothesisMainEffect: 'MAIN_EFFECT',
@@ -98,6 +103,12 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         matrixDefaultP: 1,
         matrixDefaultA: 1,
         matrixDefaultB: 1,
+
+        // special label for covariance of response variables
+        covarianceResponses: "__RESPONSE_COVARIANCE__",
+        covarianceTypeUnstructured: "UNSTRUCTURED_COVARIANCE",
+        correlationTypeUnstructured: "UNSTRUCTURED_CORRELATION",
+        correlationTypeLear: "LEAR_CORRELATION",
 
         // plot axis names
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
