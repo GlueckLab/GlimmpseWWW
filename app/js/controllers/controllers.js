@@ -1762,7 +1762,7 @@ glimmpseApp.controller('stateController',
          * @returns {boolean}
          */
         $scope.containsWithinFactor = function(factor) {
-            for(var i = 0; i < $scope.hypothesis.repeatedMeasuresMapTree; i++) {
+            for(var i = 0; i < $scope.hypothesis.repeatedMeasuresMapTree.length; i++) {
                 if (factor == $scope.hypothesis.repeatedMeasuresMapTree[i].repeatedMeasuresNode) {
                     return true;
                 }
@@ -1813,27 +1813,40 @@ glimmpseApp.controller('stateController',
             for (var i = 0; i < studyDesignService.betweenParticipantFactorList.length; i++)  {
                 var factor = studyDesignService.betweenParticipantFactorList[i];
                 var inHypothesis = $scope.containsBetweenFactor(factor);
+                var factorMap = {
+                    type: glimmpseConstants.trendNone,
+                    betweenParticipantFactor: factor
+                };
                 $scope.betweenFactorMapList.push({
-                    factorMap: {
-                        type: glimmpseConstants.trendNone,
-                        betweenParticipantFactor: factor
-                    },
+                    factorMap: factorMap,
                     selected: inHypothesis,
                     showTrends: false
                 });
+                if (($scope.studyDesign.hypothesis.type == glimmpseConstants.hypothesisMainEffect ||
+                    $scope.studyDesign.hypothesis.type == glimmpseConstants.hypothesisTrend) &&
+                    inHypothesis) {
+                    $scope.currentBetweenFactorMap = factorMap;
+                }
             }
             // build mappings for within factors, and keep track of selection status
             for (var rmi = 0; rmi < studyDesignService.repeatedMeasuresTree.length; rmi++)  {
                 var rmFactor = studyDesignService.repeatedMeasuresTree[rmi];
                 var inWithinHypothesis = $scope.containsWithinFactor(rmFactor);
-                $scope.withinFactorMapList.push({
-                    factorMap: {
+                window.alert("ehgjsgd" + inWithinHypothesis);
+                var rmFactorMap = {
                         type: glimmpseConstants.trendNone,
                         repeatedMeasuresNode: rmFactor
-                    },
+                    };
+                $scope.withinFactorMapList.push({
+                    factorMap: rmFactorMap,
                     selected: inWithinHypothesis,
                     showTrends: false
                 });
+                if (($scope.studyDesign.hypothesis.type == glimmpseConstants.hypothesisMainEffect ||
+                    $scope.studyDesign.hypothesis.type == glimmpseConstants.hypothesisTrend) &&
+                    inWithinHypothesis) {
+                    $scope.currentWithinFactorMap = rmFactorMap;
+                }
             }
         }
 
@@ -1849,11 +1862,16 @@ glimmpseApp.controller('stateController',
          * as needed
          */
         $scope.$watch('hypothesis.type', function(newType, oldType) {
+            // clear the current selection of between/within factors
+            $scope.currentBetweenFactorMap = undefined;
+            $scope.currentWithinFactorMap = undefined;
             if (oldType == $scope.glimmpseConstants.hypothesisGrandMean) {
                 $scope.studyDesign.removeMatrixByName($scope.glimmpseConstants.matrixThetaNull);
                 $scope.thetaNull = undefined;
             }
             if (newType == $scope.glimmpseConstants.hypothesisGrandMean) {
+                $scope.hypothesis.betweenParticipantFactorMapList = [];
+                $scope.hypothesis.repeatedMeasuresMapTree = [];
                 $scope.thetaNull = {
                     idx: 0,
                     name: $scope.glimmpseConstants.matrixThetaNull,
@@ -1864,6 +1882,25 @@ glimmpseApp.controller('stateController',
                     }
                 };
                 $scope.studyDesign.matrixSet.push($scope.thetaNull);
+
+            } else if (newType == $scope.glimmpseConstants.hypothesisMainEffect ||
+                newType == $scope.glimmpseConstants.hypothesisTrend) {
+                // if the user switched from an interaction to a main effect, make
+                // sure that only a single factor is selected
+                if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0 &&
+                    $scope.hypothesis.repeatedMeasuresMapTree > 0) {
+                    $scope.hypothesis.betweenParticipantFactorMapList.splice(0, 1);
+                    $scope.hypothesis.repeatedMeasuresMapTree = [];
+                    $scope.currentBetweenFactorMap = $scope.hypothesis.betweenParticipantFactorMapList[0];
+
+                } else if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
+                    $scope.hypothesis.betweenParticipantFactorMapList.splice(0, 1);
+                    $scope.currentBetweenFactorMap = $scope.hypothesis.betweenParticipantFactorMapList[0];
+
+                } else if ($scope.hypothesis.repeatedMeasuresMapTree > 0) {
+                    $scope.hypothesis.repeatedMeasuresMapTree.splice(0, 1);
+                    $scope.hypothesis.currentWithinFactorMap = $scope.hypothesis.repeatedMeasuresMapTree[0];
+                }
             }
         });
 
