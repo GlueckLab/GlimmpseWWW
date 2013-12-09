@@ -94,9 +94,10 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /** The hypothesis. */
     studyDesignInstance.hypothesis = [
         {
-            idx:1, type:'GRAND_MEAN',
-            betweenParticipantFactorMapList:[],
-            repeatedMeasuresMapTree:[]
+            idx: 1,
+            type: glimmpseConstants.hypothesisGrandMean,
+            betweenParticipantFactorMapList: [],
+            repeatedMeasuresMapTree: []
         }
     ];
 
@@ -338,10 +339,62 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         // hypothesis
         if (object.hasOwnProperty("hypothesis") &&
             (object.hypothesis === null || object.hypothesis instanceof Array)) {
-            if (object.hypothesis === null) {
-                studyDesignInstance.hypothesis = [];
+            if (object.hypothesis === null || object.hypothesis.length == 0) {
+                // default to grand mean
+                studyDesignInstance.hypothesis = [
+                    {
+                        idx: 1,
+                        type: glimmpseConstants.hypothesisGrandMean,
+                        betweenParticipantFactorMapList: [],
+                        repeatedMeasuresMapTree: []
+                    }
+                ];
             } else {
-                studyDesignInstance.hypothesis = object.hypothesis;
+                /* the hypothesis contains object references, so we need to fill these
+                 * in by hand. This ensures that the factor lists and the hypothesis
+                 * factor maps point to the same object
+                 *
+                 * In future, we should find a more elegant solution
+                 */
+                var tmpHypothesis = object.hypothesis[0];
+                studyDesignInstance.hypothesis = [
+                    {
+                        idx: 1,
+                        type: tmpHypothesis.type,
+                        betweenParticipantFactorMapList: [],
+                        repeatedMeasuresMapTree: []
+                    }
+                ];
+
+                if (tmpHypothesis.betweenParticipantFactorMapList !== undefined) {
+                    window.alert(tmpHypothesis.betweenParticipantFactorMapList);
+                    for(var b = 0; b < tmpHypothesis.betweenParticipantFactorMapList.length; b++) {
+                        var factorMap = tmpHypothesis.betweenParticipantFactorMapList[b];
+                        var betweenFactor =
+                            studyDesignInstance.getBetweenFactorByJson(angular.toJson(factorMap.betweenParticipantFactor));
+                        window.alert(betweenFactor === undefined);
+                        if (betweenFactor !== undefined) {
+                            studyDesignInstance.hypothesis[0].betweenParticipantFactorMapList.push({
+                                type: factorMap.type,
+                                betweenParticipantFactor: betweenFactor
+                            });
+                        }
+                    }
+                }
+                if (tmpHypothesis.repeatedMeasuresMapTree !== undefined) {
+                    for(var w = 0; w < tmpHypothesis.repeatedMeasuresMapTree.length; w++) {
+                        var factorMap = tmpHypothesis.repeatedMeasuresMapTree[w];
+                        var rmFactor =
+                            studyDesignInstance.getWithinFactorByJson(angular.toJson(factorMap.repeatedMeasuresNode));
+                        if (rmFactor !== undefined) {
+                            studyDesignInstance.hypothesis[0].repeatedMeasuresMapTree.push({
+                                type: factorMap.type,
+                                repeatedMeasuresNode: rmFactor
+                            });
+                        }
+                    }
+                }
+
             }
         } else {
             throw errorInvalid;
@@ -371,6 +424,32 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             throw errorInvalid;
         }
     };
+
+    /**
+     * Get the between participant factor object which matches the specified json
+     */
+    studyDesignInstance.getBetweenFactorByJson = function(factorJson) {
+        for(var i = 0; i < studyDesignInstance.betweenParticipantFactorList.length; i++) {
+            var factor = studyDesignInstance.betweenParticipantFactorList[i];
+            if (factorJson == angular.toJson(factor)) {
+                return factor;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Get the repeated measures object which matches the specified json
+     */
+    studyDesignInstance.getWithinFactorByJson = function(factorJson) {
+        for(var i = 0; i < studyDesignInstance.repeatedMeasuresTree.length; i++) {
+            var factor = studyDesignInstance.repeatedMeasuresTree[i];
+            if (factorJson == angular.toJson(factor)) {
+                return factor;
+            }
+        }
+        return undefined;
+    }
 
     /*
     * Convenience routine to determine if a power method is

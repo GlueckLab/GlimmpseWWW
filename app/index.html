@@ -268,16 +268,16 @@
             </div>
         </div>
 
-        <!-- main application page for mobile (small and extra small screens) -->
+        <!-- main application page for mobile (small and extra small screens)
         <div class="visible-sm visible-xs">
             <div ng-view ng-class="slide" class="padding10"></div>
-        </div>
+        </div>   -->
 
         <!-- main application content-->
-        <div class="row hmargin5 padding0 visible-md visible-lg">
+        <div class="row hmargin5 padding0">
 
         <!-- left nav -->
-        <div class="col-md-3">
+        <div class="col-md-3 visible-md visible-lg">
             <!-- Calculate button -->
             <div ng-show="calculateAllowed()">
                 <a class="btn btn-large calculate-button" href="#/results/report"
@@ -595,7 +595,7 @@
 
 
         <!-- main content area with toolbar -->
-        <div class="col-md-9 visible-md visible-lg">
+        <div class="col-md-9 col-lg-9 col-xs-12 col-sm-12">
             <div class="box rounded-box">
                 <div class="padding10" ng-view=""></div>
             </div>
