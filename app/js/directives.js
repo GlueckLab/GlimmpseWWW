@@ -131,7 +131,8 @@ glimmpseApp.directive('ngTrendSelect',['glimmpseConstants', function() {
         scope: {
             type: '=ngModel',
             radiogroup: "=name",
-            levels: "=levels"
+            levels: "=levels",
+            onselect: "&"
         },
         controller: ['$scope', 'glimmpseConstants', function($scope, glimmpseConstants) {
            $scope.constants = glimmpseConstants;

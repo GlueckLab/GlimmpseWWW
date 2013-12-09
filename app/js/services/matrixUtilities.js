@@ -132,5 +132,66 @@ glimmpseApp.factory('matrixUtilities',function(){
         return matrix;
     };
 
+    /**********
+     * !THESE FUNCTIONS SHOULD BE DEPRECATED IN FUTURE RELEASES!
+     *
+     * At present, the domain layer represents matrices (either covariance
+     * or other) with two different naming conventions.
+     *
+     * For regular matrices, data appears in the "data" field
+     * For covariance matrices, data appears in the "blob" field
+     *
+     * So, yup, we suck, and we'll fix this in a future release when
+     * we tidy up the domain layer.
+     *
+     * But for now, we provide these convenience functions to resize
+     * covariance blobs.
+     ***********/
+
+    /**
+     * Resize the rows of a covariance object
+     * @param matrix
+     * @param oldRows
+     * @param newRows
+     */
+    matrixUtilitiesInstance.resizeCovarianceRows = function(covariance, oldRows, newRows,
+                                                  defaultOffDiagonal, defaultDiagonal) {
+        covariance.rows = newRows;
+        if (newRows > oldRows) {
+            for(var r = oldRows; r < newRows; r++) {
+                var newRow = [];
+                for(var c = 0; c < covariance.columns; c++) {
+                    newRow.push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                }
+                covariance.blob.data.push(newRow);
+            }
+        } else if (newRows < oldRows) {
+            covariance.blob.data.splice(newRows, oldRows - newRows);
+        }
+    };
+
+    /**
+     * Resize the columns of a matrix
+     * @param matrix
+     * @param oldColumns
+     * @param newColumns
+     */
+    matrixUtilitiesInstance.resizeCovarianceColumns = function(covariance, oldColumns, newColumns,
+                                                     defaultOffDiagonal, defaultDiagonal) {
+        covariance.columns = newColumns;
+        if (newColumns > oldColumns) {
+            for(var r = 0; r < covariance.rows; r++) {
+                for(var c = oldColumns; c < newColumns; c++) {
+                    covariance.blob.data[r].push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                }
+            }
+
+        } else if (newColumns < oldColumns) {
+            for(var rr = 0; rr < covariance.rows; rr++) {
+                covariance.blob.data[rr].splice(newColumns, oldColumns-newColumns);
+            }
+        }
+    };
+
     return matrixUtilitiesInstance;
 });

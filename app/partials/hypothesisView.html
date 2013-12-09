@@ -16,7 +16,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Hypotheses</h3>
+<h3>Hypothesis</h3>
 
 <p>
     Power and sample size calculations are typically based on the primary study hypothesis.
@@ -31,172 +31,234 @@
     For more information about the type of hypothesis, click the "More Info" link.
 </p>
 
+<div class="well">
+    <form novalidate name="hypothesisForm">
+        <div id="hypothesisTypeInput" class="form-group">
+            <label>Hypothesis Type</label>
+            <button class="info-toggle" ng-click="toggleHelp()">
+                <span class="glyphicon glyphicon-info-sign"></span>
+            </button>
+            <!-- help popup -->
+            <div class="well white-box" ng-show="showHelp">
+                <p>
+                    The following hypothesis types are supported in GLIMMPSE.
+                </p>
 
-<div class="input-group">
-    <label class="input-description">Hypothesis type</label>
-    <select data-ng-model="hypothesis.type" ng-options="type.value as type.label for type in validTypeList">
-    </select>
-    <button ng-click="showHypothesisTypeInfo()">More info</button>
-</div>
-
-<!-- Grand mean hypothesis view -->
-<div ng-show="hypothesis.type == glimmpseConstants.hypothesisGrandMean">
-    <div class="input-description">
-        Enter the known mean to compare against.
-    </div>
-    <div class="input-group">
-        <input type="number" ng-model="thetaNull" autocomplete="off" autofocus required >
-    </div>
-</div>
-
-<!-- Main effect / Trend hypothesis view -->
-<div ng-show="hypothesis.type == glimmpseConstants.hypothesisMainEffect || hypothesis.type == glimmpseConstants.hypothesisTrend">
-    <div class="input-description">
-        <label ng-show="hypothesis.type == glimmpseConstants.hypothesisMainEffect">
-            Select one predictor of interest for the main effect hypothesis.
-        </label>
-        <label ng-show="hypothesis.type == glimmpseConstants.hypothesisTrend">
-            Select one predictor of interest for the trend hypothesis.
-        </label>
-    </div>
-
-    <div class="input-group">
-        <div ng-show="betweenFactorMapList.length > 0">
-            <div class="input-description">
-                Between Participant Factors
+                <h3>Grand Mean Hypothesis</h3>
+                <p>
+                    Tests of the grand mean compare the overall mean response in a sample of participants
+                    against a known value. For example, an investigator may wish to determine if body mass
+                    index values for participants in a particular state differs from the United States national average.
+                </p>
+                <p>
+                    If a study design includes fixed predictors or repeated measures, the grand mean hypothesis
+                    will average across all factors.
+                </p>
+                <h3>Main Effect Hypothesis</h3>
+                <p>
+                    Main effect hypotheses test for the effect of a single predictor variable averaged across
+                    all other factors. For example, testing if responses of participants in the treatment group
+                    differ on average from participant responses in a placebo group is a common main effect hypothesis.
+                </p>
+                <h3>Trend Hypothesis</h3>
+                <p>
+                    Trend hypotheses test if the effect of a single predictor follows a particular polynomial pattern,
+                    such as a linear or quadratic trend, across different levels of the predictor.
+                </p>
+                <h3>Interaction Hypotheses</h3>
+                <p>
+                    Interaction effect hypothesis test if the effect of one predictor changes depending
+                    on the value of one or more additional predictors. An interaction test also can be
+                    interpreted as a test of differences of differences, as well as a test of parallel
+                    trajectories of response.
+                </p>
+                <p>
+                    For example, testing if the effect of a cholesterol lowering medication on total
+                    serum cholesterol differs depending on the participant's gender is an example of
+                    an interaction hypothesis.
+                </p>
+                <button class="btn btn-sm btn-warning" ng-click="toggleHelp()">Close</button>
             </div>
-
-            <div class="input-group">
-                <div ng-repeat="map in betweenFactorMapList">
-                    <input type="radio" name="factorSingleSelect" ng-model="$parent.currentBetweenFactorMap" ng-value="map">
-                    {{map.factorMap.betweenParticipantFactor.predictorName}}
-                    </input>
-                </div>
-            </div>
+            <!-- END help popup -->
+            <!-- Type selection -->
+            <select class="form-control" ng-change="updateHypothesisType()"
+                    data-ng-model="hypothesis.type" ng-options="type.value as type.label for type in validTypeList">
+            </select>
         </div>
 
-        <div ng-show="withinFactorMapList.length > 0">
-            <div class="input-description">
-                Within Participant Factors
-            </div>
-
-            <div class="input-group">
-                <div ng-repeat="map in withinFactorMapList">
-                    <input type="radio" name="factorSingleSelect" ng-model="$parent.currentWithinFactorMap" ng-value="map">
-                    {{map.factorMap.repeatedMeasuresNode.dimension}}
-                    </input>
-                </div>
-            </div>
+        <!-- Details for the grand mean hypothesis -->
+        <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisGrandMean">
+            <label>Enter the known mean to compare against.</label>
+            <input class="form-control" type="number"
+                   ng-model="thetaNull.data.data[0][0]" autocomplete="off" autofocus required />
         </div>
-    </div>
+        <!-- Details for the main effect hypothesis -->
+        <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisMainEffect">
+            <label>
+                Select one factor of interest for the main effect hypothesis.
+            </label>
+            <div class="well white-box">
+                <div ng-show="betweenFactorMapList.length > 0">
+                    <label>
+                        Between Participant Factors
+                    </label>
 
-    <div ng-show="hypothesis.type == glimmpseConstants.hypothesisTrend">
-        <div class="input-description" >
-            Select the type of trend for the predictor of interest.
-        </div>
-        <div class="input-group">
-            <div ng-show="currentBetweenFactorMap != undefined">
-                <ng-trend-select ng-model="currentBetweenFactorMap.factorMap.type"
-                                 name="singleFactorTrendGroup"
-                                 levels="getBetweenLevels(currentBetweenFactorMap.factorMap.betweenParticipantFactor)">
-                </ng-trend-select>
-            </div>
-            <div ng-show="currentWithinFactorMap != undefined">
-                <ng-trend-select ng-model="currentWithinFactorMap.factorMap.type"
-                                 name="singleFactorTrendGroup"
-                                 levels="getWithinLevels(currentWithinFactorMap.factorMap.repeatedMeasuresNode)">
-                </ng-trend-select>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Interaction hypothesis view -->
-<div ng-show="hypothesis.type == glimmpseConstants.hypothesisInteraction">
-    <div class="input-description">
-        Select two or more predictors to include in the interaction
-        hypothesis. To test for a trend in a given factor, click the
-        "Edit Trend" link and select an appropriate trend.
-    </div>
-
-    <div class="input-group">
-        <div ng-show="betweenFactorMapList.length > 0">
-            <div class="input-description">
-                Between Participant Factors
-            </div>
-
-            <div class="input-group">
-                <table>
-                    <tr ng-repeat="map in betweenFactorMapList">
-                        <td>
-                            <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
+                    <div>
+                        <div ng-repeat="map in betweenFactorMapList">
+                            <input type="radio" name="mainEffectSingleSelect"
+                                   ng-model="$parent.currentBetweenFactorMap" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
-                        </td>
-                        <td ng-show="map.selected">
-                            <button ng-click="map.showTrends = !map.showTrends">Trend: {{getTrendLabel(map.factorMap.type)}}</button>
-                        </td>
-                        <td>
-                            <div ng-show="map.showTrends" class="input-group">
-                                <ng-trend-select ng-model="map.factorMap.type"
-                                                 name="map.factorMap.betweenParticipantFactor.predictorName"
-                                                 levels="getBetweenLevels(map.factorMap.betweenParticipantFactor)">
-                                </ng-trend-select>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div ng-show="withinFactorMapList.length > 0">
-            <div class="input-description">
-                Within Participant Factors
-            </div>
-
-            <div class="input-group">
-                <table>
-                    <tr ng-repeat="map in withinFactorMapList">
-                        <td>
-                            <input type="checkbox" ng-model="map.selected" ng-click="updateWithinFactorMultiSelect(map)">
+                <div class="vmargin5" ng-show="withinFactorMapList.length > 0">
+                    <label>
+                        Within Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in withinFactorMapList">
+                            <input type="radio" name="mainEffectSingleSelect"
+                                   ng-model="$parent.currentWithinFactorMap" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
-                        </td>
-                        <td ng-show="map.selected">
-                            <button ng-click="map.showTrends = !map.showTrends">Trend: {{getTrendLabel(map.factorMap.type)}}</button>
-                        </td>
-                        <td>
-                            <div ng-show="map.showTrends" class="input-group">
-                                <ng-trend-select ng-model="map.factorMap.type"
-                                                 name="map.factorMap.repeatedMeasuresNode.dimension"
-                                                 levels="getWithinLevels(map.factorMap.repeatedMeasuresNode)">
-                                </ng-trend-select>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        <!-- Details for the trend hypothesis -->
+        <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisTrend">
+            <label>
+                Select one factor of interest for the trend hypothesis.
+            </label>
+            <div class="well white-box">
+                <div ng-show="betweenFactorMapList.length > 0">
+                    <label>
+                        Between Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in betweenFactorMapList">
+                            <input type="radio" name="trendSingleSelect"
+                                   ng-model="$parent.currentBetweenFactorMap" ng-value="map">
+                            {{map.factorMap.betweenParticipantFactor.predictorName}}
+                            </input>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vmargin5" ng-show="withinFactorMapList.length > 0">
+                    <label>
+                        Within Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in withinFactorMapList">
+                            <input type="radio" name="trendSingleSelect"
+                                   ng-model="$parent.currentWithinFactorMap" ng-value="map">
+                            {{map.factorMap.repeatedMeasuresNode.dimension}}
+                            </input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- trend type -->
+            <div ng-show="currentBetweenFactorMap != undefined || currentWithinFactorMap != undefined">
+                <label>Select the type of trend for the predictor of interest.</label>
+                <div class="well white-box">
+                    <div ng-show="currentBetweenFactorMap != undefined">
+                        <ng-trend-select ng-model="currentBetweenFactorMap.factorMap.type"
+                                         name="singleFactorTrendGroup"
+                                         levels="getBetweenLevels(currentBetweenFactorMap.factorMap.betweenParticipantFactor)">
+                        </ng-trend-select>
+                    </div>
+                    <div ng-show="currentWithinFactorMap != undefined">
+                        <ng-trend-select ng-model="currentWithinFactorMap.factorMap.type"
+                                         name="singleFactorTrendGroup"
+                                         levels="getWithinLevels(currentWithinFactorMap.factorMap.repeatedMeasuresNode)">
+                        </ng-trend-select>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Details for the interaction hypothesis -->
+        <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisInteraction">
+            <label>Select two or more predictors to include in the interaction
+                hypothesis.</label>
+            <p>To test for a trend in a given factor, click the factor name and select a trend.</p>
+            <div class="well white-box">
+                <div ng-show="betweenFactorMapList.length > 0">
+                    <label>
+                        Between Participant Factors
+                    </label>
+                    <div ng-repeat="map in betweenFactorMapList">
+                        <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
+                            <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
+                                {{map.factorMap.betweenParticipantFactor.predictorName}}
+                                <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
+                                    : {{getTrendLabel(map.factorMap.type)}}
+                                </span>
+                            </button>
+                        </input>
+                        <div ng-show="map.showTrends" class="well white-box">
+                            <ng-trend-select ng-model="map.factorMap.type"
+                                             name="map.factorMap.betweenParticipantFactor.predictorName"
+                                             levels="getBetweenLevels(map.factorMap.betweenParticipantFactor)"
+                                             onselect="map.showTrends = !map.showTrends"
+                                    >
+                            </ng-trend-select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vmargin5" ng-show="withinFactorMapList.length > 0">
+                    <label>
+                        Within Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in withinFactorMapList">
+                            <input type="checkbox" ng-model="map.selected" ng-click="updateWithinFactorMultiSelect(map)">
+                                <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
+                                    {{map.factorMap.repeatedMeasuresNode.dimension}}
+                                    <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
+                                        : {{getTrendLabel(map.factorMap.type)}}
+                                    </span>
+                                </button>
+                            </input>
+                            <div ng-show="map.showTrends" class="well white-box">
+                                <ng-trend-select ng-model="map.factorMap.type"
+                                                 name="map.factorMap.repeatedMeasuresNode.dimension"
+                                                 levels="getWithinLevels(map.factorMap.repeatedMeasuresNode)"
+                                                 onselect="map.showTrends = !map.showTrends">
+                                </ng-trend-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
-
-
 <div ng-show="glimmpseConstants.debug == true">
-    <div>
-        Between Map list: {{betweenFactorMapList}}
+    <div class="vmargin15">
+        Full list between: {{betweenFactorMapList}}
     </div>
-    <div>
-        Within Map list: {{withinFactorMapList}}
+    <div class="vmargin15">
+        Full list within: {{withinFactorMapList}}
     </div>
-    <div>
+    <div class="vmargin15">
         Hypothesis: {{studyDesign.hypothesis}}
     </div>
-    <div>
+    <div class="vmargin15">
         Current Between: {{currentBetweenFactorMap}}
     </div>
-    <div>
+    <div class="vmargin15">
         Current Within: {{currentWithinFactorMap}}
     </div>
-
+    <div class="vmargin15">
+        Theta null: {{thetaNull}}
+    </div>
 </div>

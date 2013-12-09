@@ -20,7 +20,8 @@
     <table>
         <tr>
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendNone}}">
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendNone}}"
+                        ng-click="onselect()">
                 None
                 </input>
             </td>
@@ -30,7 +31,8 @@
         </tr>
         <tr ng-show="levels > 1">
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendChangeFromBaseline}}">
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendChangeFromBaseline}}"
+                       ng-click="onselect()">
                 Change from baseline
                 </input>
             </td>
@@ -40,7 +42,8 @@
         </tr>
         <tr ng-show="levels > 1">
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendAllPolynomial}}">
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendAllPolynomial}}"
+                       ng-click="onselect()">
                 All polynomial trends
                 </input>
             </td>
@@ -50,7 +53,8 @@
         </tr>
         <tr ng-show="levels > 1">
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendLinear}}">
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendLinear}}"
+                       ng-click="onselect()">
                 Linear Trend
                 </input>
             </td>
@@ -60,7 +64,8 @@
         </tr>
         <tr ng-show="levels > 2">
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendQuadratic}}">
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendQuadratic}}"
+                       ng-click="onselect()">
                 Quadratic Trend
                 </input>
             </td>
@@ -70,7 +75,8 @@
         </tr>
         <tr ng-show="levels > 3">
             <td>
-                <input type="radio"  name="{{radiogroup}}" ng-model="type" value="{{constants.trendCubic}}">
+                <input type="radio"  name="{{radiogroup}}" ng-model="type" value="{{constants.trendCubic}}"
+                       ng-click="onselect()">
                 Cubic Trend
                 </input>
             </td>

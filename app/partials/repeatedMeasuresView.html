@@ -48,7 +48,8 @@
                 <label>Units (Level {{$index+1}})</label>
                 <input name="dimension" class="form-control" type="text"
                        placeholder="Enter the units for this factor of repeated measures (time, scenarios, etc.)"
-                       ng-model="factor.dimension" autocomplete="off" autofocus required >
+                       ng-model="factor.dimension" ng-change="updateDimension(factor, $index)"
+                       autocomplete="off" autofocus required >
             </div>
             <div class="form-group">
                 <label>Type</label>
@@ -59,7 +60,7 @@
             <div class="form-group">
                 <label>Number of measurements</label>
                 <select class="form-control" ng-model="factor.numberOfMeasurements"
-                        ng-change="updateNumberOfMeasurements(factor)"
+                        ng-change="updateNumberOfMeasurements(factor, $index)"
                         ng-options="option as option for option in validNumberOfMeasurements" required>
                 </select>
             </div>
@@ -96,74 +97,11 @@
         <div>
             Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
         </div>
+        <div>
+            Covariance: {{studyDesign.covariance}}
+        </div>
     </div>
 
 </div>
 
- <!--
-<div>
-        <button class="btn btn-primary vmargin15"
-                ng-show="studyDesign.repeatedMeasuresTree.length <= 0" data-ng-click="addfactor()">
-            Add Repeated Measures
-        </button>
 
-
-        <ul type=none>
-            <li ng-repeat="measure in studyDesign.repeatedMeasuresTree track by $id($index)">
-                <form name="repeatedMeasuresForm">
-                    <div class="input-group">
-                        <table>
-
-                            <tr>
-                                <td>
-                                    Number of Measurements
-                                </td>
-                                <td>
-                                    <input name="nOfMeasurements" type="number" ng-model=
-                                            "measure.numberOfMeasurements" ng-change="updateNoOfMeasurements(measure)"
-                                           min='2' autocomplete="off" autofocus required > <br/>
-                                    <span class="error" ng-show="repeatedMeasuresForm.nOfMeasurements.$error.min">
-                                        Please enter an integer greater than or equal to 2</span>
-                                </td>
-                            </tr>
-                            <tr ng-show="measure.numberOfMeasurements > 0">
-                                <td>
-                                    Spacing
-                                </td>
-                                <td>
-                                    <ul type=none>
-                                        <li ng-repeat="spacing in measure.spacingList track by $id($index)">
-                                            <input type="text" value="{{spacing.value}}"
-                                                   ng-model="studyDesign.repeatedMeasuresTree[$parent.$index].
-                                                   spacingList[$index].value"
-
-                                                   autocomplete="off" autofocus required >
-                                            </input>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                <button ng-show="measure.numberOfMeasurements > 0"
-                                        ng-change="addSpacingList(measure)">
-                                    Reset to Equal Spacing
-                                </button>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </form>
-            </li>
-        </ul>
-
-        <div>
-            <button class="btn btn-primary"
-                    ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.repeatedMeasuresTree.length < 3"
-                    data-ng-click="addfactor()">Add factor</button>
-            <button class="btn btn-warning" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
-                    data-ng-click="removefactor()">Remove factor</button>
-            <button class="btn btn-danger" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
-                    data-ng-click="removeRepeatedMeasures()">Clear All</button>
-        </div>
-          -->

@@ -164,7 +164,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             {templateUrl: 'partials/scaleFactorsForMeansView.html', controller: 'scaleFactorForMeansController' }
         )
             .when('/variabilityWithin',
-            {templateUrl: 'partials/variabilityView.html', controller: 'variabilityViewController' }
+            {templateUrl: 'partials/variabilityWithinView.html', controller: 'variabilityWithinController' }
         )
             .when('/variabilityCovariate',
             {templateUrl: 'partials/variabilityCovariateView.html', controller: 'variabilityCovariateViewController' }

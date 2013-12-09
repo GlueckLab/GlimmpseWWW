@@ -543,6 +543,20 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     };
 
     /**
+     * Get a covariance object by name of the factor with which
+     * it is associated
+     */
+    studyDesignInstance.getCovarianceByName = function(name) {
+        for(var rmi = 0; rmi < studyDesignInstance.repeatedMeasuresTree.length; rmi++) {
+            var rmNode = studyDesignInstance.repeatedMeasuresTree[rmi];
+            if (rmNode.numberOfMeasurements !== undefined) {
+                numResponses *= rmNode.numberOfMeasurements;
+            }
+        }
+        return numResponses;
+    };
+
+    /**
      * Convenience routine to resize the beta matrix
      */
     studyDesignInstance.resizeBeta = function(rows, columns) {
@@ -593,16 +607,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         }
 
     };
-
-    /**
-     * Update the list of covariance objects.  For Guided mode only.
-     * The covariance objects changes when the response variables
-     * change or when the repeated measures change
-     */
-    studyDesignInstance.updateCovariance = function() {
-        // TODO
-    };
-
 
     // return the singleton study design class
     return studyDesignInstance;

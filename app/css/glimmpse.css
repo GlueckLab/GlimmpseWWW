@@ -205,6 +205,15 @@ button:focus {
     padding-right: 5px;
 }
 
+.info-toggle {
+    display: inline-block;
+    padding: 0;
+    border: none;
+}
+.info-toggle:hover {
+    color: #428bca;
+}
+
 /* main header */
 
 .logo {

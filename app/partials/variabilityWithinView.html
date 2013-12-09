@@ -17,21 +17,72 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<script>
-    $(function() {
-        $( "#variability-tabs" ).tabs();
-    });
-</script>
 
 <h3>  Within Participant Variability
 </h3>
 
 <p>
-    For a given research participant, responses vary across response variables and across repeated measurements .
-    The amount of variability can dramatically impact power and sample size. Click on each of the tabs below to describe the varibility
+    For a given research participant, responses vary across response variables and across
+    repeated measurements. The amount of variability can dramatically impact power and
+    sample size.
+</p>
+<p>
+    Click on each of the tabs below to describe the varibility
     you expect to observe for the response variables and each within-participant factor.
 </p>
 
+<div>
+    <tabset>
+        <tab ng-repeat="covariance in studyDesign.covariance" heading="getHeadiner(covariance){{covariance.name}}" >
+
+            <div class="well vmargin15">
+                <h4>Variability across {{covariance.name}}</h4>
+                <div ng-show="covariance.type == glimmpseConstants.covarianceTypeUnstructured">
+                    Unstructured  covariance
+
+                </div>
+                <div ng-show="covariance.type == glimmpseConstants.correlationTypeUnstructured">
+                    Unstructured  correlation
+
+                </div>
+                <div ng-show="covariance.type == glimmpseConstants.correlationTypeLear">
+                    Lear Correlation
+
+                </div>
+                <!-- buttons allowing user to switch correlation views -->
+                <div class="btn-group" ng-show="covariance.name != glimmpseConstants.covarianceRepsonses">
+                    <button class="btn btn-primary" ng-model="covariance.type"
+                            btn-radio="glimmpseConstants.correlationTypeUnstructured">
+                        Unstructured correlation
+                    </button>
+                    <button class="btn btn-primary" ng-model="covariance.type"
+                            btn-radio="glimmpseConstants.correlationTypeLear">
+                        Lear correlation
+                    </button>
+                </div>
+                <div class="btn-group" ng-show="covariance.name == glimmpseConstants.covarianceRepsonses">
+                    <button class="btn btn-primary" ng-model="covariance.type"
+                            btn-radio="glimmpseConstants.covarianceTypeUnstructured">
+                        Unstructured covariance
+                    </button>
+                    <button class="btn btn-primary" ng-model="covariance.type"
+                            btn-radio="glimmpseConstants.correlationTypeUnstructured">
+                        Unstructured correlation
+                    </button>
+                    <button class="btn btn-primary" ng-model="covariance.type"
+                            btn-radio="glimmpseConstants.correlationTypeLear"">
+                    Lear correlation
+                    </button>
+                </div>
+            </div>
+
+
+
+            {{covariance}}
+        </tab>
+    </tabset>
+</div>
+      <!--
    <div id="variability-tabs" ng-show="studyDesign.repeatedMeasuresTree.length > 0">
        <ul>
            <li>
@@ -174,6 +225,6 @@
                Unstructured correlation
            </button>
        </div>
-   </div>
+   </div>    -->
 
 
