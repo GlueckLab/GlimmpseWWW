@@ -209,9 +209,11 @@ button:focus {
     display: inline-block;
     padding: 0;
     border: none;
+    color: #428bca;
+    background: transparent;
 }
 .info-toggle:hover {
-    color: #428bca;
+    color: #3276b1;
 }
 
 /* main header */

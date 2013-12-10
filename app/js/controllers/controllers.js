@@ -1276,7 +1276,7 @@ glimmpseApp.controller('stateController',
             // if the predictor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
             if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
-                for(var i = 0; i < hypothesis.betweenParticipantFactorMapList; i++) {
+                for(var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
                     var map = hypothesis.betweenParticipantFactorMapList[i];
                     if (map.betweenParticipantFactor == factor) {
                         hypothesis.betweenParticipantFactorMapList.splice(i, 1);
@@ -1324,6 +1324,19 @@ glimmpseApp.controller('stateController',
 
             // sync the study design
             $scope.syncStudyDesign();
+
+
+            // if the predictor appears in the hypothesis, make sure the selected trend
+            // is still valid
+            var hypothesis = $scope.studyDesign.hypothesis[0];
+            if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
+                for(var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
+                    var map = hypothesis.betweenParticipantFactorMapList[i];
+                    if (map.betweenParticipantFactor == $scope.currentPredictor) {
+                        map.type = $scope.studyDesign.getBestTrend(map.type, $scope.currentPredictor.categoryList.length);
+                    }
+                }
+            }
         };
     })
 
@@ -1782,8 +1795,8 @@ glimmpseApp.controller('stateController',
             $scope.hypothesis = studyDesignService.hypothesis[0];
             $scope.betweenFactorMapMetaDataList = [];
             $scope.withinFactorMapMetaDataList = [];
-            $scope.currentBetweenFactorMap = undefined;
-            $scope.currentWithinFactorMap = undefined;
+            $scope.currentBetweenFactorMapMetaData = undefined;
+            $scope.currentWithinFactorMapMetaData = undefined;
             $scope.validTypeList = [];
             $scope.showHelp = false;
             // make sure we have a valid theta null in case of grand mean hypotheses
@@ -1828,16 +1841,16 @@ glimmpseApp.controller('stateController',
                         betweenParticipantFactor: factor
                     };
                 }
-                var map = {
+                var metaData = {
                     factorMap: factorMap,
                     selected: inHypothesis,
                     showTrends: false
                 };
-                $scope.betweenFactorMapMetaDataList.push(map);
+                $scope.betweenFactorMapMetaDataList.push(metaData);
                 if (($scope.hypothesis.type == glimmpseConstants.hypothesisMainEffect ||
                     $scope.hypothesis.type == glimmpseConstants.hypothesisTrend) &&
                     inHypothesis) {
-                    $scope.currentBetweenFactorMap = map;
+                    $scope.currentBetweenFactorMapMetaData = metaData;
                 }
             }
 
@@ -1852,16 +1865,16 @@ glimmpseApp.controller('stateController',
                         repeatedMeasuresNode: rmFactor
                     };
                 }
-                var rmMap = {
+                var rmMetaData = {
                     factorMap: rmFactorMap,
                     selected: inWithinHypothesis,
                     showTrends: false
                 };
-                $scope.withinFactorMapMetaDataList.push(rmMap);
+                $scope.withinFactorMapMetaDataList.push(rmMetaData);
                 if (($scope.hypothesis.type == glimmpseConstants.hypothesisMainEffect ||
                     $scope.hypothesis.type == glimmpseConstants.hypothesisTrend) &&
                     inWithinHypothesis) {
-                    $scope.currentWithinFactorMap = rmMap;
+                    $scope.currentWithinFactorMapMetaData = rmMetaData;
                 }
             }
 
@@ -1898,13 +1911,14 @@ glimmpseApp.controller('stateController',
                 }
             }
             return undefined;
-        }
+        };
 
         /**
          * Get the meta data associated with the given within factor mapping
          * @param factorMap
          */
         $scope.getWithinFactorMapMetaData = function(factorMap) {
+            window.alert($scope.withinFactorMapMetaDataList.length)  ;
             for(var i = 0; i < $scope.withinFactorMapMetaDataList.length; i++) {
                 var metaData = $scope.withinFactorMapMetaDataList[i];
                 if (factorMap == metaData.factorMap) {
@@ -1912,15 +1926,15 @@ glimmpseApp.controller('stateController',
                 }
             }
             return undefined;
-        }
+        };
 
         /**
          * Update the study design when the hypothesis type changes
          */
         $scope.updateHypothesisType = function() {
             // clear the current selection of between/within factors
-            $scope.currentBetweenFactorMap = undefined;
-            $scope.currentWithinFactorMap = undefined;
+            $scope.currentBetweenFactorMapMetaData = undefined;
+            $scope.currentWithinFactorMapMetaData = undefined;
             $scope.studyDesign.removeMatrixByName($scope.glimmpseConstants.matrixThetaNull);
             $scope.thetaNull = undefined;
 
@@ -1950,23 +1964,28 @@ glimmpseApp.controller('stateController',
                 // sure that only a single factor is selected
                 if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0 &&
                     $scope.hypothesis.repeatedMeasuresMapTree > 0) {
-                    $scope.hypothesis.betweenParticipantFactorMapList.splice(0, 1);
+                    $scope.hypothesis.betweenParticipantFactorMapList.splice(1,
+                        $scope.hypothesis.betweenParticipantFactorMapList.length-1);
                     $scope.hypothesis.repeatedMeasuresMapTree = [];
-                    $scope.currentBetweenFactorMap =
+                    $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
-                    $scope.currentBetweenFactorMap.selected = true;
+                    $scope.currentBetweenFactorMapMetaData.selected = true;
 
                 } else if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
-                    $scope.hypothesis.betweenParticipantFactorMapList.splice(0, 1);
-                    $scope.currentBetweenFactorMap =
+                    $scope.hypothesis.betweenParticipantFactorMapList.splice(1,
+                        $scope.hypothesis.betweenParticipantFactorMapList.length-1);
+                    $scope.hypothesis.repeatedMeasuresMapTree = [];
+                    $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
-                    $scope.currentBetweenFactorMap.selected = true;
+                    $scope.currentBetweenFactorMapMetaData.selected = true;
 
-                } else if ($scope.hypothesis.repeatedMeasuresMapTree > 0) {
-                    $scope.hypothesis.repeatedMeasuresMapTree.splice(0, 1);
-                    $scope.hypothesis.currentWithinFactorMap =
+                } else if ($scope.hypothesis.repeatedMeasuresMapTree.length > 0) {
+                    $scope.hypothesis.repeatedMeasuresMapTree.splice(1,
+                        $scope.hypothesis.repeatedMeasuresMapTree.length-1);
+                    $scope.hypothesis.betweenParticipantFactorMapList = [];
+                    $scope.currentWithinFactorMapMetaData =
                         $scope.getWithinFactorMapMetaData($scope.hypothesis.repeatedMeasuresMapTree[0]);
-                    $scope.currentWithinFactorMap.selected = true;
+                    $scope.currentWithinFactorMapMetaData.selected = true;
                 }
             }
         };
@@ -1985,8 +2004,8 @@ glimmpseApp.controller('stateController',
             $scope.hypothesis.betweenParticipantFactorMapList = [];
             $scope.hypothesis.repeatedMeasuresMapTree = [];
             // clear the within factor maps
-            if ($scope.currentWithinFactorMap !== undefined) {
-                $scope.currentWithinFactorMap = undefined;
+            if ($scope.currentWithinFactorMapMetaData !== undefined) {
+                $scope.currentWithinFactorMapMetaData = undefined;
             }
             map.selected = true;
 
@@ -2004,8 +2023,8 @@ glimmpseApp.controller('stateController',
             $scope.hypothesis.betweenParticipantFactorMapList = [];
             $scope.hypothesis.repeatedMeasuresMapTree = [];
             // clear the between factor maps
-            if ($scope.currentBetweenFactorMap !== undefined) {
-                $scope.currentBetweenFactorMap = undefined;
+            if ($scope.currentBetweenFactorMapMetaData !== undefined) {
+                $scope.currentBetweenFactorMapMetaData = undefined;
             }
             map.selected = true;
 

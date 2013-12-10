@@ -107,7 +107,7 @@
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
                             <input type="radio" name="mainEffectSingleSelect"
                                    ng-click="updateBetweenFactorSingleSelect(map)"
-                                   ng-model="$parent.currentBetweenFactorMap" ng-value="map">
+                                   ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
                         </div>
@@ -122,7 +122,7 @@
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="mainEffectSingleSelect"
                                    ng-click="updateWithinFactorSingleSelect(map)"
-                                   ng-model="$parent.currentWithinFactorMap" ng-value="map">
+                                   ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
                         </div>
@@ -144,7 +144,7 @@
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
                             <input type="radio" name="trendSingleSelect"
                                    ng-click="updateBetweenFactorSingleSelect(map)"
-                                   ng-model="$parent.currentBetweenFactorMap" ng-value="map">
+                                   ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
                         </div>
@@ -159,7 +159,7 @@
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="trendSingleSelect"
                                    ng-click="updateWithinFactorSingleSelect(map)"
-                                   ng-model="$parent.currentWithinFactorMap" ng-value="map">
+                                   ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
                         </div>
@@ -167,19 +167,19 @@
                 </div>
             </div>
             <!-- trend type -->
-            <div ng-show="currentBetweenFactorMap != undefined || currentWithinFactorMap != undefined">
+            <div ng-show="currentBetweenFactorMapMetaData != undefined || currentWithinFactorMapMetaData != undefined">
                 <label>Select the type of trend for the predictor of interest.</label>
                 <div class="well white-box">
-                    <div ng-show="currentBetweenFactorMap != undefined">
-                        <ng-trend-select ng-model="currentBetweenFactorMap.factorMap.type"
+                    <div ng-show="currentBetweenFactorMapMetaData != undefined">
+                        <ng-trend-select ng-model="currentBetweenFactorMapMetaData.factorMap.type"
                                          name="singleFactorTrendGroup"
-                                         levels="getBetweenLevels(currentBetweenFactorMap.factorMap.betweenParticipantFactor)">
+                                         levels="getBetweenLevels(currentBetweenFactorMapMetaData.factorMap.betweenParticipantFactor)">
                         </ng-trend-select>
                     </div>
-                    <div ng-show="currentWithinFactorMap != undefined">
-                        <ng-trend-select ng-model="currentWithinFactorMap.factorMap.type"
+                    <div ng-show="currentWithinFactorMapMetaData != undefined">
+                        <ng-trend-select ng-model="currentWithinFactorMapMetaData.factorMap.type"
                                          name="singleFactorTrendGroup"
-                                         levels="getWithinLevels(currentWithinFactorMap.factorMap.repeatedMeasuresNode)">
+                                         levels="getWithinLevels(currentWithinFactorMapMetaData.factorMap.repeatedMeasuresNode)">
                         </ng-trend-select>
                     </div>
                 </div>
@@ -257,10 +257,10 @@
         Hypothesis: {{hypothesis}}
     </div>
     <div class="vmargin15">
-        Current Between: {{currentBetweenFactorMap}}
+        Current Between: {{currentBetweenFactorMapMetaData}}
     </div>
     <div class="vmargin15">
-        Current Within: {{currentWithinFactorMap}}
+        Current Within: {{currentWithinFactorMapMetaData}}
     </div>
     <div class="vmargin15">
         Theta null: {{thetaNull}}

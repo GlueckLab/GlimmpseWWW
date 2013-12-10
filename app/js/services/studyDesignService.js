@@ -339,7 +339,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         // hypothesis
         if (object.hasOwnProperty("hypothesis") &&
             (object.hypothesis === null || object.hypothesis instanceof Array)) {
-            if (object.hypothesis === null || object.hypothesis.length == 0) {
+            if (object.hypothesis === null || object.hypothesis.length === 0) {
                 // default to grand mean
                 studyDesignInstance.hypothesis = [
                     {
@@ -367,12 +367,10 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 ];
 
                 if (tmpHypothesis.betweenParticipantFactorMapList !== undefined) {
-                    window.alert(tmpHypothesis.betweenParticipantFactorMapList);
                     for(var b = 0; b < tmpHypothesis.betweenParticipantFactorMapList.length; b++) {
                         var factorMap = tmpHypothesis.betweenParticipantFactorMapList[b];
                         var betweenFactor =
                             studyDesignInstance.getBetweenFactorByJson(angular.toJson(factorMap.betweenParticipantFactor));
-                        window.alert(betweenFactor === undefined);
                         if (betweenFactor !== undefined) {
                             studyDesignInstance.hypothesis[0].betweenParticipantFactorMapList.push({
                                 type: factorMap.type,
@@ -383,12 +381,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 if (tmpHypothesis.repeatedMeasuresMapTree !== undefined) {
                     for(var w = 0; w < tmpHypothesis.repeatedMeasuresMapTree.length; w++) {
-                        var factorMap = tmpHypothesis.repeatedMeasuresMapTree[w];
+                        var rmFactorMap = tmpHypothesis.repeatedMeasuresMapTree[w];
                         var rmFactor =
-                            studyDesignInstance.getWithinFactorByJson(angular.toJson(factorMap.repeatedMeasuresNode));
+                            studyDesignInstance.getWithinFactorByJson(angular.toJson(rmFactorMap.repeatedMeasuresNode));
                         if (rmFactor !== undefined) {
                             studyDesignInstance.hypothesis[0].repeatedMeasuresMapTree.push({
-                                type: factorMap.type,
+                                type: rmFactorMap.type,
                                 repeatedMeasuresNode: rmFactor
                             });
                         }
@@ -436,7 +434,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             }
         }
         return undefined;
-    }
+    };
 
     /**
      * Get the repeated measures object which matches the specified json
@@ -449,7 +447,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             }
         }
         return undefined;
-    }
+    };
 
     /*
     * Convenience routine to determine if a power method is
@@ -494,24 +492,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         studyDesignInstance.hypothesis = [{idx:1, type:'GRAND_MEAN', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
         studyDesignInstance.covariance = [];
         studyDesignInstance.matrixSet = [];
-    };
-
-    /**
-     * Get MatrixSet list by name
-     */
-
-    studyDesignInstance.getMatrixSetListIndexByName = function(listName) {
-        var index = -1;
-        for (var i=0; i < studyDesignInstance.matrixSet.length; i++) {
-            if (studyDesignInstance.matrixSet[i].name == listName) {
-                index = i;
-                //window.alert("foundList:" + listName + i);
-                return i;
-            }
-        }
-
-        //window.alert("NOTfoundList:" + listName + -1);
-        return index;
     };
 
     /**
@@ -685,6 +665,48 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             studyDesignInstance.relativeGroupSizeList = [];
         }
 
+    };
+
+    /**
+     * Select the best trend for the number of values specified.
+     * Makes sure that the selected trend is valid for the number of values.
+     * Called when the number of categories for a predictor or the number
+     * of measurements for repeated measures changes
+     */
+    studyDesignInstance.getBestTrend = function(currentTrend, numValues) {
+        switch(currentTrend) {
+            case glimmpseConstants.trendCubic:
+                if (numValues > 3) {
+                    return currentTrend;
+                } else if (numValues > 2) {
+                    return glimmpseConstants.trendQuadratic;
+                } else if (numValues > 1) {
+                    return glimmpseConstants.trendLinear;
+                } else {
+                    return glimmpseConstants.trendNone;
+                }
+                break;
+            case glimmpseConstants.trendQuadratic:
+                if (numValues > 2) {
+                    return currentTrend;
+                } else if (numValues > 1) {
+                    return glimmpseConstants.trendLinear;
+                } else {
+                    return glimmpseConstants.trendNone;
+                }
+                break;
+            case glimmpseConstants.trendLinear:
+            case glimmpseConstants.trendAllPolynomial:
+            case glimmpseConstants.trendChangeFromBaseline:
+                if (numValues > 1) {
+                    return currentTrend;
+                } else {
+                    return glimmpseConstants.trendNone;
+                }
+                break;
+            default:
+                return glimmpseConstants.trendNone;
+        }
     };
 
     // return the singleton study design class
