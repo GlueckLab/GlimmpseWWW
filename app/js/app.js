@@ -133,7 +133,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             .when('/typeIError',
             {templateUrl: 'partials/typeIErrorView.html', controller: 'typeIErrorRateController' }
         )
-            .when('/predictors/',
+            .when('/predictors',
             {templateUrl: 'partials/predictorsView.html', controller: 'predictorsController' }
         )
             .when('/covariates',
