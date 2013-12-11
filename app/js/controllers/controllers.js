@@ -22,7 +22,8 @@
 */
 glimmpseApp.controller('stateController',
     function($scope, $rootScope, $location, $http, $modal, config,
-             glimmpseConstants, studyDesignService, powerService) {
+             glimmpseConstants, studyDesignService, studyDesignMetaData,
+             powerService) {
 
     /**
      * Initialize the controller
@@ -31,6 +32,9 @@ glimmpseApp.controller('stateController',
     function init() {
         // the study design object
         $scope.studyDesign = studyDesignService;
+
+        // meta data associated with the study design
+        $scope.metaData = studyDesignMetaData;
 
         // the power service
         $scope.powerService = powerService;
@@ -174,6 +178,7 @@ glimmpseApp.controller('stateController',
         if (confirm('This action will clear any unsaved study design information.  Continue?')) {
             $scope.studyDesign.reset();
             $scope.powerService.clearCache();
+            $scope.metaData.reset();
             init();
         }
     };
@@ -214,6 +219,8 @@ glimmpseApp.controller('stateController',
                     // parse the json
                     try {
                         $scope.studyDesign.fromJSON(responseText);
+                        $scope.metaData.updatePredictorCombinations();
+                        $scope.metaData.updateResponseCombinations();
                     } catch(err) {
                         window.alert("The file did not contain a valid study design");
                     }
@@ -1131,12 +1138,13 @@ glimmpseApp.controller('stateController',
 /**
  * Controller managing the response variables list
  */
-    .controller('responseController', function($scope, glimmpseConstants,
+    .controller('responseController', function($scope, glimmpseConstants, matrixUtilities,
                                                studyDesignService, studyDesignMetaData) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.matrixUtils = matrixUtilities;
             $scope.metaData = studyDesignMetaData;
             $scope.newResponse = '';
             $scope.editedResponse = '';
@@ -1150,11 +1158,28 @@ glimmpseApp.controller('stateController',
          */
         $scope.syncStudyDesign = function() {
             // update covariance of the responses
-            // TODO:
-//            $scope.studyDesign.updateCovariance(glimmpseConstants.covarianceResponses,
-//                glimmpseConstants.covarianceTypeUnstructured,
-//                studyDesignService.responseList.length
-//            );
+            var covariance = $scope.studyDesign.getCovarianceByName(glimmpseConstants.covarianceResponses);
+            if ($scope.studyDesign.responseList.length <= 0) {
+                // if no responses, remove the covariance object
+                if (covariance !== undefined) {
+                    // Note: it should always be the case that the response covariance is
+                    // the last in the array.
+                    $scope.studyDesign.covariance.pop();
+                }
+
+            } else {
+                // update the size of the existsing covariance or create a fresh one
+                if (covariance === undefined) {
+                    $scope.studyDesign.covariance.push(
+                        $scope.matrixUtils.createUnstructuredCorrelation(glimmpseConstants.covarianceResponses,
+                            $scope.studyDesign.responseList.length)
+                    );
+                } else {
+                    $scope.matrixUtils.resizeCovariance(covariance, covariance.rows,
+                        $scope.studyDesign.responseList.length, 0, 1);
+                }
+            }
+
             // TODO: update size of sigmaY / Sigma Yg
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
@@ -1722,32 +1747,15 @@ glimmpseApp.controller('stateController',
     /**
      * Controller managing the means view (i.e. beta matrix)
      */
-    .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService) {
+    .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService,
+        studyDesignMetaData) {
 
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.metaData = studyDesignMetaData;
             $scope.betaMatrix = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
-            $scope.startColumn = 0;
         }
-
-        /**
-         * Shift the start column to the left
-         */
-        $scope.shiftLeft = function() {
-            if ($scope.startColumn > 0) {
-                $scope.startColumn = $scope.startColumn - $scope.studyDesign.responseList.length;
-            }
-        };
-
-        /**
-         * Shift the counter to the right
-         */
-        $scope.shiftRight = function() {
-            if ($scope.startColumn < $scope.betaMatrix.columns - $scope.studyDesign.responseList.length) {
-                $scope.startColumn = $scope.startColumn + $scope.studyDesign.responseList.length;
-            }
-        };
     })
 
 /**

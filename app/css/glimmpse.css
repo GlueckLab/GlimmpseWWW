@@ -36,6 +36,10 @@ button::-moz-focus-inner {
     overflow:scroll;
 }
 
+.xscroll {
+    overflow-x:scroll;
+}
+
 /*** Start page styles ***/
 html {
     background: white;
@@ -621,6 +625,19 @@ table.table-entry-contents {
     height: 100%;
 }
 
+.matrix-cell {
+    padding: 0;
+    color: #555555;
+    border: none;
+    width: 100px;
+    background-color: transparent;
+}
+
+.matrix-cell:focus {
+    color: black;
+    background-color: white;
+    border: 1px solid #999999;
+}
 
 /**** GLIMMPSE Application Styles ****/
 

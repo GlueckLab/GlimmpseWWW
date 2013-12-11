@@ -606,13 +606,13 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      * it is associated
      */
     studyDesignInstance.getCovarianceByName = function(name) {
-        for(var rmi = 0; rmi < studyDesignInstance.repeatedMeasuresTree.length; rmi++) {
-            var rmNode = studyDesignInstance.repeatedMeasuresTree[rmi];
-            if (rmNode.numberOfMeasurements !== undefined) {
-                numResponses *= rmNode.numberOfMeasurements;
+        for(var i = 0; i < studyDesignInstance.covariance.length; i++) {
+            var covariance = studyDesignInstance.covariance[i];
+            if (name == covariance.name) {
+                return covariance;
             }
         }
-        return numResponses;
+        return undefined;
     };
 
     /**

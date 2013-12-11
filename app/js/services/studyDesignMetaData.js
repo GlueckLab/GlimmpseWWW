@@ -35,6 +35,15 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
     metaDataInstance.responseCombinationList = [];
 
     /**
+     * Clear the meta data
+     */
+    metaDataInstance.reset = function() {
+        metaDataInstance.powerCurveDescription = {};
+        metaDataInstance.predictorCombinationList = [];
+        metaDataInstance.responseCombinationList = [];
+    };
+
+    /**
      * Return the number of predictor combinations
      */
     metaDataInstance.getNumberOfPredictorCombinations = function() {
@@ -119,15 +128,16 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
                 studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
         }
 
-        // now build the rows for the repeated measures
+        // now build the display headers for the repeated measures
         var numRepetitions = totalCombinations;
         for (var rmIdx = 0; rmIdx < studyDesignService.repeatedMeasuresTree.length; rmIdx++) {
-            var spacingList = studyDesignService.repeatedMeasuresTree[rmIdx].spacingList;
+            var rmFactor = studyDesignService.repeatedMeasuresTree[rmIdx];
+            var spacingList = rmFactor.spacingList;
             var row = [];
             if (spacingList !== undefined && spacingList.length >= 2) {
-                numRepetitions /= spacingList.length;
-                for(var spacingIdx = 0; spacingIdx < spacingList.length; spacingIdx++) {
-                    for(var combo = 0; combo < numRepetitions; ) {
+                numRepetitions = numRepetitions / spacingList.length;
+                for(var combo = 0; combo < totalCombinations; ) {
+                    for(var spacingIdx = 0; spacingIdx < spacingList.length; spacingIdx++) {
                         for(var rep = 0; rep < numRepetitions; rep++) {
                             row.push(spacingList[spacingIdx].value);
                             combo++;
