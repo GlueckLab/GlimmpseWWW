@@ -36,7 +36,7 @@
     <div class="well">
         <form novalidate>
             <div class="pull-left">
-                <table class="table table-striped table-bordered table-condensed">
+                <table class="table table-bordered table-condensed white-box">
                     <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
                         <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
                             {{factor.dimension}}
@@ -61,7 +61,7 @@
 
             </div>
             <div class="xscroll">
-                <table class="table table-striped table-bordered table-condensed">
+                <table class="table table-bordered table-condensed white-box">
                     <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
                         <th ng-repeat="entry in metaData.responseCombinationList[$index] track by $id($index)">
                             {{entry}}

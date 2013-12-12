@@ -16,29 +16,87 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<div class='matrix-container'>
-    <!-- top bar with matrix dimensions -->
-    <div class='matrix-header'>
-        <form name="matrix-form" novalidate>
-            <input name="newRows" type="number"
+<div class='well'>
+    <form name="matrixDimensionForm" class="form-inline" novalidate>
+        <!-- top bar with matrix dimensions -->
+        <div class="form-group">
+
+            <input name="newRows" type="number" class="form-control text-sm"
                    ng-model='matrix.rows' ng-change="resizeRows()"
                    min='1' max='50' step='1' autocomplete="off" autofocus required
                    ng-disabled='!rowResizable' />
-            &times;
-            <input name="newColumns" type="number"
+        </div>
+        <div class="form-group">
+            <label>&times;</label>
+        </div>
+        <div class="form-group">
+            <input name="newColumns" type="number"  class="form-control text-sm"
                    ng-model='matrix.columns' ng-change="resizeColumns()"
                    min='1' max='50' step='1' autocomplete="off" autofocus required
                    ng-disabled='!columnResizable'/>
-        </form>
-    </div>
-    <!-- matrix cells -->
-    <div class='matrix-body'>
+        </div>
+    </form>
+    <!-- matrix cells, no labels -->
+    <div class='matrix-body' ng-show="rowLabels == undefined && columnLabels == undefined">
         <table>
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <td ng-repeat="cell in row track by $id($index)">
                     <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
-                            ng-disabled='isCellDisabled($parent.$index, $index)'
-                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
+                           ng-disabled='isCellDisabled($parent.$index, $index)'
+                           ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- matrix cells, row labels -->
+    <div class='matrix-body' ng-show="rowLabels != undefined && columnLabels == undefined">
+        <table>
+            <tr ng-repeat="row in matrix.data.data track by $id($index)">
+                <th>
+                    {{rowLabels[$index]}}
+                </th>
+                <td ng-repeat="cell in row track by $id($index)">
+                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                           ng-disabled='isCellDisabled($parent.$index, $index)'
+                           ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- matrix cells, column labels -->
+    <div class='matrix-body' ng-show="rowLabels == undefined && columnLabels != undefined">
+        <table>
+            <tr>
+                <th ng-repeat="colLabel in columnLabelList">
+                    {{colLabel}}
+                </th>
+            </tr>
+            <tr ng-repeat="row in matrix.data.data track by $id($index)">
+                <td ng-repeat="cell in row track by $id($index)">
+                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                           ng-disabled='isCellDisabled($parent.$index, $index)'
+                           ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- matrix cells, row and column labels -->
+    <div class='matrix-body'  ng-show="rowLabels != undefined && columnLabels != undefined">
+        <table>
+            <tr>
+                <th>&nbsp</th>
+                <th ng-repeat="colLabel in columnLabelList">
+                    {{colLabel}}
+                </th>
+            </tr>
+            <tr ng-repeat="row in matrix.data.data track by $id($index)">
+                <th>
+                    {{rowLabelList[$index]}}
+                </th>
+                <td ng-repeat="cell in row track by $id($index)">
+                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                           ng-disabled='isCellDisabled($parent.$index, $index)'
+                           ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>
             </tr>
         </table>

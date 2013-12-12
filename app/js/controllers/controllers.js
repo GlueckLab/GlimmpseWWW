@@ -1597,15 +1597,7 @@ glimmpseApp.controller('stateController',
                 var rmLevel = studyDesignService.repeatedMeasuresTree.length-1;
                 if (rmLevel >= 0) {
                     studyDesignService.covariance.splice(rmLevel, 0,
-                        {
-                            "idx":rmLevel,
-                            "type":glimmpseConstants.correlationTypeLear,
-                            "standardDeviationList":null,
-                            "rho":0,"delta":0,
-                            "rows":2,
-                            "columns":2,
-                            "blob":null
-                        }
+                        $scope.matrixUtils.createLEARCorrelation("", 2)
                     );
                 }
             }
@@ -1649,16 +1641,8 @@ glimmpseApp.controller('stateController',
              * structure, since we build the matrix server side for those
              */
             var covariance = $scope.studyDesign.covariance[rmLevel];
-            if (covariance.type == glimmpseConstants.correlationTypeUnstructured) {
-                $scope.matrixUtils.resizeCovarianceRows(covariance,
-                    covariance.rows, factor.numberOfMeasurements, 0, 1);
-                $scope.matrixUtils.resizeCovarianceColumns(covariance,
-                    covariance.columns, factor.numberOfMeasurements, 0, 1);
-            } else if (covariance.type == glimmpseConstants.correlationTypeLear) {
-                covariance.rows = factor.numberOfMeasurements;
-                covariance.columns = factor.numberOfMeasurements;
-            }
-
+            $scope.matrixUtils.resizeCovariance(covariance,
+                covariance.rows, factor.numberOfMeasurements, 0, 1);
 
             $scope.syncTotalResponses();
         };
@@ -1681,10 +1665,10 @@ glimmpseApp.controller('stateController',
          * Add all levels of repeated measures
          */
         $scope.removeRepeatedMeasures = function() {
-
-            var maxRmLevel = studyDesignService.repeatedMeasuresTree.length-1;
+            var maxRmLevel = studyDesignService.repeatedMeasuresTree.length;
+            window.alert(maxRmLevel);
             // remove the covariance objects related to the repeated measures
-            studyDesignService.repeatedMeasuresTree.splice(0, maxRmLevel);
+            studyDesignService.covariance.splice(0, maxRmLevel);
             // clear the tree
             studyDesignService.repeatedMeasuresTree = [];
             // update the beta matrix and number of responses
@@ -1801,6 +1785,7 @@ glimmpseApp.controller('stateController',
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.hypothesis = studyDesignService.hypothesis[0];
+            $scope.thetaNull = studyDesignService.getMatrixByName(glimmpseConstants.matrixThetaNull);
             $scope.betweenFactorMapMetaDataList = [];
             $scope.withinFactorMapMetaDataList = [];
             $scope.currentBetweenFactorMapMetaData = undefined;
@@ -2248,34 +2233,90 @@ glimmpseApp.controller('stateController',
  * Controller for variability within view
  */
     .controller('variabilityWithinController', function($scope, glimmpseConstants, studyDesignService) {
+
+        /**
+         * Update the row and column labels
+         */
+        $scope.setRowColumnLabels = function() {
+            $scope.rowLabelList = [];
+            $scope.columnLabelList = [];
+            if ($scope.currentCovariance !== undefined) {
+                // build the row and column labels
+                if ($scope.currentCovariance.name == glimmpseConstants.covarianceResponses) {
+                    for(var i = 0; i < $scope.studyDesign.responseList.length; i++) {
+                        var value = $scope.studyDesign.responseList[i].name;
+                        $scope.rowLabelList.push(value);
+                        $scope.columnLabelList.push(value);
+                    }
+                } else {
+                    var rmFactor = $scope.studyDesign.repeatedMeasuresTree[0];
+                    for(var sidx = 0; sidx < rmFactor.spacingList.length; sidx++) {
+                        var spacingEntry = rmFactor.spacingList[sidx].value;
+                        $scope.rowLabelList.push($scope.currentCovariance.name + " " + spacingEntry);
+                        $scope.columnLabelList.push($scope.currentCovariance.name + " " + spacingEntry);
+                    }
+                }
+            }
+        };
+
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-
+            $scope.currentCovariance = $scope.studyDesign.covariance[0];
+            $scope.setRowColumnLabels();
         }
-         /*
-        $scope.chooseVariabilityType = function() {
 
-            if (studyDesignService.covariance[0].type == "UNSTRUCTURED_COVARIANCE") {
-                studyDesignService.covariance[0].type = "UNSTRUCTURED_CORRELATION";
+        /**
+         * get the display name for a covariance object
+         * @param covariance
+         * @returns {*}
+         */
+        $scope.getName = function(covariance) {
+            if (covariance.name == glimmpseConstants.covarianceResponses) {
+                return "responses";
             }
-            else if (studyDesignService.covariance[0].type == "UNSTRUCTURED_CORRELATION") {
-                studyDesignService.covariance[0].type = "UNSTRUCTURED_COVARIANCE";
-            }
-
+            return covariance.name;
         };
 
-        $scope.chooseRMCorrelations = function() {
+        /**
+         * Reset the current covariance
+         * @param covariance
+         */
+        $scope.setCovariance = function(covariance) {
+            $scope.currentCovariance = covariance;
+            $scope.setRowColumnLabels();
+        };
 
-            if (studyDesignService.covariance[1].type == "UNSTRUCTURED_CORRELATION") {
-                studyDesignService.covariance[1].type = "LEAR_CORRELATION";
+        /**
+         * Returns true if the cell at the specified row
+         * and column should be disabled.
+         *
+         * @param row
+         * @param column
+         * @returns {boolean}
+         */
+        $scope.isCellDisabled = function(row, column) {
+            if ($scope.currentCovariance === undefined) {
+                return true;
             }
-            else if (studyDesignService.covariance[1].type == "LEAR_CORRELATION") {
-                studyDesignService.covariance[1].type = "UNSTRUCTURED_CORRELATION";
+            if ($scope.currentCovariance.type ==
+                glimmpseConstants.covarianceTypeUnstructured) {
+                return (column > row);
+
+            } else if ($scope.currentCovariance.type ==
+                glimmpseConstants.correlationTypeUnstructured) {
+                return (column >= row);
             }
+            return true;
+        };
 
-        }; */
+        /**
+         * Fill in the cells of the covariance object with the
+         * lear covariance values
+         */
+        $scope.calculateLear = function() {
 
+        };
     })
 
 /**
@@ -2290,9 +2331,9 @@ glimmpseApp.controller('stateController',
             $scope.currentOption = 1;
             $scope.startColumn = 0;
             $scope.numberOfRows = 0;
-
+                /*
             $scope.matrixIndex = studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
-            $scope.numberOfRows = studyDesignService.matrixSet[matrixIndex].rows;
+            $scope.numberOfRows = studyDesignService.matrixSet[matrixIndex].rows;  */
         }
 
         $scope.SameCorrelationForOutcomes = function() {

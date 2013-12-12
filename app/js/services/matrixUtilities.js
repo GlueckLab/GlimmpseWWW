@@ -198,15 +198,15 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      * @param defaultValue
      */
     matrixUtilitiesInstance.resizeCovarianceStandardDeviationList = function(covariance, dimension) {
-        if (covariance.standardDeviationList.length > dimension) {
-                for(var i = covariance.standardDeviationList.length; i < dimension; i++) {
-                    covariance.standardDeviationList.push({idx: 0, value: 1})
-                }
-        } else if (covariance.standardDeviationList.length < dimension) {
+        if (covariance.standardDeviationList.length < dimension) {
+            for(var i = covariance.standardDeviationList.length; i < dimension; i++) {
+                covariance.standardDeviationList.push({idx: 0, value: 1});
+            }
+        } else if (covariance.standardDeviationList.length > dimension) {
             covariance.standardDeviationList.splice(dimension,
                 covariance.standardDeviationList.length - dimension);
         }
-    }
+    };
 
     /**
      * Wrapper function to resize a covariance matrix
@@ -224,7 +224,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             defaultOffDiagonal, defaultDiagonal);
         matrixUtilitiesInstance.resizeCovarianceStandardDeviationList(covariance, newSize);
 
-    }
+    };
 
     /**
      * Create an unstructured covariance object
@@ -250,7 +250,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         // fill in the standard deviation list
         for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1})
+            covariance.standardDeviationList.push({idx: 0, value: 1});
         }
 
         // fill in the data
@@ -263,7 +263,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         return covariance;
-    }
+    };
 
     /**
      * Create an unstructured correlation object
@@ -289,7 +289,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         // fill in the standard deviation list
         for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1})
+            covariance.standardDeviationList.push({idx: 0, value: 1});
         }
 
         // fill in the data
@@ -302,7 +302,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         return covariance;
-    }
+    };
 
     /**
      * Create a LEAR correlation object
@@ -321,16 +321,27 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             delta:0,
             rows: dimension,
             columns: dimension,
-            blob: null
+            blob: {
+                data:[]
+            }
         };
 
         // fill in the standard deviation list
         for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1})
+            covariance.standardDeviationList.push({idx: 0, value: 1});
+        }
+
+        // fill in the data
+        for(var r = 0; r < dimension; r++) {
+            var colData = [];
+            for(var c = 0; c < dimension; c++) {
+                colData.push((r == c ? 1 : 0));
+            }
+            covariance.blob.data.push(colData);
         }
 
         return covariance;
-    }
+    };
 
     return matrixUtilitiesInstance;
 });

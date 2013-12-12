@@ -209,6 +209,10 @@ button:focus {
     padding-right: 5px;
 }
 
+.text-sm {
+    width: 60px;
+}
+
 .info-toggle {
     display: inline-block;
     padding: 0;

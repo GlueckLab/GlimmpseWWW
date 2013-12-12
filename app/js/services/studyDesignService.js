@@ -105,7 +105,17 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     studyDesignInstance.covariance = [];
 
     /** The matrix set. */
-    studyDesignInstance.matrixSet = [];
+    studyDesignInstance.matrixSet = [
+        {
+            idx:0,
+            name: glimmpseConstants.matrixThetaNull,
+            rows: 1,
+            columns: 1,
+            data: {
+                data:[[0]]
+            }
+        }
+    ];
 
     /*** Methods ***/
 
@@ -489,9 +499,26 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         studyDesignInstance.betweenParticipantFactorList = [];
         studyDesignInstance.repeatedMeasuresTree = [];
         studyDesignInstance.clusteringTree = [];
-        studyDesignInstance.hypothesis = [{idx:1, type:'GRAND_MEAN', betweenParticipantFactorMapList:[], repeatedMeasuresMapTree:[]}];
+        studyDesignInstance.hypothesis = [
+            {
+                idx:1,
+                type: glimmpseConstants.hypothesisGrandMean,
+                betweenParticipantFactorMapList:[],
+                repeatedMeasuresMapTree:[]
+            }
+        ];
         studyDesignInstance.covariance = [];
-        studyDesignInstance.matrixSet = [];
+        studyDesignInstance.matrixSet = [
+            {
+                idx:0,
+                name: glimmpseConstants.matrixThetaNull,
+                rows: 1,
+                columns: 1,
+                data: {
+                    data:[[0]]
+                }
+            }
+        ];
     };
 
     /**

@@ -17,14 +17,6 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<html lang="en"><head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-    <title>Solving For View</title>
-</head>
-
-<body>
-
 <h3>Would you like to solve for power or sample size? </h3>
 <p>
 To begin your calculation, please indicate whether you would like to solve for power or total sample size.
@@ -37,21 +29,21 @@ for power may be more beneficial.
 If you have fewer restrictions on recruitment and would like to ensure a well-powered study,
 then solving for sample size is likely to be more useful.
 </p>
-<form class="form-group">
-    <div class="radio">
-        <label>
-            <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypePower}}"
-                   data-ng-model="studyDesign.solutionTypeEnum">Power</input>
-        </label>
-    </div>
-    <div class="radio">
-        <label>
-            <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypeSampleSize}}"
-                   data-ng-model="studyDesign.solutionTypeEnum">Sample Size</input>
-        </label>
-    </div>
-</form>
+<div class="well">
+    <form class="form-group">
+        <div class="radio">
+            <label>
+                <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypePower}}"
+                       data-ng-model="studyDesign.solutionTypeEnum">Power</input>
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="solvingFor" value="{{glimmpseConstants.solutionTypeSampleSize}}"
+                       data-ng-model="studyDesign.solutionTypeEnum">Sample Size</input>
+            </label>
+        </div>
+    </form>
+</div>
 
 
-</body>
-</html>
