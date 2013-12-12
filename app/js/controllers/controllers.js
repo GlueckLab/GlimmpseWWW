@@ -1666,7 +1666,6 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeRepeatedMeasures = function() {
             var maxRmLevel = studyDesignService.repeatedMeasuresTree.length;
-            window.alert(maxRmLevel);
             // remove the covariance objects related to the repeated measures
             studyDesignService.covariance.splice(0, maxRmLevel);
             // clear the tree
@@ -1911,7 +1910,6 @@ glimmpseApp.controller('stateController',
          * @param factorMap
          */
         $scope.getWithinFactorMapMetaData = function(factorMap) {
-            window.alert($scope.withinFactorMapMetaDataList.length)  ;
             for(var i = 0; i < $scope.withinFactorMapMetaDataList.length; i++) {
                 var metaData = $scope.withinFactorMapMetaDataList[i];
                 if (factorMap == metaData.factorMap) {
@@ -2235,6 +2233,70 @@ glimmpseApp.controller('stateController',
     .controller('variabilityWithinController', function($scope, glimmpseConstants, studyDesignService) {
 
         /**
+         * Pre-calculate the min/max distances for the LEAR model
+         * when the user selected a repeated measures tab
+         */
+        $scope.updateLearDistances = function() {
+            if ($scope.currentCovariance !== undefined &&
+                $scope.currentCovariance.name != glimmpseConstants.covarianceResponses) {
+                var rmFactor = $scope.studyDesign.repeatedMeasuresTree[
+                    $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
+                    ];
+
+                // maximum spacing between any of the measurements, assuming the list is in
+                // ascending order
+                $scope.maxDistance = Math.abs(rmFactor.spacingList[rmFactor.spacingList.length-1].value -
+                    rmFactor.spacingList[0].value);
+                // find the smallest distance increment between any of the measurements
+                $scope.minDistance = $scope.maxDistance;
+                for(var i = 0, j = 1; j < rmFactor.spacingList.length; i++, j++ )
+                {
+                    var difference = Math.abs(rmFactor.spacingList[j].value - rmFactor.spacingList[i].value);
+                    if(difference < $scope.minDistance)
+                    {
+                        $scope.minDistance = difference;
+                    }
+                }
+                $scope.maxMinDiff = $scope.maxDistance - $scope.minDistance;
+                // when there are only 2 elements in the spacing list, the max = min distance between
+                // the elements.  thus we force to 1
+                if ($scope.maxMinDiff == 0) $scope.maxMinDiff = 1;
+            } else {
+                $scope.maxMinDiff = undefined;
+                $scope.minDistance = undefined;
+                $scope.maxDistance = undefined;
+            }
+        };
+
+
+        /**
+         * Fill in the cells of the covariance object with the
+         * lear covariance values
+         */
+        $scope.calculateLear = function() {
+            // make sure user is done filling in the text
+            if ($scope.currentCovariance !== undefined &&
+                $scope.currentCovariance.rho >= -1 && $scope.currentCovariance.rho <= 1 &&
+                $scope.currentCovariance.delta >= 0) {
+                var spacingList = $scope.studyDesign.repeatedMeasuresTree[
+                    $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
+                    ].spacingList;
+                for(var r = 0; r < $scope.currentCovariance.rows; r++) {
+                    for(var c = 0; c < r; c++) {
+                        var measurementDistance = Math.abs(spacingList[r].value - spacingList[c].value);
+                        var powerValue = $scope.minDistance + (
+                            $scope.currentCovariance.delta *
+                                (measurementDistance - $scope.minDistance)/($scope.maxMinDiff));
+                        var value = Math.pow($scope.currentCovariance.rho, powerValue);
+                        $scope.currentCovariance.blob.data[r][c] = value;
+                        $scope.currentCovariance.blob.data[c][r] = value;
+                    }
+                }
+            }
+
+        };
+
+        /**
          * Update the row and column labels
          */
         $scope.setRowColumnLabels = function() {
@@ -2264,6 +2326,11 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
             $scope.currentCovariance = $scope.studyDesign.covariance[0];
             $scope.setRowColumnLabels();
+            $scope.updateLearDistances();
+            if ($scope.currentCovariance !== undefined &&
+                $scope.currentCovariance.type == glimmpseConstants.correlationTypeLear) {
+                $scope.calculateLear();
+            }
         }
 
         /**
@@ -2285,6 +2352,7 @@ glimmpseApp.controller('stateController',
         $scope.setCovariance = function(covariance) {
             $scope.currentCovariance = covariance;
             $scope.setRowColumnLabels();
+            $scope.updateLearDistances();
         };
 
         /**
@@ -2310,13 +2378,6 @@ glimmpseApp.controller('stateController',
             return true;
         };
 
-        /**
-         * Fill in the cells of the covariance object with the
-         * lear covariance values
-         */
-        $scope.calculateLear = function() {
-
-        };
     })
 
 /**
