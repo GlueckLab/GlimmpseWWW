@@ -736,6 +736,37 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         }
     };
 
+    /**
+     * Select the best hypothesis type for current predictors and repeated measures.
+     * Makes sure that the selected type is valid for the predictors and repeated measures.
+     * Called a predictor or repeated measure is deleted from the model
+     */
+    studyDesignInstance.getBestHypothesisType = function(currentType) {
+        var totalFactors = studyDesignInstance.betweenParticipantFactorList.length +
+            studyDesignInstance.repeatedMeasuresTree.length;
+        switch(currentType) {
+            case glimmpseConstants.hypothesisInteraction:
+                if (totalFactors > 1) {
+                    return currentType;
+                } else if (totalFactors > 0) {
+                    return glimmpseConstants.hypothesisTrend;
+                } else {
+                    return glimmpseConstants.hypothesisGrandMean;
+                }
+                break;
+            case glimmpseConstants.hypothesisMainEffect:
+            case glimmpseConstants.hypothesisTrend:
+                if (totalFactors > 0) {
+                    return currentType;
+                } else {
+                    return glimmpseConstants.hypothesisGrandMean;
+                }
+                break;
+            default:
+                return glimmpseConstants.hypothesisGrandMean;
+        }
+    };
+
     // return the singleton study design class
     return studyDesignInstance;
 

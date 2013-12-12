@@ -1308,6 +1308,7 @@ glimmpseApp.controller('stateController',
                         break;
                     }
                 }
+                hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
             }
 
         };
@@ -1577,8 +1578,8 @@ glimmpseApp.controller('stateController',
          */
         $scope.addLevel = function() {
 
-            if (studyDesignService.repeatedMeasuresTree.length < 3) {
-                studyDesignService.repeatedMeasuresTree.push({
+            if ($scope.studyDesign.repeatedMeasuresTree.length < 3) {
+                $scope.studyDesign.repeatedMeasuresTree.push({
                     idx: 0,
                     node: 0,
                     parent: 0,
@@ -1594,9 +1595,9 @@ glimmpseApp.controller('stateController',
                 $scope.syncTotalResponses();
 
                 // add a covariance object
-                var rmLevel = studyDesignService.repeatedMeasuresTree.length-1;
+                var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
                 if (rmLevel >= 0) {
-                    studyDesignService.covariance.splice(rmLevel, 0,
+                    $scope.studyDesign.covariance.splice(rmLevel, 0,
                         $scope.matrixUtils.createLEARCorrelation("", 2)
                     );
                 }
@@ -1612,7 +1613,7 @@ glimmpseApp.controller('stateController',
          * @param rmLevel
          */
         $scope.updateDimension = function(factor, rmLevel) {
-            studyDesignService.covariance[rmLevel].name = factor.dimension;
+            $scope.studyDesign.covariance[rmLevel].name = factor.dimension;
         };
 
         /**
@@ -1634,6 +1635,19 @@ glimmpseApp.controller('stateController',
                 }
             } else if (factor.numberOfMeasurements < factor.spacingList.length) {
                 factor.spacingList.splice(factor.numberOfMeasurements);
+
+                // if this factor is included in the hypothesis, make sure the
+                // chosen trend is still valid
+                var hypothesis = $scope.studyDesign.hypothesis[0];
+                if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
+                    for(var i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
+                        var map = hypothesis.repeatedMeasuresMapTree[i];
+                        if (map.repeatedMeasuresNode == factor) {
+                            map.type = $scope.studyDesign.getBestTrend(map.type, factor.numberOfMeasurements);
+                            break;
+                        }
+                    }
+                }
             }
 
             /* resize the covariance associated with this factor
@@ -1651,14 +1665,26 @@ glimmpseApp.controller('stateController',
          * Remove a repeated measure
          */
         $scope.removeLevel = function() {
-            var rmLevel = studyDesignService.repeatedMeasuresTree.length-1;
+            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
 
             // remove the covariance object corresponding to this level of repeated measures
-            studyDesignService.covariance.splice(rmLevel, 1);
+            $scope.studyDesign.covariance.splice(rmLevel, 1);
             // remove the repeated measures level from the tree
-            studyDesignService.repeatedMeasuresTree.pop();
+            var factor = $scope.studyDesign.repeatedMeasuresTree.pop();
             // update the beta matrix and number of responses
             $scope.syncTotalResponses();
+            // if the factor appears in the hypothesis, remove it
+            var hypothesis = $scope.studyDesign.hypothesis[0];
+            if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
+                for(var i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
+                    var map = hypothesis.repeatedMeasuresMapTree[i];
+                    if (map.repeatedMeasuresNode == factor) {
+                        hypothesis.repeatedMeasuresMapTree.splice(i, 1);
+                        break;
+                    }
+                }
+                hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
+            }
         };
 
         /**
@@ -1670,6 +1696,12 @@ glimmpseApp.controller('stateController',
             studyDesignService.covariance.splice(0, maxRmLevel);
             // clear the tree
             studyDesignService.repeatedMeasuresTree = [];
+            // clear any repeated measures from the hypothesis
+            var hypothesis = $scope.studyDesign.hypothesis[0];
+            if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
+                hypothesis.repeatedMeasuresMapTree = [];
+                hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
+            }
             // update the beta matrix and number of responses
             $scope.syncTotalResponses();
         };
