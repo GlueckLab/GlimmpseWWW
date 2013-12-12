@@ -32,11 +32,12 @@
 </p>
 
 <p>
-    Click here to learn more about selecting an appropriate test.
+    Click <a href="http://samplesizeshop.org/files/2012/12/Tutorial_SelectingATest.pdf" target="_blank">here</a>
+    to learn more about selecting an appropriate test.
 </p>
-
-
-    <div>
+<div class="well">
+    <label>Select one or more statistical tests</label>
+    <div class="well white-box">
         <div ng-repeat="test in testsList">
             <input type="checkbox"
                    data-ng-model="test.selected"
@@ -46,6 +47,7 @@
         </div>
     </div>
 
+</div>
 
 <div ng-show="glimmpseConstants.debug == true">
     <div> Tests: {{studyDesign.statisticalTestList}}</div>

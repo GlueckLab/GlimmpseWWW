@@ -105,6 +105,10 @@ button:focus {
     background: white;
 }
 
+.white {
+    color: white;
+}
+
 .rounded-box {
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;

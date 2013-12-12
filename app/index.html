@@ -130,22 +130,73 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="collapsed-header">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">Help</a>
-                </li>
+            <ul class="nav navbar-nav">
                 <li>
                     <a href="http://samplesizeshop.org">SampleSizeShop.org</a>
                 </li>
-                <li>
-                    <a href="http://samplesizeshop.org/documentation/glimmpse/">Documentation</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="" target="_blank">Getting Started</a></li>
+                        <li><a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
+                                Documentation
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://samplesizeshop.org/software-downloads/glimmpse/" target="_blank">
+                                Downloads
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="http://samplesizeshop.org/software-downloads/glimmpse/">Downloads</a>
+                    <a href="feedback.html" target="_blank">Feedback</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-show="getMode() != undefined">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Save<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="study.json"/>
+                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                                    Design
+                                </button>
+                            </form>
+                        </li>
+                        <!-- <li role="presentation">
+                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                                <a href="">Save Report</a>
+                            </div>
+                        </li>    -->
+                        <li>
+                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateResultsCSV()">
+                                    Results
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="/feedback.html">Feedback</a>
+                    <a href="#" ng-click="reset()">Clear</a>
                 </li>
+
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
@@ -219,12 +270,51 @@
         <!-- toolbox menu -->
         <div class="row hpadding30 hmargin15">
             <div class="pull-left visible-sm visible-xs">
-                <a href="#" class="btn btn-warning" ng-show="!isActive('/')">
+                <a href="#" class="btn btn-sm btn-success" ng-show="!isActive('/')">
                     <span class="glyphicon glyphicon-chevron-left"></span>
                     Back
                 </a>
             </div>
-            <div class="pull-right">
+            <!-- MOVED TO TOPBAR <div class="pull-right">
+                 <div class="btn-group">
+                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
+                         Save <span class="caret"></span>
+                     </button>
+                     <ul class="dropdown-menu" role="menu">
+                         <li>
+                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                                 <div>
+                                     <input type="hidden" name="filename" value="study.json"/>
+                                     <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                 </div>
+                                 <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                                     Design
+                                 </button>
+                             </form>
+                         </li>
+                         <!-- <li role="presentation">
+                             <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                                 <a href="">Save Report</a>
+                             </div>
+                         </li>    -->  <!--
+                        <li>
+                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateResultsCSV()">
+                                    Results
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-warning" ng-click="reset()">Clear</button>
+                </div>
+            </div>
+                <!--
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -247,7 +337,47 @@
                             <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
                                 <a href="">Save Report</a>
                             </div>
-                        </li>    -->
+                        </li>    -->  <!--
+                        <li role="presentation">
+                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" role="menuitem" data-ng-click="updateResultsCSV()">
+                                    Save Results as CSV
+                                </button>
+                            </form>
+                        </li>
+                        <li  role="presentation" class="divider"></li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="#" role="menuitem"  data-ng-click="reset()">Clear Study Design</a>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-cog"></span>
+                        Tools
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu"  role="menu" aria-labelledby="toolbar">
+                        <li role="presentation">
+                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="study.json"/>
+                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                </div>
+                                <button role="menuitem" type="submit" data-ng-click="updateStudyDesignJSON()">
+                                    Save Design
+                                </button>
+                            </form>
+                        </li>
+                        <!-- <li role="presentation">
+                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                                <a href="">Save Report</a>
+                            </div>
+                        </li>    -->  <!--
                         <li role="presentation">
                             <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
                                 <div>
@@ -265,7 +395,7 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div>  -->
         </div>
 
         <!-- main application page for mobile (small and extra small screens)
