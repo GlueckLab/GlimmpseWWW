@@ -18,20 +18,46 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<h3>  Variability Due to the Baseline Covariate
+<h3>  Variability Due to the Covariate
 </h3>
+<p>
+    Describe the anticipated variability in the normally-distributed covariate.
+    In addition, specify how strongly the covariate is correlated with
+    each response variable.
+</p>
 
-<div ng-show="studyDesign.responseList.length > 0 &&
-    studyDesign.gaussianCovariate == 'YES'">
+<div class="well">
+    <form novalidate name="covariateVariabilityForm">
+        <div class="form-group">
+            <label>Enter the standard deviation you expect to observe for the covariate</label>
+            <input class="form-control" type="number" value="1" min="0" name="sigmaG"
+                   data-ng-model="sigmaG.data.data[0][0]">
+            </input>
+            <div class="alert alert-danger" ng-show="covariateVariabilityForm.sigmaG.$error.min">
+                Please enter a positive number
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                Enter the correlation you expect to observe between the covariate
+                and each response below
+            </label>
+
+        </div>
+    </form>
+
+</div>
+
+<div ng-show="glimmpseConstants.debug == true">
+    <div class="vmargin15">
+        Sigma G: {{sigmaG}}
+    </div>
+</div>
+
+
 
     <p>
-        Describe the anticipated variability in the baseline covariate.
-        In addition, specify how strongly the baseline covariate is correlated with
-        each response variable.
-    </p>
-
-    <p>
-        Enter the standard deviation you expect to observe for the baseline covariate
+        Enter the standard deviation you expect to observe for the covariate
     </p>
 
     <input type="numeric" value="1" data-ng-model="studyDesign.matrixSet[0].
@@ -124,6 +150,3 @@
     </div>
 </div>
 
-<div ng-show="glimmpseConstants.debug == true">
-    {{studyDesign.matrixSet}}
-</div>

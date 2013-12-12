@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -17,7 +18,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<h3 xmlns="http://www.w3.org/1999/html">Power Calculation Method</h3>
+<h3>Power Calculation Method</h3>
 <p>
     For designs including a baseline covariate, two methods are available to calculate power:
     unconditional power and quantile power. One can think of the random covariate values
@@ -33,48 +34,51 @@
     <a href="http://www.ncbi.nlm.nih.gov/pubmed/12898543">Glueck and Muller (2003)</a>.
 </p>
 
-<div>
-    <div class="input-description">
-        Select one or more power methods below:
-    </div>
-    <div class="input-group">
-        <div>
-            <input type="checkbox" ng-model="unconditionalChecked"
-                   data-ng-click="updateMethodList(glimmpseConstants.powerMethodUnconditional,unconditionalChecked)">
-            Unconditional
-            </input>
-        </div>
-        <div>
-            <input type="checkbox" ng-model="quantileChecked"
-                   data-ng-click="updateMethodList(glimmpseConstants.powerMethodQuantile,quantileChecked)">
-            Quantile
-            </input>
-        </div>
-        <div ng-show="quantileChecked">
-            <div>
-                <p>For quantile power, one or more quantiles must be entered in the list below.</p>
-            </div>
-            <div class="list-entry">
-                <form name="quantileForm" class="list-entry-header" novalidate ng-submit="addQuantile()">
-                    <input name="newQuantile" type="number" placeholder="Enter a quantile" ng-model="newQuantile"
-                           min='0' max='1' step='0.01' autocomplete="off" autofocus required >
-                    <span class="error" ng-show="quantileForm.newQuantile.$error.min">Please enter a number between 0 and 1</span>
-                    <span class="error" ng-show="quantileForm.newQuantile.$error.max">Please enter a number between 0 and 1</span>
-                </form>
-                <ul class="list-entry-contents">
-                    <li ng-repeat="quantile in studyDesign.quantileList">
-                        <label>{{quantile.value}}</label>
-                        <button data-ng-click="deleteQuantile(quantile)">&times;</button>
-                    </li>
-                </ul>
+<div class="well">
+    <form novalidate name="powerMethodForm">
+        <div class="form-group">
+            <label>Select one or more power methods below</label>
+            <div class="well white-box">
+                <div>
+                    <input type="checkbox" ng-model="unconditionalChecked"
+                           data-ng-click="updateMethodList(glimmpseConstants.powerMethodUnconditional,unconditionalChecked)">
+                    Unconditional
+                    </input>
+                </div>
+                <div>
+                    <input type="checkbox" ng-model="quantileChecked"
+                           data-ng-click="updateMethodList(glimmpseConstants.powerMethodQuantile,quantileChecked)">
+                    Quantile
+                    </input>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
+    <div ng-show="quantileChecked">
+        <form novalidate name="quantileForm" ng-submit="addQuantile()">
+            <div class="form-group">
+                <label>Enter one or more quantiles in the list below</label>
+                <input class="form-control" name="newQuantile" type="number" placeholder="Enter a quantile" ng-model="newQuantile"
+                       min='0' max='1' step='0.01' autocomplete="off" autofocus required >
+                <div class="alert alert-danger" ng-show="quantileForm.newQuantile.$error.min">Please enter a number between 0 and 1</div>
+                <div class="alert alert-danger" ng-show="quantileForm.newQuantile.$error.max">Please enter a number between 0 and 1</div>
+            </div>
+        </form>
+        <ul class="list-unstyled">
+            <li class="list-item box rounded-box" ng-repeat="quantile in studyDesign.quantileList">
+                <label>{{quantile.value}}</label>
+                <button data-ng-click="deleteQuantile(quantile)" class="glyphicon glyphicon-remove"></button>
+            </li>
+        </ul>
 
-    <div ng-show="glimmpseConstants.debug==true">
-         Methods: {{studyDesign.powerMethodList}}, Quantiles: {{studyDesign.quantileList}}
     </div>
 </div>
+
+
+<div ng-show="glimmpseConstants.debug==true">
+     Methods: {{studyDesign.powerMethodList}}, Quantiles: {{studyDesign.quantileList}}
+</div>
+
 
 
 

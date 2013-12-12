@@ -46,14 +46,17 @@
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
-    <div>
+    <div class="vmargin15">
         Response vars: {{studyDesign.responseList}}
     </div>
-    <div>
+    <div class="vmargin15">
         Covariance set: {{studyDesign.covariance}}
     </div>
-    <div>
+    <div class="vmargin15">
         Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
+    </div>
+    <div class="vmargin15">
+        Matrix set {{studyDesign.matrixSet}}
     </div>
 </div>
 

@@ -1157,6 +1157,14 @@ glimmpseApp.controller('stateController',
          * are still in sync with the responses list
          */
         $scope.syncStudyDesign = function() {
+
+            // update the list of combinations of responses
+            $scope.metaData.updateResponseCombinations();
+            // update the beta matrix
+            $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
+                $scope.metaData.getNumberOfResponseCombinations()
+            );
+
             // update covariance of the responses
             var covariance = $scope.studyDesign.getCovarianceByName(glimmpseConstants.covarianceResponses);
             if ($scope.studyDesign.responseList.length <= 0) {
@@ -1166,6 +1174,10 @@ glimmpseApp.controller('stateController',
                     // the last in the array.
                     $scope.studyDesign.covariance.pop();
                 }
+                // remove SigmaYg
+                if ($scope.studyDesign.gaussianCovariate) {
+                   $scope.studyDesign.removeMatrixByName(glimmpseConstants.matrixSigmaYG);
+                }
 
             } else {
                 // update the size of the existsing covariance or create a fresh one
@@ -1174,19 +1186,26 @@ glimmpseApp.controller('stateController',
                         $scope.matrixUtils.createUnstructuredCorrelation(glimmpseConstants.covarianceResponses,
                             $scope.studyDesign.responseList.length)
                     );
+                    if ($scope.studyDesign.gaussianCovariate) {
+                        $scope.studyDesign.matrixSet.push(
+                            $scope.matrixUtils.createNamedFilledMatrix(glimmpseConstants.matrixSigmaYG,
+                                $scope.studyDesign.getNumberOfResponses(), 1, 0)
+                        );
+                    }
                 } else {
                     $scope.matrixUtils.resizeCovariance(covariance, covariance.rows,
                         $scope.studyDesign.responseList.length, 0, 1);
+                    if ($scope.studyDesign.gaussianCovariate) {
+                        var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+                        if (sigmaYg !== undefined) {
+                            $scope.matrixUtils.resizeRows(sigmaYg, sigmaYg.rows,
+                                $scope.studyDesign.getNumberOfResponses(), 1, 0);
+                        }
+                    }
                 }
             }
 
-            // TODO: update size of sigmaY / Sigma Yg
-            // update the list of combinations of responses
-            $scope.metaData.updateResponseCombinations();
-            // update the beta matrix
-            $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
+
         };
 
         /**
@@ -1378,28 +1397,33 @@ glimmpseApp.controller('stateController',
             $scope.glimmpseConstants = glimmpseConstants;
         }
 
+        /**
+         * Toggle
+         */
         $scope.updateMatrixSet = function() {
 
             if ($scope.studyDesign.gaussianCovariate) {
-                // set up default matrices
+                // Add the beta random matrix
+                // TODO: drop beta random from the domain layer - not needed for power
                 var beta = $scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixBeta);
-                var P = beta.columns;
+                if (beta !== undefined) {
+                    $scope.studyDesign.matrixSet.push(
+                        $scope.matrixUtils.createNamedFilledMatrix(
+                            $scope.glimmpseConstants.matrixBetaRandom, 1, beta.columns, 1
+                        )
+                    );
+                    // add default sigma YG
+                    $scope.studyDesign.matrixSet.push(
+                        $scope.matrixUtils.createNamedFilledMatrix(
+                            $scope.glimmpseConstants.matrixSigmaYG, beta.columns, 1, 0
+                        )
+                    );
+                }
 
-                $scope.studyDesign.matrixSet.push(
-                    $scope.matrixUtils.createNamedFilledMatrix(
-                        $scope.glimmpseConstants.matrixBetaRandom, 1, P, 1
-                    )
-                );
                 // add default sigma G
                 $scope.studyDesign.matrixSet.push(
                     $scope.matrixUtils.createNamedIdentityMatrix(
                         $scope.glimmpseConstants.matrixSigmaG, 1
-                    )
-                );
-                // add default sigma YG
-                $scope.studyDesign.matrixSet.push(
-                    $scope.matrixUtils.createNamedFilledMatrix(
-                        $scope.glimmpseConstants.matrixSigmaYG, P, 1, 0
                     )
                 );
 
@@ -1407,7 +1431,7 @@ glimmpseApp.controller('stateController',
                     // add default sigma Y  - only used for matrix mode
                     $scope.studyDesign.matrixSet.push(
                         $scope.matrixUtils.createNamedIdentityMatrix(
-                            $scope.glimmpseConstants.matrixSigmaY, P
+                            $scope.glimmpseConstants.matrixSigmaY, beta.columns
                         )
                     );
                     // add default C-random - only used for matrix mode
@@ -1555,22 +1579,21 @@ glimmpseApp.controller('stateController',
 
         /**
          * When a response is added or remove, this function
-         * ensures that the beta matrix and covariance structures
-         * are still in sync with the responses list
+         * ensures that the beta matrix is still in sync with the responses list
          */
         $scope.syncTotalResponses = function() {
-            // update covariance of the responses
-            /*$scope.studyDesign.updateCovariance(glimmpseConstants.covarianceResponses,
-                glimmpseConstants.covarianceTypeUnstructured,
-                studyDesignService.responseList.length
-            );*/
-            // TODO: update size of sigmaY / Sigma Yg
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
             // update the beta matrix
             $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
                 $scope.metaData.getNumberOfResponseCombinations()
             );
+            // if the design has a covariate, resize the sigmaYg matrix
+            if ($scope.studyDesign.gaussianCovariate) {
+                var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+                $scope.matrixUtils.resizeRows(sigmaYg, sigmaYg.rows,
+                    $scope.studyDesign.getNumberOfResponses(), 0, 0);
+            }
         };
 
         /**
@@ -1650,6 +1673,9 @@ glimmpseApp.controller('stateController',
                 }
             }
 
+            // update the meta data
+            $scope.syncTotalResponses();
+
             /* resize the covariance associated with this factor
              * note, no need to do so if the user selected the LEAR correlation
              * structure, since we build the matrix server side for those
@@ -1658,7 +1684,6 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils.resizeCovariance(covariance,
                 covariance.rows, factor.numberOfMeasurements, 0, 1);
 
-            $scope.syncTotalResponses();
         };
 
         /**
@@ -1669,6 +1694,7 @@ glimmpseApp.controller('stateController',
 
             // remove the covariance object corresponding to this level of repeated measures
             $scope.studyDesign.covariance.splice(rmLevel, 1);
+
             // remove the repeated measures level from the tree
             var factor = $scope.studyDesign.repeatedMeasuresTree.pop();
             // update the beta matrix and number of responses
@@ -1718,43 +1744,6 @@ glimmpseApp.controller('stateController',
                 }
             }
         };
-
-        /*
-        $scope.updateMatrixSet = function() {
-
-            var sigmaGaussianMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaGaussianRandom');
-            var betaMatrixIndex = studyDesignService.getMatrixSetListIndexByName('beta');
-            var betaRandomMatrixIndex = studyDesignService.getMatrixSetListIndexByName('betaRandom');
-            var sigmaOGMatrixIndex =  studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
-
-            var previousLength = studyDesignService.matrixSet[betaMatrixIndex].columns;
-            var currentLength = 1;
-            for (var i=0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
-                currentLength *= studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
-            }
-            currentLength *= studyDesignService.responseList.length;
-            var difference = currentLength - previousLength;
-            if (difference > 0) {
-                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
-                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
-
-                for (var j=0; j < difference; j++) {
-                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].push(0);
-                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].push(1);
-                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.push([0]);
-                }
-            }
-            else if (difference < 0) {
-                window.alert("diff < 0");
-                studyDesignService.matrixSet[betaMatrixIndex].columns = currentLength;
-                studyDesignService.matrixSet[sigmaOGMatrixIndex].rows = currentLength;
-                for (var k=difference; k < 0; k++) {
-                    studyDesignService.matrixSet[betaMatrixIndex].data.data[0].pop();
-                    studyDesignService.matrixSet[betaRandomMatrixIndex].data.data[0].pop();
-                    studyDesignService.matrixSet[sigmaOGMatrixIndex].data.data.pop();
-                }
-            }
-        }; */
 
     })
 
@@ -2206,15 +2195,15 @@ glimmpseApp.controller('stateController',
             if (checked === true) {
                 if (method === null) {
                     // add the power to the list
-                    studyDesignService.powerMethodList.push({
+                    $scope.studyDesign.powerMethodList.push({
                         idx: 0,
                         powerMethodEnum: methodName
                     });
                 }
             } else {
                 if (method !== null) {
-                    studyDesignService.powerMethodList.splice(
-                        studyDesignService.powerMethodList.indexOf(method), 1);
+                    $scope.studyDesign.powerMethodList.splice(
+                        $scope.studyDesign.powerMethodList.indexOf(method), 1);
                 }
             }
         };
@@ -2226,8 +2215,8 @@ glimmpseApp.controller('stateController',
          */
         $scope.findMethod = function(name) {
             // javascript looping is weird.  This loops over the indices.
-            for(var i in studyDesignService.powerMethodList) {
-                if (name == studyDesignService.powerMethodList[i].value) {
+            for(var i=0; i < studyDesignService.powerMethodList.length; i++) {
+                if (name == studyDesignService.powerMethodList[i].powerMethodEnum) {
                     return studyDesignService.powerMethodList[i];
                 }
             }
@@ -2420,6 +2409,7 @@ glimmpseApp.controller('stateController',
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.hasSameCorrelation = undefined;
+            $scope.sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
             $scope.STDForCovariate = undefined;
             $scope.currentOption = 1;
             $scope.startColumn = 0;

@@ -652,7 +652,13 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             if (beta === undefined) {
                 beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, rows, columns, 0);
                 studyDesignInstance.matrixSet.push(beta);
+                if (studyDesignInstance.gaussianCovariate) {
+                    var betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBetaRandom,
+                        1, columns, 1);
+                    studyDesignInstance.matrixSet.push(betaRandom);
+                }
             }
+
             if (beta.rows != rows) {
                 matrixUtilities.resizeRows(beta, beta.rows, rows, 0, 0);
             }
@@ -660,10 +666,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-                    if (betaRandom === undefined) {
-                        betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta,
-                            1, columns, 1);
-                    }
                     if (betaRandom.columns != columns) {
                         matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
                     }
@@ -672,6 +674,9 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         } else {
             // design not valid, so we delete beta
             studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta);
+            if (studyDesignInstance.gaussianCovariate) {
+                studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBetaRandom);
+            }
         }
     };
 
