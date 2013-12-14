@@ -116,15 +116,15 @@
     <!-- header bar -->
     <nav class="navbar navbar-default" role="navigation">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header ">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsed-header">
+        <div class="navbar-header">
+            <button type="button" class="debug-border navbar-toggle" data-toggle="collapse" data-target="#collapsed-header">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">
-                <label class="logo">Glimmpse</label>
+            <a class="navbar-brand" href="/#">
+                <span class="logo">Glimmpse</span>
             </a>
         </div>
 
@@ -145,6 +145,11 @@
                     <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
+                            <a href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
+                                About Glimmpse
+                            </a>
+                        </li>
+                        <li>
                             <a href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
                                 Documentation
                             </a>
@@ -162,7 +167,9 @@
             </ul>
             <ul class="nav navbar-nav navbar-right" ng-show="getMode() != undefined">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Save<b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> Save <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu">
                         <li>
                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
@@ -194,7 +201,27 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#" ng-click="reset()">Clear</a>
+                    <form id="navUploadForm" enctype="multipart/form-data"
+                          action="{{uriUpload}}">
+                        <label class="none">
+                            <span class="glyphicon glyphicon-open"></span> Upload
+                            <input type="file" id="navBarUpload" name="file"
+                                   onchange="angular.element(this).scope().uploadFile(this)"
+                                   style="display:none;" />
+                        </label>
+
+                    </form>
+
+                    <!--
+                    <a href="#" ng-click="">
+                        <span class="glyphicon glyphicon-open"></span> Load
+
+                    </a> -->
+                </li>
+                <li>
+                    <a href="#" ng-click="reset()">
+                        <span class="glyphicon glyphicon-trash"></span> Clear
+                    </a>
                 </li>
 
             </ul>
@@ -202,7 +229,7 @@
     </nav>
 
     <!-- Mode selection screen -->
-    <div class="well shaded-box " ng-show="getMode() == undefined">
+    <div class="well shaded-box" ng-show="getMode() == undefined">
         <h3>Start Your Study Design</h3>
         <p>
             Welcome to GLIMMPSE. The GLIMMPSE software calculates power and sample size for study designs
@@ -265,137 +292,16 @@
 
 
     <!-- main Web application panel -->
-    <div class="white-box shaded-box rounded-box" ng-show="getMode() != undefined">
+    <div class="well white-box shaded-box" ng-show="getMode() != undefined">
 
         <!-- toolbox menu -->
         <div class="row hpadding30 hmargin15">
             <div class="pull-left visible-sm visible-xs">
-                <a href="#" class="btn btn-sm btn-success" ng-show="!isActive('/')">
+                <a href="#" class="btn btn-sm btn-warning" ng-show="!isActive('/')">
                     <span class="glyphicon glyphicon-chevron-left"></span>
                     Back
                 </a>
             </div>
-            <!-- MOVED TO TOPBAR <div class="pull-right">
-                 <div class="btn-group">
-                     <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">
-                         Save <span class="caret"></span>
-                     </button>
-                     <ul class="dropdown-menu" role="menu">
-                         <li>
-                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                 <div>
-                                     <input type="hidden" name="filename" value="study.json"/>
-                                     <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                 </div>
-                                 <button type="submit" data-ng-click="updateStudyDesignJSON()">
-                                     Design
-                                 </button>
-                             </form>
-                         </li>
-                         <!-- <li role="presentation">
-                             <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                 <a href="">Save Report</a>
-                             </div>
-                         </li>    -->  <!--
-                        <li>
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()">
-                                    Results
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-sm btn-warning" ng-click="reset()">Clear</button>
-                </div>
-            </div>
-                <!--
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-cog"></span>
-                        Tools
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu"  role="menu" aria-labelledby="toolbar">
-                        <li role="presentation">
-                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <button role="menuitem" type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Save Design
-                                </button>
-                            </form>
-                        </li>
-                        <!-- <li role="presentation">
-                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                <a href="">Save Report</a>
-                            </div>
-                        </li>    -->  <!--
-                        <li role="presentation">
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" role="menuitem" data-ng-click="updateResultsCSV()">
-                                    Save Results as CSV
-                                </button>
-                            </form>
-                        </li>
-                        <li  role="presentation" class="divider"></li>
-                    </ul>
-                </div>
-                <div>
-                    <a href="#" role="menuitem"  data-ng-click="reset()">Clear Study Design</a>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="toolbar" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-cog"></span>
-                        Tools
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu"  role="menu" aria-labelledby="toolbar">
-                        <li role="presentation">
-                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <button role="menuitem" type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Save Design
-                                </button>
-                            </form>
-                        </li>
-                        <!-- <li role="presentation">
-                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                <a href="">Save Report</a>
-                            </div>
-                        </li>    -->  <!--
-                        <li role="presentation">
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" role="menuitem" data-ng-click="updateResultsCSV()">
-                                    Save Results as CSV
-                                </button>
-                            </form>
-                        </li>
-                        <li  role="presentation" class="divider"></li>
-                        <li role="presentation">
-                            <a href="#" role="menuitem"  data-ng-click="reset()">Clear Study Design</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>  -->
         </div>
 
         <!-- main application page for mobile (small and extra small screens)
@@ -404,7 +310,7 @@
         </div>   -->
 
         <!-- main application content-->
-        <div class="row hmargin5 padding0">
+        <div class="row padding0">
 
         <!-- left nav -->
         <div class="col-md-3 visible-md visible-lg">
@@ -726,7 +632,7 @@
 
         <!-- main content area with toolbar -->
         <div class="col-md-9 col-lg-9 col-xs-12 col-sm-12">
-            <div class="box rounded-box">
+            <div class="well white-box">
                 <div class="padding10" ng-view=""></div>
             </div>
         </div>

@@ -231,40 +231,26 @@ button:focus {
 /* main header */
 
 .logo {
-    font-family: Palatino, Arial, Helvetica, sans-serif;
-    /*font-weight: bold;   */
-    padding-left: 40px;
-    font-size: 1.5em;
-    line-height: 1.5em;
+    /*font-family: Palatino, Arial, Helvetica, sans-serif; */
+    padding-left: 1.5em;
+    font-size: 1.4em;
+    line-height: 1.4em;
     background-image: url('../img/glimmpse.png');
     background-repeat: no-repeat;
-    background-size: 32px 32px;
-    background-position: 0px 4px;
+    background-size: 1.2em 1.2em;
     color: white;
-    text-shadow: 1px 1px 2px #111;
+    text-shadow: 1px 1px 2px #19364F;
 
-}
-
-.top-navbar a {
-	color: #e4eaef;
-	text-decoration: none;
-    display: inline-block;
-    padding: 8px;
-}
-
-.top-navbar a:visited {
-	color: #e4eaef;
-}
-
-.top-navbar a:hover {
-	color: white;
-    text-decoration: underline;
 }
 
 /* header - overrides bootstrap's navbar-default */
 
+.navbar-header {
+    padding: 0px;
+}
+
 .navbar-brand {
-    padding: 5px;
+    padding: 6px;
 }
 
 .navbar-default {
@@ -273,14 +259,47 @@ button:focus {
     margin: 0px;
 }
 
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-    color: white;
-    text-decoration: underline;
+/* extra styles for forms so the upload button in
+* the top navbar works
+*/
+.navbar-default .navbar-nav > li > form > label {
+    padding: 0;
+    margin: 0;
+    font-weight: normal;
+    width: 100%;
 }
 
-.navbar-default .navbar-nav > li > a {
-    color:#e4eaef;
+.navbar-default .navbar-nav > li > form > label:hover {
+    cursor: pointer;
+}
+
+.navbar-default .navbar-nav > li > form {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 20px;
+    color: #ACC0D1;
+}
+
+@media (min-width: 768px) {
+    .navbar-default .navbar-nav > li > form {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > form:hover {
+    color: white;
+    background-color: #4F7A9D;
+}
+
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ACC0D1;
+    border: none;
+    /* color: #e4eaef; */
 }
 
 

@@ -67,6 +67,12 @@ glimmpseApp.controller('stateController',
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
     }
 
+    $scope.leavePageCheck = function() {
+        if ($scope.getMode() !== undefined) {
+            window.alert("");
+        }
+    }
+
     /**
      * Convenience routine to determine if a screen has been completed by the user
      * @param state
