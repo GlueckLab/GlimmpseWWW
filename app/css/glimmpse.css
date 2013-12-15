@@ -352,6 +352,23 @@ button:focus {
 * the bootstrap
 */
 
+.panel-heading > .panel-title > button {
+    font-family: inherit;
+    font-weight: inherit;
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+
+}
+
+.panel-heading > .panel-title > button:hover {
+    text-decoration: underline;
+}
+.panel-heading > .panel-title > button.active {
+    background-color: greenyellow;
+}
+
 .panel-body {
     padding: 0px;
 }
@@ -384,7 +401,9 @@ button:focus {
 
 /**** The calculate button ****/
 
-.calculate-button, .calculate-button-disabled {
+.calculate-button,
+.calculate-button:focus,
+.calculate-button-disabled {
     display: block;
     color: white;
     background: none repeat scroll 0% 0% #5DC68B;
@@ -406,7 +425,8 @@ button:focus {
     margin-left: 10px;  */
 }
 
-.calculate-button-disabled {
+.calculate-button-disabled,
+.calculate-button-disabled:hover {
     color: white;
     background: #808080;
     border: 2px solid #707070;
@@ -415,6 +435,7 @@ button:focus {
 
 .calculate-button:hover {
     /* background: #58B781;    */
+    color: white;
     border: 2px solid #7EC8F1;
 }
 
@@ -503,7 +524,7 @@ button:focus {
 .gridStyle {
     border: 1px solid rgb(212,212,212);
     height: 240px;
-    margin: 0px 20px;
+    margin: 0;
 }
 
 /**** list input widgets ****/

@@ -16,18 +16,23 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
+<script>
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
 <h3>The Design Essence Matrix</h3>
 <p>
-In the general linear model, Y = XB + E, the X matrix contains predictor and covariate information.
-For power analysis, please specify a design essence matrix, Es(X). The Es(X) matrix contains one
-and only one copy of each unique row in the full design matrix. This allows separation of the
-study design information from overall and relative sample size.
+    In the general linear model, $\boldsymbol{Y} = \boldsymbol{XB} + \boldsymbol{E}$, the $\boldsymbol{X}$
+    matrix contains predictor and covariate information.
+    For power analysis, please specify a design essence matrix, $Es(\boldsymbol{X})$.
+    The $Es(\boldsymbol{X})$ matrix contains one and only one copy of each unique row
+    in the full design matrix. This allows separation of the study design information
+    from overall and relative sample size.
 </p>
 <p>
-Enter the Es(X) matrix below. To change the row dimension of the matrix, enter the updated number
-of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
-desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-coding for this matrix.
+    Enter the $Es(\boldsymbol{X})$ matrix below. To change the row dimension of the matrix, enter the updated number
+    of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
+    desired number of columns in the right-most textbox above the matrix data. Please use a full rank
+    coding for this matrix.
 </p>
 
 <ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'

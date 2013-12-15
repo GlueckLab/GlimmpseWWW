@@ -236,6 +236,42 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             {templateUrl: 'partials/resultsMatrixView.html', controller: 'resultsMatrixController' }
 
         )
+            .when('/modelIntro',
+            {templateUrl: 'partials/modelIntroView.html'}
+
+        )
+            .when('/hypothesisIntro',
+            {templateUrl: 'partials/hypothesisIntroView.html'}
+
+        )
+            .when('/meansIntro',
+            {templateUrl: 'partials/meansIntroView.html'}
+
+        )
+            .when('/variabilityIntro',
+            {templateUrl: 'partials/variabilityIntroView.html'}
+
+        )
+            .when('/optionsIntro',
+            {templateUrl: 'partials/optionsIntroView.html'}
+
+        )
+            .when('/matrixDesignIntro',
+            {templateUrl: 'partials/matrixDesignIntroView.html'}
+
+        )
+            .when('/matrixHypothesisIntro',
+            {templateUrl: 'partials/matrixHypothesisIntroView.html'}
+
+        )
+            .when('/matrixCoefficientsIntro',
+            {templateUrl: 'partials/matrixCoefficientsIntroView.html'}
+
+        )
+            .when('/matrixVariabilityIntro',
+            {templateUrl: 'partials/matrixVariabilityIntroView.html'}
+
+        )
             .otherwise({ redirectTo: '/' });
     }]);
 

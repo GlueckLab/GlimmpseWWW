@@ -16,21 +16,24 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Covariance of Outcomes: &Sigma;<sub>y</sub></h3>
+<script>
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
+<h3>Covariance of Outcomes: $\boldsymbol{\Sigma}_Y$</h3>
 <p>
-    For each independent sampling unit, <b>&Sigma;</b><sub>y</sub> is the covariance of the
-    outcomes conditional on the fixed predictors.  One can think of <b>&Sigma;</b><sub>y</sub> as the error covariance
+    For each independent sampling unit, $\boldsymbol{\Sigma}_Y$ is the covariance of the
+    outcomes conditional on the fixed predictors.  One can think of $\boldsymbol{\Sigma}_Y$ as the error covariance
     for each independent sampling unit in
     a model containing only the fixed predictors and excluding the Gaussian covariate.
 </p>
 <p>
-    For univariate designs, <b>&Sigma;</b><sub>y</sub> will be a 1x1 matrix containing the
+    For univariate designs, $\boldsymbol{\Sigma}_Y$ will be a $(1\times1)$ matrix containing the
     variance of the outcome conditional on the fixed predictors.  More complex structures may be entered for
     multivariate or repeated measures designs.
-    <b>&Sigma;</b><sub>y</sub> is a square, symmetric matrix with dimensions equal to the number of columns in <b>B</b>.
+    $\boldsymbol{\Sigma}_Y$ is a square, symmetric matrix with dimensions equal to the number of columns in $\boldsymbol{B}$.
 </p>
 <p>
-Enter values for <b>&Sigma;</b><sub>y</sub> in the matrix below.
+Enter values for $\boldsymbol{\Sigma}_Y$ in the matrix below.
 </p>
         
 <ng-resizable-matrix ng-model="sigmaYMatrix" rowresizable='false' columnresizable='false'

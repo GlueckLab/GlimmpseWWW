@@ -16,9 +16,12 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
+<script>
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
 <h3>Confidence Interval Options</h3>
 <p>
-If the means (<b>B</b>) or the error covariance (<b>Σ</b><sub>e</sub>) are sample estimates,
+If the means ($\boldsymbol{B}$) or the error covariance ($\boldsymbol{\Sigma}_e$) are sample estimates,
 then the power values produced from these matrices will be random quantities.
 To account for this randomness, GLIMMPSE can calculate confidence intervals
 for power values using the techniques described by
@@ -43,13 +46,13 @@ for power values using the techniques described by
                 <div class="radio">
                     <input type="radio" name="ciAssumptions"
                            ng-checked="betaFixedSigmaEstimated" ng-click="setAssumptions(true, false)">
-                    <b>B</b> is fixed, but <b>Σ</b><sub>e</sub> is estimated
+                    $\boldsymbol{B}$ is fixed, but $\boldsymbol{\Sigma}_e$ is estimated
                     </input>
                 </div>
                 <div class="radio">
                     <input type="radio" name="ciAssumptions"
                            ng-checked="betaEstimatedSigmaEstimated" ng-click="setAssumptions(false, false)">
-                    Both <b>B</b> and <b>Σ</b><sub>e</sub> are estimated
+                    Both $\boldsymbol{B}$ and $\boldsymbol{\Sigma}_e$ are estimated
                     </input>
                 </div>
             </div>
@@ -78,7 +81,7 @@ for power values using the techniques described by
             </div>
         </div>
         <div class="form-group">
-            <label>Describe the data from which you obtained the values for <b>B</b> and <b>Σ</b><sub>e</sub>.</label>
+            <label>Describe the data from which you obtained the values for $\boldsymbol{B}$ and $\boldsymbol{\Sigma}_e$.</label>
             <div class="well white-box">
                 <label>Total sample size</label>
                 <input name="totalSampleSize" class="form-control" type="number" min="2" step="1"

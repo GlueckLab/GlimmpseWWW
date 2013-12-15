@@ -21,11 +21,32 @@
 <div class="processing rounded-box" ng-show="processing==true">
     <label>Processing</label>
 </div>
-<div class="gridStyle" ng-show="errorMessage == undefined && processing == false"
-     ng-grid="resultsGridOptions"></div>
+<div class="well" ng-show="gridData != undefined && processing == false">
+    <p>
+        Click on a result for more details.
+    </p>
+    <div class="gridStyle"
+         ng-grid="resultsGridOptions"></div>
+    <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
+        <label>Details</label>
+        <div>
+            <label>Sample Size Breakdown</label>
+            {{currentResultDetails}}
+        </div>
+        <div>
+            <label>Sample Size Breakdown</label>
 
-<div ng-show="errorMessage != undefined && processing == false">
-    {{errorMessage}}
+        </div>
+
+    </div>
 </div>
 
-<div ng-show="glimmpseConstants.debug">{{gridData}}</div>
+<div ng-show="powerService.cachedError != undefined && processing == false">
+    <div ng-bind-html-unsafe="powerService.cachedError"></div>
+</div>
+
+<div ng-show="glimmpseConstants.debug">
+    <div class="vmargin15">
+        {{gridData}}
+    </div>
+</div>

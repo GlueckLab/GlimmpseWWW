@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -19,19 +20,12 @@
 <script>
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 </script>
-<h3>Within-Subject Contrast: $\boldsymbol{U}$ Matrix</h3>
-<p>
-    The $\boldsymbol{U}$ matrix defines the contrasts for within-subject effects. The matrix
-    is necessary for multivariate and repeated measures designs. The number of
-    rows in $\boldsymbol{U}$ must equal the number of columns in $\boldsymbol{B}$. To ensure conforming matrices,
-    the row dimension of $\boldsymbol{U}$ cannot be adjusted on this screen.
+<h3>Design: Introduction</h3>
 
-</p>
 <p>
-    Enter your within-subject contrast matrix below.
+    The $ \boldsymbol{X} $ matrix defines the fixed predictors and covariates in your study.
+    In this section, you will specify the design "essence" matrix, and optionally
+    control for a single Gaussian covariate.
 </p>
 
-<ng-resizable-matrix ng-model="withinContrastMatrix" rowresizable='false' columnresizable='true'
-                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'></ng-resizable-matrix>
 

@@ -48,8 +48,8 @@ glimmpseApp.controller('stateController',
         // results csv
         $scope.resultsCSV = "";
 
-        // modal dialog
-        $scope.waitDialog = undefined;
+        // show/hide processing dialog
+        $scope.processing = false;
 
         // list of incomplete views
         $scope.incompleteViews = [];
@@ -65,6 +65,14 @@ glimmpseApp.controller('stateController',
 
         // url for save upload
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
+    }
+
+    /**
+     * Set the view
+     * @param view
+     */
+    $scope.changeView = function(view){
+        $location.path(view); // path not hash
     }
 
     $scope.leavePageCheck = function() {
@@ -196,6 +204,9 @@ glimmpseApp.controller('stateController',
      * @param parentScope
      */
     $scope.uploadFile = function(input) {
+        $scope.$apply(function() {
+            $scope.processing = true;
+        });
         $location.path('/');
         powerService.clearCache();
 
@@ -204,19 +215,17 @@ glimmpseApp.controller('stateController',
         if (input.value === '') {
             window.alert("No file was selected.  Please try again");
         }
-        //$scope.showWaitDialog();
 
         $form.ajaxSubmit({
             type: 'POST',
             uploadProgress: function(event, position, total, percentComplete) {
             },
             error: function(event, statusText, responseText, form) {
-                /*
-                 handle the error ...
-                 */
+                /* handle the error */
+                $scope.processing = false;
                 window.alert("The study design file could not be loaded: " + responseText);
                 $form[0].reset();
-               // $scope.waitDialog.close();
+
             },
             success: function(responseText, statusText, xhr, form) {
                 // select the appropriate input mode
@@ -231,10 +240,10 @@ glimmpseApp.controller('stateController',
                         window.alert("The file did not contain a valid study design");
                     }
 
+                    $scope.processing = false;
                     $scope.mode = $scope.studyDesign.viewTypeEnum;
                     $scope.view =  $scope.glimmpseConstants.viewTypeStudyDesign;
                 });
-                //$scope.waitDialog.close();
                 $form[0].reset();
             }
         });
@@ -2929,8 +2938,8 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign = studyDesignService;
             $scope.powerService = powerService;
             $scope.processing = false;
-            $scope.errorMessage = undefined;
             $scope.gridData = {};
+            $scope.currentResultsDetails = undefined;
 
             $scope.columnDefs = [
                 { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
@@ -2946,6 +2955,10 @@ glimmpseApp.controller('stateController',
             $scope.resultsGridOptions = {
                 data: 'gridData',
                 columnDefs: 'columnDefs',
+                multiSelect: false,
+                afterSelectionChange: function(data) {
+                    $scope.currentResultDetails = $scope.calculateDetails($scope.resultsGridOptions.selectedItems[0]);
+                },
                 selectedItems: []
             };
 
@@ -2994,6 +3007,10 @@ glimmpseApp.controller('stateController',
                 $scope.errorMessage = powerService.cachedError;
             }
 
+        }
+
+        $scope.calculateDetails = function(result) {
+             return "New result " + angular.toJson(result);
         }
 
     })

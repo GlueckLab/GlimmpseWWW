@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -16,22 +17,20 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<script>
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-</script>
-<h3>Within-Subject Contrast: $\boldsymbol{U}$ Matrix</h3>
+<h3>
+    Means: Introduction
+</h3>
 <p>
-    The $\boldsymbol{U}$ matrix defines the contrasts for within-subject effects. The matrix
-    is necessary for multivariate and repeated measures designs. The number of
-    rows in $\boldsymbol{U}$ must equal the number of columns in $\boldsymbol{B}$. To ensure conforming matrices,
-    the row dimension of $\boldsymbol{U}$ cannot be adjusted on this screen.
-
+    In power analysis, it is necessary to choose mean values for the outcomes
+    before running the study. The means are often obtained from published results
+    or pilot data.  Larger mean differences are easier to detect, and so have
+    greater power.  To detect smaller differences, the investigator will typically
+    need a larger sample size.
 </p>
 <p>
-    Enter your within-subject contrast matrix below.
+    To detect a difference between the groups, at least two subgroups
+    should have means which differ by a scientifically meaningful amount.
+    For example, in a study of cholesterol-lowering medication, we would
+    expect the mean cholesterol level in the active drug group to be
+    lower than the placebo group.
 </p>
-
-<ng-resizable-matrix ng-model="withinContrastMatrix" rowresizable='false' columnresizable='true'
-                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'></ng-resizable-matrix>
-

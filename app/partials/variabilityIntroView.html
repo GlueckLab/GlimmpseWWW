@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -16,22 +17,14 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<script>
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-</script>
-<h3>Within-Subject Contrast: $\boldsymbol{U}$ Matrix</h3>
+<h3>
+    Variability: Introduction
+</h3>
 <p>
-    The $\boldsymbol{U}$ matrix defines the contrasts for within-subject effects. The matrix
-    is necessary for multivariate and repeated measures designs. The number of
-    rows in $\boldsymbol{U}$ must equal the number of columns in $\boldsymbol{B}$. To ensure conforming matrices,
-    the row dimension of $\boldsymbol{U}$ cannot be adjusted on this screen.
-
+    Power analysis requires information about the variability in the study outcomes,
+    and the correlation among measurements on a given independent sampling unit.
 </p>
 <p>
-    Enter your within-subject contrast matrix below.
+    In this section, you will provide standard deviations and correlations for the
+    study outcomes and the covariate (if specified).
 </p>
-
-<ng-resizable-matrix ng-model="withinContrastMatrix" rowresizable='false' columnresizable='true'
-                     symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'></ng-resizable-matrix>
-

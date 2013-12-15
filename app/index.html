@@ -36,9 +36,13 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
       </script>
-      <script type="text/javascript"
-        src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-      </script>        -->
+       -->
+    <script type="text/javascript"
+            src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
 
     <!-- build:js js/libraries.js -->
     <script src="lib/jquery.min.js"></script>
@@ -77,6 +81,10 @@
     <!-- endbuild -->
 
     <script>
+        $('#myCollapsible').on('hidden.bs.collapse', function () {
+
+        });
+
         $(function() {
 
 
@@ -230,11 +238,15 @@
 
     <!-- Mode selection screen -->
     <div class="well shaded-box" ng-show="getMode() == undefined">
+        <div class="processing rounded-box" ng-show="processing==true">
+            <label>Processing</label>
+        </div>
         <h3>Start Your Study Design</h3>
         <p>
             Welcome to GLIMMPSE. The GLIMMPSE software calculates power and sample size for study designs
             with normally distributed outcomes. Select one of the options below to begin your power or sample size calculation.
         </p>
+
         <div class="row vmargin15 hpadding0 box gray-box rounded-box">
             <div class="col-md-3 col-sm-3 col-xs-12">
                 <a href="#" class="btn btn-mode"
@@ -336,9 +348,10 @@
                         <!-- start menu -->
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-start">
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-start"
+                                        ng-click="changeView('/')">
                                     Start
-                                </a>
+                                </button>
                             </h4>
                         </div>
                         <div id="nav-start" class="panel-collapse collapse in">
@@ -357,15 +370,14 @@
 
                         <!-- ********* START GUIDED PANELS ********* -->
 
-                        <!-- sampling unit -->
+                        <!-- model menu -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-samplingUnit">
-                                    Model
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-model"
+                                        ng-click="changeView('/modelIntro')">Model</button>
                             </h4>
                         </div>
-                        <div id="nav-samplingUnit" class="panel-collapse collapse"
+                        <div id="nav-model" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
                                 <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
@@ -399,9 +411,8 @@
                         <!-- hypothesis panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-hypothesis">
-                                    Hypothesis
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-hypothesis"
+                                        ng-click="changeView('/hypothesisIntro')">Hypothesis</button>
                             </h4>
                         </div>
                         <div id="nav-hypothesis" class="panel-collapse collapse"
@@ -422,9 +433,8 @@
                         <!-- means panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means">
-                                    Means
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means"
+                                        ng-click="changeView('/meansIntro')">Means</button>
                             </h4>
                         </div>
                         <div id="nav-means" class="panel-collapse collapse"
@@ -442,9 +452,8 @@
                         <!-- variability panel -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-variability">
-                                    Variability
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-variability"
+                                        ng-click="changeView('/variabilityIntro')">Variability</button>
                             </h4>
                         </div>
                         <div id="nav-variability" class="panel-collapse collapse"
@@ -470,9 +479,8 @@
                         <!-- design -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-design">
-                                    Design
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-design"
+                                        ng-click="changeView('/matrixDesignIntro')">Design</button>
                             </h4>
                         </div>
                         <div id="nav-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
@@ -496,9 +504,8 @@
                         <!-- Regression coefficients -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-coefficients">
-                                    Coefficients
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-coefficients"
+                                        ng-click="changeView('/matrixCoefficientsIntro')">Coefficients</button>
                             </h4>
                         </div>
                         <div id="nav-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
@@ -515,9 +522,8 @@
                         <!-- Hypothesis -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-contrasts">
-                                    Hypothesis
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-contrasts"
+                                        ng-click="changeView('/matrixHypothesisIntro')">Hypothesis</button>
                             </h4>
                         </div>
                         <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
@@ -543,9 +549,8 @@
                         <!-- Variability -->
                         <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-covariance">
-                                    Variability
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-covariance"
+                                        ng-click="changeView('/matrixVariabilityIntro')">Variability</button>
                             </h4>
                         </div>
                         <div id="nav-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
@@ -577,9 +582,8 @@
                         <!-- options -->
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#nav-accordion" href="#nav-options">
-                                    Options
-                                </a>
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-options"
+                                        ng-click="changeView('/optionsIntro')">Options</button>
                             </h4>
                         </div>
                         <div id="nav-options" class="panel-collapse collapse">
@@ -602,12 +606,10 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <!-- TODO: disable when results unavailable -->
+                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results"
+                                        ng-show="powerService.cachedResults != undefined"
+                                        ng-click="changeView('/results/report')">Results</button>
                                 <label ng-show="powerService.cachedResults == undefined">Results</label>
-                                <a data-toggle="collapse" data-parent="#nav-accordion"
-                                   ng-show="powerService.cachedResults != undefined"
-                                   href="#nav-results">
-                                    Results
-                                </a>
                             </h4>
                         </div>
                         <div id="nav-results" class="panel-collapse collapse">
@@ -632,18 +634,11 @@
 
         <!-- main content area with toolbar -->
         <div class="col-md-9 col-lg-9 col-xs-12 col-sm-12">
+            <div class="processing rounded-box" ng-show="processing==true">
+                <label>Processing</label>
+            </div>
             <div class="well white-box">
                 <div class="padding10" ng-view=""></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- The processing dialog -->
-    <div class="modal fade" id="processingDialog" tabindex="-1"
-         role="dialog" aria-labelledby="processingDialogLabel" aria-hidden="{{showProcessing && false}}">
-        <div class="modal-dialog rounded-box white-box">
-            <div class="modal-body">
-                <div class="processing">Processing</div>
             </div>
         </div>
     </div>
