@@ -585,20 +585,6 @@ table.table-entry-contents {
     border-collapse: collapse;
 }
 
-.input-description {
-    margin: 10px 0px;
-}
-
-.input-group {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 0px 20px;
-}
-
-
-
-
-
 /** Data table style (also see ng-grid.css for full styles) **/
 .gridStyle {
 

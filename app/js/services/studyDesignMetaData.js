@@ -26,7 +26,10 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
 
     // TODO: migrate power curve information out of main study design
     // since it is all client-side now
-    metaDataInstance.powerCurveDescription = {};
+    metaDataInstance.plotOptions = {
+        xAxis: glimmpseConstants.xAxisTotalSampleSize,
+        availableDataSeries: []
+    };
 
     // all combinations of predictor categories
     metaDataInstance.predictorCombinationList = [];

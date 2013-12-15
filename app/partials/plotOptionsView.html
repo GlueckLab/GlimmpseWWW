@@ -20,36 +20,37 @@
 <p>
     To create a power curve, uncheck the box below.  Follow the prompts to define the curve.
 </p>
-<p>
-    <div class="input-group">
-        <input id="noCI" type="checkbox" ng-checked="studyDesign.powerCurveDescriptions == null" ng-click="togglePowerCurveDescription()">
-        Don't create a power curve
-        </input>
-    </div>
-</p>
+<div class="well">
+    <input id="noCurve" type="checkbox" ng-checked="studyDesign.powerCurveDescriptions == null"
+           ng-click="togglePowerCurveDescription()">
+    Don't create a power curve
+    </input>
+</div>
 
-<div ng-show="studyDesign.powerCurveDescriptions != null">
-    <div class="input-description">
-        Select the quantity to display on the horizontal axis of the power curve. The vertical axis will display the power value.
-    </div>
-    <div class="input-group" >
-        <select ng-model="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum"
-                ng-change="buildDataSeries()"
-                ng-options="opt.value as opt.label for opt in XAxisOptions">
-                </select>
-    </div>
-    <div  class="input-description">
-        Select one or more data series to add to the plot by clicking the checkboxes.
-    </div>
+<div class="well" ng-show="studyDesign.powerCurveDescriptions != null">
+    <form novalidate name="curveOptionsForm">
+        <div class="form-group">
+            <label>Select the quantity to display on the horizontal axis of the power curve.</label>
+            <p>The vertical axis will display the power value.</p>
+            <select class="form-control" ng-model="studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum"
+                    ng-change="updateHorizontalAxisType()"
+                    ng-options="opt.value as opt.label for opt in XAxisOptions">
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Select one or more data series by clicking the checkboxes</label>
+            <p>Double click the label to edit the legend label for the data series</p>
+            <div class="gridStyle" ng-grid="gridOptions"></div>
+        </div>
 
-    <div class="gridStyle" ng-grid="gridOptions"></div>
+    </form>
+</div>
 
-
-    <div ng-show="glimmpseConstants.debug==true">
-        <div>Curve Description: {{studyDesign.powerCurveDescriptions}}</div>
-        <div>Possible series: {{possibleDataSeriesList}}</div>
-        <div>Grid options: {{gridOptions.selectedItems}}</div>
-    </div>
+<div ng-show="glimmpseConstants.debug==true">
+    <div class="vmargin15">Curve Description: {{studyDesign.powerCurveDescriptions}}</div>
+    <div class="vmargin15">Possible series: {{metaData.plotOptions.availableDataSeries}}</div>
+    <div class="vmargin15">Grid options - columns: {{columnDefs}}</div>
+    <div class="vmargin15">Grid options - selected: {{gridOptions.selected}}</div>
 </div>
 
 

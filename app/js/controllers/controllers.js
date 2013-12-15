@@ -2476,7 +2476,8 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for the plot options view
  */
-    .controller('plotOptionsController', function($scope, glimmpseConstants, studyDesignService) {
+    .controller('plotOptionsController', function($scope, glimmpseConstants,
+                                                  studyDesignMetaData, studyDesignService) {
 
         // setter functions passed into generate data series function
         $scope.setTest = function(current, test) {current.statisticalTestTypeEnum = test.type;};
@@ -2504,7 +2505,7 @@ glimmpseApp.controller('stateController',
                 dataSeriesList.push(
                     {
                         idx: 0,
-                        label: '',
+                        label: 'Series ' + (dataSeriesList.length + 1),
                         confidenceLimits: false,
                         statisticalTestTypeEnum: current.statisticalTestTypeEnum,
                         betaScale: current.betaScale,
@@ -2531,6 +2532,14 @@ glimmpseApp.controller('stateController',
          * solution type
          */
         $scope.buildDataSeries = function() {
+            if ($scope.studyDesign.powerCurveDescriptions === null) { return; }
+            // store the current axis type in the meta data
+            $scope.metaData.plotOptions.xAxis = $scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum;
+            $scope.metaData.plotOptions.availableDataSeries = [];
+            // clear the current selections
+            $scope.studyDesign.powerCurveDescriptions.dataSeriesList = [];
+            $scope.gridOptions.selectedItems.splice(0,$scope.gridOptions.selectedItems.length);
+
             // set up the recursive generation of data series
             var dataLists = [
                 {
@@ -2543,14 +2552,6 @@ glimmpseApp.controller('stateController',
                 }
             ];
 
-            $scope.columnDefs = [
-                { field: 'label', displayName: "Label", width: 200,
-                    enableCellEdit: true
-                },
-                { field: 'typeIError', displayName: 'Type I Error Rate', width: 200},
-                { field: 'statisticalTestTypeEnum', displayName: 'Test', width: 200}
-                ];
-
             // add sample size list or nominal power
             if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum !=
                 $scope.glimmpseConstants.xAxisTotalSampleSize) {
@@ -2561,7 +2562,6 @@ glimmpseApp.controller('stateController',
                             setFunction: $scope.setNominalPower
                         }
                     );
-                    $scope.columnDefs({ field: 'nominalPower', displayName: 'Nominal Power', width: 200});
                 } else {
                     dataLists.push(
                         {
@@ -2600,8 +2600,8 @@ glimmpseApp.controller('stateController',
             }
 
             // now generate the data series with some mad recursive action
-            $scope.possibleDataSeriesList = [];
-            $scope.generateCombinations(dataLists, $scope.possibleDataSeriesList, 0,
+            $scope.metaData.plotOptions.availableDataSeries = [];
+            $scope.generateCombinations(dataLists, $scope.metaData.plotOptions.availableDataSeries, 0,
                 {
                     idx: 0,
                     label: '',
@@ -2618,39 +2618,88 @@ glimmpseApp.controller('stateController',
             );
         };
 
+        /**
+         * Hide/show columns in the data series grid depending
+         * on the currently selected xAxis
+         */
+        $scope.updateVisibleColumns = function() {
+            if ($scope.studyDesign.powerCurveDescriptions !== null) {
+                switch ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum) {
+                    case glimmpseConstants.xAxisTotalSampleSize:
+                        $scope.nominalPowerColumn.visible = false;
+                        $scope.totalSampleSizeColumn.visible = false;
+                        $scope.betaScaleColumn.visible = true;
+                        $scope.sigmaScaleColumn.visible = true;
+                        break;
+                    case glimmpseConstants.xAxisBetaScale:
+                        $scope.nominalPowerColumn.visible =
+                            ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize);
+                        $scope.totalSampleSizeColumn =
+                            ($scope.studyDesign.solutionTypeEnum != $scope.glimmpseConstants.solutionTypeSampleSize);
+                        $scope.betaScaleColumn.visible = false;
+                        $scope.sigmaScaleColumn.visible = true;
+                        break;
+                    case glimmpseConstants.xAxisSigmaScale:
+                        $scope.nominalPowerColumn.visible =
+                            ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize);
+                        $scope.totalSampleSizeColumn =
+                            ($scope.studyDesign.solutionTypeEnum != $scope.glimmpseConstants.solutionTypeSampleSize);
+                        $scope.betaScaleColumn.visible = true;
+                        $scope.sigmaScaleColumn.visible = false;
+                        break;
+                }
 
-//
-//        $scope.columnDefs = [
-//            { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
-//            { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
-//            { field: 'nominalPower.value', displayName: 'Target Power', width: 200},
-//            { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
-//            { field: 'test.type', displayName: 'Test', width: 200},
-//            { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
-//            { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200}
-//        ];
-//
-//        // build grid options
-//        $scope.resultsGridOptions = {
-//            data: 'gridData',
-//            columnDefs: 'columnDefs',
-//            selectedItems: []
-//        };
+            }
+        }
 
         // initialize the controller
         init();
         function init() {
-            $scope.columnDefs = [];
-            $scope.possibleDataSeriesList = [];
             $scope.studyDesign = studyDesignService;
+            $scope.metaData = studyDesignMetaData;
+
+            // columns whose visibility changes depending on X-axis state
+            $scope.nominalPowerColumn =
+                { field: 'nominalPower', displayName: 'Nominal Power', width: 200};
+            $scope.totalSampleSizeColumn =
+                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200};
+            $scope.betaScaleColumn =
+                { field: 'betaScale', displayName: 'Means Scale', width: 200};
+            $scope.sigmaScaleColumn =
+                { field: 'sigmaScale', displayName: 'Variability Scale', width: 200};
+
+            // build columns for data series grid
+            $scope.columnDefs = [
+                { field: 'label', displayName: "Label", width: 160, enableCellEdit: true},
+                { field: 'confidenceLimits', displayName: "Show Confidence limits", width: 200,
+                    cellTemplate: '<input type="checkbox" ng-model="row.entity.confidenceLimits" />',
+                    visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null)
+                },
+                $scope.nominalPowerColumn,
+                $scope.totalSampleSizeColumn,
+                { field: 'typeIError', displayName: 'Type I Error Rate', width: 200},
+                $scope.betaScaleColumn,
+                $scope.sigmaScaleColumn,
+                { field: 'statisticalTestTypeEnum', displayName: 'Test', width: 200},
+                { field: 'powerMethod', displayName: 'Power Method', width: 200,
+                    visible: $scope.studyDesign.gaussianCovariate
+                },
+                { field: 'quantile', displayName: 'Quantile', width: 200,
+                    visible: ($scope.studyDesign.gaussianCovariate &&
+                        $scope.studyDesign.quantileList.length > 0)
+                }
+            ];
+
+            // seleect options for the X axis
             $scope.XAxisOptions = [
                 {label: "Total Sample Size", value: $scope.glimmpseConstants.xAxisTotalSampleSize},
                 {label: "Variability Scale Factor", value: $scope.glimmpseConstants.xAxisSigmaScale},
-                {label: "Regression Coefficient Scale Factor", value: $scope.glimmpseConstants.xAxisBetaScale}
+                {label: "Means (coefficients) Scale Factor", value: $scope.glimmpseConstants.xAxisBetaScale}
             ];
 
+            // set up ng-grid
             $scope.gridOptions = {
-                data: 'possibleDataSeriesList',
+                data: 'metaData.plotOptions.availableDataSeries',
                 columnDefs: 'columnDefs',
                 showSelectionCheckbox: true,
                 selectWithCheckboxOnly: true,
@@ -2660,15 +2709,27 @@ glimmpseApp.controller('stateController',
                 }
             };
 
-            if ($scope.studyDesign.powerCurveDescriptions !== null) {
-
+            // regenerate the possible data series if we have not yet done so
+            if ($scope.metaData.plotOptions.availableDataSeries.length === 0) {
                 $scope.buildDataSeries();
-                for(var i = 0; i < $scope.possibleDataSeriesList.length; i++) {
-                    // TODO: select the series in the study design
+            }
+            $scope.updateVisibleColumns();
+
+            // fill in the selections in the current study design
+            if ($scope.studyDesign.powerCurveDescriptions !== undefined) {
+                for(var i = 0; i < $scope.metaData.plotOptions.availableDataSeries.length; i++) {
+                    // select the series in the study design
+                    var series = $scope.metaData.plotOptions.availableDataSeries[i];
+                    if ($scope.studyDesign.powerCurveDescriptions.dataSeriesList.indexOf(series) >= 0) {
+                        $scope.gridOptions.selectedItems.push(series);
+                    }
                 }
             }
+        }
 
-
+        $scope.updateHorizontalAxisType = function() {
+            $scope.updateVisibleColumns();
+            $scope.buildDataSeries();
         }
 
         /**
@@ -2677,7 +2738,6 @@ glimmpseApp.controller('stateController',
         $scope.togglePowerCurveDescription = function() {
             if ($scope.studyDesign.powerCurveDescriptions !== null) {
                 $scope.studyDesign.powerCurveDescriptions = null;
-                $scope.dataSeriesList = [];
             } else {
                 $scope.studyDesign.powerCurveDescriptions = {
                     idx: 0,
@@ -2688,46 +2748,11 @@ glimmpseApp.controller('stateController',
                     horizontalAxisLabelEnum: 'TOTAL_SAMPLE_SIZE',
                     dataSeriesList: []
                 };
+                $scope.updateVisibleColumns();
                 $scope.buildDataSeries();
             }
         };
 
-        /**
-         * Add data series to the power curve description
-         */
-        $scope.addDataSeries = function(series) {
-            if (studyDesignService.powerCurveDescriptions !== null) {
-                studyDesignService.powerCurveDescriptions.dataSeriesList.push({
-                    idx: 0,
-                    label: series.label,
-                    confidenceLimits: series.confidenceLimits,
-                    statisticalTestTypeEnum: series.statisticalTestTypeEnum,
-                    betaScale: series.betaScale,
-                    sigmaScale: series.sigmaScale,
-                    typeIError: series.typeIError,
-                    sampleSize: series.sampleSize,
-                    nominalPower: series.nominalPower,
-                    powerMethod: series.powerMethod,
-                    quantile: series.quantile
-                });
-            }
-        };
-
-        /**
-         * Delete the specified data series from the power curve
-         * @param dataSeries
-         */
-        $scope.deleteDataSeries = function() {
-            /*
-            for(var i = 0; i < $scope.dataSeriesGridOptions.selectedItems.length; i++) {
-                var dataSeries = $scope.dataSeriesGridOptions.selectedItems[i];
-                studyDesignService.powerCurveDescriptions.dataSeriesList.splice(
-                    studyDesignService.powerCurveDescriptions.dataSeriesList.indexOf(dataSeries), 1);
-            }
-            $scope.gridData = studyDesignService.powerCurveDescriptions.dataSeriesList;
-            */
-            // TODO
-        };
     })
 
 /**
@@ -3093,9 +3118,9 @@ glimmpseApp.controller('stateController',
                         }]
                     },
                     legend: {
-                        layout: 'vertical',
-                        align: 'right',
-                        verticalAlign: 'middle',
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom',
                         borderWidth: 0,
                         enabled: true
                     },
