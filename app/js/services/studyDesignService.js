@@ -415,6 +415,18 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.covariance = [];
             } else {
                 studyDesignInstance.covariance = object.covariance;
+                for(var i = 0; i < studyDesignInstance.covariance.length; i++) {
+                    /* fix for designs uploaded from GLIMMPSE 2.0.1 - can have invalid correlation
+                     * when you start with a LEAR and then switch to unstructured
+                     */
+                    var covar = studyDesignInstance.covariance[i];
+                    if (covar.rows != covar.standardDeviationList.length) {
+                        covar.standardDeviationList = [];
+                        for(var i = 0; i < covar.rows; i++) {
+                            covar.standardDeviationList.push({idx: 0, value: 1});
+                        }
+                    }
+                }
             }
         } else {
             throw errorInvalid;

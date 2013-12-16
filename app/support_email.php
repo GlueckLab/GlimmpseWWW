@@ -20,8 +20,7 @@ try {
     $mail->addReplyTo($_REQUEST["email"], $_REQUEST["name"]);
 
     //Set who the message is to be sent to
-    $mail->addAddress('sarah.kreidler@ucdenver.edu', 'Sample Size Shop');
-    $mail->addAddress('sarahkreidler@hotmail.com', 'Sample Size Shop');
+    $mail->addAddress('samplesizeshop@gmail.com', 'Sample Size Shop');
 
     //Set the subject line
     $mail->Subject = 'Glimmpse Feedback';

@@ -345,6 +345,7 @@ button:focus {
     display: inline-block;
     background: white;
     padding: 10px;
+    min-height: 3em;
 }
 
 /*

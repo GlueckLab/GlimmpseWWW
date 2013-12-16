@@ -221,8 +221,10 @@ glimmpseApp.controller('stateController',
             uploadProgress: function(event, position, total, percentComplete) {
             },
             error: function(event, statusText, responseText, form) {
-                /* handle the error */
-                $scope.processing = false;
+                $scope.$apply(function() {
+                    /* handle the error */
+                    $scope.processing = false;
+                });
                 window.alert("The study design file could not be loaded: " + responseText);
                 $form[0].reset();
 
@@ -2314,6 +2316,21 @@ glimmpseApp.controller('stateController',
             if ($scope.currentCovariance !== undefined &&
                 $scope.currentCovariance.rho >= -1 && $scope.currentCovariance.rho <= 1 &&
                 $scope.currentCovariance.delta >= 0) {
+                if ($scope.currentCovariance.blob === null) {
+                    $scope.currentCovariance.blob = {
+                        data: []
+                    };
+                    // some uploaded designs may not include the lear data, but we need to
+                    // keep it somewhere, so create an empty covariance matrix
+                    for(var r = 0; r < $scope.currentCovariance.rows; r++) {
+                        var row = [];
+                        for(var c = 0; c < $scope.currentCovariance.columns; c++) {
+                            row.push((r == c ? 1 : 0));
+                        }
+                        $scope.currentCovariance.blob.data.push(row);
+                    }
+
+                }
                 var spacingList = $scope.studyDesign.repeatedMeasuresTree[
                     $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
                     ].spacingList;
@@ -2360,7 +2377,10 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.currentCovariance = $scope.studyDesign.covariance[0];
+            $scope.currentCovariance = undefined;
+            if ($scope.studyDesign.covariance.length > 0) {
+                $scope.currentCovariance = $scope.studyDesign.covariance[0];
+            }
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
             if ($scope.currentCovariance !== undefined &&
@@ -2390,6 +2410,66 @@ glimmpseApp.controller('stateController',
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
         };
+
+        /**
+         * Set the value of a given cell in the current covariance
+         * Used to maintain symmetry in unstructured views
+         * @param row
+         * @param column
+         * @param value
+         */
+        $scope.setCellValue = function(row, column, value) {
+            if (row != column) {
+                $scope.currentCovariance.blob.data[row][column] = value;
+            }
+        }
+
+        /**
+         * Perform any cleanup when switching between correlation, covariance
+         * and LEAR specifications
+         */
+        $scope.updateType = function() {
+            switch ($scope.currentCovariance.type) {
+                case glimmpseConstants.correlationTypeLear:
+                    // set default LEAR params
+                    $scope.currentCovariance.rho = 0;
+                    $scope.currentCovariance.delta = 0;
+                    $scope.calculateLear();
+                    break;
+                case glimmpseConstants.correlationTypeUnstructured:
+                    // clear LEAR parameters
+                    $scope.currentCovariance.rho = -2;
+                    $scope.currentCovariance.delta = -1;
+                    // reset standard deviations to 1
+                    for(var i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+                    // reset diagonals to 1, off-diagonals to 0 if < -1 or > 1
+                    for(var r = 0; r < $scope.currentCovariance.rows; r++) {
+                        for(var c = 0; c <= r; c++) {
+                            if (c == r) {
+                                $scope.currentCovariance.blob.data[r][c] = 1;
+                            } else {
+                                var value = $scope.currentCovariance.blob.data[r][c];
+                                if (value < -1 || value > 1) {
+                                    $scope.currentCovariance.blob.data[r][c] = 0;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case glimmpseConstants.covarianceTypeUnstructured:
+                    // clear LEAR parameters
+                    $scope.currentCovariance.rho = -2;
+                    $scope.currentCovariance.delta = -1;
+                    // reset standard deviations to 1
+                    for(var i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+                    break;
+
+            }
+        }
 
         /**
          * Returns true if the cell at the specified row
