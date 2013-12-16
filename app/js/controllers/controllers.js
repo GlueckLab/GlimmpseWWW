@@ -1216,7 +1216,7 @@ glimmpseApp.controller('stateController',
                         var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
                         if (sigmaYg !== undefined) {
                             $scope.matrixUtils.resizeRows(sigmaYg, sigmaYg.rows,
-                                $scope.studyDesign.getNumberOfResponses(), 1, 0);
+                                $scope.studyDesign.getNumberOfResponses(), 0, 1);
                         }
                     }
                 }
