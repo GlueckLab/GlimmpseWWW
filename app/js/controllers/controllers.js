@@ -23,7 +23,7 @@
 glimmpseApp.controller('stateController',
     function($scope, $rootScope, $location, $http, $modal, config,
              glimmpseConstants, studyDesignService, studyDesignMetaData,
-             powerService) {
+             matrixUtilities, powerService) {
 
     /**
      * Initialize the controller
@@ -38,6 +38,9 @@ glimmpseApp.controller('stateController',
 
         // the power service
         $scope.powerService = powerService;
+
+        // matrix functions
+        $scope.matrixUtils = matrixUtilities;
 
         // constants
         $scope.glimmpseConstants = glimmpseConstants;
@@ -407,6 +410,7 @@ glimmpseApp.controller('stateController',
      */
     $scope.calculate = function() {
         powerService.clearCache();
+        angular.element('#nav-results').collapse({'toggle': true, parent: '#nav-accordion'});
         $scope.setView($scope.glimmpseConstants.viewTypeResults);
     };
 
@@ -572,19 +576,19 @@ glimmpseApp.controller('stateController',
      * @returns {string}
      */
     $scope.getStateRepeatedMeasures = function() {
-        var state = $scope.glimmpseConstants.stateComplete;
-        if ($scope.studyDesign.repeatedMeasuresTree > 0) {
-            for(var factor in $scope.studyDesign.repeatedMeasuresTree) {
-                if (factor.dimension === undefined || factor.dimension.length <= 0 ||
+        if ($scope.studyDesign.repeatedMeasuresTree.length > 0) {
+            for(var i = 0; i < $scope.studyDesign.repeatedMeasuresTree.length; i++) {
+                var factor = $scope.studyDesign.repeatedMeasuresTree[i];
+                if (factor.dimension === undefined || factor.dimension === null ||
+                    factor.dimension.length <= 0 ||
                     factor.repeatedMeasuresDimensionType === undefined ||
                     factor.numberOfMeasurements < 2 ||
                     factor.spacingList.length <= 0) {
-                    state = $scope.glimmpseConstants.stateIncomplete;
-                    break;
+                    return $scope.glimmpseConstants.stateIncomplete;
                 }
             }
         }
-        return state;
+        return $scope.glimmpseConstants.stateComplete;
     };
 
 
@@ -644,8 +648,15 @@ glimmpseApp.controller('stateController',
      * @returns blocked, complete, or incomplete
      */
     $scope.getStateMeans = function() {
-        // TODO
-        return $scope.glimmpseConstants.stateComplete;
+        var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
+        if (beta === undefined || beta === null) {
+            return $scope.glimmpseConstants.stateBlocked;
+        }
+        if ($scope.matrixUtils.isValidMatrix(beta, undefined, undefined)) {
+            return $scope.glimmpseConstants.stateComplete;
+        } else {
+            return $scope.glimmpseConstants.stateIncomplete;
+        }
     };
 
     /**
@@ -656,9 +667,9 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateScaleFactorsForMeans = function() {
         if ($scope.studyDesign.betaScaleList.length > 0) {
-            return 'complete';
+            return $scope.glimmpseConstants.stateComplete;
         } else {
-            return 'incomplete';
+            return $scope.glimmpseConstants.stateIncomplete;
         }
     };
 
@@ -672,8 +683,18 @@ glimmpseApp.controller('stateController',
      * @returns blocked, complete, or incomplete
      */
     $scope.getStateWithinVariability = function() {
-        // TODO: finish state check
-        return 'complete';
+        if ($scope.studyDesign.responseList.length <= 0) {
+            return $scope.glimmpseConstants.stateBlocked;
+        }
+        if ($scope.studyDesign.covariance.length > 0) {
+            for(var i = 0; i < $scope.studyDesign.covariance.length; i++) {
+                var covar = $scope.studyDesign.covariance[i];
+                if (!$scope.matrixUtils.isValidCovariance(covar)) {
+                    return $scope.glimmpseConstants.stateIncomplete;
+                }
+            }
+        }
+        return $scope.glimmpseConstants.stateComplete;
     };
 
     /**
@@ -684,8 +705,22 @@ glimmpseApp.controller('stateController',
      * @returns disabled, complete, or incomplete
      */
     $scope.getStateCovariateVariability = function() {
-        // TODO: finish state check
-        return 'complete';
+        if ($scope.studyDesign.gaussianCovariate) {
+            if ($scope.studyDesign.responseList.length <= 0) {
+                return glimmpseConstants.stateBlocked;
+            }
+            var sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
+            if (!$scope.matrixUtils.isValidMatrix(sigmaG, 0, undefined)) {
+                return glimmpseConstants.stateIncomplete;
+            }
+            var sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+            if (!$scope.matrixUtils.isValidMatrix(sigmaYG, -1, 1)) {
+                return glimmpseConstants.stateIncomplete;
+            }
+            return glimmpseConstants.stateComplete;
+        } else {
+            return glimmpseConstants.stateDisabled;
+        }
     };
 
     /**
@@ -696,9 +731,9 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateScaleFactorsForVariability = function() {
         if ($scope.studyDesign.sigmaScaleList.length > 0) {
-            return 'complete';
+            return glimmpseConstants.stateComplete;
         } else {
-            return 'incomplete';
+            return glimmpseConstants.stateIncomplete;
         }
     };
 
@@ -710,9 +745,9 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateStatisticalTest = function() {
         if ($scope.studyDesign.statisticalTestList.length > 0) {
-            return 'complete';
+            return glimmpseConstants.stateComplete;
         } else {
-            return 'incomplete';
+            return glimmpseConstants.stateIncomplete;
         }
     };
 
@@ -737,20 +772,20 @@ glimmpseApp.controller('stateController',
                 }
                 if (quantileChecked) {
                     if ($scope.studyDesign.quantileList.length > 0) {
-                        return 'complete';
+                        return glimmpseConstants.stateComplete;
                     } else {
-                        return 'incomplete';
+                        return glimmpseConstants.stateIncomplete;
                     }
                 } else {
-                    return 'complete';
+                    return glimmpseConstants.stateComplete;
                 }
             } else {
-                return 'incomplete';
+                return glimmpseConstants.stateIncomplete;
             }
 
 
         } else {
-            return 'disabled';
+            return glimmpseConstants.stateDisabled;
         }
     };
 
@@ -765,7 +800,7 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateConfidenceIntervals = function() {
         if ($scope.studyDesign.confidenceIntervalDescriptions === null) {
-            return 'complete';
+            return glimmpseConstants.stateComplete;
         } else {
             if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed !== undefined &&
                 $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed !== undefined &&
@@ -773,9 +808,9 @@ glimmpseApp.controller('stateController',
                 $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability !== undefined &&
                 $scope.studyDesign.confidenceIntervalDescriptions.sampleSize !== undefined &&
                 $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix !== undefined) {
-                return 'complete';
+                return glimmpseConstants.stateComplete;
             } else {
-                return 'incomplete';
+                return glimmpseConstants.stateIncomplete;
             }
         }
     };
@@ -816,49 +851,94 @@ glimmpseApp.controller('stateController',
     };
 
 
+    /** Matrix mode checks **/
+
+    // check if design matrix is valid
     $scope.getStateDesignEssence = function() {
-        return 'complete';
+        if ($scope.matrixUtils.isValidMatrix(
+            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixXEssence))) {
+            return glimmpseConstants.stateComplete;
+        }
+        return glimmpseConstants.stateIncomplete;
     };
+    // state of beta matrix
     $scope.getStateBeta = function() {
-        return 'complete';
+        if ($scope.matrixUtils.isValidMatrix(
+            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta))) {
+            return glimmpseConstants.stateComplete;
+        }
+        return glimmpseConstants.stateIncomplete;
     };
+
     $scope.getStateBetweenParticipantContrast = function() {
-        return 'complete';
+        if ($scope.matrixUtils.isValidMatrix(
+            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBetweenContrast))) {
+            return glimmpseConstants.stateComplete;
+        }
+        return glimmpseConstants.stateIncomplete;
     };
+
     $scope.getStateWithinParticipantContrast = function() {
-        return 'complete';
+        if ($scope.matrixUtils.isValidMatrix(
+            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixWithinContrast))) {
+            return glimmpseConstants.stateComplete;
+        }
+        return glimmpseConstants.stateIncomplete;
     };
+
     $scope.getStateThetaNull = function() {
-        return 'complete';
+        if ($scope.matrixUtils.isValidMatrix(
+            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixThetaNull))) {
+            return glimmpseConstants.stateComplete;
+        }
+        return glimmpseConstants.stateIncomplete;
     };
 
     $scope.getStateSigmaE = function() {
         if ($scope.studyDesign.gaussianCovariate) {
-            return 'disabled';
+            return glimmpseConstants.stateDisabled;
         } else {
-            return 'complete';
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaE))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
         }
     };
 
     $scope.getStateSigmaG = function() {
         if (!$scope.studyDesign.gaussianCovariate) {
-            return 'disabled';
+            return glimmpseConstants.stateDisabled;
         } else {
-            return 'complete';
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
         }
     };
+
     $scope.getStateSigmaY = function() {
         if (!$scope.studyDesign.gaussianCovariate) {
-            return 'disabled';
+            return glimmpseConstants.stateDisabled;
         } else {
-            return 'complete';
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaY))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
         }
     };
+
     $scope.getStateSigmaYG = function() {
         if (!$scope.studyDesign.gaussianCovariate) {
-            return 'disabled';
+            return glimmpseConstants.stateDisabled;
         } else {
-            return 'complete';
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
         }
     };
 

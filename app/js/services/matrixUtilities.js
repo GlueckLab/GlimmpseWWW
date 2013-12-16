@@ -27,6 +27,100 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     var matrixUtilitiesInstance = {};
 
     /**
+     * Check if a matrix is valid
+     * @param matrix
+     */
+    matrixUtilitiesInstance.isValidMatrix = function(matrix, min, max) {
+        if (matrix === null || matrix === undefined) {
+            return false;
+        }
+
+        // make sure data matches row/columns specified
+        if (matrix.rows != matrix.data.data.length) {
+            return false;
+        }
+        if (matrix.rows > 0) {
+            if (matrix.columns != matrix.data.data[0].length) {
+                return false;
+            }
+        }
+        // make sure no cells are null
+        for(var r = 0; r < matrix.rows; r++) {
+            for(var c = 0; c < matrix.columns; c++) {
+                var cell = matrix.data.data[r][c];
+                if (cell === null || cell === undefined) {
+                    return false;
+                }
+                if (min !== undefined && cell < min) {
+                    return false;
+                }
+                if (max !== undefined && cell > max) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Check if a covariance is valid
+     * @param matrix
+     */
+    matrixUtilitiesInstance.isValidCovariance = function(covar) {
+        // must be non-null
+        if (covar === null || covar === undefined) {
+            return false;
+        }
+
+        if (covar.type == glimmpseConstants.correlationTypeLear &&
+            covar.rho === null || covar.rho === undefined ||
+            covar.delta === null || covar.delta === undefined) {
+            return false;
+        }
+
+        // make sure it is square
+        if (covar.rows != covar.columns) {
+            return false;
+        }
+        // make sure data matches row/columns specified
+        if (covar.rows != covar.blob.data.length) {
+            return false;
+        }
+        if (covar.rows > 0) {
+            if (covar.columns != covar.blob.data[0].length) {
+                return false;
+            }
+        }
+        // make sure no cells are null and the matrix is symmetric
+        for(var r = 0; r < covar.rows; r++) {
+            for(var c = 0; c < r; c++) {
+                var cell = covar.blob.data[r][c];
+                if (cell === null || cell === undefined ||
+                    (r != c && cell != covar.blob.data[c][r])) {
+                    return false;
+                }
+            }
+        }
+
+        // make sure the standard deviations are valid
+        if (covar.standardDeviationList.length != covar.rows) {
+            return false;
+        }
+        for(var i = 0; i < covar.standardDeviationList.length; i++) {
+            var stddev = covar.standardDeviationList[i];
+            if (stddev === null || stddev === undefined ||
+                stddev.value === undefined || stddev.value <= 0) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
      * Resize the rows of a matrix
      * @param matrix
      * @param oldRows

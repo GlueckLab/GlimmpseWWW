@@ -421,6 +421,9 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                      * standard deviation list or blob data.
                      */
                     // fix standard deviation
+                    if (covar.standardDeviationList === null) {
+                        covar.standardDeviationList = [];
+                    }
                     if (covar.rows != covar.standardDeviationList.length) {
                         covar.standardDeviationList = [];
                         for(var i = 0; i < covar.rows; i++) {
@@ -774,6 +777,15 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      * Called a predictor or repeated measure is deleted from the model
      */
     studyDesignInstance.getBestHypothesisType = function(currentType) {
+        var defaultThetaNull = {
+            idx:0,
+            name: glimmpseConstants.matrixThetaNull,
+            rows: 1,
+            columns: 1,
+            data: {
+                data:[[0]]
+            }
+        };
         var totalFactors = studyDesignInstance.betweenParticipantFactorList.length +
             studyDesignInstance.repeatedMeasuresTree.length;
         switch(currentType) {
@@ -783,6 +795,10 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 } else if (totalFactors > 0) {
                     return glimmpseConstants.hypothesisTrend;
                 } else {
+                    var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                    if (thetaNull === undefined) {
+                        studyDesignInstance.matrixSet.push(defaultThetaNull);
+                    }
                     return glimmpseConstants.hypothesisGrandMean;
                 }
                 break;
@@ -791,10 +807,18 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 if (totalFactors > 0) {
                     return currentType;
                 } else {
+                    var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                    if (thetaNull === undefined) {
+                        studyDesignInstance.matrixSet.push(defaultThetaNull);
+                    }
                     return glimmpseConstants.hypothesisGrandMean;
                 }
                 break;
             default:
+                var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                if (thetaNull === undefined) {
+                    studyDesignInstance.matrixSet.push(defaultThetaNull);
+                }
                 return glimmpseConstants.hypothesisGrandMean;
         }
     };

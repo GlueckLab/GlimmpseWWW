@@ -52,14 +52,15 @@
     <script src="lib/exporting.js"></script>
 
     <!-- order matters here, so be careful if you edit -->
-    <!-- bootstrap plugins - load after jquery -->
-    <script src="lib/bootstrap.min.js"></script>
     <!-- Angular.js scripts -->
     <script src="lib/angular.min.js"></script>
     <script src="lib/angular-touch.js"></script>
     <script src="lib/ng-grid-2.0.7.min.js"></script>
-    <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
     <script src="lib/highcharts-ng.js"></script>
+    <!-- bootstrap plugins - load after jquery -->
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
+
     <!-- endbuild -->
 
     <!-- app specific scripts -->
@@ -86,8 +87,6 @@
         });
 
         $(function() {
-
-
 
 //            $( "#guided-accordion" ).accordion({
 //                active: false,
@@ -201,7 +200,8 @@
                                     <input type="hidden" name="filename" value="results.csv"/>
                                     <input type="hidden" name="data" value='{{resultsCSV}}' />
                                 </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()">
+                                <button type="submit" data-ng-click="updateResultsCSV()"
+                                        ng-disabled="powerService.cachedResults == undefined">
                                     Results
                                 </button>
                             </form>
@@ -334,7 +334,6 @@
                 </a>
             </div>
             <div ng-show="!calculateAllowed()" >
-                <!-- The processing dialog -->
                 <button data-ng-click="showIncompleteItemsDialog()"
                         class="btn btn-large calculate-button-disabled"
                         data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
