@@ -42,6 +42,38 @@
                 Enter the correlation you expect to observe between the covariate
                 and each response below
             </label>
+            <div class="maxHeight300  scroll">
+                <table class="table table-bordered table-condensed table-striped maxHeight300">
+                    <tr>
+                        <th ng-repeat="rmFactor in studyDesign.repeatedMeasuresTree">{{rmFactor.dimension}}</th>
+                        <th>response</th>
+                        <th>Correlation with covariate</th>
+                    </tr>
+                    <tr ng-repeat="row in sigmaYG.data.data">
+                        <th ng-repeat="entry in metaData.responseCombinationList track by $id($index)">
+                            {{entry[$parent.$index]}}
+                        </th>
+                        <td>
+                            <input class="form-control" type="number" min="-1" max="1"
+                                   data-ng-model="sigmaYG.data.data[$index][0]">
+                            </input>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="setSharedCorrelationForAllOutcomes()">
+                Set all correlations to the value below
+            </button>
+            <input class="form-control" name="sharedCorrelation" type="number" min="-1" max="1"
+                   data-ng-model="sharedCorrelation">
+            </input>
+            <div class="alert alert-danger" class="form-control"
+                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.min">Please enter a number between -1 and 1</div>
+            <div class="alert alert-danger" class="form-control"
+                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.max">Please enter a number between -1 and 1</div>
 
         </div>
     </form>
@@ -50,96 +82,23 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
+        {{sharedCorrelation}}
+    </div>
+    <div class="vmargin15">
         Sigma G: {{sigmaG}}
     </div>
-</div>
 
-
-
-    <p>
-        Enter the standard deviation you expect to observe for the covariate
-    </p>
-
-    <input type="numeric" value="1" data-ng-model="studyDesign.matrixSet[0].
-    data.data[0][0]">
-    </input>
-
-    <p>
-        Enter the correlation you expect to observe between the covariate
-        and each response below
-    </p>
-
-    <div class="input-group">
-        <table>
-            <tr>
-                <td>
-                    Response Variable
-                </td>
-                <td>
-                    Correlation with Random Covariate
-                </td>
-            </tr>
-            <tr ng-repeat="response in studyDesign.responseList track by $id($index)">
-                <td>
-                    {{response.name}}
-                </td>
-                <td>
-                    <input type="numeric"
-                           ng-model="studyDesign.matrixSet[studyDesign.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom')]
-                           .data.data[startColumn*studyDesign.responseList.length+$index][0]">
-                    </input>
-                </td>
-            </tr>
-        </table>
-
-        <div>
-            <button value="up" ng-show="startColumn > 0"
-                    ng-click="shiftUp()">
-                Up
-            </button>     <br>
-
-            <button value="down"
-                    ng-click="shiftDown()">
-                Down
-            </button>
-            {{startColumn}}
-        </div>
-
+    <div class="vmargin15">
+        Sigma YG: {{sigmaYG}}
     </div>
 </div>
 
-<div ng-show="studyDesign.repeatedMeasuresTree.length > 0
-    && studyDesign.gaussianCovariate == 'YES'
-    && studyDesign.responseList.length > 0">
-
-    <p>
-        Your design includes repeated measures.
-        Use the dropdown lists below to select the measurement
-        episode and then update the correlation values.
-    </p>
-
-    <div class="tab-contents">
-        <table>
-            <tr ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-                <td>
-                    {{measure.dimension}}
-                </td>
-                <td>
-                    <select>
-                            <option ng-repeat="number in
-                                measure.spacingList">
-                                {{number.value}}
-                            </option>
-
-                    </select>
-                </td>
-
-            </tr>
-        </table>
 
 
 
-    </div>
+</div>
+
+
 
     <div><input type="checkbox"
                 ng-model="hasSameCorrelation"

@@ -2499,55 +2499,26 @@ glimmpseApp.controller('stateController',
 /**
  * Controller for variability covariate within view
  */
-    .controller('variabilityCovariateViewController', function($scope, glimmpseConstants, studyDesignService) {
+    .controller('variabilityCovariateViewController', function($scope, glimmpseConstants,
+                                                               studyDesignService, studyDesignMetaData) {
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
-            $scope.hasSameCorrelation = undefined;
+            $scope.metaData = studyDesignMetaData;
             $scope.sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
-            $scope.STDForCovariate = undefined;
-            $scope.currentOption = 1;
-            $scope.startColumn = 0;
-            $scope.numberOfRows = 0;
-                /*
-            $scope.matrixIndex = studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
-            $scope.numberOfRows = studyDesignService.matrixSet[matrixIndex].rows;  */
+            $scope.sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+            $scope.sharedCorrelation = 0;
         }
 
-        $scope.SameCorrelationForOutcomes = function() {
-
-
-            if ($scope.hasSameCorrelation !== undefined) {
-                //indexOfList = studyDesignService.getMatrixSetListIndexByName('sigmaOutcomeGaussianRandom');
-                var responseListLength = studyDesignService.responseList.length;
-                var lengthToChange =  studyDesignService.matrixSet[matrixIndex].data.data.length;
-                for (var j=responseListLength+1; j < lengthToChange;) {
-                    for (var i=0; i < responseListLength; i++) {
-                        studyDesignService.matrixSet[matrixIndex].data.data[j][0] =
-                            studyDesignService.matrixSet[matrixIndex].data.data[i][0];
-                        j++;
-                    }
+        /**
+         * Set same correlation for all values
+         *
+         */
+        $scope.setSharedCorrelationForAllOutcomes = function() {
+            if ($scope.sigmaYG !== undefined) {
+                for(var r = 0; r < $scope.sigmaYG.rows; r++) {
+                    $scope.sigmaYG.data.data[r][0] = $scope.sharedCorrelation;
                 }
-            }
-        };
-
-
-
-        /**
-         * Shift up for previous measurement
-         */
-        $scope.shiftUp = function() {
-            if ($scope.startColumn > 0) {
-                $scope.startColumn = $scope.startColumn-1;
-            }
-        };
-
-        /**
-         * Shift down for next measurement
-         */
-        $scope.shiftDown = function() {
-            if ($scope.startColumn < $scope.numberOfRows/studyDesignService.responseList.length-1) {
-                $scope.startColumn = $scope.startColumn+1;
             }
         };
 

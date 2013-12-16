@@ -213,6 +213,10 @@ button:focus {
     padding-right: 5px;
 }
 
+.maxHeight300 {
+    max-height: 300px;
+}
+
 .text-sm {
     width: 60px;
 }
