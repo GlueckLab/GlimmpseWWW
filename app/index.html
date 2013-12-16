@@ -608,7 +608,7 @@
                                 <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results"
                                         ng-show="powerService.cachedResults != undefined"
                                         ng-click="changeView('/results/report')">Results</button>
-                                <label ng-show="powerService.cachedResults == undefined">Results</label>
+                                <label class="results-disabled" ng-show="powerService.cachedResults == undefined">Results</label>
                             </h4>
                         </div>
                         <div id="nav-results" class="panel-collapse collapse">

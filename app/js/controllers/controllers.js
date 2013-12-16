@@ -68,6 +68,7 @@ glimmpseApp.controller('stateController',
 
         // url for save upload
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
+
     }
 
     /**
@@ -80,7 +81,7 @@ glimmpseApp.controller('stateController',
 
     $scope.leavePageCheck = function() {
         if ($scope.getMode() !== undefined) {
-            window.alert("");
+            window.alert("You will lose any unsaved data when you leave the page.  Continue?");
         }
     }
 
@@ -117,7 +118,7 @@ glimmpseApp.controller('stateController',
         if (!$scope.testDone($scope.getStateTypeIError())) { $scope.incompleteViews.push("Type I Error"); }
 
         if ($scope.mode == $scope.glimmpseConstants.modeGuided) {
-            if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Study Groups"); }
+            if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Predictors"); }
         } else {
             if (!$scope.testDone($scope.getStateDesignEssence())) { $scope.incompleteViews.push("Design Essence"); }
         }
@@ -354,7 +355,6 @@ glimmpseApp.controller('stateController',
      * @returns {boolean}
      */
     $scope.calculateAllowed = function() {
-
         if ($scope.getMode() == $scope.glimmpseConstants.modeGuided) {
             return (
                 $scope.testDone($scope.getStateSolvingFor()) &&
@@ -2667,9 +2667,6 @@ glimmpseApp.controller('stateController',
             // store the current axis type in the meta data
             $scope.metaData.plotOptions.xAxis = $scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum;
             $scope.metaData.plotOptions.availableDataSeries = [];
-            // clear the current selections
-            $scope.studyDesign.powerCurveDescriptions.dataSeriesList = [];
-            $scope.gridOptions.selectedItems.splice(0,$scope.gridOptions.selectedItems.length);
 
             // set up the recursive generation of data series
             var dataLists = [
@@ -2783,11 +2780,31 @@ glimmpseApp.controller('stateController',
             }
         }
 
+        /**
+         * Check if the data series is contained in the power
+         * curve description
+         * @param series
+         */
+        $scope.hasDataSeries = function(series) {
+            for(var i = 0; i < $scope.studyDesign.powerCurveDescriptions.dataSeriesList.length; i++) {
+                if ($scope.matchSeries(series,
+                    $scope.studyDesign.powerCurveDescriptions.dataSeriesList[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        $scope.matchSeries = function(seriesA, seriesB) {
+            return true;
+        }
+
         // initialize the controller
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
+            $scope.initComplete = false;
 
             // columns whose visibility changes depending on X-axis state
             $scope.nominalPowerColumn =
@@ -2851,14 +2868,21 @@ glimmpseApp.controller('stateController',
                 for(var i = 0; i < $scope.metaData.plotOptions.availableDataSeries.length; i++) {
                     // select the series in the study design
                     var series = $scope.metaData.plotOptions.availableDataSeries[i];
-                    if ($scope.studyDesign.powerCurveDescriptions.dataSeriesList.indexOf(series) >= 0) {
+                    if ($scope.hasDataSeries(series)) {
                         $scope.gridOptions.selectedItems.push(series);
                     }
                 }
             }
         }
 
+        /**
+         * Update the data series when the user changes the x-axis type
+         */
         $scope.updateHorizontalAxisType = function() {
+            // clear current selections
+            $scope.gridOptions.selectedItems.splice(0,$scope.gridOptions.selectedItems.length);
+            $scope.studyDesign.powerCurveDescriptions.dataSeriesList = [];
+
             $scope.updateVisibleColumns();
             $scope.buildDataSeries();
         }
