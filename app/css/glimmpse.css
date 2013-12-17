@@ -81,6 +81,9 @@ button:focus {
     border: 1px solid #BBD4ED;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
 
 .black {
     color: black;
@@ -681,3 +684,9 @@ table.table-entry-contents {
 .results-disabled {
     color: #ccc;
 }
+
+
+.means-table > tbody > tr > th {
+    white-space: nowrap;
+}
+

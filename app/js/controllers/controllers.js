@@ -3291,10 +3291,22 @@ glimmpseApp.controller('stateController',
                 var selectedResult = $scope.resultsGridOptions.selectedItems[0];
                 $scope.currentResultDetails = undefined;
                 $scope.currentResultDetails = {
+                    isu: 'participant',
+                    totalObsPerISU: 1,
                     power: selectedResult.actualPower.toFixed(3),
                     totalSampleSize: selectedResult.totalSampleSize,
                     perGroupSampleSizeList: []
                 };
+
+                // update the ISU if clustering present
+                if ($scope.studyDesign.clusteringTree.length > 0) {
+                    $scope.currentResultDetails.isu = $scope.studyDesign.clusteringTree[0].groupName;
+                    for(var i = 0; i < $scope.studyDesign.clusteringTree.length; i++) {
+                        $scope.currentResultDetails.totalObsPerISU =
+                            $scope.currentResultDetails.totalObsPerISU *
+                                $scope.studyDesign.clusteringTree[i].groupSize;
+                    }
+                }
 
                 var smallestGroupSize = selectedResult.totalSampleSize / $scope.sampleSizeDivisor;
                 for(var i = 0; i < $scope.studyDesign.relativeGroupSizeList.length; i++) {

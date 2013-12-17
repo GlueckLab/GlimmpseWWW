@@ -25,42 +25,75 @@
     <p>
         Click on a result for more details.
     </p>
+    <!-- grid of power results -->
     <div class="gridStyle"
          ng-grid="resultsGridOptions"></div>
+    <!-- selected result details -->
     <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
         <h4>Details</h4>
         <div class="form-group">
             <label>Power</label>
             <label class="form-control">{{currentResultDetails.power}}</label>
         </div>
+        <div class="form-group">
+            <label>Independent Sampling Unit</label>
+            <div class="well white-box">
+                <label>{{currentResultDetails.isu}}</label>
+                <ul>
+                    <li ng-show="studyDesign.clusteringTree.length > 1">
+                        {{studyDesign.clusteringTree[0].groupSize}} {{studyDesign.clusteringTree[1].groupName}}
+                        units within each {{currentResultDetails.isu}}
+                    </li>
+                    <li ng-show="studyDesign.clusteringTree.length > 2">
+                        {{studyDesign.clusteringTree[1].groupSize}} {{studyDesign.clusteringTree[2].groupName}}
+                        units within each {{studyDesign.clusteringTree[1].groupName}}
+                    </li>
+                    <li ng-show="studyDesign.clusteringTree.length > 1">
+                        {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupSize}} participants
+                        within each {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupName}}
+                    </li>
+                    <li>
+                        Total of {{currentResultDetails.totalObsPerISU}} participants within each {{currentResultDetails.isu}}
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
         <div>
-            <label>Sample Size Breakdown</label>
-            <table class="scroll table table-striped table-bordered table-condensed">
-                <tr>
-                    <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
-                        {{predictor.predictorName}}
-                    </th>
-                    <th>
-                        Per Group Sample Size
-                    </th>
-                </tr>
-                <tr ng-repeat="perGroupN in currentResultDetails.perGroupSampleSizeList track by $id($index)">
-                    <td ng-repeat="column in metaData.predictorCombinationList">
-                        {{column[$parent.$index]}}
-                    </td>
-                    <td>
-                        {{perGroupN}}
-                    </td>
-                </tr>
-                <tr>
-                    <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
-                        Total Sample Size
-                    </th>
-                    <th>
-                        {{currentResultDetails.totalSampleSize}}
-                    </th>
-                </tr>
-            </table>
+            <label>Sample Size Details</label>
+            <div ng-show="metaData.predictorCombinationList.length <= 0">
+                <label class="form-control">Total Sample Size (one-sample design): {{currentResultDetails.totalSampleSize}}</label>
+            </div>
+            <div ng-show="metaData.predictorCombinationList.length > 0">
+                <table class="scroll table table-striped table-bordered table-condensed">
+                    <tr>
+                        <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                            {{predictor.predictorName}}
+                        </th>
+                        <th>
+                            <div>Per Group Sample Size</div>
+                            <div>(units: {{currentResultDetails.isu}})</div>
+                        </th>
+                    </tr>
+                    <tr ng-repeat="perGroupN in currentResultDetails.perGroupSampleSizeList track by $id($index)">
+                        <td ng-repeat="column in metaData.predictorCombinationList">
+                            {{column[$parent.$index]}}
+                        </td>
+                        <td>
+                            {{perGroupN}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
+                            Total Sample Size
+                        </th>
+                        <th>
+                            {{currentResultDetails.totalSampleSize}}
+                        </th>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
