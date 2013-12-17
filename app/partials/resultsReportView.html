@@ -28,16 +28,40 @@
     <div class="gridStyle"
          ng-grid="resultsGridOptions"></div>
     <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
-        <label>Details</label>
-        <div>
-            <label>Sample Size Breakdown</label>
-            {{currentResultDetails}}
+        <h4>Details</h4>
+        <div class="form-group">
+            <label>Power</label>
+            <label class="form-control">{{currentResultDetails.power}}</label>
         </div>
         <div>
             <label>Sample Size Breakdown</label>
-
+            <table class="scroll table table-striped table-bordered table-condensed">
+                <tr>
+                    <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                        {{predictor.predictorName}}
+                    </th>
+                    <th>
+                        Per Group Sample Size
+                    </th>
+                </tr>
+                <tr ng-repeat="perGroupN in currentResultDetails.perGroupSampleSizeList track by $id($index)">
+                    <td ng-repeat="column in metaData.predictorCombinationList">
+                        {{column[$parent.$index]}}
+                    </td>
+                    <td>
+                        {{perGroupN}}
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
+                        Total Sample Size
+                    </th>
+                    <th>
+                        {{currentResultDetails.totalSampleSize}}
+                    </th>
+                </tr>
+            </table>
         </div>
-
     </div>
 </div>
 
@@ -48,5 +72,8 @@
 <div ng-show="glimmpseConstants.debug">
     <div class="vmargin15">
         {{gridData}}
+    </div>
+    <div>
+        Divisor: {{sampleSizeDivisor}}
     </div>
 </div>

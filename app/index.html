@@ -36,9 +36,17 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
       </script>
-       -->
+       -->   <!--
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>  -->
+    <script>
+        var MathJax = {
+            Hub: {
+                Config: function(stuff) {},
+                Queue: function(stuff) {}
+            }
+        };
     </script>
 
     <!-- build:js js/libraries.js -->
@@ -82,9 +90,6 @@
         MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
     </script>
     <script>
-        $('#myCollapsible').on('hidden.bs.collapse', function () {
-
-        });
 
         $(function() {
 

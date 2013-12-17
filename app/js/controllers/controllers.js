@@ -3207,6 +3207,17 @@ glimmpseApp.controller('stateController',
             $scope.gridData = {};
             $scope.currentResultsDetails = undefined;
 
+            // calculate the divisor for total sample size
+            $scope.sampleSizeDivisor = 0;
+            if ($scope.studyDesign.relativeGroupSizeList !== undefined) {
+                for(var i = 0; i < $scope.studyDesign.relativeGroupSizeList.length; i++) {
+                    $scope.sampleSizeDivisor = $scope.sampleSizeDivisor +
+                        parseInt($scope.studyDesign.relativeGroupSizeList[i].value);
+                }
+            } else {
+                $scope.sampleSizeDivisor = 1;
+            }
+
             $scope.columnDefs = [
                 { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
@@ -3223,7 +3234,7 @@ glimmpseApp.controller('stateController',
                 columnDefs: 'columnDefs',
                 multiSelect: false,
                 afterSelectionChange: function(data) {
-                    $scope.currentResultDetails = $scope.calculateDetails($scope.resultsGridOptions.selectedItems[0]);
+                    $scope.calculateDetails();
                 },
                 selectedItems: []
             };
@@ -3276,7 +3287,23 @@ glimmpseApp.controller('stateController',
         }
 
         $scope.calculateDetails = function(result) {
-             return "New result " + angular.toJson(result);
+            if ($scope.resultsGridOptions.selectedItems.length > 0) {
+                var selectedResult = $scope.resultsGridOptions.selectedItems[0];
+                $scope.currentResultDetails = undefined;
+                $scope.currentResultDetails = {
+                    power: selectedResult.actualPower.toFixed(3),
+                    totalSampleSize: selectedResult.totalSampleSize,
+                    perGroupSampleSizeList: []
+                };
+
+                var smallestGroupSize = selectedResult.totalSampleSize / $scope.sampleSizeDivisor;
+                for(var i = 0; i < $scope.studyDesign.relativeGroupSizeList.length; i++) {
+                    $scope.currentResultDetails.perGroupSampleSizeList.push(
+                        smallestGroupSize * $scope.studyDesign.relativeGroupSizeList[i].value
+                    );
+                }
+            }
+
         }
 
     })
