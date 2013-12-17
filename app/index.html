@@ -40,9 +40,6 @@
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-    </script>
 
     <!-- build:js js/libraries.js -->
     <script src="lib/jquery.min.js"></script>
@@ -81,6 +78,9 @@
     <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
     <!-- endbuild -->
 
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
     <script>
         $('#myCollapsible').on('hidden.bs.collapse', function () {
 
@@ -144,7 +144,11 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="" target="_blank">Getting Started</a></li>
+                        <li>
+                            <a href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/" target="_blank">
+                            Tutorials for common designs
+                            </a>
+                        </li>
                         <li><a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a></li>
                     </ul>
                 </li>
