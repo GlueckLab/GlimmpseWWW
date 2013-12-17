@@ -649,6 +649,11 @@ glimmpseApp.controller('stateController',
      */
     $scope.getStateMeans = function() {
         var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
+        if (!$scope.testDone($scope.getStatePredictors()) ||
+            !$scope.testDone($scope.getStateResponseVariables()) ||
+            !$scope.testDone($scope.getStateRepeatedMeasures())) {
+            return $scope.glimmpseConstants.stateBlocked;
+        }
         if (beta === undefined || beta === null) {
             return $scope.glimmpseConstants.stateBlocked;
         }
