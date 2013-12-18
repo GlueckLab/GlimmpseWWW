@@ -62,7 +62,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         return true;
 
-    }
+    };
 
     /**
      * Check if a covariance is valid
@@ -118,7 +118,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         return true;
 
-    }
+    };
 
     /**
      * Resize the rows of a matrix

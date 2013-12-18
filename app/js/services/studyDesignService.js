@@ -426,7 +426,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                     }
                     if (covar.rows != covar.standardDeviationList.length) {
                         covar.standardDeviationList = [];
-                        for(var i = 0; i < covar.rows; i++) {
+                        for(var j = 0; j < covar.rows; j++) {
                             covar.standardDeviationList.push({idx: 0, value: 1});
                         }
                     }
@@ -434,7 +434,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                     if (covar.blob === null) {
                         covar.blob = {
                             data: []
-                        }
+                        };
                         for(var r = 0; r < covar.rows; r++) {
                             var row = [];
                             for(var c = 0; c < covar.columns; c++) {
@@ -679,11 +679,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         // update beta as needed
         if (rows > 0 && columns > 0) {
             var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+            var betaRandom;
             if (beta === undefined) {
                 beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, rows, columns, 0);
                 studyDesignInstance.matrixSet.push(beta);
                 if (studyDesignInstance.gaussianCovariate) {
-                    var betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBetaRandom,
+                    betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBetaRandom,
                         1, columns, 1);
                     studyDesignInstance.matrixSet.push(betaRandom);
                 }
@@ -695,7 +696,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             if (beta.columns != columns) {
                 matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
-                    var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                    betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
                     if (betaRandom.columns != columns) {
                         matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
                     }
@@ -777,6 +778,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      * Called a predictor or repeated measure is deleted from the model
      */
     studyDesignInstance.getBestHypothesisType = function(currentType) {
+        var thetaNull;
         var defaultThetaNull = {
             idx:0,
             name: glimmpseConstants.matrixThetaNull,
@@ -795,7 +797,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 } else if (totalFactors > 0) {
                     return glimmpseConstants.hypothesisTrend;
                 } else {
-                    var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                    thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
                     if (thetaNull === undefined) {
                         studyDesignInstance.matrixSet.push(defaultThetaNull);
                     }
@@ -807,7 +809,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 if (totalFactors > 0) {
                     return currentType;
                 } else {
-                    var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                    thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
                     if (thetaNull === undefined) {
                         studyDesignInstance.matrixSet.push(defaultThetaNull);
                     }
@@ -815,7 +817,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 break;
             default:
-                var thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
+                thetaNull = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixThetaNull);
                 if (thetaNull === undefined) {
                     studyDesignInstance.matrixSet.push(defaultThetaNull);
                 }

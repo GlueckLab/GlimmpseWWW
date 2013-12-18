@@ -77,13 +77,13 @@ glimmpseApp.controller('stateController',
      */
     $scope.changeView = function(view){
         $location.path(view); // path not hash
-    }
+    };
 
     $scope.leavePageCheck = function() {
         if ($scope.getMode() !== undefined) {
             window.alert("You will lose any unsaved data when you leave the page.  Continue?");
         }
-    }
+    };
 
     /**
      * Convenience routine to determine if a screen has been completed by the user
@@ -1805,8 +1805,8 @@ glimmpseApp.controller('stateController',
                 // chosen trend is still valid
                 var hypothesis = $scope.studyDesign.hypothesis[0];
                 if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
-                    for(var i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
-                        var map = hypothesis.repeatedMeasuresMapTree[i];
+                    for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
+                        var map = hypothesis.repeatedMeasuresMapTree[rmi];
                         if (map.repeatedMeasuresNode == factor) {
                             map.type = $scope.studyDesign.getBestTrend(map.type, factor.numberOfMeasurements);
                             break;
@@ -2423,7 +2423,7 @@ glimmpseApp.controller('stateController',
                 $scope.maxMinDiff = $scope.maxDistance - $scope.minDistance;
                 // when there are only 2 elements in the spacing list, the max = min distance between
                 // the elements.  thus we force to 1
-                if ($scope.maxMinDiff == 0) $scope.maxMinDiff = 1;
+                if ($scope.maxMinDiff === 0) $scope.maxMinDiff = 1;
             } else {
                 $scope.maxMinDiff = undefined;
                 $scope.minDistance = undefined;
@@ -2459,15 +2459,15 @@ glimmpseApp.controller('stateController',
                 var spacingList = $scope.studyDesign.repeatedMeasuresTree[
                     $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
                     ].spacingList;
-                for(var r = 0; r < $scope.currentCovariance.rows; r++) {
-                    for(var c = 0; c < r; c++) {
-                        var measurementDistance = Math.abs(spacingList[r].value - spacingList[c].value);
+                for(var rr = 0; rr < $scope.currentCovariance.rows; rr++) {
+                    for(var cc = 0; cc < rr; cc++) {
+                        var measurementDistance = Math.abs(spacingList[rr].value - spacingList[cc].value);
                         var powerValue = $scope.minDistance + (
                             $scope.currentCovariance.delta *
                                 (measurementDistance - $scope.minDistance)/($scope.maxMinDiff));
                         var value = Math.pow($scope.currentCovariance.rho, powerValue);
-                        $scope.currentCovariance.blob.data[r][c] = value;
-                        $scope.currentCovariance.blob.data[c][r] = value;
+                        $scope.currentCovariance.blob.data[rr][cc] = value;
+                        $scope.currentCovariance.blob.data[cc][rr] = value;
                     }
                 }
             }
@@ -2547,7 +2547,7 @@ glimmpseApp.controller('stateController',
             if (row != column) {
                 $scope.currentCovariance.blob.data[row][column] = value;
             }
-        }
+        };
 
         /**
          * Perform any cleanup when switching between correlation, covariance
@@ -2588,13 +2588,13 @@ glimmpseApp.controller('stateController',
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
                     // reset standard deviations to 1
-                    for(var i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
-                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    for(var ii = 0; ii < $scope.currentCovariance.standardDeviationList.length; ii++) {
+                        $scope.currentCovariance.standardDeviationList[ii].value = 1;
                     }
                     break;
 
             }
-        }
+        };
 
         /**
          * Returns true if the cell at the specified row
@@ -2849,7 +2849,7 @@ glimmpseApp.controller('stateController',
                 }
 
             }
-        }
+        };
 
         /**
          * Check if the data series is contained in the power
@@ -2864,7 +2864,7 @@ glimmpseApp.controller('stateController',
                 }
             }
             return false;
-        }
+        };
 
         /**
          * Returns true if the two data series match
@@ -2920,7 +2920,7 @@ glimmpseApp.controller('stateController',
             }
 
             return true;
-        }
+        };
 
         // initialize the controller
         init();
@@ -3015,7 +3015,7 @@ glimmpseApp.controller('stateController',
 
             $scope.updateVisibleColumns();
             $scope.buildDataSeries();
-        }
+        };
 
         /**
          *  Toggle the power curve on/off
@@ -3353,14 +3353,14 @@ glimmpseApp.controller('stateController',
                 }
 
                 var smallestGroupSize = selectedResult.totalSampleSize / $scope.sampleSizeDivisor;
-                for(var i = 0; i < $scope.studyDesign.relativeGroupSizeList.length; i++) {
+                for(var j = 0; j < $scope.studyDesign.relativeGroupSizeList.length; j++) {
                     $scope.currentResultDetails.perGroupSampleSizeList.push(
-                        smallestGroupSize * $scope.studyDesign.relativeGroupSizeList[i].value
+                        smallestGroupSize * $scope.studyDesign.relativeGroupSizeList[j].value
                     );
                 }
             }
 
-        }
+        };
 
     })
 
@@ -3462,7 +3462,7 @@ glimmpseApp.controller('stateController',
             }
 
             return true;
-        }
+        };
 
         init();
         function init() {
