@@ -201,6 +201,45 @@ glimmpseApp.controller('stateController',
         }
     };
 
+    /**
+     * Submit the feedback form
+     * @param input
+     */
+    $scope.sendFeedback = function(input) {
+
+        $scope.processing = true;
+
+        var $form = $(input).parents('form');
+
+        $form.ajaxSubmit({
+            type: 'POST',
+            uploadProgress: function(event, position, total, percentComplete) {
+            },
+            error: function(event, statusText, responseText, form) {
+                $scope.$apply(function() {
+                    /* handle the error */
+
+                    $scope.processing = false;
+                    $scope.feedbackResult = "error";
+                });
+
+                $scope.support = {};
+                $form[0].reset();
+
+            },
+            success: function(responseText, statusText, xhr, form) {
+                // select the appropriate input mode
+                $scope.$apply(function() {
+                    /* handle the error */
+                    $scope.processing = false;
+                    $scope.feedbackResult = "OK";
+                });
+                $scope.support = {};
+                $form[0].reset();
+            }
+        });
+
+    };
 
     /**
      * Upload a study design file

@@ -37,9 +37,10 @@ try {
 
     //send the message, check for errors
     if (!$mail->send()) {
-        echo "We're sorry.  An error occurred while submitting your request: " . $mail->ErrorInfo;
+        echo $mail->ErrorInfo;
+        http_response_code(503);
     } else {
-        echo "Thank you. Your inquiry has been forwarded to our support team." . $_REQUEST["email"];
+        echo "OK";
     }
 
 } catch (phpmailerException $e) {

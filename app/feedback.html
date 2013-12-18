@@ -105,13 +105,22 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="" target="_blank">Getting Started</a></li>
+                        <li>
+                            <a href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/" target="_blank">
+                                Tutorials for common designs
+                            </a>
+                        </li>
                         <li><a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li>
+                            <a href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
+                                About Glimmpse
+                            </a>
+                        </li>
                         <li>
                             <a href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
                                 Documentation
@@ -125,7 +134,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="feedback.html" id="link-active">Feedback</a>
+                    <a href="feedback.html" target="_blank">Feedback</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right" ng-show="getMode() != undefined">
@@ -156,7 +165,8 @@
                                     <input type="hidden" name="filename" value="results.csv"/>
                                     <input type="hidden" name="data" value='{{resultsCSV}}' />
                                 </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()">
+                                <button type="submit" data-ng-click="updateResultsCSV()"
+                                        ng-disabled="powerService.cachedResults == undefined">
                                     Results
                                 </button>
                             </form>
@@ -164,9 +174,22 @@
                     </ul>
                 </li>
                 <li>
+                    <form id="navUploadForm" enctype="multipart/form-data"
+                          action="{{uriUpload}}">
+                        <label class="none">
+                            <span class="glyphicon glyphicon-open"></span> Upload
+                            <input type="file" id="navBarUpload" name="file"
+                                   onchange="angular.element(this).scope().uploadFile(this)"
+                                   style="display:none;" />
+                        </label>
+
+                    </form>
+
+                    <!--
                     <a href="#" ng-click="">
                         <span class="glyphicon glyphicon-open"></span> Load
-                    </a>
+
+                    </a> -->
                 </li>
                 <li>
                     <a href="#" ng-click="reset()">
@@ -178,7 +201,7 @@
         </div><!-- /.navbar-collapse -->
     </nav>
 
-    <!-- Mode selection screen -->
+    <!-- feedback -->
     <div class="well white-box shaded-box">
         <h3>Submit Feedback about Glimmpse</h3>
         <p>
@@ -193,8 +216,18 @@
         <p>
             Thank you for your feedback on the GLIMMPSE software.
         </p>
+        <div class="processing rounded-box" ng-show="processing==true">
+            <label>Processing</label>
+        </div>
+        <div class="alert alert-success" ng-show="feedbackResult !== undefined && feedbackResult == 'OK'">
+            Thank you! Your inquiry has been forwarded to our support team.
+        </div>
+        <div class="alert alert-danger" ng-show="feedbackResult !== undefined && feedbackResult != 'OK'">
+            We're sorry, but we were unable to submit your request at this time.  Please try again.
+        </div>
         <div class="well">
-            <form action="support_email.php" name="feedbackForm" method="post">
+            <form id="feedbackForm" enctype="multipart/form-data"
+                  action="support_email.php" name="feedbackForm" method="post">
                 <div class="form-group">
                     <label>Please enter your name (required)</label>
                     <input class="form-control" type="text" name="name" ng-model="support.name" required />
@@ -236,7 +269,9 @@
                     <input class="btn btn-default" ng-model="support.file" name="file" type="file" />
                 </div>
                 <div>
-                    <button class="btn btn-primary" ng-disabled="!feedbackForm.$valid" >Submit</button>
+                    <button type="button" class="btn btn-primary"
+                            onclick="angular.element(this).scope().sendFeedback(this)"
+                            ng-disabled="!feedbackForm.$valid" >Submit</button>
                 </div>
             </form>
         </div>
