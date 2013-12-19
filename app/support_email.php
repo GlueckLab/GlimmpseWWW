@@ -26,14 +26,19 @@ try {
     $mail->Subject = 'Glimmpse Feedback';
 
     // create the message body
-    $mail->Body    = 'Issue: ' . $_REQUEST["issue"] . "\n" . "Details: " . $_REQUEST["details"];
-    $mail->AltBody = $mail->Body;
+    $mail->Body = "<html><head></head><body>";
+    $mail->Body .= "<p>Name: " . $_REQUEST["name"] . "</p>";
+    $mail->Body .= "<p>Email: " . $_REQUEST["email"] . "</p>";
+    $mail->Body .= "<p>Issue: " . $_REQUEST["issue"] . "</p>";
+    $mail->Body .= "<p>Details:</p><p>" . $_REQUEST["details"] . "</p>";
+    $mail->Body .= "</body></html>";
 
-    //Attach an image file
-    if ($_REQUEST["file"]) {
-      $mail->addAttachment($_REQUEST["file"]);
+           $mail->AltBody = "Please use an HTML compatible email viewer";
+
+    //Attach a file
+    if (isset($_FILES["file"])) {
+        $mail->addAttachment($_FILES["file"]["tmp_name"], $_FILES["file"]["name"]);
     }
-
 
     //send the message, check for errors
     if (!$mail->send()) {
