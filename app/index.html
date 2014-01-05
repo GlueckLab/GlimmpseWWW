@@ -38,17 +38,16 @@
       </script>
        -->
     <script type="text/javascript"
-            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            src="lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
-    <!--
-    <script>
-        var MathJax = {
-            Hub: {
-                Config: function(stuff) {},
-                Queue: function(stuff) {}
-            }
-        };
-    </script> -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            imageFont: null,
+            extensions: ["tex2jax.js"],
+            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+            MMLorHTML: { prefer: { Chrome: "HTML" } }
+        });
+    </script>
 
     <!-- build:js js/libraries.js -->
     <script src="lib/jquery.min.js"></script>
@@ -87,9 +86,6 @@
     <link type="text/css" rel="stylesheet" href="css/glimmpse.css">
     <!-- endbuild -->
 
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-    </script>
     <script>
 
         $(function() {
