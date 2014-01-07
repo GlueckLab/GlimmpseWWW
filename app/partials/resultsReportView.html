@@ -39,7 +39,7 @@
             <label>Independent Sampling Unit</label>
             <div class="well white-box">
                 <label>{{currentResultDetails.isu}}</label>
-                <ul>
+                <ul ng-show="studyDesign.clusteringTree.length > 0">
                     <li ng-show="studyDesign.clusteringTree.length > 1">
                         {{studyDesign.clusteringTree[0].groupSize}} {{studyDesign.clusteringTree[1].groupName}}
                         units within each {{currentResultDetails.isu}}
