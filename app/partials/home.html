@@ -47,13 +47,13 @@
                 </div>
                 <div id="mobile-start" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
+                        <div class="{{isActive('/solvingFor') && 'active'}} {{state.solvingFor}}" >
                             <a href="#/solvingFor">Solving For</a>
                         </div>
-                        <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
+                        <div class="{{isActive('/nominalPower') && 'active'}} {{state.nominalPower}}" >
                             <a href="#/nominalPower"
-                               ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
-                            <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
+                               ng-show="viewAllowed(state.nominalPower)">Desired Power</a>
+                            <label ng-show="!viewAllowed(state.nominalPower)">Desired Power</label>
                         </div>
                     </div>
                 </div>

@@ -147,7 +147,8 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/" target="_blank">
+                            <a href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
+                               target="_blank">
                             Tutorials for common designs
                             </a>
                         </li>
@@ -333,17 +334,40 @@
         <!-- left nav -->
         <div class="col-md-3 visible-md visible-lg">
             <!-- Calculate button -->
-            <div ng-show="calculateAllowed()">
-                <a class="btn btn-large calculate-button" href="#/results/report"
+            <div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
+                <a class="btn btn-calculate" href="#/results/report"
                    ng-click="calculate()">
                     Calculate
                 </a>
             </div>
-            <div ng-show="!calculateAllowed()" >
+            <div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
                 <button data-ng-click="showIncompleteItemsDialog()"
-                        class="btn btn-large calculate-button-disabled"
+                        class="btn btn-calculate-disabled"
                         data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
 
+            </div>
+            <!-- results nav -->
+            <div ng-show="powerService.cachedResults != undefined">
+
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="btn btn-results">
+                            Results
+                        </div>
+                        <div class="panel-body" >
+                            <div class="{{isActive('/results/report') && 'active'}}" >
+                                <a href="#/results/report">Table</a>
+                            </div>
+                            <div class="{{isActive('/results/plot') && 'active'}}" >
+                                <a href="#/results/plot" ng-show="studyDesign.powerCurveDescriptions != undefined">Plot</a>
+                                <label ng-show="studyDesign.powerCurveDescriptions == undefined">Plot</label>
+                            </div>
+                            <div class="{{isActive('/results/matrices') && 'active'}}" >
+                                <a href="#/results/matrices">Matrices</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- left nav -->
@@ -361,13 +385,13 @@
                         </div>
                         <div id="nav-start" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <div class="{{isActive('/solvingFor') && 'active'}} {{getStateSolvingFor()}}" >
+                                <div class="{{isActive('/solvingFor') && 'active'}} {{state.solvingFor}}" >
                                     <a href="#/solvingFor">Solving For</a>
                                 </div>
-                                <div class="{{isActive('/nominalPower') && 'active'}} {{getStateNominalPower()}}" >
+                                <div class="{{isActive('/nominalPower') && 'active'}} {{state.nominalPower}}" >
                                     <a href="#/nominalPower"
-                                       ng-show="viewAllowed(getStateNominalPower())">Desired Power</a>
-                                    <label ng-show="!viewAllowed(getStateNominalPower())">Desired Power</label>
+                                       ng-show="viewAllowed(state.nominalPower)">Desired Power</a>
+                                    <label ng-show="!viewAllowed(state.nominalPower)">Desired Power</label>
                                 </div>
                             </div>
                         </div>
@@ -607,10 +631,9 @@
                             </div>
                         </div>
 
-                        <!-- Results -->
+                        <!-- Results -->  <!--
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <!-- TODO: disable when results unavailable -->
                                 <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results"
                                         ng-show="powerService.cachedResults != undefined"
                                         ng-click="changeView('/results/report')">Results</button>
@@ -630,11 +653,12 @@
                                     <a href="#/results/matrices">View Matrices</a>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
+
 
 
         <!-- main content area with toolbar -->

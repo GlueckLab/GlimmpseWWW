@@ -24,6 +24,589 @@ glimmpseApp.controller('stateController',
     function($scope, $rootScope, $location, $http, $modal, config,
              glimmpseConstants, studyDesignService, studyDesignMetaData,
              matrixUtilities, powerService) {
+        /**** SCREEN STATE FUNCTIONS ****/
+
+        /**
+         * Get the state of solution type view.  The view is
+         * complete if a solution type has been selected
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateSolvingFor = function() {
+            if ($scope.studyDesign.solutionTypeEnum !== undefined) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the nominal power list.  The list is
+         * disabled if the user is solving for power.  It is
+         * considered complete if at least one power has been entered.
+         *
+         * @returns complete, incomplete, or disabled
+         */
+        $scope.getStateNominalPower = function() {
+            if ($scope.studyDesign.solutionTypeEnum === undefined ||
+                $scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypePower) {
+                return $scope.glimmpseConstants.stateDisabled;
+            } else if ($scope.studyDesign.nominalPowerList.length > 0) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the Type I error list.  At least
+         * one alpha value is required for the list to be complete.
+         * @returns complete or incomplete
+         */
+        $scope.getStateTypeIError = function() {
+            if ($scope.studyDesign.alphaList.length > 0) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         *
+         * Get the state of the predictor view.  The predictor
+         * list is considered complete if
+         * 1. There are no predictors (i.e. a one-sample design), or
+         * 2. Every predictor has at least two categories
+         *
+         * Otherwise, the list is incomplete
+         * @returns complete or incomplete
+         */
+        $scope.getStatePredictors = function() {
+            var numFactors = $scope.studyDesign.betweenParticipantFactorList.length;
+            if (numFactors > 0) {
+                for(var i = 0; i < numFactors; i++) {
+                    if ($scope.studyDesign.betweenParticipantFactorList[i].categoryList.length < 2) {
+                        return $scope.glimmpseConstants.stateIncomplete;
+                    }
+                }
+            }
+            return $scope.glimmpseConstants.stateComplete;
+        };
+
+        /**
+         * Get the state of the Gaussian covariate view.
+         * In the current interface, this view is always complete.
+         *
+         * @returns complete
+         */
+        $scope.getStateCovariate = function() {
+            return $scope.glimmpseConstants.stateComplete;
+        };
+
+        /**
+         * Get the state of the clustering view.  The clustering
+         * tree is complete if
+         * 1. No clustering is specified, or
+         * 2. All levels of clustering are complete
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateClustering = function() {
+            if ($scope.studyDesign.clusteringTree.length <= 0){
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                for(var i=0; i < $scope.studyDesign.clusteringTree.length; i++) {
+                    var cluster = $scope.studyDesign.clusteringTree[i];
+                    if (cluster.groupName === undefined || cluster.groupName.length <= 0 ||
+                        cluster.groupSize === undefined || cluster.groupSize < 1 ||
+                        cluster.intraClusterCorrelation === undefined ||
+                        cluster.intraClusterCorreation < -1 || cluster.intraClusterCorreation > 1) {
+                        return $scope.glimmpseConstants.stateIncomplete;
+                    }
+                }
+                return $scope.glimmpseConstants.stateComplete;
+            }
+        };
+
+        /**
+         * Get the state of the relative group sizes view.
+         * The relative group size list is complete provided
+         * the between participant factor list is valid.  It
+         * is disabled when no predictors are specified.  It
+         * is blocked when
+         *
+         * @returns {string}
+         */
+        $scope.getStateRelativeGroupSize = function() {
+            if ($scope.studyDesign.betweenParticipantFactorList.length <= 0) {
+                return $scope.glimmpseConstants.stateDisabled;
+            } else if ($scope.getStatePredictors() == $scope.glimmpseConstants.stateComplete) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+        };
+
+        /**
+         * Get the state of the smallest group size view.  The view
+         * is disabled when the user is solving for sample size.
+         * When the user is solving for power, the view is complete when
+         * at least one group size is specified.
+         *
+         * @returns complete, incomplete, or disabled
+         */
+        $scope.getStateSmallestGroupSize = function() {
+            if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
+                return $scope.glimmpseConstants.stateDisabled;
+            } else if ($scope.studyDesign.sampleSizeList.length > 0) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of response variables view.  The view
+         * is complete when at least one variable has been specified.
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateResponseVariables = function() {
+            if ($scope.studyDesign.responseList.length > 0) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the repeated measures view.  The view
+         * is complete when
+         * 1. No repeated measures are specified, or
+         * 2. Information for all repeated measures are complete
+         *
+         * @returns {string}
+         */
+        $scope.getStateRepeatedMeasures = function() {
+            if ($scope.studyDesign.repeatedMeasuresTree.length > 0) {
+                for(var i = 0; i < $scope.studyDesign.repeatedMeasuresTree.length; i++) {
+                    var factor = $scope.studyDesign.repeatedMeasuresTree[i];
+                    if (factor.dimension === undefined || factor.dimension === null ||
+                        factor.dimension.length <= 0 ||
+                        factor.repeatedMeasuresDimensionType === undefined ||
+                        factor.numberOfMeasurements < 2 ||
+                        factor.spacingList.length <= 0) {
+                        return $scope.glimmpseConstants.stateIncomplete;
+                    }
+                }
+            }
+            return $scope.glimmpseConstants.stateComplete;
+        };
+
+
+        /**
+         * Get the state of the hypothesis view.  The view
+         * is blocked when the user has not completed the predictors
+         * or response variables screens.  The screen is complete
+         * when the hypothesis type and a sufficient number of
+         * predictors is selected (at least 1 for main effects and trends,
+         * and at least 2 for interactions)
+         *
+         * @returns blocked, complete or incomplete
+         */
+        $scope.getStateHypothesis = function() {
+            if (!$scope.testDone($scope.getStatePredictors()) ||
+                !$scope.testDone($scope.getStateResponseVariables()) ||
+                !$scope.testDone($scope.getStateRepeatedMeasures())) {
+                return $scope.glimmpseConstants.stateBlocked;
+            } else {
+                if ($scope.studyDesign.hypothesis[0] !== undefined) {
+                    var hypothesis = $scope.studyDesign.hypothesis[0];
+                    var totalFactors = 0;
+                    if (hypothesis.betweenParticipantFactorMapList !== undefined) {
+                        totalFactors += hypothesis.betweenParticipantFactorMapList.length;
+                    }
+                    if (hypothesis.repeatedMeasuresMapTree) {
+                        totalFactors += hypothesis.repeatedMeasuresMapTree.length;
+                    }
+
+                    if (hypothesis.type == $scope.glimmpseConstants.hypothesisGrandMean) {
+                        if ($scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixThetaNull)) {
+                            return $scope.glimmpseConstants.stateComplete;
+                        }
+                    } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisMainEffect) {
+                        if (totalFactors == 1) {
+                            return $scope.glimmpseConstants.stateComplete;
+                        }
+                    } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisTrend) {
+                        if (totalFactors == 1) {
+                            return $scope.glimmpseConstants.stateComplete;
+                        }
+                    } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisInteraction) {
+                        if (totalFactors >= 2) {
+                            return $scope.glimmpseConstants.stateComplete;
+                        }
+                    }
+                }
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the means view.  The means view is
+         * blocked when either the predictors view or the repeated measures
+         * view is incomplete.  Otherwise, the means view is complete.
+         *
+         * @returns blocked, complete, or incomplete
+         */
+        $scope.getStateMeans = function() {
+            var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
+            if (!$scope.testDone($scope.getStatePredictors()) ||
+                !$scope.testDone($scope.getStateResponseVariables()) ||
+                !$scope.testDone($scope.getStateRepeatedMeasures())) {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+            if (beta === undefined || beta === null) {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+            if ($scope.matrixUtils.isValidMatrix(beta, undefined, undefined)) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the beta scale factors view.  The view
+         * is complete when at least one beta scale is specified.
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateScaleFactorsForMeans = function() {
+            if ($scope.studyDesign.betaScaleList.length > 0) {
+                return $scope.glimmpseConstants.stateComplete;
+            } else {
+                return $scope.glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the within participant variability view.  The
+         * screen is blocked when the user has not yet completed the
+         * response variables and repeated measures screens.  The
+         * screen is complete when all variability information for
+         * responses and each level of repeated measures are entered
+         *
+         * @returns blocked, complete, or incomplete
+         */
+        $scope.getStateWithinVariability = function() {
+            if ($scope.studyDesign.responseList.length <= 0) {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+            if ($scope.studyDesign.covariance.length > 0) {
+                for(var i = 0; i < $scope.studyDesign.covariance.length; i++) {
+                    var covar = $scope.studyDesign.covariance[i];
+                    if (!$scope.matrixUtils.isValidCovariance(covar)) {
+                        return $scope.glimmpseConstants.stateIncomplete;
+                    }
+                }
+            }
+            return $scope.glimmpseConstants.stateComplete;
+        };
+
+        /**
+         * Get the state of the covariate variability view.
+         * The view is disabled when the user has not selected a covariate.
+         * The view is complete when all variability information is entered.
+         *
+         * @returns disabled, complete, or incomplete
+         */
+        $scope.getStateCovariateVariability = function() {
+            if ($scope.studyDesign.gaussianCovariate) {
+                if ($scope.studyDesign.responseList.length <= 0) {
+                    return glimmpseConstants.stateBlocked;
+                }
+                var sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
+                if (!$scope.matrixUtils.isValidMatrix(sigmaG, 0, undefined)) {
+                    return glimmpseConstants.stateIncomplete;
+                }
+                var sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+                if (!$scope.matrixUtils.isValidMatrix(sigmaYG, -1, 1)) {
+                    return glimmpseConstants.stateIncomplete;
+                }
+                return glimmpseConstants.stateComplete;
+            } else {
+                return glimmpseConstants.stateDisabled;
+            }
+        };
+
+        /**
+         * Get the state of the sigma scale factors view.  The view is
+         * complete when at least one scale factor has been entered.
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateScaleFactorsForVariability = function() {
+            if ($scope.studyDesign.sigmaScaleList.length > 0) {
+                return glimmpseConstants.stateComplete;
+            } else {
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the statistical test view.  The view is
+         * complete when at least one statistical test has been selected.
+         *
+         * @returns complete or incomplete
+         */
+        $scope.getStateStatisticalTest = function() {
+            if ($scope.studyDesign.statisticalTestList.length > 0) {
+                return glimmpseConstants.stateComplete;
+            } else {
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Get the state of the power method view.  The view is disabled
+         * when the user has not selected a gaussian covariate.  The view
+         * is complete when
+         * 1. At least one power method is selected
+         * 2. If quantile power is selected, at least one quantile is entered.
+         *
+         * @returns disabled, complete, or incomplete
+         */
+        $scope.getStatePowerMethod = function() {
+            if ($scope.studyDesign.gaussianCovariate) {
+                if ($scope.studyDesign.powerMethodList.length > 0) {
+                    var quantileChecked = false;
+                    for(var i in $scope.studyDesign.powerMethodList) {
+                        if ($scope.studyDesign.powerMethodList[i].value == 'quantile') {
+                            quantileChecked = true;
+                            break;
+                        }
+                    }
+                    if (quantileChecked) {
+                        if ($scope.studyDesign.quantileList.length > 0) {
+                            return glimmpseConstants.stateComplete;
+                        } else {
+                            return glimmpseConstants.stateIncomplete;
+                        }
+                    } else {
+                        return glimmpseConstants.stateComplete;
+                    }
+                } else {
+                    return glimmpseConstants.stateIncomplete;
+                }
+
+
+            } else {
+                return glimmpseConstants.stateDisabled;
+            }
+        };
+
+        /**
+         * Get the state of the confidence intervals view.  The view is disabled when
+         * the user has selected a Gaussian covariate (theory not yet available).
+         * The view is complete when
+         * 1. The user has NOT selected confidence intervals, or
+         * 2. All confidence interval informatin is complete
+         *
+         * @returns disabled, complete, or incomplete
+         */
+        $scope.getStateConfidenceIntervals = function() {
+            if ($scope.studyDesign.confidenceIntervalDescriptions === null) {
+                return glimmpseConstants.stateComplete;
+            } else {
+                if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed !== undefined &&
+                    $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed !== undefined &&
+                    $scope.studyDesign.confidenceIntervalDescriptions.upperTailProbability !== undefined &&
+                    $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability !== undefined &&
+                    $scope.studyDesign.confidenceIntervalDescriptions.sampleSize !== undefined &&
+                    $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix !== undefined) {
+                    return glimmpseConstants.stateComplete;
+                } else {
+                    return glimmpseConstants.stateIncomplete;
+                }
+            }
+        };
+
+        /**
+         * Determine if the power curve screen is complete
+         * @returns {string}
+         */
+        $scope.getStatePowerCurve = function() {
+            if ($scope.studyDesign.alphaList.length <= 0 ||
+                $scope.studyDesign.statisticalTestList.length <= 0 ||
+                $scope.studyDesign.betaScaleList.length <= 0 ||
+                $scope.studyDesign.sigmaScaleList.length <= 0 ||
+                ($scope.studyDesign.gaussianCovariate &&
+                    ($scope.studyDesign.powerMethodList.length <= 0 ||
+                        ($scope.studyDesign.getPowerMethodIndex($scope.glimmpseConstants.powerMethodQuantile) >= 0 &&
+                            $scope.studyDesign.quantileList.length <= 0
+                            )
+                        )
+                    ) ||
+                ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypePower &&
+                    $scope.studyDesign.sampleSizeList.length <= 0) ||
+                ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize &&
+                    $scope.studyDesign.nominalPowerList.length <= 0)
+                ) {
+                return $scope.glimmpseConstants.stateBlocked;
+            } else {
+                if ($scope.studyDesign.powerCurveDescriptions === null) {
+                    return $scope.glimmpseConstants.stateComplete;
+                } else {
+                    if ($scope.studyDesign.powerCurveDescriptions.dataSeriesList.length > 0) {
+                        return $scope.glimmpseConstants.stateComplete;
+                    } else {
+                        return $scope.glimmpseConstants.stateIncomplete;
+                    }
+                }
+            }
+        };
+
+
+        /** Matrix mode checks **/
+
+            // check if design matrix is valid
+        $scope.getStateDesignEssence = function() {
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixXEssence))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
+        };
+
+        // state of beta matrix
+        $scope.getStateBeta = function() {
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
+        };
+
+        $scope.getStateBetweenParticipantContrast = function() {
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBetweenContrast))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
+        };
+
+        $scope.getStateWithinParticipantContrast = function() {
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixWithinContrast))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
+        };
+
+        $scope.getStateThetaNull = function() {
+            if ($scope.matrixUtils.isValidMatrix(
+                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixThetaNull))) {
+                return glimmpseConstants.stateComplete;
+            }
+            return glimmpseConstants.stateIncomplete;
+        };
+
+        $scope.getStateSigmaE = function() {
+            if ($scope.studyDesign.gaussianCovariate) {
+                return glimmpseConstants.stateDisabled;
+            } else {
+                if ($scope.matrixUtils.isValidMatrix(
+                    $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaE))) {
+                    return glimmpseConstants.stateComplete;
+                }
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        $scope.getStateSigmaG = function() {
+            if (!$scope.studyDesign.gaussianCovariate) {
+                return glimmpseConstants.stateDisabled;
+            } else {
+                if ($scope.matrixUtils.isValidMatrix(
+                    $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG))) {
+                    return glimmpseConstants.stateComplete;
+                }
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        $scope.getStateSigmaY = function() {
+            if (!$scope.studyDesign.gaussianCovariate) {
+                return glimmpseConstants.stateDisabled;
+            } else {
+                if ($scope.matrixUtils.isValidMatrix(
+                    $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaY))) {
+                    return glimmpseConstants.stateComplete;
+                }
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        $scope.getStateSigmaYG = function() {
+            if (!$scope.studyDesign.gaussianCovariate) {
+                return glimmpseConstants.stateDisabled;
+            } else {
+                if ($scope.matrixUtils.isValidMatrix(
+                    $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG))) {
+                    return glimmpseConstants.stateComplete;
+                }
+                return glimmpseConstants.stateIncomplete;
+            }
+        };
+
+        /**
+         * Convenience routine to determine if a screen has been completed by the user
+         * @param state
+         * @returns {boolean}
+         */
+        $scope.testDone = function(state) {
+            return (state == $scope.glimmpseConstants.stateComplete ||
+                state ==  $scope.glimmpseConstants.stateDisabled);
+        };
+
+        /**
+         * Generic function to update the state of all screens
+         */
+        $scope.updateState = function() {
+            $scope.state = {
+                solvingFor: $scope.getStateSolvingFor(),
+                nominalPower: $scope.getStateNominalPower(),
+                typeIError: $scope.getStateTypeIError(),
+                predictors: $scope.getStatePredictors(),
+                covariates: $scope.getStateCovariate(),
+                isu: $scope.getStateClustering(),
+                relativeGroupSize: $scope.getStateRelativeGroupSize(),
+                smallestGroupSize: $scope.getStateSmallestGroupSize(),
+                responseVariables: $scope.getStateResponseVariables(),
+                repeatedMeasures: $scope.getStateRepeatedMeasures(),
+                hypothesis: $scope.getStateHypothesis(),
+                means: $scope.getStateMeans(),
+                meansScale: $scope.getStateScaleFactorsForMeans(),
+                variabilityWithin: $scope.getStateWithinVariability(),
+                variabilityCovariate: $scope.getStateCovariateVariability(),
+                variabilityScale: $scope.getStateScaleFactorsForVariability(),
+                test: $scope.getStateStatisticalTest(),
+                powerMethod: $scope.getStatePowerMethod(),
+                confidenceIntervals: $scope.getStateConfidenceIntervals(),
+                plotOptions: $scope.getStatePowerCurve(),
+                designEssence: $scope.getStateDesignEssence(),
+                beta: $scope.getStateBeta(),
+                betweenContrast: $scope.getStateBetweenParticipantContrast(),
+                withinContrast: $scope.getStateWithinParticipantContrast(),
+                thetaNull: $scope.getStateThetaNull(),
+                sigmaE: $scope.getStateSigmaE(),
+                sigmaY: $scope.getStateSigmaY(),
+                sigmaG: $scope.getStateSigmaG(),
+                sigmaYG: $scope.getStateSigmaYG()
+            };
+        };
+        /**** END SCREEN STATE FUNCTIONS ****/
 
     /**
      * Initialize the controller
@@ -69,7 +652,28 @@ glimmpseApp.controller('stateController',
         // url for save upload
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
 
-    }
+        // screen state information
+        $scope.updateState();
+
+    };
+
+    /*** set watchers on study design changes to update the state as needed ***/
+
+        /**
+         * Watch for any changes in the study design.  When changes occur
+         * clear the results cache
+         */
+        $scope.$watch('studyDesign', function(newValue, oldValue) {
+            $scope.updateState();
+            // clear the results if the user changed something besides the power curve
+            if (angular.toJson(newValue.powerCurveDescriptions) ==
+                angular.toJson(oldValue.powerCurveDescriptions)) {
+                // TODO: only clear power results if something besides power curve changed
+                $scope.powerService.clearCache();
+            }
+
+            // clear power curve options
+        }, true);
 
     /**
      * Set the view
@@ -85,15 +689,7 @@ glimmpseApp.controller('stateController',
         }
     };
 
-    /**
-     * Convenience routine to determine if a screen has been completed by the user
-     * @param state
-     * @returns {boolean}
-     */
-    $scope.testDone = function(state) {
-        return (state == $scope.glimmpseConstants.stateComplete ||
-            state ==  $scope.glimmpseConstants.stateDisabled);
-    };
+
 
     /**
      * Returns true if the state allows the user to load the
@@ -113,9 +709,9 @@ glimmpseApp.controller('stateController',
     $scope.showIncompleteItemsDialog = function () {
 
         $scope.incompleteViews = [];
-        if (!$scope.testDone($scope.getStateSolvingFor())) { $scope.incompleteViews.push("Solving For"); }
-        if (!$scope.testDone($scope.getStateNominalPower())) { $scope.incompleteViews.push("Desired Power"); }
-        if (!$scope.testDone($scope.getStateTypeIError())) { $scope.incompleteViews.push("Type I Error"); }
+        if (!$scope.testDone($scope.state.solvingFor)) { $scope.incompleteViews.push("Start > Solving For"); }
+        if (!$scope.testDone($scope.state.nominalPower)) { $scope.incompleteViews.push("Start > Desired Power"); }
+        if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
 
         if ($scope.mode == $scope.glimmpseConstants.modeGuided) {
             if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Predictors"); }
@@ -396,9 +992,9 @@ glimmpseApp.controller('stateController',
     $scope.calculateAllowed = function() {
         if ($scope.getMode() == $scope.glimmpseConstants.modeGuided) {
             return (
-                $scope.testDone($scope.getStateSolvingFor()) &&
-                $scope.testDone($scope.getStateNominalPower()) &&
-                $scope.testDone($scope.getStateTypeIError()) &&
+                $scope.testDone($scope.state.solvingFor) &&
+                $scope.testDone($scope.state.nominalPower) &&
+                $scope.testDone($scope.state.typeIError) &&
                 $scope.testDone($scope.getStatePredictors()) &&
                 $scope.testDone($scope.getStateCovariate()) &&
                 $scope.testDone($scope.getStateClustering()) &&
@@ -419,7 +1015,7 @@ glimmpseApp.controller('stateController',
                 );
         } else if ($scope.getMode() == $scope.glimmpseConstants.modeMatrix) {
             return (
-                $scope.testDone($scope.getStateSolvingFor()) &&
+                $scope.testDone($scope.state.solvingFor) &&
                 $scope.testDone($scope.getStateNominalPower()) &&
                 $scope.testDone($scope.getStateTypeIError()) &&
                 $scope.testDone($scope.getStateDesignEssence()) &&
@@ -453,539 +1049,6 @@ glimmpseApp.controller('stateController',
         $scope.setView($scope.glimmpseConstants.viewTypeResults);
     };
 
-    /**
-     * Get the state of solution type view.  The view is
-     * complete if a solution type has been selected
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateSolvingFor = function() {
-        if ($scope.studyDesign.solutionTypeEnum !== undefined) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the nominal power list.  The list is
-     * disabled if the user is solving for power.  It is
-     * considered complete if at least one power has been entered.
-     *
-     * @returns complete, incomplete, or disabled
-     */
-    $scope.getStateNominalPower = function() {
-        if ($scope.studyDesign.solutionTypeEnum === undefined ||
-           $scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypePower) {
-            return $scope.glimmpseConstants.stateDisabled;
-        } else if ($scope.studyDesign.nominalPowerList.length > 0) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the Type I error list.  At least
-     * one alpha value is required for the list to be complete.
-     * @returns complete or incomplete
-     */
-    $scope.getStateTypeIError = function() {
-        if ($scope.studyDesign.alphaList.length > 0) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     *
-     * Get the state of the predictor view.  The predictor
-     * list is considered complete if
-     * 1. There are no predictors (i.e. a one-sample design), or
-     * 2. Every predictor has at least two categories
-     *
-     * Otherwise, the list is incomplete
-     * @returns complete or incomplete
-     */
-    $scope.getStatePredictors = function() {
-        var numFactors = $scope.studyDesign.betweenParticipantFactorList.length;
-        if (numFactors > 0) {
-            for(var i = 0; i < numFactors; i++) {
-                if ($scope.studyDesign.betweenParticipantFactorList[i].categoryList.length < 2) {
-                    return $scope.glimmpseConstants.stateIncomplete;
-                }
-            }
-        }
-        return $scope.glimmpseConstants.stateComplete;
-    };
-
-    /**
-     * Get the state of the Gaussian covariate view.
-     * In the current interface, this view is always complete.
-     *
-     * @returns complete
-     */
-    $scope.getStateCovariate = function() {
-        return $scope.glimmpseConstants.stateComplete;
-    };
-
-    /**
-     * Get the state of the clustering view.  The clustering
-     * tree is complete if
-     * 1. No clustering is specified, or
-     * 2. All levels of clustering are complete
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateClustering = function() {
-        if ($scope.studyDesign.clusteringTree.length <= 0){
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            for(var i=0; i < $scope.studyDesign.clusteringTree.length; i++) {
-                var cluster = $scope.studyDesign.clusteringTree[i];
-                if (cluster.groupName === undefined || cluster.groupName.length <= 0 ||
-                    cluster.groupSize === undefined || cluster.groupSize < 1 ||
-                    cluster.intraClusterCorrelation === undefined ||
-                    cluster.intraClusterCorreation < -1 || cluster.intraClusterCorreation > 1) {
-                    return $scope.glimmpseConstants.stateIncomplete;
-                }
-            }
-            return $scope.glimmpseConstants.stateComplete;
-        }
-    };
-
-    /**
-     * Get the state of the relative group sizes view.
-     * The relative group size list is complete provided
-     * the between participant factor list is valid.  It
-     * is disabled when no predictors are specified.  It
-     * is blocked when
-     *
-     * @returns {string}
-     */
-    $scope.getStateRelativeGroupSize = function() {
-        if ($scope.studyDesign.betweenParticipantFactorList.length <= 0) {
-            return $scope.glimmpseConstants.stateDisabled;
-        } else if ($scope.getStatePredictors() == $scope.glimmpseConstants.stateComplete) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateBlocked;
-        }
-    };
-
-    /**
-     * Get the state of the smallest group size view.  The view
-     * is disabled when the user is solving for sample size.
-     * When the user is solving for power, the view is complete when
-     * at least one group size is specified.
-     *
-     * @returns complete, incomplete, or disabled
-     */
-    $scope.getStateSmallestGroupSize = function() {
-        if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
-            return $scope.glimmpseConstants.stateDisabled;
-        } else if ($scope.studyDesign.sampleSizeList.length > 0) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of response variables view.  The view
-     * is complete when at least one variable has been specified.
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateResponseVariables = function() {
-        if ($scope.studyDesign.responseList.length > 0) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the repeated measures view.  The view
-     * is complete when
-     * 1. No repeated measures are specified, or
-     * 2. Information for all repeated measures are complete
-     *
-     * @returns {string}
-     */
-    $scope.getStateRepeatedMeasures = function() {
-        if ($scope.studyDesign.repeatedMeasuresTree.length > 0) {
-            for(var i = 0; i < $scope.studyDesign.repeatedMeasuresTree.length; i++) {
-                var factor = $scope.studyDesign.repeatedMeasuresTree[i];
-                if (factor.dimension === undefined || factor.dimension === null ||
-                    factor.dimension.length <= 0 ||
-                    factor.repeatedMeasuresDimensionType === undefined ||
-                    factor.numberOfMeasurements < 2 ||
-                    factor.spacingList.length <= 0) {
-                    return $scope.glimmpseConstants.stateIncomplete;
-                }
-            }
-        }
-        return $scope.glimmpseConstants.stateComplete;
-    };
-
-
-    /**
-     * Get the state of the hypothesis view.  The view
-     * is blocked when the user has not completed the predictors
-     * or response variables screens.  The screen is complete
-     * when the hypothesis type and a sufficient number of
-     * predictors is selected (at least 1 for main effects and trends,
-     * and at least 2 for interactions)
-     *
-     * @returns blocked, complete or incomplete
-     */
-    $scope.getStateHypothesis = function() {
-        if (!$scope.testDone($scope.getStatePredictors()) ||
-            !$scope.testDone($scope.getStateResponseVariables()) ||
-            !$scope.testDone($scope.getStateRepeatedMeasures())) {
-            return $scope.glimmpseConstants.stateBlocked;
-        } else {
-            if ($scope.studyDesign.hypothesis[0] !== undefined) {
-                var hypothesis = $scope.studyDesign.hypothesis[0];
-                var totalFactors = 0;
-                if (hypothesis.betweenParticipantFactorMapList !== undefined) {
-                    totalFactors += hypothesis.betweenParticipantFactorMapList.length;
-                }
-                if (hypothesis.repeatedMeasuresMapTree) {
-                    totalFactors += hypothesis.repeatedMeasuresMapTree.length;
-                }
-
-                if (hypothesis.type == $scope.glimmpseConstants.hypothesisGrandMean) {
-                    if ($scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixThetaNull)) {
-                        return $scope.glimmpseConstants.stateComplete;
-                    }
-                } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisMainEffect) {
-                    if (totalFactors == 1) {
-                        return $scope.glimmpseConstants.stateComplete;
-                    }
-                } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisTrend) {
-                    if (totalFactors == 1) {
-                        return $scope.glimmpseConstants.stateComplete;
-                    }
-                } else if (hypothesis.type == $scope.glimmpseConstants.hypothesisInteraction) {
-                    if (totalFactors >= 2) {
-                        return $scope.glimmpseConstants.stateComplete;
-                    }
-                }
-            }
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the means view.  The means view is
-     * blocked when either the predictors view or the repeated measures
-     * view is incomplete.  Otherwise, the means view is complete.
-     *
-     * @returns blocked, complete, or incomplete
-     */
-    $scope.getStateMeans = function() {
-        var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
-        if (!$scope.testDone($scope.getStatePredictors()) ||
-            !$scope.testDone($scope.getStateResponseVariables()) ||
-            !$scope.testDone($scope.getStateRepeatedMeasures())) {
-            return $scope.glimmpseConstants.stateBlocked;
-        }
-        if (beta === undefined || beta === null) {
-            return $scope.glimmpseConstants.stateBlocked;
-        }
-        if ($scope.matrixUtils.isValidMatrix(beta, undefined, undefined)) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the beta scale factors view.  The view
-     * is complete when at least one beta scale is specified.
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateScaleFactorsForMeans = function() {
-        if ($scope.studyDesign.betaScaleList.length > 0) {
-            return $scope.glimmpseConstants.stateComplete;
-        } else {
-            return $scope.glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the within participant variability view.  The
-     * screen is blocked when the user has not yet completed the
-     * response variables and repeated measures screens.  The
-     * screen is complete when all variability information for
-     * responses and each level of repeated measures are entered
-     *
-     * @returns blocked, complete, or incomplete
-     */
-    $scope.getStateWithinVariability = function() {
-        if ($scope.studyDesign.responseList.length <= 0) {
-            return $scope.glimmpseConstants.stateBlocked;
-        }
-        if ($scope.studyDesign.covariance.length > 0) {
-            for(var i = 0; i < $scope.studyDesign.covariance.length; i++) {
-                var covar = $scope.studyDesign.covariance[i];
-                if (!$scope.matrixUtils.isValidCovariance(covar)) {
-                    return $scope.glimmpseConstants.stateIncomplete;
-                }
-            }
-        }
-        return $scope.glimmpseConstants.stateComplete;
-    };
-
-    /**
-     * Get the state of the covariate variability view.
-     * The view is disabled when the user has not selected a covariate.
-     * The view is complete when all variability information is entered.
-     *
-     * @returns disabled, complete, or incomplete
-     */
-    $scope.getStateCovariateVariability = function() {
-        if ($scope.studyDesign.gaussianCovariate) {
-            if ($scope.studyDesign.responseList.length <= 0) {
-                return glimmpseConstants.stateBlocked;
-            }
-            var sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
-            if (!$scope.matrixUtils.isValidMatrix(sigmaG, 0, undefined)) {
-                return glimmpseConstants.stateIncomplete;
-            }
-            var sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-            if (!$scope.matrixUtils.isValidMatrix(sigmaYG, -1, 1)) {
-                return glimmpseConstants.stateIncomplete;
-            }
-            return glimmpseConstants.stateComplete;
-        } else {
-            return glimmpseConstants.stateDisabled;
-        }
-    };
-
-    /**
-     * Get the state of the sigma scale factors view.  The view is
-     * complete when at least one scale factor has been entered.
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateScaleFactorsForVariability = function() {
-        if ($scope.studyDesign.sigmaScaleList.length > 0) {
-            return glimmpseConstants.stateComplete;
-        } else {
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the statistical test view.  The view is
-     * complete when at least one statistical test has been selected.
-     *
-     * @returns complete or incomplete
-     */
-    $scope.getStateStatisticalTest = function() {
-        if ($scope.studyDesign.statisticalTestList.length > 0) {
-            return glimmpseConstants.stateComplete;
-        } else {
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    /**
-     * Get the state of the power method view.  The view is disabled
-     * when the user has not selected a gaussian covariate.  The view
-     * is complete when
-     * 1. At least one power method is selected
-     * 2. If quantile power is selected, at least one quantile is entered.
-     *
-     * @returns disabled, complete, or incomplete
-     */
-    $scope.getStatePowerMethod = function() {
-        if ($scope.studyDesign.gaussianCovariate) {
-            if ($scope.studyDesign.powerMethodList.length > 0) {
-                var quantileChecked = false;
-                for(var i in $scope.studyDesign.powerMethodList) {
-                    if ($scope.studyDesign.powerMethodList[i].value == 'quantile') {
-                        quantileChecked = true;
-                        break;
-                    }
-                }
-                if (quantileChecked) {
-                    if ($scope.studyDesign.quantileList.length > 0) {
-                        return glimmpseConstants.stateComplete;
-                    } else {
-                        return glimmpseConstants.stateIncomplete;
-                    }
-                } else {
-                    return glimmpseConstants.stateComplete;
-                }
-            } else {
-                return glimmpseConstants.stateIncomplete;
-            }
-
-
-        } else {
-            return glimmpseConstants.stateDisabled;
-        }
-    };
-
-    /**
-     * Get the state of the confidence intervals view.  The view is disabled when
-     * the user has selected a Gaussian covariate (theory not yet available).
-     * The view is complete when
-     * 1. The user has NOT selected confidence intervals, or
-     * 2. All confidence interval informatin is complete
-     *
-     * @returns disabled, complete, or incomplete
-     */
-    $scope.getStateConfidenceIntervals = function() {
-        if ($scope.studyDesign.confidenceIntervalDescriptions === null) {
-            return glimmpseConstants.stateComplete;
-        } else {
-            if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed !== undefined &&
-                $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed !== undefined &&
-                $scope.studyDesign.confidenceIntervalDescriptions.upperTailProbability !== undefined &&
-                $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability !== undefined &&
-                $scope.studyDesign.confidenceIntervalDescriptions.sampleSize !== undefined &&
-                $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix !== undefined) {
-                return glimmpseConstants.stateComplete;
-            } else {
-                return glimmpseConstants.stateIncomplete;
-            }
-        }
-    };
-
-    /**
-     * Determine if the power curve screen is complete
-     * @returns {string}
-     */
-    $scope.getStatePowerCurve = function() {
-        if ($scope.studyDesign.alphaList.length <= 0 ||
-            $scope.studyDesign.statisticalTestList.length <= 0 ||
-            $scope.studyDesign.betaScaleList.length <= 0 ||
-            $scope.studyDesign.sigmaScaleList.length <= 0 ||
-            ($scope.studyDesign.gaussianCovariate &&
-                ($scope.studyDesign.powerMethodList.length <= 0 ||
-                    ($scope.studyDesign.getPowerMethodIndex($scope.glimmpseConstants.powerMethodQuantile) >= 0 &&
-                        $scope.studyDesign.quantileList.length <= 0
-                    )
-                )
-            ) ||
-            ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypePower &&
-                $scope.studyDesign.sampleSizeList.length <= 0) ||
-            ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize &&
-                $scope.studyDesign.nominalPowerList.length <= 0)
-        ) {
-            return $scope.glimmpseConstants.stateBlocked;
-        } else {
-            if ($scope.studyDesign.powerCurveDescriptions === null) {
-                return $scope.glimmpseConstants.stateComplete;
-            } else {
-                if ($scope.studyDesign.powerCurveDescriptions.dataSeriesList.length > 0) {
-                    return $scope.glimmpseConstants.stateComplete;
-                } else {
-                    return $scope.glimmpseConstants.stateIncomplete;
-                }
-            }
-        }
-    };
-
-
-    /** Matrix mode checks **/
-
-    // check if design matrix is valid
-    $scope.getStateDesignEssence = function() {
-        if ($scope.matrixUtils.isValidMatrix(
-            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixXEssence))) {
-            return glimmpseConstants.stateComplete;
-        }
-        return glimmpseConstants.stateIncomplete;
-    };
-
-    // state of beta matrix
-    $scope.getStateBeta = function() {
-        if ($scope.matrixUtils.isValidMatrix(
-            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta))) {
-            return glimmpseConstants.stateComplete;
-        }
-        return glimmpseConstants.stateIncomplete;
-    };
-
-    $scope.getStateBetweenParticipantContrast = function() {
-        if ($scope.matrixUtils.isValidMatrix(
-            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBetweenContrast))) {
-            return glimmpseConstants.stateComplete;
-        }
-        return glimmpseConstants.stateIncomplete;
-    };
-
-    $scope.getStateWithinParticipantContrast = function() {
-        if ($scope.matrixUtils.isValidMatrix(
-            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixWithinContrast))) {
-            return glimmpseConstants.stateComplete;
-        }
-        return glimmpseConstants.stateIncomplete;
-    };
-
-    $scope.getStateThetaNull = function() {
-        if ($scope.matrixUtils.isValidMatrix(
-            $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixThetaNull))) {
-            return glimmpseConstants.stateComplete;
-        }
-        return glimmpseConstants.stateIncomplete;
-    };
-
-    $scope.getStateSigmaE = function() {
-        if ($scope.studyDesign.gaussianCovariate) {
-            return glimmpseConstants.stateDisabled;
-        } else {
-            if ($scope.matrixUtils.isValidMatrix(
-                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaE))) {
-                return glimmpseConstants.stateComplete;
-            }
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    $scope.getStateSigmaG = function() {
-        if (!$scope.studyDesign.gaussianCovariate) {
-            return glimmpseConstants.stateDisabled;
-        } else {
-            if ($scope.matrixUtils.isValidMatrix(
-                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG))) {
-                return glimmpseConstants.stateComplete;
-            }
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    $scope.getStateSigmaY = function() {
-        if (!$scope.studyDesign.gaussianCovariate) {
-            return glimmpseConstants.stateDisabled;
-        } else {
-            if ($scope.matrixUtils.isValidMatrix(
-                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaY))) {
-                return glimmpseConstants.stateComplete;
-            }
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
-
-    $scope.getStateSigmaYG = function() {
-        if (!$scope.studyDesign.gaussianCovariate) {
-            return glimmpseConstants.stateDisabled;
-        } else {
-            if ($scope.matrixUtils.isValidMatrix(
-                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG))) {
-                return glimmpseConstants.stateComplete;
-            }
-            return glimmpseConstants.stateIncomplete;
-        }
-    };
 
 
 })
