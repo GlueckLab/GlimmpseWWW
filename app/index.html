@@ -323,11 +323,6 @@
             </div>
         </div>
 
-        <!-- main application page for mobile (small and extra small screens)
-        <div class="visible-sm visible-xs">
-            <div ng-view ng-class="slide" class="padding10"></div>
-        </div>   -->
-
         <!-- main application content-->
         <div class="row padding0">
 
@@ -409,29 +404,29 @@
                         <div id="nav-model" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
-                                <div class="{{isActive('/isu') && 'active'}} {{getStateClustering()}}" >
+                                <div class="{{isActive('/isu') && 'active'}} {{state.isu}}" >
                                     <a href="#/isu">Clustering</a>
                                 </div>
-                                <div class="{{isActive('/predictors') && 'active'}} {{getStatePredictors()}}" >
+                                <div class="{{isActive('/predictors') && 'active'}} {{state.predictors}}" >
                                     <a href="#/predictors">Predictors</a>
                                 </div>
-                                <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                                <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
                                     <a href="#/covariates">Covariate</a>
                                 </div>
-                                <div class="{{isActive('/responseVariables') && 'active'}} {{getStateResponseVariables()}}" >
+                                <div class="{{isActive('/responseVariables') && 'active'}} {{state.responseVariables}}" >
                                     <a href="#/responseVariables">Response Variables</a>
                                 </div>
-                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{getStateRepeatedMeasures()}}" >
+                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
                                     <a href="#/repeatedMeasures">Repeated Measures</a>
                                 </div>
-                                <div class="{{isActive('/relativeGroupSize') && 'active'}} {{getStateRelativeGroupSize()}}" >
-                                    <a href="#/relativeGroupSize" ng-show="viewAllowed(getStateRelativeGroupSize())">Relative Group Size</a>
-                                    <label ng-show="!viewAllowed(getStateRelativeGroupSize())">Relative Group Size</label>
+                                <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
+                                    <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Size</a>
+                                    <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Size</label>
                                 </div>
-                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
                                     <a href="#/smallestGroupSize"
-                                       ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
-                                    <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
+                                       ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+                                    <label ng-show="!viewAllowed(state.smallestGroupSize)">
                                         Smallest Group Size
                                     </label>
                                 </div>
@@ -447,14 +442,14 @@
                         <div id="nav-hypothesis" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
-                                <div class="{{isActive('/hypothesis') && 'active'}} {{getStateHypothesis()}}" >
-                                    <a href="#/hypothesis" ng-show="viewAllowed(getStateHypothesis())">Hypothesis</a>
-                                    <label ng-show="!viewAllowed(getStateHypothesis())">Hypothesis</label>
+                                <div class="{{isActive('/hypothesis') && 'active'}} {{state.hypothesis}}" >
+                                    <a href="#/hypothesis" ng-show="viewAllowed(state.hypothesis)">Hypothesis</a>
+                                    <label ng-show="!viewAllowed(state.hypothesis)">Hypothesis</label>
                                 </div>
-                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
                                     <a href="#/test">Statistical Test</a>
                                 </div>
-                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                     <a href="#/typeIError">Type I Error</a>
                                 </div>
                             </div>
@@ -469,11 +464,11 @@
                         <div id="nav-means" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
-                                <div class="{{isActive('/means') && 'active'}} {{getStateMeans()}}" >
-                                    <a href="#/means" ng-show="viewAllowed(getStateMeans())">Means</a>
-                                    <label ng-show="!viewAllowed(getStateMeans())">Means</label>
+                                <div class="{{isActive('/means') && 'active'}} {{state.means}}" >
+                                    <a href="#/means" ng-show="viewAllowed(state.means)">Means</a>
+                                    <label ng-show="!viewAllowed(state.means)">Means</label>
                                 </div>
-                                <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                                <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
                                     <a href="#/meansScale">Scale Factors</a>
                                 </div>
                             </div>
@@ -488,15 +483,15 @@
                         <div id="nav-variability" class="panel-collapse collapse"
                              ng-show="getMode() == glimmpseConstants.modeGuided">
                             <div class="panel-body">
-                                <div class="{{isActive('/variabilityWithin') && 'active'}} {{getStateWithinVariability()}}" >
-                                    <a href="#/variabilityWithin" ng-show="viewAllowed(getStateWithinVariability())">Within Participant</a>
-                                    <label ng-show="!viewAllowed(getStateWithinVariability())">Within Participant</label>
+                                <div class="{{isActive('/variabilityWithin') && 'active'}} {{state.variabilityWithin}}" >
+                                    <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within Participant</a>
+                                    <label ng-show="!viewAllowed(state.variabilityWithin)">Within Participant</label>
                                 </div>
-                                <div class="{{isActive('/variabilityCovariate') && 'active'}} {{getStateCovariateVariability()}}" >
-                                    <a href="#/variabilityCovariate" ng-show="viewAllowed(getStateCovariateVariability())">Covariate</a>
-                                    <label ng-show="!viewAllowed(getStateCovariateVariability())">Covariate</label>
+                                <div class="{{isActive('/variabilityCovariate') && 'active'}} {{state.variabilityCovariate}}" >
+                                    <a href="#/variabilityCovariate" ng-show="viewAllowed(state.variabilityCovariate)">Covariate</a>
+                                    <label ng-show="!viewAllowed(state.variabilityCovariate)">Covariate</label>
                                 </div>
-                                <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                                <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
                                     <a href="#/variabilityScale">Scale Factors</a>
                                 </div>
                             </div>
@@ -514,16 +509,16 @@
                         </div>
                         <div id="nav-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
-                                <div class="{{isActive('/designEssence') && 'active'}} {{getStateDesignEssence()}}" >
+                                <div class="{{isActive('/designEssence') && 'active'}} {{state.designEssence}}" >
                                     <a href="#/designEssence">Design Essence</a>
                                 </div>
-                                <div class="{{isActive('/covariates') && 'active'}} {{getStateCovariate()}}" >
+                                <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
                                     <a href="#/covariates">Covariate</a>
                                 </div>
-                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{getStateSmallestGroupSize()}}" >
+                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
                                     <a href="#/smallestGroupSize"
-                                       ng-show="viewAllowed(getStateSmallestGroupSize())">Smallest Group Size</a>
-                                    <label ng-show="!viewAllowed(getStateSmallestGroupSize())">
+                                       ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+                                    <label ng-show="!viewAllowed(state.smallestGroupSize)">
                                         Smallest Group Size
                                     </label>
                                 </div>
@@ -539,10 +534,10 @@
                         </div>
                         <div id="nav-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
-                                <div class="{{isActive('/beta') && 'active'}} {{getStateBeta()}}" >
+                                <div class="{{isActive('/beta') && 'active'}} {{state.beta}}" >
                                     <a href="#/beta">Beta Coefficients</a>
                                 </div>
-                                <div class="{{isActive('/meansScale') && 'active'}} {{getStateScaleFactorsForMeans()}}" >
+                                <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
                                     <a href="#/meansScale">Beta Scale Factors</a>
                                 </div>
                             </div>
@@ -557,19 +552,19 @@
                         </div>
                         <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
-                                <div class="{{isActive('/betweenContrast') && 'active'}} {{getStateBetweenParticipantContrast()}}" >
+                                <div class="{{isActive('/betweenContrast') && 'active'}} {{state.betweenContrast}}" >
                                     <a href="#/betweenContrast">Between Participant Contrast</a>
                                 </div>
-                                <div class="{{isActive('/withinContrast') && 'active'}} {{getStateWithinParticipantContrast()}}" >
+                                <div class="{{isActive('/withinContrast') && 'active'}} {{state.withinContrast}}" >
                                     <a href="#/withinContrast">Within Participant Contrast</a>
                                 </div>
-                                <div class="{{isActive('/thetaNull') && 'active'}} {{getStateThetaNull()}}" >
+                                <div class="{{isActive('/thetaNull') && 'active'}} {{state.thetaNull}}" >
                                     <a href="#/thetaNull">Null Hypothesis Matrix</a>
                                 </div>
-                                <div class="{{isActive('/test') && 'active'}} {{getStateStatisticalTest()}}" >
+                                <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
                                     <a href="#/test">Statistical Test</a>
                                 </div>
-                                <div class="{{isActive('/typeIError') && 'active'}} {{getStateTypeIError()}}" >
+                                <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                     <a href="#/typeIError">Type I Error</a>
                                 </div>
                             </div>
@@ -584,23 +579,23 @@
                         </div>
                         <div id="nav-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                             <div class="panel-body">
-                                <div class="{{isActive('/sigmaE') && 'active'}} {{getStateSigmaE()}}">
-                                    <a href="#/sigmaE" ng-show="viewAllowed(getStateSigmaE())">Error Covariance</a>
-                                    <label ng-show="!viewAllowed(getStateSigmaE())">Error Covariance</label>
+                                <div class="{{isActive('/sigmaE') && 'active'}} {{state.sigmaE}}">
+                                    <a href="#/sigmaE" ng-show="viewAllowed(state.sigmaE)">Error Covariance</a>
+                                    <label ng-show="!viewAllowed(state.sigmaE)">Error Covariance</label>
                                 </div>
-                                <div class="{{isActive('/sigmaY') && 'active'}} {{getStateSigmaY()}}">
-                                    <a href="#/sigmaY" ng-show="viewAllowed(getStateSigmaY())">Outcomes Covariance</a>
-                                    <label ng-show="!viewAllowed(getStateSigmaY())">Outcomes Covariance</label>
+                                <div class="{{isActive('/sigmaY') && 'active'}} {{state.sigmaY}}">
+                                    <a href="#/sigmaY" ng-show="viewAllowed(state.sigmaY)">Outcomes Covariance</a>
+                                    <label ng-show="!viewAllowed(state.sigmaY)">Outcomes Covariance</label>
                                 </div>
-                                <div class="{{isActive('/sigmaG') && 'active'}} {{getStateSigmaG()}}" >
-                                    <a href="#/sigmaG" ng-show="viewAllowed(getStateSigmaG())">Variance of Covariate</a>
-                                    <label ng-show="!viewAllowed(getStateSigmaG())">Covariate</label>
+                                <div class="{{isActive('/sigmaG') && 'active'}} {{state.sigmaG}}" >
+                                    <a href="#/sigmaG" ng-show="viewAllowed(state.sigmaG)">Variance of Covariate</a>
+                                    <label ng-show="!viewAllowed(state.sigmaG)">Covariate</label>
                                 </div>
-                                <div class="{{isActive('/sigmaYG') && 'active'}} {{getStateSigmaYG()}}" >
-                                    <a href="#/sigmaYG" ng-show="viewAllowed(getStateSigmaYG())">Outcomes and Covariate</a>
-                                    <label ng-show="!viewAllowed(getStateSigmaYG())">Outcomes and Covariate</label>
+                                <div class="{{isActive('/sigmaYG') && 'active'}} {{state.sigmaYG}}" >
+                                    <a href="#/sigmaYG" ng-show="viewAllowed(state.sigmaYG)">Outcomes and Covariate</a>
+                                    <label ng-show="!viewAllowed(state.sigmaYG)">Outcomes and Covariate</label>
                                 </div>
-                                <div class="{{isActive('/variabilityScale') && 'active'}} {{getStateScaleFactorsForVariability()}}" >
+                                <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
                                     <a href="#/variabilityScale">Scale Factors</a>
                                 </div>
                             </div>
@@ -617,43 +612,19 @@
                         </div>
                         <div id="nav-options" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <div class="{{isActive('/powerMethod') && 'active'}} {{getStatePowerMethod()}}" >
-                                    <a href="#/powerMethod" ng-show="viewAllowed(getStatePowerMethod())">Power Method</a>
-                                    <label ng-show="!viewAllowed(getStatePowerMethod())">Power Method</label>
+                                <div class="{{isActive('/powerMethod') && 'active'}} {{state.powerMethod}}" >
+                                    <a href="#/powerMethod" ng-show="viewAllowed(state.powerMethod)">Power Method</a>
+                                    <label ng-show="!viewAllowed(state.powerMethod)">Power Method</label>
                                 </div>
-                                <div class="{{isActive('/confidenceIntervals') && 'active'}} {{getStateConfidenceIntervals()}}">
+                                <div class="{{isActive('/confidenceIntervals') && 'active'}} {{state.confidenceIntervals}}">
                                     <a href="#/confidenceIntervals">Confidence Intervals</a>
                                 </div>
-                                <div class="{{isActive('/plotOptions') && 'active'}} {{getStatePowerCurve()}}" >
-                                    <a href="#/plotOptions" ng-show="viewAllowed(getStatePowerCurve())">Power Curve</a>
-                                    <label ng-show="!viewAllowed(getStatePowerCurve())">Power Curve</label>
+                                <div class="{{isActive('/plotOptions') && 'active'}} {{state.plotOptions}}" >
+                                    <a href="#/plotOptions" ng-show="viewAllowed(state.plotOptions)">Power Curve</a>
+                                    <label ng-show="!viewAllowed(state.plotOptions)">Power Curve</label>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Results -->  <!--
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-results"
-                                        ng-show="powerService.cachedResults != undefined"
-                                        ng-click="changeView('/results/report')">Results</button>
-                                <label class="results-disabled" ng-show="powerService.cachedResults == undefined">Results</label>
-                            </h4>
-                        </div>
-                        <div id="nav-results" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="{{isActive('/results/report') && 'active'}}" >
-                                    <a href="#/results/report">Power Results</a>
-                                </div>
-                                <div class="{{isActive('/results/plot') && 'active'}}" >
-                                    <a href="#/results/plot" ng-show="studyDesign.powerCurveDescriptions != undefined">Power Curve</a>
-                                    <label ng-show="studyDesign.powerCurveDescriptions == undefined">Power Curve</label>
-                                </div>
-                                <div class="{{isActive('/results/matrices') && 'active'}}" >
-                                    <a href="#/results/matrices">View Matrices</a>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -692,10 +663,11 @@
 
         </div>
     </div>
+
 </div>
-
-
-
+    <div ng-show="glimmpseConstants.debug == true">
+        {{state}}
+    </div>
     <!-- footer -->
     <div class="row">
         <div class="col-md-12 text-center vmargin15">

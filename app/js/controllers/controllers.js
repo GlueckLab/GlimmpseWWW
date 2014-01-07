@@ -27,6 +27,16 @@ glimmpseApp.controller('stateController',
         /**** SCREEN STATE FUNCTIONS ****/
 
         /**
+         * Convenience routine to determine if a screen has been completed by the user
+         * @param state
+         * @returns {boolean}
+         */
+        $scope.testDone = function(state) {
+            return (state == $scope.glimmpseConstants.stateComplete ||
+                state ==  $scope.glimmpseConstants.stateDisabled);
+        };
+
+        /**
          * Get the state of solution type view.  The view is
          * complete if a solution type has been selected
          *
@@ -140,7 +150,7 @@ glimmpseApp.controller('stateController',
         $scope.getStateRelativeGroupSize = function() {
             if ($scope.studyDesign.betweenParticipantFactorList.length <= 0) {
                 return $scope.glimmpseConstants.stateDisabled;
-            } else if ($scope.getStatePredictors() == $scope.glimmpseConstants.stateComplete) {
+            } else if ($scope.state.predictors == $scope.glimmpseConstants.stateComplete) {
                 return $scope.glimmpseConstants.stateComplete;
             } else {
                 return $scope.glimmpseConstants.stateBlocked;
@@ -215,9 +225,9 @@ glimmpseApp.controller('stateController',
          * @returns blocked, complete or incomplete
          */
         $scope.getStateHypothesis = function() {
-            if (!$scope.testDone($scope.getStatePredictors()) ||
-                !$scope.testDone($scope.getStateResponseVariables()) ||
-                !$scope.testDone($scope.getStateRepeatedMeasures())) {
+            if (!$scope.testDone($scope.state.predictors) ||
+                !$scope.testDone($scope.state.responseVariables) ||
+                !$scope.testDone($scope.state.repeatedMeasures)) {
                 return $scope.glimmpseConstants.stateBlocked;
             } else {
                 if ($scope.studyDesign.hypothesis[0] !== undefined) {
@@ -261,9 +271,9 @@ glimmpseApp.controller('stateController',
          */
         $scope.getStateMeans = function() {
             var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
-            if (!$scope.testDone($scope.getStatePredictors()) ||
-                !$scope.testDone($scope.getStateResponseVariables()) ||
-                !$scope.testDone($scope.getStateRepeatedMeasures())) {
+            if (!$scope.testDone($scope.state.predictors) ||
+                !$scope.testDone($scope.state.responseVariables) ||
+                !$scope.testDone($scope.state.repeatedMeasures)) {
                 return $scope.glimmpseConstants.stateBlocked;
             }
             if (beta === undefined || beta === null) {
@@ -561,50 +571,44 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Convenience routine to determine if a screen has been completed by the user
-         * @param state
-         * @returns {boolean}
-         */
-        $scope.testDone = function(state) {
-            return (state == $scope.glimmpseConstants.stateComplete ||
-                state ==  $scope.glimmpseConstants.stateDisabled);
-        };
-
-        /**
          * Generic function to update the state of all screens
          */
         $scope.updateState = function() {
-            $scope.state = {
-                solvingFor: $scope.getStateSolvingFor(),
-                nominalPower: $scope.getStateNominalPower(),
-                typeIError: $scope.getStateTypeIError(),
-                predictors: $scope.getStatePredictors(),
-                covariates: $scope.getStateCovariate(),
-                isu: $scope.getStateClustering(),
-                relativeGroupSize: $scope.getStateRelativeGroupSize(),
-                smallestGroupSize: $scope.getStateSmallestGroupSize(),
-                responseVariables: $scope.getStateResponseVariables(),
-                repeatedMeasures: $scope.getStateRepeatedMeasures(),
-                hypothesis: $scope.getStateHypothesis(),
-                means: $scope.getStateMeans(),
-                meansScale: $scope.getStateScaleFactorsForMeans(),
-                variabilityWithin: $scope.getStateWithinVariability(),
-                variabilityCovariate: $scope.getStateCovariateVariability(),
-                variabilityScale: $scope.getStateScaleFactorsForVariability(),
-                test: $scope.getStateStatisticalTest(),
-                powerMethod: $scope.getStatePowerMethod(),
-                confidenceIntervals: $scope.getStateConfidenceIntervals(),
-                plotOptions: $scope.getStatePowerCurve(),
-                designEssence: $scope.getStateDesignEssence(),
-                beta: $scope.getStateBeta(),
-                betweenContrast: $scope.getStateBetweenParticipantContrast(),
-                withinContrast: $scope.getStateWithinParticipantContrast(),
-                thetaNull: $scope.getStateThetaNull(),
-                sigmaE: $scope.getStateSigmaE(),
-                sigmaY: $scope.getStateSigmaY(),
-                sigmaG: $scope.getStateSigmaG(),
-                sigmaYG: $scope.getStateSigmaYG()
-            };
+            /**
+             * !ORDER MATTERS IN THESE CALLS!
+             *
+             * Edit with care
+             */
+            $scope.state.solvingFor = $scope.getStateSolvingFor();
+            $scope.state.nominalPower = $scope.getStateNominalPower();
+            $scope.state.typeIError = $scope.getStateTypeIError();
+            $scope.state.predictors = $scope.getStatePredictors();
+            $scope.state.covariates = $scope.getStateCovariate();
+            $scope.state.isu = $scope.getStateClustering();
+            $scope.state.relativeGroupSize = $scope.getStateRelativeGroupSize();
+            $scope.state.smallestGroupSize = $scope.getStateSmallestGroupSize();
+            $scope.state.responseVariables = $scope.getStateResponseVariables();
+            $scope.state.repeatedMeasures = $scope.getStateRepeatedMeasures();
+            $scope.state.hypothesis = $scope.getStateHypothesis();
+            $scope.state.means = $scope.getStateMeans();
+            $scope.state.meansScale = $scope.getStateScaleFactorsForMeans();
+            $scope.state.variabilityWithin = $scope.getStateWithinVariability();
+            $scope.state. variabilityCovariate = $scope.getStateCovariateVariability();
+            $scope.state.variabilityScale = $scope.getStateScaleFactorsForVariability();
+            $scope.state.test = $scope.getStateStatisticalTest();
+            $scope.state.powerMethod = $scope.getStatePowerMethod();
+            $scope.state.confidenceIntervals = $scope.getStateConfidenceIntervals();
+            $scope.state.plotOptions = $scope.getStatePowerCurve();
+            $scope.state.designEssence = $scope.getStateDesignEssence();
+            $scope.state.beta = $scope.getStateBeta();
+            $scope.state.betweenContrast = $scope.getStateBetweenParticipantContrast();
+            $scope.state.withinContrast = $scope.getStateWithinParticipantContrast();
+            $scope.state.thetaNull = $scope.getStateThetaNull();
+            $scope.state.sigmaE = $scope.getStateSigmaE();
+            $scope.state.sigmaY = $scope.getStateSigmaY();
+            $scope.state.sigmaG = $scope.getStateSigmaG();
+            $scope.state.sigmaYG = $scope.getStateSigmaYG();
+
         };
         /**** END SCREEN STATE FUNCTIONS ****/
 
@@ -653,6 +657,7 @@ glimmpseApp.controller('stateController',
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
 
         // screen state information
+        $scope.state = {};
         $scope.updateState();
 
     };
@@ -709,67 +714,62 @@ glimmpseApp.controller('stateController',
     $scope.showIncompleteItemsDialog = function () {
 
         $scope.incompleteViews = [];
+
+        // start menu
         if (!$scope.testDone($scope.state.solvingFor)) { $scope.incompleteViews.push("Start > Solving For"); }
         if (!$scope.testDone($scope.state.nominalPower)) { $scope.incompleteViews.push("Start > Desired Power"); }
-        if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
 
         if ($scope.mode == $scope.glimmpseConstants.modeGuided) {
-            if (!$scope.testDone($scope.getStatePredictors())) { $scope.incompleteViews.push("Predictors"); }
+            // GUIDED MODE
+            // model menu
+            if (!$scope.testDone($scope.state.isu)) { $scope.incompleteViews.push("Model > Clustering"); }
+            if (!$scope.testDone($scope.state.predictors)) { $scope.incompleteViews.push("Model > Predictors"); }
+            if (!$scope.testDone($scope.state.covariates)) { $scope.incompleteViews.push("Model > Covariate"); }
+            if (!$scope.testDone($scope.state.responseVariables)) { $scope.incompleteViews.push("Model > Response Variables"); }
+            if (!$scope.testDone($scope.state.repeatedMeasures)) { $scope.incompleteViews.push("Model > Repeated Measures"); }
+            if (!$scope.testDone($scope.state.relativeGroupSize)) { $scope.incompleteViews.push("Model > Relative Group Size"); }
+            if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Model > Smallest Group Size"); }
+            // hypothesis menu
+            if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
+            if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+            if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
+            // means menu
+            if (!$scope.testDone($scope.state.means)) { $scope.incompleteViews.push("Means > Means"); }
+            if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Means > Scale Factors"); }
+            // variability menu
+            if (!$scope.testDone($scope.state.variabilityWithin)) { $scope.incompleteViews.push("Variability > Within Participant"); }
+            if (!$scope.testDone($scope.state.variabilityCovariate)) { $scope.incompleteViews.push("Variability > Covariate"); }
+            if (!$scope.testDone($scope.state.variabilityScale)) { $scope.incompleteViews.push("Variability > Scale Factors"); }
+
         } else {
-            if (!$scope.testDone($scope.getStateDesignEssence())) { $scope.incompleteViews.push("Design Essence"); }
+            // MATRIX MODE
+            // design menu
+            if (!$scope.testDone($scope.state.designEssence)) { $scope.incompleteViews.push("Design > Design Essence"); }
+            if (!$scope.testDone($scope.state.covariates)) { $scope.incompleteViews.push("Design > Covariate"); }
+            if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Design > Smallest Group Size"); }
+            // coefficients menu
+            if (!$scope.testDone($scope.state.beta)) { $scope.incompleteViews.push("Coefficients > Beta Coefficients"); }
+            if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Coefficients > Beta Scale Factors"); }
+            // hypothesis menu
+            if (!$scope.testDone($scope.state.betweenContrast)) { $scope.incompleteViews.push("Hypothesis > Between Participant Contrast"); }
+            if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within Participant Contrast"); }
+            if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Theta Null"); }
+            if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+            if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
+            // variability menu
+            if (!$scope.testDone($scope.state.sigmaE)) { $scope.incompleteViews.push("Variability > Error Covariance"); }
+            if (!$scope.testDone($scope.state.sigmaY)) { $scope.incompleteViews.push("Variability > Outcomes Covariance"); }
+            if (!$scope.testDone($scope.state.sigmaG)) { $scope.incompleteViews.push("Variability > Covariate"); }
+            if (!$scope.testDone($scope.state.sigmaYG)) { $scope.incompleteViews.push("Variability > Outcomes and Covariate"); }
+            if (!$scope.testDone($scope.state.variabilityScale)) { $scope.incompleteViews.push("Variability > Scale Factors"); }
         }
 
-        if (!$scope.testDone($scope.getStateCovariate())) { $scope.incompleteViews.push("Covariate"); }
+        // options menu
+        if (!$scope.testDone($scope.state.powerMethod)) { $scope.incompleteViews.push("Options > Power Method"); }
+        if (!$scope.testDone($scope.state.confidenceIntervals)) { $scope.incompleteViews.push("Options > Confidence Intervals"); }
+        if (!$scope.testDone($scope.state.plotOptions)) { $scope.incompleteViews.push("Options > Power Curve"); }
 
-        if ($scope.mode == $scope.glimmpseConstants.modeGuided) {
-            if (!$scope.testDone($scope.getStateClustering())) { $scope.incompleteViews.push("Clustering"); }
-            if (!$scope.testDone($scope.getStateRelativeGroupSize())) { $scope.incompleteViews.push("Relative Group Size"); }
-        } else {
-            if (!$scope.testDone($scope.getStateBeta())) { $scope.incompleteViews.push("Beta Coefficients"); }
-            if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Beta Scale Factors"); }
-        }
 
-        if (!$scope.testDone($scope.getStateSmallestGroupSize())) { $scope.incompleteViews.push("Smallest Group Size"); }
-
-        if ($scope.mode ==  $scope.glimmpseConstants.modeGuided) {
-            if (!$scope.testDone($scope.getStateResponseVariables())) { $scope.incompleteViews.push("Response Variables"); }
-            if (!$scope.testDone($scope.getStateRepeatedMeasures())) { $scope.incompleteViews.push("Repeated Measures"); }
-            if (!$scope.testDone($scope.getStateHypothesis())) { $scope.incompleteViews.push("Hypothesis"); }
-            if (!$scope.testDone($scope.getStateMeans())) { $scope.incompleteViews.push("Means"); }
-            if (!$scope.testDone($scope.getStateScaleFactorsForMeans())) { $scope.incompleteViews.push("Scale Factors (means)"); }
-            if (!$scope.testDone($scope.getStateWithinVariability())) { $scope.incompleteViews.push("Within Participant Variability"); }
-            if (!$scope.testDone($scope.getStateCovariateVariability())) { $scope.incompleteViews.push("Covariate Variability"); }
-        } else {
-            if (!$scope.testDone($scope.getStateBetweenParticipantContrast())) { $scope.incompleteViews.push("Between Participant Contrast"); }
-            if (!$scope.testDone($scope.getStateWithinParticipantContrast())) { $scope.incompleteViews.push("Within Participant Contrast"); }
-            if (!$scope.testDone($scope.getStateThetaNull())) { $scope.incompleteViews.push("Null Hypothesis Matrix"); }
-            if (!$scope.testDone($scope.getStateSigmaE())) { $scope.incompleteViews.push("Error Covariance"); }
-            if (!$scope.testDone($scope.getStateSigmaY())) { $scope.incompleteViews.push("Outcomes Covariance"); }
-            if (!$scope.testDone($scope.getStateSigmaG())) { $scope.incompleteViews.push("Outcomes Covariance"); }
-            if (!$scope.testDone($scope.getStateSigmaYG())) { $scope.incompleteViews.push("Covariate (Variability)"); }
-        }
-        if (!$scope.testDone($scope.getStateScaleFactorsForVariability())) { $scope.incompleteViews.push("Scale Factors (variability)"); }
-
-        if (!$scope.testDone($scope.getStateStatisticalTest())) { $scope.incompleteViews.push("Statistical Test"); }
-        if (!$scope.testDone($scope.getStatePowerMethod())) { $scope.incompleteViews.push("Power Method"); }
-        if (!$scope.testDone($scope.getStateConfidenceIntervals())) { $scope.incompleteViews.push("Confidence Intervals"); }
-        if (!$scope.testDone($scope.getStatePowerCurve())) { $scope.incompleteViews.push("Power Curve"); }
-          /*
-        var incompleteItemsDialog = $modal.open({
-                templateUrl: 'incompleteDialog.html',
-                controller:   function ($scope, $modalInstance, incompleteViews) {
-                    $scope.incompleteViews = incompleteViews;
-                    $scope.close = function () {
-                        $modalInstance.close();
-                    }
-                },
-                resolve: {
-                    incompleteViews: function () {
-                        return $scope.incompleteViews;
-                    }
-                }
-            }
-        );   */
     };
 
     /**
@@ -995,46 +995,46 @@ glimmpseApp.controller('stateController',
                 $scope.testDone($scope.state.solvingFor) &&
                 $scope.testDone($scope.state.nominalPower) &&
                 $scope.testDone($scope.state.typeIError) &&
-                $scope.testDone($scope.getStatePredictors()) &&
-                $scope.testDone($scope.getStateCovariate()) &&
-                $scope.testDone($scope.getStateClustering()) &&
-                $scope.testDone($scope.getStateRelativeGroupSize()) &&
-                $scope.testDone($scope.getStateSmallestGroupSize()) &&
-                $scope.testDone($scope.getStateResponseVariables()) &&
-                $scope.testDone($scope.getStateRepeatedMeasures()) &&
-                $scope.testDone($scope.getStateHypothesis()) &&
-                $scope.testDone($scope.getStateMeans()) &&
-                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
-                $scope.testDone($scope.getStateWithinVariability()) &&
-                $scope.testDone($scope.getStateCovariateVariability()) &&
-                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
-                $scope.testDone($scope.getStateStatisticalTest()) &&
-                $scope.testDone($scope.getStatePowerMethod()) &&
-                $scope.testDone($scope.getStateConfidenceIntervals()) &&
-                $scope.testDone($scope.getStatePowerCurve())
+                $scope.testDone($scope.state.predictors) &&
+                $scope.testDone($scope.state.covariates) &&
+                $scope.testDone($scope.state.isu) &&
+                $scope.testDone($scope.state.relativeGroupSize) &&
+                $scope.testDone($scope.state.smallestGroupSize) &&
+                $scope.testDone($scope.state.responseVariables) &&
+                $scope.testDone($scope.state.repeatedMeasures) &&
+                $scope.testDone($scope.state.hypothesis) &&
+                $scope.testDone($scope.state.means) &&
+                $scope.testDone($scope.state.meansScale) &&
+                $scope.testDone($scope.state.variabilityWithin) &&
+                $scope.testDone($scope.state.variabilityCovariate) &&
+                $scope.testDone($scope.state.variabilityScale) &&
+                $scope.testDone($scope.state.test) &&
+                $scope.testDone($scope.state.powerMethod) &&
+                $scope.testDone($scope.state.confidenceIntervals) &&
+                $scope.testDone($scope.state.plotOptions)
                 );
         } else if ($scope.getMode() == $scope.glimmpseConstants.modeMatrix) {
             return (
                 $scope.testDone($scope.state.solvingFor) &&
-                $scope.testDone($scope.getStateNominalPower()) &&
-                $scope.testDone($scope.getStateTypeIError()) &&
-                $scope.testDone($scope.getStateDesignEssence()) &&
-                $scope.testDone($scope.getStateCovariate()) &&
-                $scope.testDone($scope.getStateRelativeGroupSize()) &&
-                $scope.testDone($scope.getStateSmallestGroupSize()) &&
-                $scope.testDone($scope.getStateBeta()) &&
-                $scope.testDone($scope.getStateScaleFactorsForMeans()) &&
-                $scope.testDone($scope.getStateBetweenParticipantContrast()) &&
-                $scope.testDone($scope.getStateWithinParticipantContrast()) &&
-                $scope.testDone($scope.getStateThetaNull()) &&
-                $scope.testDone($scope.getStateSigmaE()) &&
-                $scope.testDone($scope.getStateSigmaG()) &&
-                $scope.testDone($scope.getStateSigmaYG()) &&
-                $scope.testDone($scope.getStateSigmaY()) &&
-                $scope.testDone($scope.getStateScaleFactorsForVariability()) &&
-                $scope.testDone($scope.getStatePowerMethod()) &&
-                $scope.testDone($scope.getStateConfidenceIntervals()) &&
-                $scope.testDone($scope.getStatePowerCurve())
+                $scope.testDone($scope.state.nominalPower) &&
+                $scope.testDone($scope.state.typeIError) &&
+                $scope.testDone($scope.state.designEssence) &&
+                $scope.testDone($scope.state.covariates) &&
+                $scope.testDone($scope.state.relativeGroupSize) &&
+                $scope.testDone($scope.state.smallestGroupSize) &&
+                $scope.testDone($scope.state.beta) &&
+                $scope.testDone($scope.state.meansScale) &&
+                $scope.testDone($scope.state.betweenContrast) &&
+                $scope.testDone($scope.state.withinContrast) &&
+                $scope.testDone($scope.state.thetaNull) &&
+                $scope.testDone($scope.state.sigmaE) &&
+                $scope.testDone($scope.state.sigmaG) &&
+                $scope.testDone($scope.state.sigmaYG) &&
+                $scope.testDone($scope.state.sigmaY) &&
+                $scope.testDone($scope.state.variabilityScale) &&
+                $scope.testDone($scope.state.powerMethod()) &&
+                $scope.testDone($scope.state.confidenceIntervals) &&
+                $scope.testDone($scope.state.plotOptions)
 
                 );
         }
@@ -3327,12 +3327,25 @@ glimmpseApp.controller('stateController',
 
             $scope.columnDefs = [
                 { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
+                { field: 'confidenceInterval', displayName: 'Confidence Limits',
+                    cellTemplate: "<div>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</div>",
+                    visible: ($scope.studyDesign.confidenceIntervalDescriptions != null),
+                    width: 200},
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
-                { field: 'nominalPower.value', displayName: 'Target Power', width: 200},
+                { field: 'nominalPower.value', displayName: 'Target Power', cellFilter:'number:3',
+                    visible: ($scope.studyDesign.solutionTypeEnum != glimmpseConstants.solutionTypePower),
+                    width: 200},
                 { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
                 { field: 'test.type', displayName: 'Test', width: 200},
                 { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
-                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200}
+                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200},
+                { field: 'powerMethod.powerMethodEnum', displayName: 'Power Method', width: 200,
+                    visible: $scope.studyDesign.gaussianCovariate
+                },
+                { field: 'quantile.value', displayName: 'Quantile', width: 200,
+                    visible: ($scope.studyDesign.gaussianCovariate &&
+                        $scope.studyDesign.quantileList.length > 0)
+                }
             ];
 
             // build grid options
