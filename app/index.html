@@ -186,15 +186,38 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
+                                <div>
+                                    <button data-toggle="modal" data-target="#emailForm">
+                                        Email Design
+                                    </button>
+                                </div>
+                                <!--
+                                <button data-ng-click="showIncompleteItemsDialog()" data-target="#incompleteDialog"> Email Design </button>
+                                -->
+
+                            <!--
                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
                                 <div>
                                     <input type="hidden" name="filename" value="study.json"/>
                                     <input type="hidden" name="data" value='{{studyDesignJSON}}' />
                                 </div>
+                                <div class="well">
+                                    <form id="emailDesignForm" enctype="multipart/form-data"
+                                          action="studyDesign_email.php" name="emailDesignForm" method="post">
+                                        <div class="form-group">
+                                            <label>Please enter your name (required)</label>
+                                            <input class="form-control" type="text" name="name" ng-model="support.name" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Please provide a contact email (required)</label>
+                                            <input class="form-control" type="email" name="email" ng-model="support.email" required />
+                                        </div>
                                 <button type="submit" data-ng-click="updateStudyDesignJSON()">
                                     Email Design
                                 </button>
+
                             </form>
+                            -->
                         </li>
                         <li>
                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
@@ -687,6 +710,38 @@
 
         </div>
     </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="emailForm" tabindex="-1"
+             role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog rounded-box white-box">
+                <form id="emailDesignForm" enctype="multipart/form-data"
+                      action="studyDesign_email.php" name="emailDesignForm" method="post">
+                    <div>
+                        <input type="hidden" name="filename" value="study.json"/>
+                        <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                    </div>
+                    <div class="well">
+                        <div>
+                            <p> Please fill the information below. The design file will be mailed from 'samplesizeshop@gmail.com' to the
+                                email id you provide below.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Enter your name" name="name" ng-model="support.name" required />
+                        </div>
+                        <div class="form-group">
+
+                            <input class="form-control" type="email" placeholder="Enter your email address" name="email" ng-model="support.email" required />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" aria-hidden="true">Submit</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
 
 </div>
     <div ng-show="glimmpseConstants.debug == true">
