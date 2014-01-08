@@ -74,9 +74,14 @@ module.exports = function(grunt) {
                     {expand: true, flatten: true, src: ['app/img/**'], dest: 'build/dist/img'},
                     {expand: true, flatten: true, src: ['app/partials/**'], dest: 'build/dist/partials'},
                     {expand: true, flatten: true, src: ['app/templates/**'], dest: 'build/dist/templates'},
-                    {expand: true, flatten: true, src: ['app/*.php'], dest: 'build/dist/'},
-                    {expand: true, flatten: true, src: ['app/lib/PHPMailer/**'], dest: 'build/dist/lib/PHPMailer/'}
+                    {expand: true, flatten: true, src: ['app/*.php'], dest: 'build/dist/'}
                 ]
+            },
+            libs: {
+                cwd: 'app/lib/',
+                expand: true,
+                src: ['MathJax/**', 'PHPMailer/**'],
+                dest: 'build/dist/lib/'
             },
             www: {
                 files: [
@@ -91,7 +96,7 @@ module.exports = function(grunt) {
             }
         },
         replace: {
-            config: {
+            hosts: {
                 src: ['build/dist/js/glimmpse.js'], // source files array (supports minimatch)
                 overwrite: true,
                 replacements: [
@@ -102,6 +107,16 @@ module.exports = function(grunt) {
                     {
                         from: "hostFile: 'localhost'",
                         to: "hostFile: '<%= grunt.option('hostFile') %>'"
+                    }
+                ]
+            },
+            mobile: {
+                src: ['build/dist/js/glimmpse.js'], // source files array (supports minimatch)
+                overwrite: true,
+                replacements: [
+                    {
+                        from: "isMobile: false",
+                        to: "isMobile: true"
                     }
                 ]
             },
@@ -185,12 +200,14 @@ module.exports = function(grunt) {
             'jshint',
             'clean',
             'copy:dist',
+            'copy:libs',
             'useminPrepare',
             'concat',
             'cssmin',
             'copy:minfiles',
             'usemin',
-            'replace',
+            'replace:hosts',
+            'replace:version',
             'zip:glimmpse'
         ]
     );
@@ -201,12 +218,13 @@ module.exports = function(grunt) {
             'jshint',
             'clean',
             'copy:dist',
-            'replace',
+            'copy:libs',
             'useminPrepare',
             'concat',
             'cssmin',
             'copy:minfiles',
             'usemin',
+            'replace',
             'copy:www',
             'exec:phonegap_ios',
             'exec:phonegap_android'

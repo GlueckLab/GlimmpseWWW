@@ -660,7 +660,7 @@ glimmpseApp.controller('stateController',
         $scope.state = {};
         $scope.updateState();
 
-    };
+    }
 
     /*** set watchers on study design changes to update the state as needed ***/
 
@@ -3334,7 +3334,7 @@ glimmpseApp.controller('stateController',
                 { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
                 { field: 'confidenceInterval', displayName: 'Confidence Limits',
                     cellTemplate: "<div>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</div>",
-                    visible: ($scope.studyDesign.confidenceIntervalDescriptions != null),
+                    visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null),
                     width: 200},
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
                 { field: 'nominalPower.value', displayName: 'Target Power', cellFilter:'number:3',
