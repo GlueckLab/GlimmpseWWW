@@ -192,7 +192,18 @@
                                     <input type="hidden" name="data" value='{{studyDesignJSON}}' />
                                 </div>
                                 <button type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Design
+                                    Email Design
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="study.json"/>
+                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                                    Save Design to Dropbox
                                 </button>
                             </form>
                         </li>
@@ -209,10 +220,23 @@
                                 </div>
                                 <button type="submit" data-ng-click="updateResultsCSV()"
                                         ng-disabled="powerService.cachedResults == undefined">
-                                    Results
+                                    Email Results
                                 </button>
                             </form>
                         </li>
+                        <li>
+                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateResultsCSV()"
+                                        ng-disabled="powerService.cachedResults == undefined">
+                                    Save Results to Dropbox
+                                </button>
+                            </form>
+                        </li>
+
                     </ul>
                 </li>
                 <li>
