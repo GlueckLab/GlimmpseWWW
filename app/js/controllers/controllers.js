@@ -673,8 +673,14 @@ glimmpseApp.controller('stateController',
             // clear the results if the user changed something besides the power curve
             if (angular.toJson(newValue.powerCurveDescriptions) ==
                 angular.toJson(oldValue.powerCurveDescriptions)) {
-                // TODO: only clear power results if something besides power curve changed
+                // only clear power results if something besides power curve changed
                 $scope.powerService.clearCache();
+                // clear the power curve options and available data series
+                $scope.studyDesign.powerCurveDescriptions = null;
+                $scope.metaData.plotOptions = {
+                    xAxis: glimmpseConstants.xAxisTotalSampleSize,
+                    availableDataSeries: []
+                };
             }
 
             // clear power curve options
@@ -2862,7 +2868,6 @@ glimmpseApp.controller('stateController',
             }
 
             // now generate the data series with some mad recursive action
-            $scope.metaData.plotOptions.availableDataSeries = [];
             $scope.generateCombinations(dataLists, $scope.metaData.plotOptions.availableDataSeries, 0,
                 {
                     idx: 0,
@@ -2994,7 +2999,7 @@ glimmpseApp.controller('stateController',
 
             // columns whose visibility changes depending on X-axis state
             $scope.nominalPowerColumn =
-                { field: 'nominalPower', displayName: 'Nominal Power', width: 200};
+                { field: 'nominalPower', displayName: 'Desired Power', width: 200};
             $scope.totalSampleSizeColumn =
                 { field: 'sampleSize', displayName: 'Total Sample Size', width: 200};
             $scope.betaScaleColumn =
@@ -3043,8 +3048,8 @@ glimmpseApp.controller('stateController',
                 }
             };
 
-            // regenerate the possible data series if we have not yet done so
-            if ($scope.metaData.plotOptions.availableDataSeries.length === 0) {
+            // regenerate the possible data series
+            if ($scope.metaData.plotOptions.availableDataSeries.length <= 0) {
                 $scope.buildDataSeries();
             }
             $scope.updateVisibleColumns();
@@ -3620,18 +3625,38 @@ glimmpseApp.controller('stateController',
 
                 // add the data series
                 $scope.chartConfig.series = [];
+                // defaults from highcharts - need to handle this locally so that CI data series have same
+                // color as main series
+                var colors = Highcharts.getOptions().colors;
+
+                colorIdx = 0;
                 for(var i = 0; i < studyDesignService.powerCurveDescriptions.dataSeriesList.length; i++) {
                     var seriesDescription = studyDesignService.powerCurveDescriptions.dataSeriesList[i];
                     var newSeries = {
                         name: seriesDescription.label,
+                        color: colors[colorIdx],
                         data: []
                     };
                     // for lower confidence limits
                     var lowerSeries = {
+                        name: "Lower confidence limit",
+                        showInLegend: false,
+                        dashStyle: 'shortdot',
+                        color: colors[colorIdx],
+                        marker: {
+                            enabled: false
+                        },
                         data: []
                     };
                     // for upper confidence limits
                     var upperSeries = {
+                        name: "Upper confidence limit",
+                        showInLegend: false,
+                        dashStyle: 'shortdot',
+                        color: colors[colorIdx],
+                        marker: {
+                            enabled: false
+                        },
                         data: []
                     };
 
@@ -3662,10 +3687,10 @@ glimmpseApp.controller('stateController',
 
                             if (seriesDescription.confidenceLimits === true) {
                                 lowerPoint.push(point[0]);
-                                lowerPoint.push(result.confidenceLimits.lower) ;
+                                lowerPoint.push(parseFloat(result.confidenceInterval.lowerLimit.toFixed(3))) ;
                                 lowerSeries.data.push(lowerPoint);
                                 upperPoint.push(point[0]) ;
-                                upperPoint.push(result.confidenceLimits.upper) ;
+                                upperPoint.push(parseFloat(result.confidenceInterval.upperLimit.toFixed(3)));
                                 upperSeries.data.push(upperPoint);
 
                             }
@@ -3677,6 +3702,22 @@ glimmpseApp.controller('stateController',
                     newSeries.data.sort($scope.sortByX);
                     $scope.chartConfig.series.push(newSeries);
 
+                    if (lowerSeries.data.length > 0) {
+                        lowerSeries.data.sort($scope.sortByX);
+                        $scope.chartConfig.series.push(lowerSeries);
+                    }
+                    if (upperSeries.data.length > 0) {
+                        upperSeries.data.sort($scope.sortByX);
+                        $scope.chartConfig.series.push(upperSeries);
+                    }
+
+
+                    // rotate colors
+                    if (colorIdx < colors.length-1) {
+                        colorIdx++;
+                    } else {
+                        colorIdx = 0;
+                    }
                 }
             }
         }

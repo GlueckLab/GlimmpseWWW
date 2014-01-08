@@ -36,6 +36,8 @@ glimmpseApp.constant('config', {
     uriCIWidth: "/power/ciwidth",
     uriMatrices: "/power/matrix/html",
     uriUpload: "/file/upload",
-    uriSave: "/file/saveas"
+    uriSave: "/file/saveas",
 
+    /** Flag indicating if we are running on a mobile device - reset by build **/
+    isMobile: false
 });
