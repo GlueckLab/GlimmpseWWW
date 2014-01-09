@@ -871,9 +871,9 @@ glimmpseApp.controller('stateController',
 
                         $scope.designEmailProcessing = false;
                         $scope.designEmailSuccess = false;
+                        $scope.designEmail = {};
                     });
 
-                    $scope.designEmail = {};
                     $form[0].reset();
 
                 },
@@ -883,8 +883,9 @@ glimmpseApp.controller('stateController',
                         /* handle the error */
                         $scope.designEmailProcessing = false;
                         $scope.designEmailSuccess = true;
+                        $scope.designEmail = {};
                     });
-                    $scope.designEmail = {};
+
                     $form[0].reset();
                 }
             });
@@ -905,12 +906,10 @@ glimmpseApp.controller('stateController',
                 error: function(event, statusText, responseText, form) {
                     $scope.$apply(function() {
                         /* handle the error */
-
                         $scope.resultsEmailProcessing = false;
                         $scope.resultsEmailSuccess = false;
+                        $scope.resultsEmail = {};
                     });
-
-                    $scope.resultsEmail = {};
                     $form[0].reset();
 
                 },
@@ -920,8 +919,9 @@ glimmpseApp.controller('stateController',
                         /* handle the error */
                         $scope.resultsEmailProcessing = false;
                         $scope.resultsEmailSuccess = true;
+                        $scope.resultsEmail = {};
                     });
-                    $scope.resultsEmail = {};
+
                     $form[0].reset();
                 }
             });
