@@ -89,6 +89,11 @@ module.exports = function(grunt) {
                 src: ['MathJax/**', 'PHPMailer/**'],
                 dest: 'build/dist/lib/'
             },
+            config: {
+                files: [
+                    {expand: false, flatten: true, src: ['build/config.xml'], dest: 'build/dist/Config.xml'}
+                ]
+            },
             www: {
                 files: [
                     {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'}
@@ -135,8 +140,9 @@ module.exports = function(grunt) {
                 ]
             },
             version: {
-                src: ['build/dist/index.html', 'build/dist/feedback.html'], // source files array (supports minimatch)
-                dest: 'build/dist/',  // destination directory or file
+                src: ['build/dist/index.html', 'build/dist/feedback.html', 'build/dist/Config.xml'],
+                overwrite: true,
+                //dest: 'build/dist/',  // destination directory or file
                 replacements: [
                     {
                         from: '@VERSION@',                   // string replacement
@@ -161,6 +167,11 @@ module.exports = function(grunt) {
                 cwd: 'build/dist/',
                 src: ['build/dist/**'],
                 dest: 'build/artifacts/glimmpsewww-<%= pkg.version %>.zip'
+            },
+            'glimmpse-mobile': {
+                cwd: 'build/www/',
+                src: ['build/www/**'],
+                dest: 'build/artifacts/glimmpsewww-mobile-<%= pkg.version %>.zip'
             }
         },
         // builds the app in phonegap remotely
@@ -189,6 +200,37 @@ module.exports = function(grunt) {
                 cwd: 'build',
                 command: 'phonegap remote build wp8'
             }
+        },
+        // note: at present, you need to unlock the keys online
+        "phonegap-build": {
+            debug: {
+                options: {
+                    archive: "build/artifacts/glimmpsewww-mobile-<%= pkg.version %>.zip",
+                    "appId": "704192",
+                    "user": {
+                        "email": "samplesizeshop@gmail.com",
+                        "password": "<%= grunt.option('pgPassword') %>"
+                    },
+                    download: {
+                        ios: 'build/artifacts/ios-debug.ipa',
+                        android: 'build/artifacts/android-debug.apk'
+                    }
+                }
+            },
+            release: {
+                options: {
+                    archive: "build/artifacts/glimmpsewww-mobile-<%= pkg.version %>.zip",
+                    "appId": "704192",
+                    "user": {
+                        "email": "samplesizeshop@gmail.com",
+                        "password": "<%= grunt.option('pgPassword') %>"
+                    },
+                    download: {
+                        ios: 'build/artifacts/glimmpse-ios-<%= pkg.version %>.ipa',
+                        android: 'build/artifacts/glimmpse-android-<%= pkg.version %>.apk'
+                    }
+                }
+            }
         }
 
     });
@@ -207,6 +249,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-zip');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-text-replace');
+    grunt.loadNpmTasks('grunt-phonegap-build');
 
     // builds the release distribution of the code
     grunt.registerTask('release',
@@ -233,6 +276,7 @@ module.exports = function(grunt) {
             'clean',
             'copy:dist',
             'copy:libs',
+            'copy:config',
             'useminPrepare',
             'concat',
             'cssmin',
@@ -240,8 +284,8 @@ module.exports = function(grunt) {
             'usemin',
             'replace',
             'copy:www',
-            'exec:phonegap_ios',
-            'exec:phonegap_android'
+            'zip:glimmpse-mobile',
+            'phonegap-build:release'
         ]
     );
     //grunt.registerTask('build_mobile', ['release']);
