@@ -2998,7 +2998,7 @@ glimmpseApp.controller('stateController',
             if (seriesFromStudyDesign !== null) {
                 seriesFromStudyDesign.label = series.label;
             }
-        }
+        };
 
         /**
          * Update the show CI flag in the curve description in the study design
@@ -3008,7 +3008,7 @@ glimmpseApp.controller('stateController',
             if (seriesFromStudyDesign !== null) {
                 seriesFromStudyDesign.confidenceLimits = series.confidenceLimits;
             }
-        }
+        };
 
         // initialize the controller
         init();
