@@ -51,7 +51,11 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
             rowLabels: '=rowlabels',
             columnLabels: '=columnlabels',
             defaultDiagonal: '=defaultdiagonal',
-            defaultOffDiagonal: '=defaultoffdiagonal'
+            defaultOffDiagonal: '=defaultoffdiagonal',
+            minrows: '=minrows',
+            maxrows: '=maxrows',
+            mincolumns: '=mincolumns',
+            maxcolumns: '=maxcolumns'
         },
 
         controller: ['$scope', 'matrixUtilities', function($scope, matrixUtilities) {

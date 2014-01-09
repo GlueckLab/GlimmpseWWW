@@ -30,10 +30,10 @@
     Enter your between-subject contrast matrix below.
 </p>
 
-
 <ng-resizable-matrix ng-model="betweenContrastMatrix" rowresizable='true' columnresizable='false'
                      symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' defaultdiagonal='0' defaultoffdiagonal='0'></ng-resizable-matrix>
+                     rowlabels='' columnlabels='' defaultdiagonal='0' defaultoffdiagonal='0'
+                     minrows='1' maxrows='maxRows' mincolumns='1' maxcolumns='50'></ng-resizable-matrix>
 
 
 <div ng-show="glimmpseConstants.debug">
