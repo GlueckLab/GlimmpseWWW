@@ -37,7 +37,8 @@
 
 <ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
                      symmetric='false' editdiagonal='true' editoffdiagonal='true'
-                     rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'></ng-resizable-matrix>
+                     rowlabels='' columnlabels='' defaultdiagonal='1' defaultoffdiagonal='0'
+                     minrows='1' maxrows='50' mincolumns='1' maxcolumns='50'></ng-resizable-matrix>
 
 
 <div ng-show="glimmpseConstants.debug">

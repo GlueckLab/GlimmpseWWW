@@ -16,32 +16,47 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<div class='well'>
-    <form name="matrixDimensionForm" class="form-inline" novalidate>
-        <!-- top bar with matrix dimensions -->
-        <div class="form-group">
+<div class='well scroll'>
+    <div class="vmargin5">
+        <form name="matrixDimensionForm" class="form-inline" novalidate>
+            <!-- top bar with matrix dimensions -->
+            <div class="form-group">
 
-            <input name="newRows" type="number" class="form-control text-sm"
-                   ng-model='matrix.rows' ng-change="resizeRows()"
-                   min='1' max='50' step='1' autocomplete="off" autofocus required
-                   ng-disabled='!rowResizable' />
-        </div>
-        <div class="form-group">
-            <label>&times;</label>
-        </div>
-        <div class="form-group">
-            <input name="newColumns" type="number"  class="form-control text-sm"
-                   ng-model='matrix.columns' ng-change="resizeColumns()"
-                   min='1' max='50' step='1' autocomplete="off" autofocus required
-                   ng-disabled='!columnResizable'/>
-        </div>
-    </form>
+                <input name="newRows" type="number" class="form-control text-sm"
+                       ng-model='matrix.rows' ng-change="resizeRows()"
+                       min='{{minrows}}' max='{{maxrows}}' step='1' autocomplete="off" autofocus required
+                       ng-disabled='!rowResizable' />
+            </div>
+            <div class="form-group">
+                <label>&times;</label>
+            </div>
+            <div class="form-group">
+                <input name="newColumns" type="number"  class="form-control text-sm"
+                       ng-model='matrix.columns' ng-change="resizeColumns()"
+                       min='{{mincolumns}}' max='{{maxcolumns}}' step='1' autocomplete="off" autofocus required
+                       ng-disabled='!columnResizable'/>
+            </div>
+            <div class="alert alert-danger" class="form-control"  ng-show="matrixDimensionForm.newRows.$error.min">
+                Please enter a value {{minrows}} or greater
+            </div>
+            <div class="alert alert-danger" class="form-control"  ng-show="matrixDimensionForm.newRows.$error.max">
+                Please enter a value less than or equal to {{maxrows}}
+            </div>
+            <div class="alert alert-danger" class="form-control"  ng-show="matrixDimensionForm.newColumns.$error.min">
+                Please enter a value {{mincolumns}} or greater
+            </div>
+            <div class="alert alert-danger" class="form-control"  ng-show="matrixDimensionForm.newColumns.$error.max">
+                Please enter a value less than or equal to {{maxcolumns}}
+            </div>
+        </form>
+    </div>
+
     <!-- matrix cells, no labels -->
-    <div class='matrix-body' ng-show="rowLabels == undefined && columnLabels == undefined">
+    <div ng-show="rowLabels == undefined && columnLabels == undefined">
         <table>
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <td ng-repeat="cell in row track by $id($index)">
-                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                    <input class="form-control text-sm" type="number" ng-model="matrix.data.data[$parent.$index][$index]"
                            ng-disabled='isCellDisabled($parent.$index, $index)'
                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>
@@ -49,14 +64,14 @@
         </table>
     </div>
     <!-- matrix cells, row labels -->
-    <div class='matrix-body' ng-show="rowLabels != undefined && columnLabels == undefined">
+    <div ng-show="rowLabels != undefined && columnLabels == undefined">
         <table>
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <th>
                     {{rowLabels[$index]}}
                 </th>
                 <td ng-repeat="cell in row track by $id($index)">
-                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                    <input class="form-control text-sm" type="number" ng-model="matrix.data.data[$parent.$index][$index]"
                            ng-disabled='isCellDisabled($parent.$index, $index)'
                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>
@@ -64,7 +79,7 @@
         </table>
     </div>
     <!-- matrix cells, column labels -->
-    <div class='matrix-body' ng-show="rowLabels == undefined && columnLabels != undefined">
+    <div ng-show="rowLabels == undefined && columnLabels != undefined">
         <table>
             <tr>
                 <th ng-repeat="colLabel in columnLabelList">
@@ -73,7 +88,7 @@
             </tr>
             <tr ng-repeat="row in matrix.data.data track by $id($index)">
                 <td ng-repeat="cell in row track by $id($index)">
-                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                    <input class="form-control text-sm" type="number" ng-model="matrix.data.data[$parent.$index][$index]"
                            ng-disabled='isCellDisabled($parent.$index, $index)'
                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>
@@ -81,7 +96,7 @@
         </table>
     </div>
     <!-- matrix cells, row and column labels -->
-    <div class='matrix-body'  ng-show="rowLabels != undefined && columnLabels != undefined">
+    <div ng-show="rowLabels != undefined && columnLabels != undefined">
         <table>
             <tr>
                 <th>&nbsp</th>
@@ -94,7 +109,7 @@
                     {{rowLabelList[$index]}}
                 </th>
                 <td ng-repeat="cell in row track by $id($index)">
-                    <input type="number" ng-model="matrix.data.data[$parent.$index][$index]"
+                    <input class="form-control text-sm" type="number" ng-model="matrix.data.data[$parent.$index][$index]"
                            ng-disabled='isCellDisabled($parent.$index, $index)'
                            ng-change='cellChangeHandler(matrix.data.data[$parent.$index][$index], $parent.$index, $index)' />
                 </td>

@@ -21,10 +21,16 @@ module.exports = function(grunt) {
 
     // load options
     if (!grunt.option('hostPower')) {
-        grunt.option('hostPower', 'localhost');
+        grunt.option('hostPower', '');
     }
     if (!grunt.option('hostFile')) {
-        grunt.option('hostFile', 'localhost');
+        grunt.option('hostFile', '');
+    }
+    if (!grunt.option('schemePower')) {
+        grunt.option('schemePower', '');
+    }
+    if (!grunt.option('schemeFile')) {
+        grunt.option('schemeFile', '');
     }
 
     grunt.log.writeln("Building release for hosts power=" +
@@ -101,12 +107,20 @@ module.exports = function(grunt) {
                 overwrite: true,
                 replacements: [
                     {
-                        from: "hostPower: 'localhost'",
+                        from: "hostPower: ''",
                         to: "hostPower: '<%= grunt.option('hostPower') %>'"
                     },
                     {
-                        from: "hostFile: 'localhost'",
+                        from: "hostFile: ''",
                         to: "hostFile: '<%= grunt.option('hostFile') %>'"
+                    },
+                    {
+                        from: "schemePower: ''",
+                        to: "schemePower: '<%= grunt.option('schemePower') %>'"
+                    },
+                    {
+                        from: "schemeFile: ''",
+                        to: "schemeFile: '<%= grunt.option('schemeFile') %>'"
                     }
                 ]
             },
