@@ -641,6 +641,9 @@ glimmpseApp.controller('stateController',
         // show/hide processing dialog
         $scope.processing = false;
 
+        // show/hide processing for emailDesign
+        $scope.designEmailProcessing = false;
+
         // list of incomplete views
         $scope.incompleteViews = [];
 
@@ -655,6 +658,9 @@ glimmpseApp.controller('stateController',
 
         // url for save upload
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
+
+        //isMobile
+        $scope.isMobile = config.isMobile;
 
         // screen state information
         $scope.state = {};
@@ -842,6 +848,45 @@ glimmpseApp.controller('stateController',
         });
 
     };
+
+        /**
+         * Submit the design email form
+         * @param input
+         */
+        $scope.sendDesignEmail = function(input) {
+            //window.alert(config.isMobile);
+            $scope.designEmailProcessing = true;
+
+            var $form = $(input).parents('form');
+
+            $form.ajaxSubmit({
+                type: 'POST',
+                error: function(event, statusText, responseText, form) {
+                    $scope.$apply(function() {
+                        /* handle the error */
+
+                        $scope.designEmailProcessing = false;
+                        $scope.designEmailSuccess = false;
+                    });
+
+                    $scope.designEmail = {};
+                    $form[0].reset();
+
+                },
+                success: function(responseText, statusText, xhr, form) {
+                    // select the appropriate input mode
+                    $scope.$apply(function() {
+                        /* handle the error */
+                        $scope.designEmailProcessing = false;
+                        $scope.designEmailSuccess = true;
+                    });
+                    $scope.designEmail = {};
+                    $form[0].reset();
+                }
+            });
+
+        };
+
 
     /**
      * Upload a study design file

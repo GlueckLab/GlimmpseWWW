@@ -184,40 +184,46 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-floppy-disk"></span> Save <b class="caret"></b>
                     </a>
-                    <ul class="dropdown-menu">
+
+                    <ul class="dropdown-menu" ng-show="!{{isMobile}}">
+
+                        <li>
+                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="study.json"/>
+                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                                    Design
+                                </button>
+                            </form>
+                        </li>
+                        <!-- <li role="presentation">
+                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                                <a href="">Save Report</a>
+                            </div>
+                        </li>    -->
+                        <li>
+                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                                <div>
+                                    <input type="hidden" name="filename" value="results.csv"/>
+                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
+                                </div>
+                                <button type="submit" data-ng-click="updateResultsCSV()"
+                                        ng-disabled="powerService.cachedResults == undefined">
+                                    Results
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+
+                    <ul class="dropdown-menu" ng-show="{{isMobile}}">
                         <li>
                                 <div>
                                     <button data-toggle="modal" data-target="#emailForm">
                                         Email Design
                                     </button>
                                 </div>
-                                <!--
-                                <button data-ng-click="showIncompleteItemsDialog()" data-target="#incompleteDialog"> Email Design </button>
-                                -->
-
-                            <!--
-                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <div class="well">
-                                    <form id="emailDesignForm" enctype="multipart/form-data"
-                                          action="studyDesign_email.php" name="emailDesignForm" method="post">
-                                        <div class="form-group">
-                                            <label>Please enter your name (required)</label>
-                                            <input class="form-control" type="text" name="name" ng-model="support.name" required />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Please provide a contact email (required)</label>
-                                            <input class="form-control" type="email" name="email" ng-model="support.email" required />
-                                        </div>
-                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Email Design
-                                </button>
-
-                            </form>
-                            -->
                         </li>
                         <li>
                             <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
@@ -230,11 +236,6 @@
                                 </button>
                             </form>
                         </li>
-                        <!-- <li role="presentation">
-                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                <a href="">Save Report</a>
-                            </div>
-                        </li>    -->
                         <li>
                             <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
                                 <div>
@@ -715,6 +716,15 @@
         <div class="modal fade" id="emailForm" tabindex="-1"
              role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog rounded-box white-box">
+                <div class="processing rounded-box" ng-show="designEmailProcessing == true">
+                    <label>Processing</label>
+                </div>
+                <div class="alert alert-success" ng-show=" designEmailProcessing == false && designEmailSuccess !== undefined && designEmailSuccess">
+                    Your email has been sent.
+                </div>
+                <div class="alert alert-danger" ng-show="designEmailProcessing == false && designEmailSuccess !== undefined && !designEmailSuccess">
+                    We're sorry, but we were unable to submit your request at this time.  Please try again.
+                </div>
                 <form id="emailDesignForm" enctype="multipart/form-data"
                       action="studyDesign_email.php" name="emailDesignForm" method="post">
                     <div>
@@ -723,19 +733,26 @@
                     </div>
                     <div class="well">
                         <div>
-                            <p> Please fill the information below. The design file will be mailed from 'samplesizeshop@gmail.com' to the
-                                email id you provide below.
-                            </p>
+                            <h5> Please fill the information below.
+                            </h5>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" type="text" placeholder="Enter your name" name="name" ng-model="support.name" required />
+                            <input class="form-control" type="text" placeholder="Enter your name" name="name" ng-model="designEmail.name" required />
                         </div>
                         <div class="form-group">
 
-                            <input class="form-control" type="email" placeholder="Enter your email address" name="email" ng-model="support.email" required />
+                            <input class="form-control" type="email" placeholder="Enter your email address" name="email" ng-model="designEmail.email" required />
+                        </div>
+                        <div>
+                            <h5> The design file will be mailed from 'samplesizeshop@gmail.com' to the
+                            email id you provide below.
+                            </h5>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" aria-hidden="true">Submit</button>
+                            <button type="button" onclick="angular.element(this).scope().sendDesignEmail(this)"
+                                    class="btn btn-primary" aria-hidden="true" ng-disabled="!emailDesignForm.$valid">
+                                Submit
+                            </button>
                         </div>
                     </div>
                 </form>
