@@ -12,12 +12,13 @@ require_once('lib/PHPMailer/class.smtp.php');
 try {
     //Create a new PHPMailer instance
     $mail = new PHPMailer();
+
     // Set PHPMailer to use the sendmail transport
     $mail->isSMTP();
 
     //Set who the message is to be sent from
     $mail->setFrom('samplesizeshop@gmail.com', 'Sample Size Shop');
-    //$mail->addReplyTo($_REQUEST["email"], $_REQUEST["name"]);
+
 
     //Set who the message is to be sent to
       $mail->addAddress($_REQUEST["email"], $_REQUEST["name"]);
@@ -35,10 +36,9 @@ try {
 
            $mail->AltBody = "Please use an HTML compatible email viewer";
 
-    //Attach a file
-    if (isset($_FILES["file"])) {
-        $mail->addAttachment($_FILES["file"]["tmp_name"], $_FILES["file"]["name"]);
-    }
+    //Attach the power results csv file
+
+            $mail->addStringAttachment($_REQUEST["resultsData"], $_REQUEST["resultsFilename"], "base64", "application/csv");
 
     //send the message, check for errors
     if (!$mail->send()) {

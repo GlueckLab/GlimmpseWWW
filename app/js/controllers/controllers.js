@@ -644,6 +644,10 @@ glimmpseApp.controller('stateController',
         // show/hide processing for emailDesign
         $scope.designEmailProcessing = false;
 
+
+        // show/hide processing for emailDesign
+        $scope.resultsEmailProcessing = false;
+
         // list of incomplete views
         $scope.incompleteViews = [];
 
@@ -881,6 +885,43 @@ glimmpseApp.controller('stateController',
                         $scope.designEmailSuccess = true;
                     });
                     $scope.designEmail = {};
+                    $form[0].reset();
+                }
+            });
+
+        };
+
+        /**
+         * Submit the results csv email form
+         * @param input
+         */
+        $scope.sendResultsEmail = function(input) {
+            $scope.resultsEmailProcessing = true;
+
+            var $form = $(input).parents('form');
+
+            $form.ajaxSubmit({
+                type: 'POST',
+                error: function(event, statusText, responseText, form) {
+                    $scope.$apply(function() {
+                        /* handle the error */
+
+                        $scope.resultsEmailProcessing = false;
+                        $scope.resultsEmailSuccess = false;
+                    });
+
+                    $scope.resultsEmail = {};
+                    $form[0].reset();
+
+                },
+                success: function(responseText, statusText, xhr, form) {
+                    // select the appropriate input mode
+                    $scope.$apply(function() {
+                        /* handle the error */
+                        $scope.resultsEmailProcessing = false;
+                        $scope.resultsEmailSuccess = true;
+                    });
+                    $scope.resultsEmail = {};
                     $form[0].reset();
                 }
             });

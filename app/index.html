@@ -237,16 +237,12 @@
                             </form>
                         </li>
                         <li>
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()"
+                            <div>
+                                <button data-toggle="modal" data-target="#resultsForm"
                                         ng-disabled="powerService.cachedResults == undefined">
                                     Email Results
                                 </button>
-                            </form>
+                            </div>
                         </li>
                         <li>
                             <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
@@ -751,6 +747,54 @@
                         <div class="modal-footer">
                             <button type="button" onclick="angular.element(this).scope().sendDesignEmail(this)"
                                     class="btn btn-primary" aria-hidden="true" ng-disabled="!emailDesignForm.$valid">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="resultsForm" tabindex="-1"
+             role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog rounded-box white-box">
+                <div class="processing rounded-box" ng-show="resultsEmailProcessing == true">
+                    <label>Processing</label>
+                </div>
+                <div class="alert alert-success" ng-show=" !resultsEmailProcessing && resultsEmailSuccess !== undefined && resultsEmailSuccess">
+                    Your email has been sent.
+                </div>
+                <div class="alert alert-danger" ng-show=" !resultsEmailProcessing && resultsEmailSuccess !== undefined && !resultsEmailSuccess">
+                    We're sorry, but we were unable to submit your request at this time.  Please try again.
+                </div>
+                <form id="emailResultsForm" enctype="multipart/form-data"
+                      action="powerResults_email.php" name="emailResultsForm" method="post">
+                    <div>
+                        <input type="hidden" name="resultsFilename" value="results.csv"/>
+                        <input type="hidden" name="resultsData" value='{{resultsCSV}}' />
+                    </div>
+                    <div class="well">
+                        <div>
+                            <h5> Please fill the information below.
+                            </h5>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Enter your name" name="name" ng-model="resultsEmail.name" required />
+                        </div>
+                        <div class="form-group">
+
+                            <input class="form-control" type="email" placeholder="Enter your email address" name="email" ng-model="resultsEmail.email" required />
+                        </div>
+                        <div>
+                            <h5> The power results csv file will be mailed from 'samplesizeshop@gmail.com' to the
+                                email id you provide below.
+                            </h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" onclick="angular.element(this).scope().sendResultsEmail(this)"
+                                    class="btn btn-primary" aria-hidden="true" ng-disabled="!emailResultsForm.$valid">
                                 Submit
                             </button>
                         </div>
