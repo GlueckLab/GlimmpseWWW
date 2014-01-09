@@ -1083,7 +1083,7 @@ glimmpseApp.controller('stateController',
                 $scope.testDone($scope.state.sigmaYG) &&
                 $scope.testDone($scope.state.sigmaY) &&
                 $scope.testDone($scope.state.variabilityScale) &&
-                $scope.testDone($scope.state.powerMethod()) &&
+                $scope.testDone($scope.state.powerMethod) &&
                 $scope.testDone($scope.state.confidenceIntervals) &&
                 $scope.testDone($scope.state.plotOptions)
 
