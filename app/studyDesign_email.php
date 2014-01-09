@@ -35,10 +35,10 @@ try {
 
            $mail->AltBody = "Please use an HTML compatible email viewer";
 
-    //Attach a file
-    if (isset($_FILES["file"])) {
-        $mail->addAttachment($_FILES["file"]["tmp_name"], $_FILES["file"]["name"]);
-    }
+    //Attach the study design string object
+
+        $mail->addStringAttachment($_REQUEST["data"], $_REQUEST["filename"], "base64", "application/json");
+
 
     //send the message, check for errors
     if (!$mail->send()) {
