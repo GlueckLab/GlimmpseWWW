@@ -666,7 +666,7 @@ glimmpseApp.controller('stateController',
         $scope.state = {};
         $scope.updateState();
 
-    };
+    }
 
     /*** set watchers on study design changes to update the state as needed ***/
 
@@ -2969,14 +2969,14 @@ glimmpseApp.controller('stateController',
          * curve description
          * @param series
          */
-        $scope.hasDataSeries = function(series) {
+        $scope.findDataSeries = function(series) {
             for(var i = 0; i < $scope.studyDesign.powerCurveDescriptions.dataSeriesList.length; i++) {
-                if ($scope.matchSeries(series,
-                    $scope.studyDesign.powerCurveDescriptions.dataSeriesList[i])) {
-                    return true;
+                var seriesFromStudyDesign = $scope.studyDesign.powerCurveDescriptions.dataSeriesList[i];
+                if ($scope.matchSeries(series, seriesFromStudyDesign)) {
+                    return seriesFromStudyDesign;
                 }
             }
-            return false;
+            return null;
         };
 
         /**
@@ -3035,6 +3035,26 @@ glimmpseApp.controller('stateController',
             return true;
         };
 
+        /**
+         * Update the label in the power curve description in the study design
+         */
+        $scope.updateLabel = function(series) {
+            var seriesFromStudyDesign = $scope.findDataSeries(series);
+            if (seriesFromStudyDesign !== null) {
+                seriesFromStudyDesign.label = series.label;
+            }
+        }
+
+        /**
+         * Update the show CI flag in the curve description in the study design
+         */
+        $scope.updateConfidenceLimits = function(series) {
+            var seriesFromStudyDesign = $scope.findDataSeries(series);
+            if (seriesFromStudyDesign !== null) {
+                seriesFromStudyDesign.confidenceLimits = series.confidenceLimits;
+            }
+        }
+
         // initialize the controller
         init();
         function init() {
@@ -3054,9 +3074,11 @@ glimmpseApp.controller('stateController',
 
             // build columns for data series grid
             $scope.columnDefs = [
-                { field: 'label', displayName: "Label", width: 160, enableCellEdit: true},
+                { field: 'label', displayName: "Label", width: 160, enableCellEdit: true,
+                    cellTemplate: '<div><input class="grid-textbox" type="text" ng-model="row.entity.label" ng-change="updateLabel(row.entity)" /></div>'
+                },
                 { field: 'confidenceLimits', displayName: "Show Confidence limits", width: 200,
-                    cellTemplate: '<input type="checkbox" ng-model="row.entity.confidenceLimits" />',
+                    cellTemplate: '<div class="grid-checkbox"><input type="checkbox" ng-model="row.entity.confidenceLimits" ng-click="updateConfidenceLimits(row.entity)" /></div>',
                     visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null)
                 },
                 $scope.nominalPowerColumn,
@@ -3105,7 +3127,10 @@ glimmpseApp.controller('stateController',
                 for(var i = 0; i < $scope.metaData.plotOptions.availableDataSeries.length; i++) {
                     // select the series in the study design
                     var series = $scope.metaData.plotOptions.availableDataSeries[i];
-                    if ($scope.hasDataSeries(series)) {
+                    var matchingSeriesFromStudyDesign = $scope.findDataSeries(series);
+                    if (matchingSeriesFromStudyDesign !== null) {
+                        series.label = matchingSeriesFromStudyDesign.label;
+                        series.confidenceLimits = matchingSeriesFromStudyDesign.confidenceLimits;
                         $scope.gridOptions.selectedItems.push(series);
                     }
                 }
@@ -3379,7 +3404,7 @@ glimmpseApp.controller('stateController',
                 { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
                 { field: 'confidenceInterval', displayName: 'Confidence Limits',
                     cellTemplate: "<div>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</div>",
-                    visible: ($scope.studyDesign.confidenceIntervalDescriptions != null),
+                    visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null),
                     width: 200},
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
                 { field: 'nominalPower.value', displayName: 'Target Power', cellFilter:'number:3',
