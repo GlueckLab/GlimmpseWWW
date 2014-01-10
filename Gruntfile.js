@@ -20,11 +20,24 @@
 module.exports = function(grunt) {
 
     // load options
+    if (grunt.option('mobileDefaults')) {
+        grunt.option('hostPower', 'glimmpse.samplesizeshop.org');
+        grunt.option('hostFile', 'glimmpse.samplesizeshop.org');
+        // we need the trailing slash only on the scripts host
+        grunt.option('hostScripts', 'glimmpse.samplesizeshop.org/');
+        grunt.option('schemePower', 'http://');
+        grunt.option('schemeFile', 'http://');
+        grunt.option('schemeScripts', 'http://');
+    }
+
     if (!grunt.option('hostPower')) {
         grunt.option('hostPower', '');
     }
     if (!grunt.option('hostFile')) {
         grunt.option('hostFile', '');
+    }
+    if (!grunt.option('hostScripts')) {
+        grunt.option('hostScripts', '');
     }
     if (!grunt.option('schemePower')) {
         grunt.option('schemePower', '');
@@ -32,10 +45,14 @@ module.exports = function(grunt) {
     if (!grunt.option('schemeFile')) {
         grunt.option('schemeFile', '');
     }
+    if (!grunt.option('schemeScripts')) {
+        grunt.option('schemeScripts', '');
+    }
 
     grunt.log.writeln("Building release for hosts power=" +
         grunt.option('hostPower') +
-        ", and file=" + grunt.option('hostFile')
+        ", file=" + grunt.option('hostFile') +
+        ", and scripts=" + grunt.option('hostScripts')
     );
 
     // initialize tasks
@@ -120,12 +137,20 @@ module.exports = function(grunt) {
                         to: "hostFile: '<%= grunt.option('hostFile') %>'"
                     },
                     {
+                        from: "hostScripts: ''",
+                        to: "hostScripts: '<%= grunt.option('hostScripts') %>'"
+                    },
+                    {
                         from: "schemePower: ''",
                         to: "schemePower: '<%= grunt.option('schemePower') %>'"
                     },
                     {
                         from: "schemeFile: ''",
                         to: "schemeFile: '<%= grunt.option('schemeFile') %>'"
+                    },
+                    {
+                        from: "schemeScripts: ''",
+                        to: "schemeScripts: '<%= grunt.option('schemeScripts') %>'"
                     }
                 ]
             },

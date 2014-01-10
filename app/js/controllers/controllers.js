@@ -663,6 +663,9 @@ glimmpseApp.controller('stateController',
         // url for save upload
         $scope.uriSave = config.schemeFile + config.hostFile + config.uriSave;
 
+        // url for feedback emails
+        $scope.uriScripts = config.schemeScripts + config.hostScripts;
+
         //isMobile
         $scope.isMobile = config.isMobile;
 

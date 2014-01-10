@@ -25,10 +25,12 @@ glimmpseApp.constant('config', {
     /*** scheme for accessing web services ***/
     schemePower: '',
     schemeFile: '',
+    schemeScripts: '',
 
     /*** hostnames for web services ***/
     hostPower: '',
     hostFile: '',
+    hostScripts: '',
 
     /*** URIs for web services ***/
     uriPower: "/power/power",

@@ -711,7 +711,7 @@
     <div class="modal fade" id="emailStudyDesignModal" tabindex="-1"
          role="dialog" aria-labelledby="emailStudyDesignModal" aria-hidden="true">
         <form id="emailDesignForm" enctype="multipart/form-data"
-              action="studyDesign_email.php" name="emailDesignForm" method="post">
+              action="{{uriScripts}}studyDesign_email.php" name="emailDesignForm" method="post">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -764,7 +764,7 @@
     <div class="modal fade" id="emailResultsModal" tabindex="-1"
          role="dialog" aria-labelledby="emailResultsModal" aria-hidden="true">
         <form id="emailResultsForm" enctype="multipart/form-data"
-              action="powerResults_email.php" name="emailResultsForm" method="post">
+              action="{{uriScripts}}powerResults_email.php" name="emailResultsForm" method="post">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -813,9 +813,7 @@
     </div>
 
 </div>
-    <div ng-show="glimmpseConstants.debug == true">
-        {{state}}
-    </div>
+
     <!-- footer -->
     <div class="row">
         <div class="col-md-12 text-center vmargin15">
