@@ -41,7 +41,10 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
      * Clear the meta data
      */
     metaDataInstance.reset = function() {
-        metaDataInstance.powerCurveDescription = {};
+        metaDataInstance.plotOptions = {
+            xAxis: glimmpseConstants.xAxisTotalSampleSize,
+            availableDataSeries: []
+        };
         metaDataInstance.predictorCombinationList = [];
         metaDataInstance.responseCombinationList = [];
     };

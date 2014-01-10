@@ -113,7 +113,8 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         // plot axis names
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
         xAxisSigmaScale: "VARIABILITY_SCALE_FACTOR",
-        xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR"
+        xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR",
+        xAxisDesiredPower: "NOMINAL_POWER"
 
     })
     .config(['$routeProvider', function($routeProvider, studyDesignService, powerService) {
