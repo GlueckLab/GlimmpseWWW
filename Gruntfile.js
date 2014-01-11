@@ -21,33 +21,48 @@ module.exports = function(grunt) {
 
     // load options
     if (grunt.option('mobileDefaults')) {
-        grunt.option('hostPower', 'glimmpse.samplesizeshop.org');
-        grunt.option('hostFile', 'glimmpse.samplesizeshop.org');
-        // we need the trailing slash only on the scripts host
-        grunt.option('hostScripts', 'glimmpse.samplesizeshop.org/');
-        grunt.option('schemePower', 'http://');
-        grunt.option('schemeFile', 'http://');
-        grunt.option('schemeScripts', 'http://');
+        // set standard defaults for mobile
+        if (!grunt.option('hostPower')) {
+            grunt.option('hostPower', 'glimmpse.samplesizeshop.org');
+        }
+        if (!grunt.option('hostFile')) {
+            grunt.option('hostFile', 'glimmpse.samplesizeshop.org');
+        }
+        if (!grunt.option('hostScripts')) {
+            // we need the trailing slash only on the scripts host
+            grunt.option('hostScripts', 'glimmpse.samplesizeshop.org/');
+        }
+        if (!grunt.option('schemePower')) {
+            grunt.option('schemePower', 'http://');
+        }
+        if (!grunt.option('schemeFile')) {
+            grunt.option('schemeFile', 'http://');
+        }
+        if (!grunt.option('schemeScripts')) {
+            grunt.option('schemeScripts', 'http://');
+        }
+    } else {
+        if (!grunt.option('hostPower')) {
+            grunt.option('hostPower', '');
+        }
+        if (!grunt.option('hostFile')) {
+            grunt.option('hostFile', '');
+        }
+        if (!grunt.option('hostScripts')) {
+            grunt.option('hostScripts', '');
+        }
+        if (!grunt.option('schemePower')) {
+            grunt.option('schemePower', '');
+        }
+        if (!grunt.option('schemeFile')) {
+            grunt.option('schemeFile', '');
+        }
+        if (!grunt.option('schemeScripts')) {
+            grunt.option('schemeScripts', '');
+        }
     }
 
-    if (!grunt.option('hostPower')) {
-        grunt.option('hostPower', '');
-    }
-    if (!grunt.option('hostFile')) {
-        grunt.option('hostFile', '');
-    }
-    if (!grunt.option('hostScripts')) {
-        grunt.option('hostScripts', '');
-    }
-    if (!grunt.option('schemePower')) {
-        grunt.option('schemePower', '');
-    }
-    if (!grunt.option('schemeFile')) {
-        grunt.option('schemeFile', '');
-    }
-    if (!grunt.option('schemeScripts')) {
-        grunt.option('schemeScripts', '');
-    }
+
 
     grunt.log.writeln("Building release for hosts power=" +
         grunt.option('hostPower') +
@@ -108,7 +123,7 @@ module.exports = function(grunt) {
             },
             config: {
                 files: [
-                    {expand: false, flatten: true, src: ['build/config.xml'], dest: 'build/dist/Config.xml'}
+                    {expand: false, flatten: true, src: ['build/config.xml'], dest: 'build/dist/config.xml'}
                 ]
             },
             www: {
@@ -165,7 +180,7 @@ module.exports = function(grunt) {
                 ]
             },
             version: {
-                src: ['build/dist/index.html', 'build/dist/feedback.html', 'build/dist/Config.xml'],
+                src: ['build/dist/index.html', 'build/dist/feedback.html', 'build/dist/config.xml'],
                 overwrite: true,
                 //dest: 'build/dist/',  // destination directory or file
                 replacements: [
