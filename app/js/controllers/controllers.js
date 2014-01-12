@@ -2911,7 +2911,9 @@ glimmpseApp.controller('stateController',
             }
 
             // add nominal power
-            if ($scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize) {
+            if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum !=
+                $scope.glimmpseConstants.xAxisDesiredPower &&
+                $scope.studyDesign.solutionTypeEnum == $scope.glimmpseConstants.solutionTypeSampleSize) {
                 dataLists.push(
                     {
                         data: $scope.studyDesign.nominalPowerList,
@@ -3007,6 +3009,13 @@ glimmpseApp.controller('stateController',
                         $scope.betaScaleColumn.visible = true;
                         $scope.sigmaScaleColumn.visible = false;
                         break;
+                    case glimmpseConstants.xAxisDesiredPower:
+                        $scope.nominalPowerColumn.visible = false;
+                        $scope.totalSampleSizeColumn.visible =
+                            ($scope.studyDesign.solutionTypeEnum != $scope.glimmpseConstants.solutionTypeSampleSize);
+                        $scope.betaScaleColumn.visible = true;
+                        $scope.sigmaScaleColumn.visible = true;
+
                 }
 
             }
@@ -3060,7 +3069,8 @@ glimmpseApp.controller('stateController',
                 return false;
             }
             // match nominal power
-            if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize &&
+            if ($scope.studyDesign.powerCurveDescriptions.horizontalAxisLabelEnum != glimmpseConstants.xAxisDesiredPower &&
+                $scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize &&
                 seriesA.nominalPower !== seriesB.nominalPower) {
                 return false;
             }
@@ -3148,7 +3158,7 @@ glimmpseApp.controller('stateController',
             // select options for the X axis
             if ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize) {
                 $scope.XAxisOptions = [
-                    // {label: "Desired Power", value: $scope.glimmpseConstants.xAxisDesiredPower},
+                    {label: "Desired Power", value: $scope.glimmpseConstants.xAxisDesiredPower},
                     {label: "Variability Scale Factor", value: $scope.glimmpseConstants.xAxisSigmaScale},
                     {label: "Means (coefficients) Scale Factor", value: $scope.glimmpseConstants.xAxisBetaScale}
                 ];
@@ -3228,7 +3238,7 @@ glimmpseApp.controller('stateController',
                     title: null,
                     horizontalAxisLabelEnum:
                         ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypePower ?
-                            glimmpseConstants.xAxisTotalSampleSize : glimmpseConstants.xAxisSigmaScale),
+                            glimmpseConstants.xAxisTotalSampleSize : glimmpseConstants.xAxisDesiredPower),
                     dataSeriesList: []
                 };
                 $scope.updateVisibleColumns();
@@ -3635,6 +3645,13 @@ glimmpseApp.controller('stateController',
                         seriesDescription.nominalPower == result.nominalPower.value) &&
                     seriesDescription.betaScale == result.betaScale.value;
 
+            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                glimmpseConstants.xAxisDesiredPower) {
+                match = match &&
+                    ($scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize ||
+                        seriesDescription.sampleSize == result.totalSampleSize) &&
+                    seriesDescription.sigmaScale == result.sigmaScale.value &&
+                    seriesDescription.betaScale == result.betaScale.value;
             }
 
             return match;
@@ -3785,13 +3802,12 @@ glimmpseApp.controller('stateController',
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisSigmaScale) {
                     $scope.chartConfig.xAxis.title.text = 'Variability Scale Factor';
-                }
-                 /*  TODO: add desired power to axis types
+
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisDesiredPower) {
                     $scope.chartConfig.xAxis.title.text = 'Desired Power';
 
-                } */
+                }
 
                 // add the data series
                 $scope.chartConfig.series = [];
@@ -3849,6 +3865,11 @@ glimmpseApp.controller('stateController',
                             } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                                 glimmpseConstants.xAxisSigmaScale) {
                                 point.push(result.sigmaScale.value);
+
+                            } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
+                                glimmpseConstants.xAxisDesiredPower) {
+                                point.push(result.nominalPower.value);
+
                             }
 
                             // toFixed returns a string, so we need to convert back to float
