@@ -1,0 +1,62 @@
+##
+## GLIMMPSE (General Linear Multivariate Model Power and Sample size)
+## GLIMMPSE is a web application which calculates power and sample
+## size for the general linear multivariate model
+## 
+## Copyright (C) 2010 Regents of the University of Colorado.  
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+##
+
+GLIMMPSE WWW 2.1.0 Release Notes
+--------------------------------------------
+
+Internal Changes
+
+- Migrated entire interface to Angular.js, Jquery, and Twitter Bootstrap
+  (this project replaces the deprecated GlimmpseWeb project which was
+   written in Google Web Toolkit)
+
+New Features
+
+- Study design menus have been reordered for clarity
+- Users may upload designs from the main application screen
+- When the study design is incomplete, clicking the calculate button
+  will show a list of incomplete screens
+- After calculating results, the results table, plot, and matrices may be
+  selected from the menus at the top left of the application window
+- The calculate button is only visible when the design has changed and recalculation
+  is required.
+- The user may modify plot options without recalculating results
+- When solving for sample size, users can now plot sample size by
+  nominal power, variability scale or means scale
+
+Bug Fixes
+
+- Several stability updates which prevent inconsistencies in
+  the internal study design representation
+
+Known Issues
+
+- We are still working on improving error messages when only a subset of 
+power calculations fail.
+- Extremely large sample sizes (> 100K) may lead to numerical
+overflows and yield lower than expected power values, or
+may fail due to invalid degrees of freedom in the underlying
+F approximations
+
+
+
+ 
