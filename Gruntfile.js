@@ -128,7 +128,9 @@ module.exports = function(grunt) {
             },
             www: {
                 files: [
-                    {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'}
+                    {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'},
+                    {expand: true, flatten: true, src: ['resources/icons/GlimmpseIcon*.png'], dest: 'build/www/res/icons/'},
+                    {expand: true, flatten: true, src: ['resources/icons/*.png'], dest: 'build/www/res/screen/'}
                 ]
             },
             // hack to avoid uglify problem in usemin
@@ -176,6 +178,16 @@ module.exports = function(grunt) {
                     {
                         from: "isMobile: false",
                         to: "isMobile: true"
+                    }
+                ]
+            },
+            phonegapjs: {
+                src: ["build/dist/index.html"],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: '<!-- PHONEGAPJS -->',
+                        to: '<script type="text/javascript" charset="utf-8" src="cordova.js"></script>'
                     }
                 ]
             },
@@ -259,6 +271,7 @@ module.exports = function(grunt) {
             },
             release: {
                 options: {
+                    timeout: 300000,
                     archive: "build/artifacts/glimmpsewww-mobile-<%= pkg.version %>.zip",
                     "appId": "704192",
                     "user": {
