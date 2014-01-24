@@ -25,27 +25,30 @@
 
     <title>GLIMMPSE: General Linear Multivariate Model Power &amp; Sample Size</title>
 
-    <!--  <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-21939703-1']);
-            _gaq.push(['_trackPageview']);
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-21939703-1']);
+        _gaq.push(['_trackPageview']);
 
         (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
-      </script>
-       -->
+    </script>
+
+    <!-- replaced by gruntfile when building for mobile -->
+    <!-- PHONEGAPJS -->
+
     <script type="text/javascript"
             src="lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
-            imageFont: null,
-            extensions: ["tex2jax.js"],
-            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
-            MMLorHTML: { prefer: { Chrome: "HTML" } }
+        imageFont: null,
+        extensions: ["tex2jax.js"],
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+        MMLorHTML: { prefer: { Chrome: "HTML" } }
         });
     </script>
 
@@ -116,719 +119,886 @@
 
     </script>
 
+    <script type="text/javascript">
+
+
+
+        var authWindow = null;
+        var deferred = null;
+        function myCallback(e) {
+            alert('inside callback');
+            var url = e.originalEvent.url;
+            var code = /\?code=(.+)$/.exec(url);
+            var error = /\?error=(.+)$/.exec(url);
+
+            if (code || error) {
+                //Always close the browser when match is found
+                alert('math found');
+                authWindow.close();
+            }
+
+            if (code) {
+                //Exchange the authorization code for an access token
+                $.post('https://api.dropbox.com/1/oauth2/token', {
+                    code: code[1],
+                    client_id: options.client_id,
+                    client_secret: options.client_secret,
+                    redirect_uri: options.redirect_uri,
+                    grant_type: 'authorization_code'
+                }).done(function(data) {
+                            alert('success');
+                            deferred.resolve(data);
+                        }).fail(function(response) {
+                            alert('fail');
+                            deferred.reject(response.responseJSON);
+                        });
+            } else if (error) {
+                //The user denied access to the app
+                deferred.reject({
+                    error: error[1]
+                });
+            }
+        }
+        function getAuthCode()
+        {
+            alert("Hello World!");
+
+            var dropboxapi = {
+                authorize: function(options) {
+                    deferred = $.Deferred();
+                    var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
+                        client_id: options.client_id,
+                        //redirect_uri: options.redirect_uri,
+                        response_type: 'code'
+                        //scope: options.scope
+                    });  // end authUrl
+
+                    //Open the OAuth consent page in the InAppBrowser
+                    authWindow = window.open(authUrl, '_blank', 'location=yes');
+
+                    $(authWindow).on('loadstart', function(e) {
+                        alert('inside loadstart');
+                        var url = e.originalEvent.url;
+                        var code = /\?code=(.+)$/.exec(url);
+                        var error = /\?error=(.+)$/.exec(url);
+
+                        if (code || error) {
+                            //Always close the browser when match is found
+                            alert('closing the window');
+                            authWindow.close();
+                        }
+
+                        if (code) {
+                            alert('got the code');
+                            //Exchange the authorization code for an access token
+                            $.post('https://api.dropbox.com/1/oauth2/token', {
+                                code: code[1],
+                                client_id: options.client_id,
+                                client_secret: options.client_secret,
+                                //redirect_uri: options.redirect_uri,
+                                grant_type: 'authorization_code'
+                            }).done(function(data) {
+                                        alert('success; got token');
+                                        deferred.resolve(data);
+                                    }).fail(function(response) {
+                                        alert('failed to get token');
+                                        deferred.reject(response.responseJSON);
+                                    });
+                        } else if (error) {
+                            //The user denied access to the app
+                            deferred.reject({
+                                error: error[1]
+                            });
+                        }
+                    }); // $(authWindow).on('loadstart', function(e)
+
+                    return deferred.promise();
+                }// end authorize: function(options)
+            };  // end var dropboxapi;
+            alert('right before deviceready');
+
+            function ondeviceready() {
+                alert('inside device ready');
+                var $loginButton = $('#login a');
+                var $loginStatus = $('#login p');
+
+                //$loginButton.on('click', function() {
+                dropboxapi.authorize({
+                    client_id: '20al1r5ssivuiav',
+                    client_secret: '2ohxu1m65crignz'
+                    //redirect_uri: 'http://localhost'
+                    //scope: 'https://www.googleapis.com/auth/analytics.readonly'
+                }).done(function(data) {
+                            alert('success' + 'Access Token: ' + data.access_token);
+                            //$loginStatus.html('Access Token: ' + data.access_token);
+                        }).fail(function(data) {
+                            alert('fail' + data.error);
+                            //$loginStatus.html(data.error);
+                        });
+            }
+            $(document).on('deviceready', ondeviceready());
+            //});
+            //});
+
+        }  // end function getAuthCode();
+        //document.addEventListener('deviceready', onDeviceReady(), true);
+    </script>
+
 
 </head>
 
 <body>
 
 <div class="container" ng-controller="stateController">
-    <!-- header bar -->
-    <nav class="navbar navbar-default" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="debug-border navbar-toggle" data-toggle="collapse" data-target="#collapsed-header">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/#">
-                <span class="logo">Glimmpse</span>
+<!-- header bar -->
+<nav class="navbar navbar-default" role="navigation">
+<!-- Brand and toggle get grouped for better mobile display -->
+<div class="navbar-header">
+    <button type="button" class="debug-border navbar-toggle" data-toggle="collapse" data-target="#collapsed-header">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/#">
+        <span class="logo">Glimmpse</span>
+    </a>
+</div>
+
+<!-- Collect the nav links, forms, and other content for toggling -->
+<div class="collapse navbar-collapse" id="collapsed-header">
+    <ul class="nav navbar-nav">
+        <li>
+            <!-- for web -->
+            <a ng-show="!isMobile" href="http://samplesizeshop.org" rel="external" target="_blank">SampleSizeShop.org</a>
+            <!-- for mobile -->
+            <a ng-show="isMobile" href="#" onclick="window.open('http://samplesizeshop.org', '_system', 'location=yes');">
+                SampleSizeShop.org
+            </a>
+        </li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
+                       target="_blank">
+                        Tutorials for common designs
+                    </a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/',
+                               '_system', 'location=yes');">
+                        Tutorials for common designs
+                    </a>
+                </li>
+                <li>
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf',
+                               '_system', 'location=yes');">
+                        User Manual
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
+                        About Glimmpse
+                    </a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/about/',
+                               '_system', 'location=yes');">
+                        About Glimmpse
+                    </a>
+                </li>
+                <li>
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
+                        Documentation
+                    </a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/',
+                               '_system', 'location=yes');">
+                        Documentation
+                    </a>
+                </li>
+                <li>
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org/software-downloads/glimmpse/" target="_blank">
+                        Downloads
+                    </a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('http://samplesizeshop.org/software-downloads/glimmpse/',
+                               '_system', 'location=yes');">
+                        Downloads
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a ng-show="!isMobile" href="feedback.html" target="_blank">Feedback</a>
+            <a ng-show="isMobile" href="#"
+               onclick="window.open('feedback.html',
+                               '_blank', 'location=yes');">
+                Feedback
+            </a>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right" ng-show="getMode() != undefined">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-floppy-disk"></span> Save <b class="caret"></b>
+            </a>
+
+            <ul class="dropdown-menu">
+                <!-- Save options from the browser -->
+                <li ng-show="!isMobile">
+                    <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                        <div>
+                            <input type="hidden" name="filename" value="study.json"/>
+                            <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                        </div>
+                        <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                            Design
+                        </button>
+                    </form>
+                </li>
+                <!-- <li role="presentation">
+                    <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
+                        <a href="">Save Report</a>
+                    </div>
+                </li>    -->
+                <li ng-show="!isMobile">
+                    <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                        <div>
+                            <input type="hidden" name="filename" value="results.csv"/>
+                            <input type="hidden" name="data" value='{{resultsCSV}}' />
+                        </div>
+                        <button type="submit" data-ng-click="updateResultsCSV()"
+                                ng-disabled="powerService.cachedResults == undefined">
+                            Results
+                        </button>
+                    </form>
+                </li>
+                <!-- Save obtains from mobile devices -->
+                <li ng-show="isMobile">
+                    <div>
+                        <button data-toggle="modal" data-target="#emailStudyDesignModal"
+                                data-ng-click="updateStudyDesignJSON()">
+                            Email Design
+                        </button>
+                    </div>
+                </li>
+                <li ng-show="isMobile">
+                    <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
+                        <div>
+                            <input type="hidden" name="filename" value="study.json"/>
+                            <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                        </div>
+                        <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                            Save Design to Dropbox
+                        </button>
+                    </form>
+                </li>
+                <li ng-show="isMobile">
+                    <div>
+                        <button data-toggle="modal" data-target="#emailResultsModal"
+                                data-ng-click="updateResultsCSV()"
+                                ng-disabled="powerService.cachedResults == undefined">
+                            Email Results
+                        </button>
+                    </div>
+                </li>
+                <li ng-show="isMobile">
+                    <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
+                        <div>
+                            <input type="hidden" name="filename" value="results.csv"/>
+                            <input type="hidden" name="data" value='{{resultsCSV}}' />
+                        </div>
+                        <button type="submit" data-ng-click="updateResultsCSV()"
+                                ng-disabled="powerService.cachedResults == undefined">
+                            Save Results to Dropbox
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <form id="navUploadForm" enctype="multipart/form-data"
+                  action="{{uriUpload}}">
+                <label class="none">
+                    <span class="glyphicon glyphicon-open"></span> Upload
+                    <input type="file" id="navBarUpload" name="file"
+                           onchange="angular.element(this).scope().uploadFile(this)"
+                           style="display:none;" />
+                </label>
+
+            </form>
+
+            <!--
+            <a href="#" ng-click="">
+                <span class="glyphicon glyphicon-open"></span> Load
+
+            </a> -->
+        </li>
+        <li>
+            <a href="#" ng-click="reset()">
+                <span class="glyphicon glyphicon-trash"></span> Clear
+            </a>
+        </li>
+
+    </ul>
+</div><!-- /.navbar-collapse -->
+</nav>
+
+<!-- Mode selection screen -->
+<div class="well shaded-box" ng-show="getMode() == undefined">
+    <div class="processing rounded-box" ng-show="processing==true">
+        <label>Processing</label>
+    </div>
+    <h3>Start Your Study Design</h3>
+    <p>
+        Welcome to GLIMMPSE. The GLIMMPSE software calculates power and sample size for study designs
+        with normally distributed outcomes. Select one of the options below to begin your power or sample size calculation.
+    </p>
+
+    <div class="row vmargin15 hpadding0 box gray-box rounded-box">
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <a href="#" class="btn btn-mode"
+               data-ng-click="setMode(glimmpseConstants.modeGuided)" >
+                Guided Study Design
             </a>
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="collapsed-header">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="http://samplesizeshop.org" target="_blank">SampleSizeShop.org</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
-                               target="_blank">
-                            Tutorials for common designs
-                            </a>
-                        </li>
-                        <li><a href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
-                                About Glimmpse
-                            </a>
-                        </li>
-                        <li>
-                            <a href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
-                                Documentation
-                            </a>
-                        </li>
-                        <li>
-                            <a href="http://samplesizeshop.org/software-downloads/glimmpse/" target="_blank">
-                                Downloads
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="feedback.html" target="_blank">Feedback</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right" ng-show="getMode() != undefined">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="glyphicon glyphicon-floppy-disk"></span> Save <b class="caret"></b>
-                    </a>
-
-                    <ul class="dropdown-menu">
-                        <!-- Save options from the browser -->
-                        <li ng-show="!isMobile">
-                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Design
-                                </button>
-                            </form>
-                        </li>
-                        <!-- <li role="presentation">
-                            <div role="menuitem"  ng-show="getView()==glimmpseConstants.viewTypeResults">
-                                <a href="">Save Report</a>
-                            </div>
-                        </li>    -->
-                        <li ng-show="!isMobile">
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()"
-                                        ng-disabled="powerService.cachedResults == undefined">
-                                    Results
-                                </button>
-                            </form>
-                        </li>
-                        <!-- Save obtains from mobile devices -->
-                        <li ng-show="isMobile">
-                            <div>
-                                <button data-toggle="modal" data-target="#emailStudyDesignModal"
-                                        data-ng-click="updateStudyDesignJSON()">
-                                    Email Design
-                                </button>
-                            </div>
-                        </li>
-                        <li ng-show="isMobile">
-                            <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="study.json"/>
-                                    <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateStudyDesignJSON()">
-                                    Save Design to Dropbox
-                                </button>
-                            </form>
-                        </li>
-                        <li ng-show="isMobile">
-                            <div>
-                                <button data-toggle="modal" data-target="#emailResultsModal"
-                                        data-ng-click="updateResultsCSV()"
-                                        ng-disabled="powerService.cachedResults == undefined">
-                                    Email Results
-                                </button>
-                            </div>
-                        </li>
-                        <li ng-show="isMobile">
-                            <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                                <div>
-                                    <input type="hidden" name="filename" value="results.csv"/>
-                                    <input type="hidden" name="data" value='{{resultsCSV}}' />
-                                </div>
-                                <button type="submit" data-ng-click="updateResultsCSV()"
-                                        ng-disabled="powerService.cachedResults == undefined">
-                                    Save Results to Dropbox
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <form id="navUploadForm" enctype="multipart/form-data"
-                          action="{{uriUpload}}">
-                        <label class="none">
-                            <span class="glyphicon glyphicon-open"></span> Upload
-                            <input type="file" id="navBarUpload" name="file"
-                                   onchange="angular.element(this).scope().uploadFile(this)"
-                                   style="display:none;" />
-                        </label>
-
-                    </form>
-
-                    <!--
-                    <a href="#" ng-click="">
-                        <span class="glyphicon glyphicon-open"></span> Load
-
-                    </a> -->
-                </li>
-                <li>
-                    <a href="#" ng-click="reset()">
-                        <span class="glyphicon glyphicon-trash"></span> Clear
-                    </a>
-                </li>
-
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </nav>
-
-    <!-- Mode selection screen -->
-    <div class="well shaded-box" ng-show="getMode() == undefined">
-        <div class="processing rounded-box" ng-show="processing==true">
-            <label>Processing</label>
-        </div>
-        <h3>Start Your Study Design</h3>
-        <p>
-            Welcome to GLIMMPSE. The GLIMMPSE software calculates power and sample size for study designs
-            with normally distributed outcomes. Select one of the options below to begin your power or sample size calculation.
-        </p>
-
-        <div class="row vmargin15 hpadding0 box gray-box rounded-box">
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <a href="#" class="btn btn-mode"
-                   data-ng-click="setMode(glimmpseConstants.modeGuided)" >
-                    Guided Study Design
-                </a>
-            </div>
-
-            <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1 visible-sm visible-md visible-lg">
-                <div class="mode-description rounded-box">
-                    Build common study designs including ANOVA, ANCOVA, and regression with guidance from the
-                    study design wizard. This mode is designed for applied researchers including
-                    physicians, nurses, and other investigators.
-                </div>
+        <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1 visible-sm visible-md visible-lg">
+            <div class="mode-description rounded-box">
+                Build common study designs including ANOVA, ANCOVA, and regression with guidance from the
+                study design wizard. This mode is designed for applied researchers including
+                physicians, nurses, and other investigators.
             </div>
         </div>
-        <div class="row vmargin15 hpadding0 box gray-box rounded-box">
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <a href="#" class="btn btn-mode"
-                   data-ng-click="setMode(glimmpseConstants.modeMatrix)" >
-                    Matrix Study Design
-                </a>
-            </div>
-
-            <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
-                <div class="mode-description rounded-box">
-                    Directly enter the matrices for the general linear model. This mode is
-                    designed for users with advanced statistical training.
-                </div>
-            </div>
-        </div>
-
-        <div class="row vmargin15 hpadding0 box gray-box rounded-box">
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <form id="uploadForm" enctype="multipart/form-data"
-                      action="{{uriUpload}}">
-                    <label class="btn btn-mode">
-                        <span>Upload a Study Design</span>
-                        <input type="file" id="uploader" name="file"
-                               onchange="angular.element(this).scope().uploadFile(this)"
-                               style="display:none;" />
-                    </label>
-                </form>
-            </div>
-
-            <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
-                <div class="mode-description rounded-box">
-                    If you have previously saved a study design from GLIMMPSE, you may upload it here.
-                    Click 'Upload a Study Design' to select your study design file.
-                </div>
-            </div>
-        </div>
-
     </div>
-
-
-    <!-- main Web application panel -->
-    <div class="well white-box shaded-box" ng-show="getMode() != undefined">
-
-        <!-- toolbox menu -->
-        <div class="row hpadding30 hmargin15">
-            <div class="pull-left visible-sm visible-xs">
-                <a href="#" class="btn btn-sm btn-warning" ng-show="!isActive('/')">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    Back
-                </a>
-            </div>
+    <div class="row vmargin15 hpadding0 box gray-box rounded-box">
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <a href="#" class="btn btn-mode"
+               data-ng-click="setMode(glimmpseConstants.modeMatrix)" >
+                Matrix Study Design
+            </a>
         </div>
 
-        <!-- main application content-->
-        <div class="row padding0">
-
-        <!-- left nav -->
-        <div class="col-md-3 visible-md visible-lg">
-            <!-- Calculate button -->
-            <div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
-                <a class="btn btn-calculate" href="#/results/report"
-                   ng-click="calculate()">
-                    Calculate
-                </a>
-            </div>
-            <div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
-                <button data-ng-click="showIncompleteItemsDialog()"
-                        class="btn btn-calculate-disabled"
-                        data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
-
-            </div>
-            <!-- results nav -->
-            <div ng-show="powerService.cachedResults != undefined">
-
-                <div class="panel-group">
-                    <div class="panel panel-default">
-                        <div class="btn btn-results">
-                            Results
-                        </div>
-                        <div class="panel-body" >
-                            <div class="{{isActive('/results/report') && 'active'}}" >
-                                <a href="#/results/report">Table</a>
-                            </div>
-                            <div class="{{isActive('/results/plot') && 'active'}}" >
-                                <a href="#/results/plot" ng-show="studyDesign.powerCurveDescriptions != undefined">Plot</a>
-                                <label ng-show="studyDesign.powerCurveDescriptions == undefined">Plot</label>
-                            </div>
-                            <div class="{{isActive('/results/matrices') && 'active'}}" >
-                                <a href="#/results/matrices">Matrices</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- left nav -->
-            <div class="vmargin15" >
-                <div class="panel-group" id="nav-accordion" >
-                    <div class="panel panel-default">
-                        <!-- start menu -->
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-start"
-                                        ng-click="changeView('/')">
-                                    Start
-                                </button>
-                            </h4>
-                        </div>
-                        <div id="nav-start" class="panel-collapse collapse in">
-                            <div class="panel-body">
-                                <div class="{{isActive('/solvingFor') && 'active'}} {{state.solvingFor}}" >
-                                    <a href="#/solvingFor">Solving For</a>
-                                </div>
-                                <div class="{{isActive('/nominalPower') && 'active'}} {{state.nominalPower}}" >
-                                    <a href="#/nominalPower"
-                                       ng-show="viewAllowed(state.nominalPower)">Desired Power</a>
-                                    <label ng-show="!viewAllowed(state.nominalPower)">Desired Power</label>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- ********* START GUIDED PANELS ********* -->
-
-                        <!-- model menu -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-model"
-                                        ng-click="changeView('/modelIntro')">Model</button>
-                            </h4>
-                        </div>
-                        <div id="nav-model" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <div class="panel-body">
-                                <div class="{{isActive('/isu') && 'active'}} {{state.isu}}" >
-                                    <a href="#/isu">Clustering</a>
-                                </div>
-                                <div class="{{isActive('/predictors') && 'active'}} {{state.predictors}}" >
-                                    <a href="#/predictors">Predictors</a>
-                                </div>
-                                <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
-                                    <a href="#/covariates">Covariate</a>
-                                </div>
-                                <div class="{{isActive('/responseVariables') && 'active'}} {{state.responseVariables}}" >
-                                    <a href="#/responseVariables">Response Variables</a>
-                                </div>
-                                <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
-                                    <a href="#/repeatedMeasures">Repeated Measures</a>
-                                </div>
-                                <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
-                                    <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Size</a>
-                                    <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Size</label>
-                                </div>
-                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                                    <a href="#/smallestGroupSize"
-                                       ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                                    <label ng-show="!viewAllowed(state.smallestGroupSize)">
-                                        Smallest Group Size
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- hypothesis panel -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-hypothesis"
-                                        ng-click="changeView('/hypothesisIntro')">Hypothesis</button>
-                            </h4>
-                        </div>
-                        <div id="nav-hypothesis" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <div class="panel-body">
-                                <div class="{{isActive('/hypothesis') && 'active'}} {{state.hypothesis}}" >
-                                    <a href="#/hypothesis" ng-show="viewAllowed(state.hypothesis)">Hypothesis</a>
-                                    <label ng-show="!viewAllowed(state.hypothesis)">Hypothesis</label>
-                                </div>
-                                <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                    <a href="#/test">Statistical Test</a>
-                                </div>
-                                <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
-                                    <a href="#/typeIError">Type I Error</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- means panel -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means"
-                                        ng-click="changeView('/meansIntro')">Means</button>
-                            </h4>
-                        </div>
-                        <div id="nav-means" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <div class="panel-body">
-                                <div class="{{isActive('/means') && 'active'}} {{state.means}}" >
-                                    <a href="#/means" ng-show="viewAllowed(state.means)">Means</a>
-                                    <label ng-show="!viewAllowed(state.means)">Means</label>
-                                </div>
-                                <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
-                                    <a href="#/meansScale">Scale Factors</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- variability panel -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-variability"
-                                        ng-click="changeView('/variabilityIntro')">Variability</button>
-                            </h4>
-                        </div>
-                        <div id="nav-variability" class="panel-collapse collapse"
-                             ng-show="getMode() == glimmpseConstants.modeGuided">
-                            <div class="panel-body">
-                                <div class="{{isActive('/variabilityWithin') && 'active'}} {{state.variabilityWithin}}" >
-                                    <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within Participant</a>
-                                    <label ng-show="!viewAllowed(state.variabilityWithin)">Within Participant</label>
-                                </div>
-                                <div class="{{isActive('/variabilityCovariate') && 'active'}} {{state.variabilityCovariate}}" >
-                                    <a href="#/variabilityCovariate" ng-show="viewAllowed(state.variabilityCovariate)">Covariate</a>
-                                    <label ng-show="!viewAllowed(state.variabilityCovariate)">Covariate</label>
-                                </div>
-                                <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
-                                    <a href="#/variabilityScale">Scale Factors</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ********* END GUIDED PANELS ********* -->
-
-                        <!-- ********* START MATRIX PANELS *********-->
-                        <!-- design -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-design"
-                                        ng-click="changeView('/matrixDesignIntro')">Design</button>
-                            </h4>
-                        </div>
-                        <div id="nav-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <div class="panel-body">
-                                <div class="{{isActive('/designEssence') && 'active'}} {{state.designEssence}}" >
-                                    <a href="#/designEssence">Design Essence</a>
-                                </div>
-                                <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
-                                    <a href="#/covariates">Covariate</a>
-                                </div>
-                                <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                                    <a href="#/smallestGroupSize"
-                                       ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                                    <label ng-show="!viewAllowed(state.smallestGroupSize)">
-                                        Smallest Group Size
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Regression coefficients -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-coefficients"
-                                        ng-click="changeView('/matrixCoefficientsIntro')">Coefficients</button>
-                            </h4>
-                        </div>
-                        <div id="nav-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <div class="panel-body">
-                                <div class="{{isActive('/beta') && 'active'}} {{state.beta}}" >
-                                    <a href="#/beta">Beta Coefficients</a>
-                                </div>
-                                <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
-                                    <a href="#/meansScale">Beta Scale Factors</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hypothesis -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-contrasts"
-                                        ng-click="changeView('/matrixHypothesisIntro')">Hypothesis</button>
-                            </h4>
-                        </div>
-                        <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <div class="panel-body">
-                                <div class="{{isActive('/betweenContrast') && 'active'}} {{state.betweenContrast}}" >
-                                    <a href="#/betweenContrast">Between Participant Contrast</a>
-                                </div>
-                                <div class="{{isActive('/withinContrast') && 'active'}} {{state.withinContrast}}" >
-                                    <a href="#/withinContrast">Within Participant Contrast</a>
-                                </div>
-                                <div class="{{isActive('/thetaNull') && 'active'}} {{state.thetaNull}}" >
-                                    <a href="#/thetaNull">Null Hypothesis Matrix</a>
-                                </div>
-                                <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                    <a href="#/test">Statistical Test</a>
-                                </div>
-                                <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
-                                    <a href="#/typeIError">Type I Error</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Variability -->
-                        <div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-covariance"
-                                        ng-click="changeView('/matrixVariabilityIntro')">Variability</button>
-                            </h4>
-                        </div>
-                        <div id="nav-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
-                            <div class="panel-body">
-                                <div class="{{isActive('/sigmaE') && 'active'}} {{state.sigmaE}}">
-                                    <a href="#/sigmaE" ng-show="viewAllowed(state.sigmaE)">Error Covariance</a>
-                                    <label ng-show="!viewAllowed(state.sigmaE)">Error Covariance</label>
-                                </div>
-                                <div class="{{isActive('/sigmaY') && 'active'}} {{state.sigmaY}}">
-                                    <a href="#/sigmaY" ng-show="viewAllowed(state.sigmaY)">Outcomes Covariance</a>
-                                    <label ng-show="!viewAllowed(state.sigmaY)">Outcomes Covariance</label>
-                                </div>
-                                <div class="{{isActive('/sigmaG') && 'active'}} {{state.sigmaG}}" >
-                                    <a href="#/sigmaG" ng-show="viewAllowed(state.sigmaG)">Variance of Covariate</a>
-                                    <label ng-show="!viewAllowed(state.sigmaG)">Covariate</label>
-                                </div>
-                                <div class="{{isActive('/sigmaYG') && 'active'}} {{state.sigmaYG}}" >
-                                    <a href="#/sigmaYG" ng-show="viewAllowed(state.sigmaYG)">Outcomes and Covariate</a>
-                                    <label ng-show="!viewAllowed(state.sigmaYG)">Outcomes and Covariate</label>
-                                </div>
-                                <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
-                                    <a href="#/variabilityScale">Scale Factors</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ********** END MATRIX PANELS ********** -->
-
-                        <!-- options -->
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-options"
-                                        ng-click="changeView('/optionsIntro')">Options</button>
-                            </h4>
-                        </div>
-                        <div id="nav-options" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <div class="{{isActive('/powerMethod') && 'active'}} {{state.powerMethod}}" >
-                                    <a href="#/powerMethod" ng-show="viewAllowed(state.powerMethod)">Power Method</a>
-                                    <label ng-show="!viewAllowed(state.powerMethod)">Power Method</label>
-                                </div>
-                                <div class="{{isActive('/confidenceIntervals') && 'active'}} {{state.confidenceIntervals}}">
-                                    <a href="#/confidenceIntervals">Confidence Intervals</a>
-                                </div>
-                                <div class="{{isActive('/plotOptions') && 'active'}} {{state.plotOptions}}" >
-                                    <a href="#/plotOptions" ng-show="viewAllowed(state.plotOptions)">Power Curve</a>
-                                    <label ng-show="!viewAllowed(state.plotOptions)">Power Curve</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- main content area with toolbar -->
-        <div class="col-md-9 col-lg-9 col-xs-12 col-sm-12">
-            <div class="processing rounded-box" ng-show="processing==true">
-                <label>Processing</label>
-            </div>
-            <div class="well white-box">
-                <div class="padding10" ng-view=""></div>
+        <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
+            <div class="mode-description rounded-box">
+                Directly enter the matrices for the general linear model. This mode is
+                designed for users with advanced statistical training.
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="incompleteDialog" tabindex="-1"
-         role="dialog" aria-labelledby="incompleteDialogModal" aria-hidden="true">
-        <div class="modal-dialog rounded-box white-box">
-            <div class="model-content">
-                <div class="modal-header">
-                    <h3>The following items are incomplete</h3>
-                </div>
-                <div class="modal-body">
-                    <div ng-repeat="view in incompleteViews">
-                        {{view}}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">OK</button>
-                </div>
-            </div>
-
+    <div class="row vmargin15 hpadding0 box gray-box rounded-box">
+        <div class="col-md-3 col-sm-3 col-xs-12">
+            <form id="uploadForm" enctype="multipart/form-data"
+                  action="{{uriUpload}}">
+                <label class="btn btn-mode">
+                    <span>Upload a Study Design</span>
+                    <input type="file" id="uploader" name="file"
+                           onchange="angular.element(this).scope().uploadFile(this)"
+                           style="display:none;" />
+                </label>
+            </form>
         </div>
-    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="emailStudyDesignModal" tabindex="-1"
-         role="dialog" aria-labelledby="emailStudyDesignModal" aria-hidden="true">
-        <form id="emailDesignForm" enctype="multipart/form-data"
-              action="{{uriScripts}}studyDesign_email.php" name="emailDesignForm" method="post">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Send your study design by email</h3>
-                        <label>Fill in the information below and click "Send" to email your study design.
-                            The recipient will receive an email from samplesizeshop@gmail.com.</label>
-                    </div>
-                    <div class="modal-body">
-                        <div class="processing rounded-box" ng-show="designEmailProcessing">
-                            <label>Processing</label>
-                        </div>
-                        <div class="alert alert-success" ng-show="!designEmailProcessing && designEmailSuccess !== undefined && designEmailSuccess">
-                            Your email has been sent.
-                        </div>
-                        <div class="alert alert-danger" ng-show="!designEmailProcessing && designEmailSuccess !== undefined && !designEmailSuccess">
-                            We're sorry, but we were unable to submit your request at this time.  Please try again.
-                        </div>
-                        <div class="well">
-
-                            <div>
-                                <input type="hidden" name="filename" value="study.json"/>
-                                <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                            </div>
-                            <div class="form-group">
-                                <label>Recipient Name</label>
-                                <input class="form-control" type="text" placeholder="Enter the recipient's name" name="name"
-                                       ng-model="designEmail.name" required />
-                            </div>
-                            <div class="form-group">
-                                <label>Recipient Email Address</label>
-                                <input class="form-control" type="email" placeholder="Enter the recipient's email address"
-                                       name="email" ng-model="designEmail.email" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" onclick="angular.element(this).scope().sendDesignEmail(this)"
-                                class="btn btn-primary" aria-hidden="true" ng-disabled="!emailDesignForm.$valid">
-                            Send
-                        </button>
-                        <button class="btn btn-warning" data-dismiss="modal" ng-click="designEmailSuccess = undefined"
-                                aria-hidden="true">Close</button>
-                    </div>
-                </div>
+        <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
+            <div class="mode-description rounded-box">
+                If you have previously saved a study design from GLIMMPSE, you may upload it here.
+                Click 'Upload a Study Design' to select your study design file.
             </div>
-        </form>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="emailResultsModal" tabindex="-1"
-         role="dialog" aria-labelledby="emailResultsModal" aria-hidden="true">
-        <form id="emailResultsForm" enctype="multipart/form-data"
-              action="{{uriScripts}}powerResults_email.php" name="emailResultsForm" method="post">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Send your power results by email</h3>
-                        <label>Fill in the information below and click "Send" to email your power results.
-                            The recipient will receive an email from samplesizeshop@gmail.com.</label>
-                    </div>
-                    <div class="modal-body">
-                        <div class="processing rounded-box" ng-show="resultsEmailProcessing">
-                            <label>Processing</label>
-                        </div>
-                        <div class="alert alert-success" ng-show="!resultsEmailProcessing && resultsEmailSuccess !== undefined && resultsEmailSuccess">
-                            Your email has been sent.
-                        </div>
-                        <div class="alert alert-danger" ng-show="!resultsEmailProcessing && resultsEmailSuccess !== undefined && !resultsEmailSuccess">
-                            We're sorry, but we were unable to submit your request at this time.  Please try again.
-                        </div>
-                        <div class="well">
-                            <div>
-                                <input type="hidden" name="resultsFilename" value="results.csv"/>
-                                <input type="hidden" name="resultsData" value='{{resultsCSV}}' />
-                            </div>
-                            <div class="form-group">
-                                <label>Recipient Name</label>
-                                <input class="form-control" type="text" placeholder="Enter your name" name="name"
-                                       ng-model="resultsEmail.name" required />
-                            </div>
-                            <div class="form-group">
-                                <label>Recipient Email Address</label>
-                                <input class="form-control" type="email" placeholder="Enter your email address"
-                                       name="email" ng-model="resultsEmail.email" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" onclick="angular.element(this).scope().sendResultsEmail(this)"
-                                class="btn btn-primary" aria-hidden="true" ng-disabled="!emailResultsForm.$valid">
-                            Send
-                        </button>
-                        <button class="btn btn-warning" data-dismiss="modal" ng-click="resultsEmailSuccess = undefined"
-                                aria-hidden="true">Close</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 
 </div>
 
-    <!-- footer -->
-    <div class="row">
-        <div class="col-md-12 text-center vmargin15">
-            <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
-                <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
-            <div>
-                GLIMMPSE version @VERSION@ is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
-                (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
-                Previous funding was received from an American Recovery
-                and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
+
+<!-- main Web application panel -->
+<div class="well white-box shaded-box" ng-show="getMode() != undefined">
+
+<!-- toolbox menu -->
+<div class="row hpadding30 hmargin15">
+    <div class="pull-left visible-sm visible-xs">
+        <a href="#" class="btn btn-sm btn-warning" ng-show="!isActive('/')">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            Back
+        </a>
+    </div>
+</div>
+
+<!-- main application content-->
+<div class="row padding0">
+
+<!-- left nav -->
+<div class="col-md-3 visible-md visible-lg">
+<!-- Calculate button -->
+<div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
+    <a class="btn btn-calculate" href="#/results/report"
+       ng-click="calculate()">
+        Calculate
+    </a>
+</div>
+<div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
+    <button data-ng-click="showIncompleteItemsDialog()"
+            class="btn btn-calculate-disabled"
+            data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
+
+</div>
+<!-- results nav -->
+<div ng-show="powerService.cachedResults != undefined">
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="btn btn-results">
+                Results
+            </div>
+            <div class="panel-body" >
+                <div class="{{isActive('/results/report') && 'active'}}" >
+                    <a href="#/results/report">Table</a>
+                </div>
+                <div class="{{isActive('/results/plot') && 'active'}}" >
+                    <a href="#/results/plot" ng-show="studyDesign.powerCurveDescriptions != undefined">Plot</a>
+                    <label ng-show="studyDesign.powerCurveDescriptions == undefined">Plot</label>
+                </div>
+                <div class="{{isActive('/results/matrices') && 'active'}}" >
+                    <a href="#/results/matrices">Matrices</a>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
- </div>
+<!-- left nav -->
+<div class="vmargin15" >
+<div class="panel-group" id="nav-accordion" >
+<div class="panel panel-default">
+<!-- start menu -->
+<div class="panel-heading">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-start"
+                ng-click="changeView('/')">
+            Start
+        </button>
+    </h4>
+</div>
+<div id="nav-start" class="panel-collapse collapse in">
+    <div class="panel-body">
+        <div class="{{isActive('/solvingFor') && 'active'}} {{state.solvingFor}}" >
+            <a href="#/solvingFor">Solving For</a>
+        </div>
+        <div class="{{isActive('/nominalPower') && 'active'}} {{state.nominalPower}}" >
+            <a href="#/nominalPower"
+               ng-show="viewAllowed(state.nominalPower)">Desired Power</a>
+            <label ng-show="!viewAllowed(state.nominalPower)">Desired Power</label>
+        </div>
+    </div>
+</div>
+
+
+<!-- ********* START GUIDED PANELS ********* -->
+
+<!-- model menu -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-model"
+                ng-click="changeView('/modelIntro')">Model</button>
+    </h4>
+</div>
+<div id="nav-model" class="panel-collapse collapse"
+     ng-show="getMode() == glimmpseConstants.modeGuided">
+    <div class="panel-body">
+        <div class="{{isActive('/isu') && 'active'}} {{state.isu}}" >
+            <a href="#/isu">Clustering</a>
+        </div>
+        <div class="{{isActive('/predictors') && 'active'}} {{state.predictors}}" >
+            <a href="#/predictors">Predictors</a>
+        </div>
+        <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
+            <a href="#/covariates">Covariate</a>
+        </div>
+        <div class="{{isActive('/responseVariables') && 'active'}} {{state.responseVariables}}" >
+            <a href="#/responseVariables">Response Variables</a>
+        </div>
+        <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
+            <a href="#/repeatedMeasures">Repeated Measures</a>
+        </div>
+        <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
+            <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Size</a>
+            <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Size</label>
+        </div>
+        <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
+            <a href="#/smallestGroupSize"
+               ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+            <label ng-show="!viewAllowed(state.smallestGroupSize)">
+                Smallest Group Size
+            </label>
+        </div>
+    </div>
+</div>
+<!-- hypothesis panel -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-hypothesis"
+                ng-click="changeView('/hypothesisIntro')">Hypothesis</button>
+    </h4>
+</div>
+<div id="nav-hypothesis" class="panel-collapse collapse"
+     ng-show="getMode() == glimmpseConstants.modeGuided">
+    <div class="panel-body">
+        <div class="{{isActive('/hypothesis') && 'active'}} {{state.hypothesis}}" >
+            <a href="#/hypothesis" ng-show="viewAllowed(state.hypothesis)">Hypothesis</a>
+            <label ng-show="!viewAllowed(state.hypothesis)">Hypothesis</label>
+        </div>
+        <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
+            <a href="#/test">Statistical Test</a>
+        </div>
+        <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
+            <a href="#/typeIError">Type I Error</a>
+        </div>
+    </div>
+</div>
+<!-- means panel -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-means"
+                ng-click="changeView('/meansIntro')">Means</button>
+    </h4>
+</div>
+<div id="nav-means" class="panel-collapse collapse"
+     ng-show="getMode() == glimmpseConstants.modeGuided">
+    <div class="panel-body">
+        <div class="{{isActive('/means') && 'active'}} {{state.means}}" >
+            <a href="#/means" ng-show="viewAllowed(state.means)">Means</a>
+            <label ng-show="!viewAllowed(state.means)">Means</label>
+        </div>
+        <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
+            <a href="#/meansScale">Scale Factors</a>
+        </div>
+    </div>
+</div>
+<!-- variability panel -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeGuided">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-variability"
+                ng-click="changeView('/variabilityIntro')">Variability</button>
+    </h4>
+</div>
+<div id="nav-variability" class="panel-collapse collapse"
+     ng-show="getMode() == glimmpseConstants.modeGuided">
+    <div class="panel-body">
+        <div class="{{isActive('/variabilityWithin') && 'active'}} {{state.variabilityWithin}}" >
+            <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within Participant</a>
+            <label ng-show="!viewAllowed(state.variabilityWithin)">Within Participant</label>
+        </div>
+        <div class="{{isActive('/variabilityCovariate') && 'active'}} {{state.variabilityCovariate}}" >
+            <a href="#/variabilityCovariate" ng-show="viewAllowed(state.variabilityCovariate)">Covariate</a>
+            <label ng-show="!viewAllowed(state.variabilityCovariate)">Covariate</label>
+        </div>
+        <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
+            <a href="#/variabilityScale">Scale Factors</a>
+        </div>
+    </div>
+</div>
+
+<!-- ********* END GUIDED PANELS ********* -->
+
+<!-- ********* START MATRIX PANELS *********-->
+<!-- design -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-design"
+                ng-click="changeView('/matrixDesignIntro')">Design</button>
+    </h4>
+</div>
+<div id="nav-design" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <div class="panel-body">
+        <div class="{{isActive('/designEssence') && 'active'}} {{state.designEssence}}" >
+            <a href="#/designEssence">Design Essence</a>
+        </div>
+        <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
+            <a href="#/covariates">Covariate</a>
+        </div>
+        <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
+            <a href="#/smallestGroupSize"
+               ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+            <label ng-show="!viewAllowed(state.smallestGroupSize)">
+                Smallest Group Size
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- Regression coefficients -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-coefficients"
+                ng-click="changeView('/matrixCoefficientsIntro')">Coefficients</button>
+    </h4>
+</div>
+<div id="nav-coefficients" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <div class="panel-body">
+        <div class="{{isActive('/beta') && 'active'}} {{state.beta}}" >
+            <a href="#/beta">Beta Coefficients</a>
+        </div>
+        <div class="{{isActive('/meansScale') && 'active'}} {{state.meansScale}}" >
+            <a href="#/meansScale">Beta Scale Factors</a>
+        </div>
+    </div>
+</div>
+
+<!-- Hypothesis -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-contrasts"
+                ng-click="changeView('/matrixHypothesisIntro')">Hypothesis</button>
+    </h4>
+</div>
+<div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <div class="panel-body">
+        <div class="{{isActive('/betweenContrast') && 'active'}} {{state.betweenContrast}}" >
+            <a href="#/betweenContrast">Between Participant Contrast</a>
+        </div>
+        <div class="{{isActive('/withinContrast') && 'active'}} {{state.withinContrast}}" >
+            <a href="#/withinContrast">Within Participant Contrast</a>
+        </div>
+        <div class="{{isActive('/thetaNull') && 'active'}} {{state.thetaNull}}" >
+            <a href="#/thetaNull">Null Hypothesis Matrix</a>
+        </div>
+        <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
+            <a href="#/test">Statistical Test</a>
+        </div>
+        <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
+            <a href="#/typeIError">Type I Error</a>
+        </div>
+    </div>
+</div>
+
+<!-- Variability -->
+<div class="panel-heading" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-covariance"
+                ng-click="changeView('/matrixVariabilityIntro')">Variability</button>
+    </h4>
+</div>
+<div id="nav-covariance" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
+    <div class="panel-body">
+        <div class="{{isActive('/sigmaE') && 'active'}} {{state.sigmaE}}">
+            <a href="#/sigmaE" ng-show="viewAllowed(state.sigmaE)">Error Covariance</a>
+            <label ng-show="!viewAllowed(state.sigmaE)">Error Covariance</label>
+        </div>
+        <div class="{{isActive('/sigmaY') && 'active'}} {{state.sigmaY}}">
+            <a href="#/sigmaY" ng-show="viewAllowed(state.sigmaY)">Outcomes Covariance</a>
+            <label ng-show="!viewAllowed(state.sigmaY)">Outcomes Covariance</label>
+        </div>
+        <div class="{{isActive('/sigmaG') && 'active'}} {{state.sigmaG}}" >
+            <a href="#/sigmaG" ng-show="viewAllowed(state.sigmaG)">Variance of Covariate</a>
+            <label ng-show="!viewAllowed(state.sigmaG)">Covariate</label>
+        </div>
+        <div class="{{isActive('/sigmaYG') && 'active'}} {{state.sigmaYG}}" >
+            <a href="#/sigmaYG" ng-show="viewAllowed(state.sigmaYG)">Outcomes and Covariate</a>
+            <label ng-show="!viewAllowed(state.sigmaYG)">Outcomes and Covariate</label>
+        </div>
+        <div class="{{isActive('/variabilityScale') && 'active'}} {{state.variabilityScale}}" >
+            <a href="#/variabilityScale">Scale Factors</a>
+        </div>
+    </div>
+</div>
+
+<!-- ********** END MATRIX PANELS ********** -->
+
+<!-- options -->
+<div class="panel-heading">
+    <h4 class="panel-title">
+        <button data-toggle="collapse" data-parent="#nav-accordion" href="#nav-options"
+                ng-click="changeView('/optionsIntro')">Options</button>
+    </h4>
+</div>
+<div id="nav-options" class="panel-collapse collapse">
+    <div class="panel-body">
+        <div class="{{isActive('/powerMethod') && 'active'}} {{state.powerMethod}}" >
+            <a href="#/powerMethod" ng-show="viewAllowed(state.powerMethod)">Power Method</a>
+            <label ng-show="!viewAllowed(state.powerMethod)">Power Method</label>
+        </div>
+        <div class="{{isActive('/confidenceIntervals') && 'active'}} {{state.confidenceIntervals}}">
+            <a href="#/confidenceIntervals">Confidence Intervals</a>
+        </div>
+        <div class="{{isActive('/plotOptions') && 'active'}} {{state.plotOptions}}" >
+            <a href="#/plotOptions" ng-show="viewAllowed(state.plotOptions)">Power Curve</a>
+            <label ng-show="!viewAllowed(state.plotOptions)">Power Curve</label>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<!-- main content area with toolbar -->
+<div class="col-md-9 col-lg-9 col-xs-12 col-sm-12">
+    <div class="processing rounded-box" ng-show="processing==true">
+        <label>Processing</label>
+    </div>
+    <div class="well white-box">
+        <div class="padding10" ng-view=""></div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="incompleteDialog" tabindex="-1"
+     role="dialog" aria-labelledby="incompleteDialogModal" aria-hidden="true">
+    <div class="modal-dialog rounded-box white-box">
+        <div class="model-content">
+            <div class="modal-header">
+                <h3>The following items are incomplete</h3>
+            </div>
+            <div class="modal-body">
+                <div ng-repeat="view in incompleteViews">
+                    {{view}}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">OK</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="emailStudyDesignModal" tabindex="-1"
+     role="dialog" aria-labelledby="emailStudyDesignModal" aria-hidden="true">
+    <form id="emailDesignForm" enctype="multipart/form-data"
+          action="{{uriScripts}}studyDesign_email.php" name="emailDesignForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Send your study design by email</h3>
+                    <label>Fill in the information below and click "Send" to email your study design.
+                        The recipient will receive an email from samplesizeshop@gmail.com.</label>
+                </div>
+                <div class="modal-body">
+                    <div class="processing rounded-box" ng-show="designEmailProcessing">
+                        <label>Processing</label>
+                    </div>
+                    <div class="alert alert-success" ng-show="!designEmailProcessing && designEmailSuccess !== undefined && designEmailSuccess">
+                        Your email has been sent.
+                    </div>
+                    <div class="alert alert-danger" ng-show="!designEmailProcessing && designEmailSuccess !== undefined && !designEmailSuccess">
+                        We're sorry, but we were unable to submit your request at this time.  Please try again.
+                    </div>
+                    <div class="well">
+
+                        <div>
+                            <input type="hidden" name="filename" value="study.json"/>
+                            <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                        </div>
+                        <div class="form-group">
+                            <label>Recipient Name</label>
+                            <input class="form-control" type="text" placeholder="Enter the recipient's name" name="name"
+                                   ng-model="designEmail.name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Recipient Email Address</label>
+                            <input class="form-control" type="email" placeholder="Enter the recipient's email address"
+                                   name="email" ng-model="designEmail.email" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="angular.element(this).scope().sendDesignEmail(this)"
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="!emailDesignForm.$valid">
+                        Send
+                    </button>
+                    <button class="btn btn-warning" data-dismiss="modal" ng-click="designEmailSuccess = undefined"
+                            aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="emailResultsModal" tabindex="-1"
+     role="dialog" aria-labelledby="emailResultsModal" aria-hidden="true">
+    <form id="emailResultsForm" enctype="multipart/form-data"
+          action="{{uriScripts}}powerResults_email.php" name="emailResultsForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Send your power results by email</h3>
+                    <label>Fill in the information below and click "Send" to email your power results.
+                        The recipient will receive an email from samplesizeshop@gmail.com.</label>
+                </div>
+                <div class="modal-body">
+                    <div class="processing rounded-box" ng-show="resultsEmailProcessing">
+                        <label>Processing</label>
+                    </div>
+                    <div class="alert alert-success" ng-show="!resultsEmailProcessing && resultsEmailSuccess !== undefined && resultsEmailSuccess">
+                        Your email has been sent.
+                    </div>
+                    <div class="alert alert-danger" ng-show="!resultsEmailProcessing && resultsEmailSuccess !== undefined && !resultsEmailSuccess">
+                        We're sorry, but we were unable to submit your request at this time.  Please try again.
+                    </div>
+                    <div class="well">
+                        <div>
+                            <input type="hidden" name="resultsFilename" value="results.csv"/>
+                            <input type="hidden" name="resultsData" value='{{resultsCSV}}' />
+                        </div>
+                        <div class="form-group">
+                            <label>Recipient Name</label>
+                            <input class="form-control" type="text" placeholder="Enter your name" name="name"
+                                   ng-model="resultsEmail.name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Recipient Email Address</label>
+                            <input class="form-control" type="email" placeholder="Enter your email address"
+                                   name="email" ng-model="resultsEmail.email" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="angular.element(this).scope().sendResultsEmail(this)"
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="!emailResultsForm.$valid">
+                        Send
+                    </button>
+                    <button class="btn btn-warning" data-dismiss="modal" ng-click="resultsEmailSuccess = undefined"
+                            aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+</div>
+
+<!-- footer -->
+<div class="row">
+    <div class="col-md-12 text-center vmargin15">
+        <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
+            <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
+        <div>
+            GLIMMPSE version @VERSION@ is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
+            (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
+            Previous funding was received from an American Recovery
+            and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
+        </div>
+    </div>
+</div>
+
+</div>
 
 </body>
 </html>

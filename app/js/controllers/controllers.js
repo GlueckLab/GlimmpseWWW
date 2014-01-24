@@ -931,8 +931,7 @@ glimmpseApp.controller('stateController',
 
         };
 
-
-    /**
+        /**
      * Upload a study design file
      * @param input
      * @param parentScope
