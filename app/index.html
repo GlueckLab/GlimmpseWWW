@@ -26,16 +26,26 @@
     <title>GLIMMPSE: General Linear Multivariate Model Power &amp; Sample Size</title>
 
     <script type="text/javascript">
+
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-21939703-1']);
         _gaq.push(['_trackPageview']);
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-21939703-1']);
+            _gaq.push(['_trackPageview']);
+
 
         (function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
+
     </script>
+
+
+
 
     <!-- replaced by gruntfile when building for mobile -->
     <!-- PHONEGAPJS -->
@@ -280,6 +290,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li>
+
                     <a ng-show="!isMobile" href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
                        target="_blank">
                         Tutorials for common designs
@@ -298,6 +309,85 @@
                        onclick="window.open('http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf',
                                '_system', 'location=yes');">
                         User Manual
+                    </a>
+                    <!-- for web -->
+                    <a ng-show="!isMobile" href="http://samplesizeshop.org" rel="external" target="_blank">SampleSizeShop.org</a>
+                    <!-- for mobile -->
+                    <a ng-show="isMobile" href="#" onclick="window.open('http://samplesizeshop.org', '_system', 'location=yes');">
+                        SampleSizeShop.org
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-show="!isMobile" href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
+                               target="_blank">
+                            Tutorials for common designs
+                            </a>
+                            <!-- for mobile -->
+                            <a ng-show="isMobile" href="#"
+                               onclick="window.open('http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/',
+                               '_system', 'location=yes');">
+                                Tutorials for common designs
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-show="!isMobile" href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a>
+                            <!-- for mobile -->
+                            <a ng-show="isMobile" href="#"
+                               onclick="window.open('http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf',
+                               '_system', 'location=yes');">
+                                User Manual
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
+                                About Glimmpse
+                            </a>
+                            <!-- for mobile -->
+                            <a ng-show="isMobile" href="#"
+                               onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/about/',
+                               '_system', 'location=yes');">
+                                About Glimmpse
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
+                                Documentation
+                            </a>
+                            <!-- for mobile -->
+                            <a ng-show="isMobile" href="#"
+                               onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/',
+                               '_system', 'location=yes');">
+                                Documentation
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-show="!isMobile" href="http://samplesizeshop.org/software-downloads/glimmpse/" target="_blank">
+                                Downloads
+                            </a>
+                            <!-- for mobile -->
+                            <a ng-show="isMobile" href="#"
+                               onclick="window.open('http://samplesizeshop.org/software-downloads/glimmpse/',
+                               '_system', 'location=yes');">
+                                Downloads
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a ng-show="!isMobile" href="feedback.html" target="_blank">Feedback</a>
+                    <a ng-show="isMobile" href="#"
+                       onclick="window.open('feedback.html',
+                               '_blank', 'location=yes');">
+                        Feedback
+
                     </a>
                 </li>
             </ul>
