@@ -1,0 +1,1946 @@
+%% LyX 2.0.7 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass{glimmpse-manual}
+\usepackage[latin9]{inputenc}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{color}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[authoryear]{natbib}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+%% A simple dot to overcome graphicx limitations
+\newcommand{\lyxdot}{.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+ \GLIMMPSEVersion{<enter-GLIMMPSEVersion-in-preamble>}
+ \doctitle{<enter-doctitle-in-preamble>}
+ \docdate{<enter-docdate-in-preamble>}
+ \docauthor{<enter-docauthor-in-preamble>}
+ \setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
+ \setlength{\parindent}{0em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+
+\GLIMMPSEVersion{2.1.0}
+\doctitle{GLIMMPSE User Manual}
+\docdate{March 2014}
+\docauthor{Zacc Coker-Dukowitz, Brandy Ringham, and Sarah Kreidler}
+
+\makeatother
+
+\begin{document}
+
+\section{Introduction}
+
+
+\subsection{Version Information and Licensing}
+
+This manual describes version 2.1.0 of the GLIMMPSE software. The
+manual applies to all 2.1.x versions of GLIMMPSE (e.g. 2.1.0, 2.1.1,
+2.1.2, etc.).
+
+GLIMMPSE is released under the \href{http://www.gnu.org/licenses/gpl-2.0.html}{GNU Public License version 2.0}.
+
+The GLIMMPSE program is free software. Users can redistribute it and/or
+modify it under the terms of the GNU General Public License as published
+by the Free Software Foundation, using either version 2 of the License,
+or any later version. This program is distributed in the hope that
+it will be useful, but WITHOUT ANY WARRANTY\textemdash{}without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. See the GNU General Public License for more details. 
+
+You should have received a copy of the GNU General Public License
+along with this program. If you have not received a copy of the GNU
+General Public License and would like one, please write to the Free
+Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+MA 02110-1301, USA.
+
+
+\subsection{Welcome to GLIMMPSE 2.1.0}
+
+GLIMMPSE 2.1.0 is an open-source online tool for calculating power
+and sample size. GLIMMPSE has been designed so that researchers and
+scientists with a varying levels of statistical training can have
+access to reliable power and sample size calculations. For optimum
+usability, GLIMMPSE provides two different modes. In \textit{Guided
+Mode} users receive step-by-step guided instructions for entering
+data in order to obtain power and sample size outputs. In \textit{Matrix
+Mode} users receive less guidance, and are assumed to possess in-depth
+statistical training.
+
+GLIMMPSE can compute power or sample size for univariate and multivariate
+linear models with Gaussian errors \citet{muller_linear_2006}. GLIMMPSE
+supports two main types of study design models: designs with only
+fixed predictors, and designs with fixed predictors and a single Gaussian
+covariate. The values of a fixed predictor are set as part of the
+study design, and are known without appreciable error. In contrast,
+Gaussian covariates are not observed until data is collected. Common
+designs with only fixed predictors include t-tests, analysis of variance
+(ANOVA), and multivariate analysis of variance (MANOVA). Common designs
+that control for a covariate include analysis of covariance (ANCOVA)
+and multivariate analysis of covariance (MANCOVA).
+
+Details about power calculations for the general linear multivariate
+model with Gaussian data and fixed predictors can be found in \citep{muller_practical_1984},
+\citep{muller_approximate_1989}, \citep{muller_power_1992}, \citep{muller_statistical_2007},
+\citep{muller_linear_2006}, and \citep{muller_statistical_2007}.
+Details for fixed predictors with a single Gaussian covariate can
+be found in \citep{glueck_adjusting_2003}.
+
+GLIMMPSE utilizes a Java web services architecture \citep{mcgovern_java_2003},
+designed to facilitate future support of additional statistical models.
+The tool is hosted at \href{http://glimmpse.samplesizeshop.org}.
+
+
+\subsection{Why GLIMMPSE?}
+
+Other programs, such as POWERLIB, NQuery, and Pass, also calculate
+power and sample size. So why use GLIMMPSE?
+
+GLIMMPSE has several advantages over these other programs, because
+GLIMMPSE: 
+\begin{enumerate}
+\item \textbf{Is free}. GLIMMPSE provides free online power and sample size
+computing. 
+\item \textbf{Is user friendly}. In both \textit{Guided Mode} and \textit{Matrix
+Mode} GLIMMPSE provides a step-by-step interface to assist researchers
+in producing accurate power and sample size calculations. 
+\item Calculates power and sample size for any univariate or multivariate
+test for the general linear multivariate model, assuming fixed predictors. 
+\item Produces confidence intervals on power estimates for designs with
+fixed predictors. 
+\item Produces power and sample size calculations for designs with a single
+Gaussian covariate. 
+\item Supports designs with unequal group sizes, and complicated covariance
+structures. 
+\item Creates basic power curves. 
+\end{enumerate}
+
+\section{Using GLIMMPSE}
+
+
+\subsection{When to Use GLIMMPSE}
+
+GLIMMPSE is a tool researchers and scientists can use to calculate
+reliable values for power and sample size. GLIMMPSE calculates power
+or sample size for designs with normally distributed outcomes, and
+for a variety of multilevel and longitudinal studies. GLIMMPSE can
+calculate power and sample size for common statistical tests and models
+including:
+\begin{itemize}
+\item One sample t-test 
+\item Paired t-test 
+\item Two sample t-test 
+\item Analysis of variance (ANOVA) 
+\item Analysis of covariance (ANCOVA) 
+\item Repeated measures analysis of variance 
+\item Multivariate analysis of variance (MANOVA) 
+\item Multivariate analysis of covariance (MANCOVA) 
+\end{itemize}
+
+\subsection{How to Use GLIMMPSE}
+
+
+\subsubsection{Initiating the GLIMMPSE Wizard}
+
+GLIMMPSE can be accessed with a standard web browser at \href{http://glimmpse.samplesizeshop.org/}.
+The GLIMMPSE start screen is shown in Figure \ref{fig:glimmpseModeSelect}.
+GLIMMPSE has been tested in Internet Explorer 8 \citep{microsoft_internet_2010},
+Mozilla Firefox 13.0.1 \citep{mozilla_firefox_2011}, Google Chrome
+23.0.1271.95 \citep{google_chrome_2011} and Safari 5.0.3 \citep{apple_safari_2010}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=6in]{Figures/modeSelect} 
+\par\end{centering}
+
+\caption{GLIMMPSE Start Screen}
+
+
+\label{fig:glimmpseModeSelect} 
+\end{figure}
+
+
+
+\subsubsection{Choosing Between Guided Mode and Matrix Mode}
+
+The GLIMMPSE start screen presents three options: \textit{Guided Mode},
+\textit{Matrix Mode}, and \textit{Upload a Study Design}.
+
+In \emph{Guided Mode} users receive step-by-step guided instructions
+when entering inputs for power or sample size calculations. To choose
+Guided Mode, click the Guided Study Design box.
+
+In \emph{Matrix Mode} users receive less guidance, and are assumed
+to possess in-depth statistical training. \emph{Matrix Mode} allows
+direct input of all matrices required for a power or sample size calculation.
+To choose Matrix Mode, click the Matrix Study Design box.
+
+If the user has a study design saved from a previous GLIMMPSE session,
+the user may upload it by clicking the \emph{Upload a Study Design}
+box. GLIMMPSE will open the saved study design and allow the user
+to continue the power or sample size analysis.
+
+
+\subsection{Basic Navigation for GLIMMPSE in Both \textit{Guided Mode} and \textit{Matrix
+Mode}}
+
+Once a mode of entry has been chosen, the steps required for GLIMMPSE
+to calculate power are listed as tabs on the left side of the \textit{Introduction}
+screen. A white background indicates a tab as active, and a blue background
+designates a tab as inactive. Blue text designates a page within a
+tab as active, and gray designates a page as inactive. Only one page
+within one tab can be active at a time.
+
+On the upper right of any screen in GLIMMPSE is a menu of options
+enabling users to save their study design by clicking \includegraphics[height=11pt]{Figures/SaveButton},
+consult the help library by clicking \includegraphics[height=11pt]{Figures/HelpButton},
+or cancel without saving and return to the \textit{Start Your Study
+Design} screen by clicking \includegraphics[height=11pt]{Figures/ClearButton}.
+
+Each section is broken into one or more sub-sections with the title
+in bold at the top of the page. Each screen contains instructions
+and/or areas for user inputs. Users navigate by clicking on the section
+titles and sub-sections in the left navigation panel.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=6in]{Figures/MainWizard} 
+\par\end{centering}
+
+\caption{Example Start Screen}
+
+
+\label{fig:mainWizard} 
+\end{figure}
+
+
+Following the \textit{Introduction} screen (Figure \ref{fig:mainWizard}),
+GLIMMPSE will prompt the user to enter the details for the power or
+sample size calculation. The user may enter the details in any order.
+However, some screens cannot be accessed unless the user has completed
+information from previous screens. For example, if the user has not
+entered information in the \textit{Response Variables} tab, then the
+user will not be able to enter information in the \textit{Hypothesis}
+tab. If a tab is inaccessible due to missing information in an earlier
+screen, it will be indicated by a grey circle with a slash through
+it \includegraphics{Figures/GreyCircle}:
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[height=3in]{Figures/LeftNavNotAllowed} 
+\par\end{centering}
+
+\caption{More information is required to access the \textit{Hypothesis} screen.}
+
+
+\label{fig:leftNavNotAllowed} 
+\end{figure}
+
+
+Notice that in Figure \ref{fig:mainWizard} above there are pencil
+icons beside the \emph{Desired Power} screen in the active \textit{Start
+}tab. The pencil icons indicate screens which require additional information.
+Once the user have entered the required information, the pencil will
+turn into a green check mark, as shown in Figure \ref{fig:leftNavComplete}.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[height=3in]{Figures/leftNavComplete} 
+\par\end{centering}
+
+\caption{Indication that the \textit{Solving for} screen is complete.}
+
+
+\label{fig:leftNavComplete} 
+\end{figure}
+
+
+Some screens are optional, and will already have a check mark beside
+them.
+
+
+\subsubsection{Typing Into a Text Box}
+
+Several screens in GLIMMPSE will ask you to specify information by
+typing into a text box. To input information in a text box, click
+in the text box and type the requested information. To complete the
+entry you may press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on your keyboard. 
+
+To delete entries in a list associated with the text box, click \includegraphics[height=11pt]{Figures/DeleteButton}
+to delete the entry.
+
+Figure \ref{fig:textBoxes} shows three examples of text box entries
+with the text boxes highlighted in blue.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=4in]{Figures/TextBoxes}
+\par\end{centering}
+
+\caption{Examples of text boxes that are used to A) list the desired power
+values; B) enter response variables name; and C) specify scale factors
+for means.}
+
+
+\label{fig:textBoxes}
+\end{figure}
+
+
+
+\subsubsection{Using Drop Down Lists}
+
+When GLIMMPSE requires you to choose from a defined list of options,
+these options will be presented in a drop down list. Figure \ref{fig:dropdownLists}
+shows an example of a drop down list. To choose an option from a drop
+down list, click on the down arrow (see $\left[1\right]$), then select
+your choice from the list of options (see $\left[2\right]$).
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[height=2in]{Figures/dropdownLists} 
+\par\end{centering}
+
+\caption{Example of a drop down menu.}
+
+
+\label{fig:dropdownLists} 
+\end{figure}
+
+
+
+\subsubsection{Radio Buttons and Check Boxes}
+
+In some cases, you must choose from a list of options by selecting
+a radio button or checking a box. The radio buttons allow you to select
+only one option. The check boxes allow you to select more than one
+option. To select an option, click on the radio button or check the
+box next to that option. Figure \ref{fig:radioButtonsAndCheckBoxes}
+shows an example of a radio button (see A), and a check box (see B).
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=6in]{Figures/RadioButtonsAndCheckBoxes} 
+\par\end{centering}
+
+\caption{Example of radio buttons and check boxes.}
+
+
+\label{fig:radioButtonsAndCheckBoxes} 
+\end{figure}
+
+
+
+\subsubsection{Results Report}
+
+Power results are displayed in a table with each row representing
+an individual power calculation. If multiple factors have been specified
+in the study design (for example, multiple Type I error rates, variability
+scale factors, etc.) then the results table will have multiple rows.
+See Table \ref{table:info} below for an example of the information
+displayed for a given results report.
+
+Every results report for power contains both calculated and desired
+power values. When solving for power, these two values are the same.
+When solving for sample size, it may not be possible to achieve the
+exact power value specified by the user. In this case, \textit{Target
+Power} is the default power value (the power value specified by the
+user), and \textit{Power} is the calculated power for the sample size
+that best matches the desired power.
+
+A power curve may also be requested, with power on the vertical, or
+\emph{Y}, axis and either the regression coefficient scale factor,
+covariance scale factor, or total sample size on the horizontal, or
+\emph{X}, axis.
+
+Power results can be saved to a comma delimited file so that users
+can import the data into other statistical packages. To save the power
+results, click \includegraphics[height=25pt]{Figures/SaveResultsButton}
+from the \includegraphics[height=11pt]{Figures/SaveButton} menu on
+the upper right corner of the screen. For transparency, the matrices
+used in the calculations are accessible on the results screen. This
+is most useful in \textit{Guided Mode}, where matrix information is
+largely hidden from the user. To view the exact matrices used in the
+calculations, click \includegraphics[height=35pt]{Figures/ViewMatricesButton}. 
+
+\begin{table}[H]
+\begin{centering}
+\begin{tabular}[t]{ll}
+\hline 
+Column Name  & Description\tabularnewline
+\hline 
+Power  & Calculated power\tabularnewline
+Confidence Limits & \textcolor{black}{Lower and Upper limits of the 95\% confidence interval}\tabularnewline
+Total Sample Size  & Total number of research participants required to achieve the actual
+power\tabularnewline
+Target Power & The desired power\tabularnewline
+Type I Error Rate & The Type I error value\tabularnewline
+Test  & Name of the statistical test\tabularnewline
+Means Scale Factor  & Scale factor applied to the $\mathbf{B}$ or $\mathbf{B}_{F}$ matrix\tabularnewline
+Variability Scale Factor  & Scale factor applied to the $\mathbf{\Sigma}_{E}$ matrix\tabularnewline
+Power Method  & Indicates whether conditional, unconditional, or quantile power was
+used\tabularnewline
+Quantile  & If the current power method is quantile power, this indicates the
+quantile\tabularnewline
+ & of the distribution of possible powers. Otherwise, this field is empty.\tabularnewline
+\hline 
+\end{tabular}
+\par\end{centering}
+
+\caption{Information displayed for each power result.}
+
+
+\label{table:info} 
+\end{table}
+
+
+
+\subsection{Basic Navigation for \textit{Guided Mode}}
+
+
+\subsubsection{Entering Predictor Variables\label{sec:Entering-Predictor-Variables}}
+
+In Guided Mode, GLIMMPSE requires the user to enter labels for predictor
+variable(s) (also called independent variables) and outcome variable(s)
+(also called dependent variables). Figure \ref{fig:enteringPredictors}
+shows an example of entering variable labels. To enter a variable
+label, type the label into the text box provided (see {[}1{]} in Figure
+8). After each entry, press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on the keyboard.
+
+For the predictor variables, GLIMMPSE also asks the user to specify
+the categories for each variable. For example, the predictor variable
+``gender'' has two categories, ``male'' and ``female.'' To specify
+categories associated with a given predictor, select a predictor in
+the text box on the left (see {[}2{]}), then enter the category labels
+into the text box on the right (see {[}3{]} in Figure 8). After each
+entry, press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on the keyboard.
+
+Only category labels associated with the highlighted predictor label
+are shown. To delete predictors or category labels, select the unwanted
+label and click \includegraphics[height=11pt]{Figures/DeleteButton}.
+This removes the label from the list. If the user removes a predictor,
+the associated categories are automatically deleted.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.85]{Figures/Capture}
+\par\end{centering}
+
+\caption{Example of entering labels\label{fig:enteringPredictors}}
+\end{figure}
+
+
+
+\subsection{Basic Navigation for \textit{Matrix Mode}}
+
+
+\subsubsection{Resizing and Entering Values Into a Matrix}
+
+In Matrix Mode, GLIMMPSE requires the user to define the matrices
+for the power calculation. Figure \ref{fig:matrixInput} shows an
+example of a matrix template in \textit{Matrix Mode}. Sometimes the
+matrix dimensions are pre-determined. If not, the user can set the
+matrix dimensions by typing the number of rows into the row text box
+(see {[}1{]} in Figure \ref{fig:matrixInput}) and the number of columns
+into the column text box (see {[}2{]} in Figure \ref{fig:matrixInput}).
+Fill in the elements of the matrix by entering values into the text
+boxes within the matrix template (see {[}3{]} in Figure \ref{fig:matrixInput}).
+
+\begin{figure}[H]
+\noindent \centering{}\includegraphics{Figures/Capture1} \caption{Example of entering values into a matrix\label{fig:matrixInput}}
+\end{figure}
+
+
+
+\section{Using \textit{Guided Mode: A Screen-by-Screen Tour}}
+
+In \textit{Guided Mode} users receive step-by-step guided instructions
+when entering inputs for calculating power and sample size for use
+in study design.
+
+
+\subsection{Start}
+
+
+\subsubsection{Introduction}
+
+The \emph{Introduction} screen contains a summary of the steps involved
+in the power or sample size analysis.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/IntroScreen}
+\par\end{centering}
+
+\caption{Introduction Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Solving For?}
+
+The \emph{Solving For?} screen allows the user to select either a
+power or sample size calculation.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SolvingForScreen}
+\par\end{centering}
+
+\caption{Solving For? Screen}
+
+
+\end{figure}
+
+
+When \emph{power} is selected, the inputs will be used for a power
+analysis. The power analysis will produce a value(s) between 0 and
+1, representing the probability the study will provide an answer to
+the question of interest. When \emph{sample size} is selected, the
+inputs will be used to calculate the number of individual sampling
+units (also called participants, if referring specifically to people)
+needed for the study to achieve the desired power.
+
+If the number of participants is not set, we recommend solving for
+sample size in order to obtain the appropriate sample size for achieving
+the goals of your study. However, if the sample size is set due to
+budgetary or other restrictions, a power calculation will indicate
+the probability that your study will provide a definitive answer to
+the question of interest. 
+
+On the screen, select \emph{Power} or \emph{Total Sample Size} by
+selecting the appropriate radio button.
+
+
+\subsubsection{Desired Power (if solving for Total Sample Size)}
+
+When solving for sample size, the user must enter the desired power
+for the study. Enter the target values as decimals, i.e. 0.95, in
+the Power Values box and press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on the keyboard to add the value to the list.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/DesiredPowerScreen}
+\par\end{centering}
+
+\caption{Desired Power Screen}
+
+
+\end{figure}
+
+
+
+\subsection{Model}
+
+
+\subsubsection{Introduction}
+
+This screen provides an introduction to the \textit{Model} section
+and defines the concept of an independent sampling unit. The sampling
+unit is typically the study participant. For multilevel designs and
+cluster randomized trials, the sampling unit may be a group of participants,
+such as schools or neighborhoods.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MeansIntroScreen}
+\par\end{centering}
+
+\caption{Sampling Units: Introduction Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Clustering}
+
+Clustering is present when research participants are organized into
+groups. Often, randomization in a study occurs at the group level
+rather than by individual research participants. The \emph{Clustering}
+screen allows the user to enter up to three levels of clustering.
+
+An example of clustering would be a study design in which the participants
+are students randomly selected from different schools in an area.
+In this case, each school would represent a cluster. An example of
+subgroups within a cluster would be each classroom within a given
+school. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ClusteringScreen}
+\par\end{centering}
+
+\caption{Clustering Screen}
+\end{figure}
+
+
+\textcolor{black}{If the study design does not include clustering,
+simply click on other sub-sections to proceed. }
+
+To add clustering, click the \textit{Add clustering} button. Three
+text boxes will appear at the bottom of the screen:
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ClusteringOptions}
+\par\end{centering}
+
+\caption{Clustering Options}
+\end{figure}
+
+
+Enter the \textit{Cluster name}, specify the \textit{Number of observations
+or sub-clusters within each cluster of this type}, and specify the
+\textit{Intra-cluster correlation}. The Intra-cluster correlation
+is the expected correlation between pairs of observations within the
+cluster.
+
+To add a subgroup to the cluster, click \textit{Add subgroup} and
+fill in the information for that subgroup. GLIMMPSE allows one primary
+cluster and two subgroups.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ClusterSubGroupScreen}
+\par\end{centering}
+
+\caption{Clustering Sub-Groups}
+\end{figure}
+
+
+Continuing with the above example, the subgroup \textit{Cluster name}
+would be ``classroom,'' the \textit{Number of observations} would
+be the number of students within each classroom, and the \textit{Intra-cluster
+correlation} would be the expected agreement between students within
+each classroom.
+
+To remove a subgroup or remove clustering, simply click \textit{Remove
+subgroup} or \textit{Clear All}.
+
+
+\subsubsection{Predictors\label{sec:Predictors}}
+
+Independent sampling units may be randomized to different treatments,
+or be classified by characteristics such as gender. The characteristics
+divide the sampling units into study groups. The \emph{Predictors}
+screen allows the user to define the study groups by specifying \textit{fixed
+predictors}. Enter the fixed predictors as described in Section \ref{sec:Entering-Predictor-Variables}.
+For one-sample designs with no fixed predictors, leave the table blank.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/PredictorsScreen}
+\par\end{centering}
+
+\caption{Predictors Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Covariate}
+
+The \emph{Covariate} screen allows the user to control for a single,
+normally distributed predictor (also known as a normally distributed
+covariate). For example, a scientist may wish to examine the effect
+of a drug when controlling for age. In this case, age would be the
+covariate. If the study design does not include a normally distributed
+predictor, leave the checkbox blank. If the study design does include
+a covariate, check the checkbox.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/GaussianPredictorScreen}
+\par\end{centering}
+
+\caption{Gaussian Predictor Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Response Variables}
+
+The \textit{Response Variables }screen allows the user to specify
+the response or dependent variables for the study. For example, if
+``expected pain'' is the desired outcome, enter ``expected pain''
+in the text box.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ResponseVariablesScreen}
+\par\end{centering}
+
+\caption{Response Variables}
+\end{figure}
+
+
+
+\subsubsection{Repeated Measures}
+
+The \emph{Repeated Measures} screen allows the user to describe repeated
+measures. Repeated measures are present in a study when multiple measurements
+are taken on each research participant. An example of repeated measures
+would be researchers taking a participant's blood pressure once a
+month for six months.
+
+\textcolor{black}{If the design does not have repeated measures, simply
+click on other sub-sections to proceed}\textcolor{red}{. }If the design
+includes repeated measures, click \textit{Add repeated measures}\textit{\emph{
+and fill in the requested information.}}
+
+\textit{Units} is a user-specified description of the repeated measure.
+For example, if the repeated measures are taken once every month,
+the unit could be ``month.'' Enter a label for the units of the
+repeated measure.
+
+Enter the \textit{Type} of unit. For \textit{Numeric} repeated measures,
+both the distance and ordering between measurements is meaningful.
+Measuring blood pressure every month for 6 months is a numeric repeated
+measure. GLIMMPSE will auto-populate an equal distance between repeated
+numeric measures. You can change the distance between the measures
+by typing into the text boxes. For \textit{Ordinal} repeated measures,
+the ordering of the measurements is meaningful, but the distance between
+measurements is assumed to be equal. For example, repeated measures
+of the participant's heart rate taken in the morning, afternoon, and
+evening. For \textit{Categorical} repeated measures, neither the ordering
+nor the distance between the measures is meaningful. For example,
+repeated measures of breast density using three different instruments,
+Device A, B, and C.
+
+\textit{Number of Measurements} allows you to specify the number of
+times the repeated measure will be taken. For the blood pressure example,
+the \textit{Number of Measurements} would be 6 because blood pressure
+was measured every 6 months. For numeric repeated measures, GLIMMPSE
+2.0 auto-populates equidistant measurements. To change the distance
+between measures, type into the text boxes. For example, if blood
+pressure was measured every month for the first three months, then
+every other month for the next six months, the user would type 1,
+2, 3, 5, 7, 9 into the text boxes.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/RepeatedMeasuresScreen}
+\par\end{centering}
+
+\caption{Repeated Measures}
+\end{figure}
+
+
+Nested repeated measures are added via the \emph{Add Level} button.
+For example, consider a design in which a participant's blood pressure
+is measured every month for six months, and at each visit in three
+different positions (for example, standing, sitting, and supine).
+The design would include doubly repeated measures with one level for
+``month'' and a second nested level for ``position.'' The user
+may add up to three levels of repeated measures.
+
+To add a sub-level, click the \textit{Add level}\textit{\emph{ button.
+T}}hree more text boxes will appear:
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/RepeatedMeasuresSub-Dimensions}
+\par\end{centering}
+
+\caption{Repeated Measures: Add Level}
+\end{figure}
+
+
+
+\subsubsection{Relative Group Sizes (if solving for Power)}
+
+For designs with multiple study groups (see Section \ref{sec:Predictors}),
+the user may specify equal or unequal group sizes. On the Relative
+Group Sizes screen, the user can select the relative sizes of each
+group by selecting a value from the drop down list.
+
+For example, consider a design with males and females, randomized
+to receive either an active drug or a placebo. For equal group sizes,
+a ``1'' should be selected for each drop down list as shown in Figure
+\ref{fig:Relative-Group-Sizes}. However, if there were twice as many
+males receiving the drug compared to females receiving the drug, the
+user would select a ``2'' for the male + drug group, and ``1''
+for the remaining groups. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/RelativeGroupSizesScreen}
+\par\end{centering}
+
+\caption{Relative Group Sizes Screen\label{fig:Relative-Group-Sizes}}
+\end{figure}
+
+
+
+\subsubsection{Smallest Group Size}
+
+When solving for power, the user specifies the total sample size for
+the design by the relative group sizes and the smallest group size.
+On the \emph{Smallest Group Size} screen, the user may enter one or
+more values describing the number of participants in the smallest
+group.
+
+For example, consider a design with a treatment and a placebo group,
+in which three times as many participants receive the treatment compared
+to the placebo. With a smallest group size of 20, 30, or 40, the total
+sample size for the design would be 80 (i.e. 60 treated participants,
+20 with placebo), 120, and 160 participants respectively.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SmallestGroupSize}
+\par\end{centering}
+
+\caption{Smallest Group Size Screen}
+\end{figure}
+
+
+
+\subsection{Hypothesis}
+
+
+\subsubsection{Introduction}
+
+This screen provides an introduction to the \textit{Hypothesis} section. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/HypothesisIntro}
+\par\end{centering}
+
+\caption{Hypothesis Introduction Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Hypothesis}
+
+The \textit{Hypothesis} screen allows the user to select the primary
+hypothesis of interest. The user first selects the type of hypothesis
+by clicking the drop down list. Additional information will be requested
+depending on the type of hypothesis.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/Hypothesis}
+\par\end{centering}
+
+\caption{Hypothesis Screen}
+
+
+\end{figure}
+
+
+A \textit{Grand Mean} hypothesis compares the overall mean response
+in a sample of participants against a known value. For example, an
+investigator may wish to determine if body mass index values for participants
+in a particular state differs from the United States national average.
+After selecting the \emph{Grand mean} radio button, the user will
+be prompted to enter the known mean value for each response variable. 
+
+A \emph{Main effect} hypothesis tests for the effect of a single predictor
+variable averaged across all other factors. For example, testing whether
+responses of participants in the treatment group differ on average
+from participant responses in a placebo group is a common main effect
+hypothesis. After selecting the \emph{Main effect} radio button, the
+user will be prompted to select one predictor of interest by selecting
+the appropriate radio button. 
+
+A \emph{Trend} hypothesis tests whether the effect of a single predictor
+follows a particular polynomial pattern, such as a linear or quadratic
+trend, across different levels of the predictor. After selecting the
+\emph{Trend} radio button, the user will be prompted to select one
+predictor of interest. In addition, the user may select from six possible
+trends: no trend, change from baseline, linear trend, quadratic trend,
+cubic trend, or all polynomial trends.
+
+An \emph{Interaction} hypothesis tests whether the effect of one predictor
+changes depending on the value of one or more additional predictors.
+An interaction test also can be interpreted as a test of differences,
+as well as a test of parallel trajectories of response. For example,
+testing whether the effect of a cholesterol lowering medication on
+total serum cholesterol differs depending on the participant's gender
+is an example of an interaction hypothesis. After selecting the \emph{Interaction}
+radio button, the user will be prompted to select one or more factors
+of interest by clicking the appropriate check boxes. In addition,
+the user may specify a trend for given factor by clicking the \emph{Edit
+trend} button. 
+
+
+\subsubsection{Statistical Test}
+
+The \emph{Statistical Test} screen allows the user to select one or
+more statistical tests for the power or sample size calculations.
+A tutorial providing guidelines for selecting a test is available
+from the GLIMMPSE Tutorials page at \url{http://samplesizeshop.org/education/tutorials}.
+Select the statistical test(s) you wish to use by clicking one or
+more check boxes.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/StatisticalTests}
+\par\end{centering}
+
+\caption{Statistical Tests}
+\end{figure}
+
+
+
+\subsubsection{Type I Error}
+
+Enter the target values for Type I Error as decimals (i.e. 0.05) in
+the Type I Error Values box. The user may specify up to five Type
+I Error values.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/TypeIError}
+\par\end{centering}
+
+\caption{Type I Error}
+\end{figure}
+
+
+
+\subsection{Means}
+
+
+\subsubsection{Introduction}
+
+This screen provides an introduction to the \textit{Means} section. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MeansIntro}
+\par\end{centering}
+
+\caption{Means Introduction Screen}
+
+
+\end{figure}
+
+
+
+\subsubsection{Means}
+
+The \emph{Means} screen allows the user to enter the expected mean
+value for the experiment. Expected mean values are typically drawn
+from the literature or from pilot data. Differences between the entered
+means typically represent the smallest clinically relevant difference.
+The table should contain at least one value that is non-zero.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/Means}
+\par\end{centering}
+
+\caption{Means Screen}
+
+
+\end{figure}
+
+
+For designs with repeated measures, the user may enter means at each
+time (place, etc.). 
+
+
+\subsubsection{Scale Factors}
+
+The\textit{ Scale Factors} screen for Means allows the user to compute
+power or sample size for the means as specified. For example, entering
+the scale factors 0.5, 1, and 2 would compute power for the the mean
+values divided by 2, the mean values as specified, and the mean values
+multiplied by 2. Type each value into the text box and press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on your keyboard. To remove an item, click the \includegraphics{Figures/DeleteButton}
+next to the item.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ScaleFactorsForMeans}
+\par\end{centering}
+
+\caption{Scale Factors for Means Screen}
+
+
+\end{figure}
+
+
+
+\subsection{Variability}
+
+
+\subsubsection{Introduction}
+
+This screen provides an introduction to the \textit{Variability} section. 
+
+\noindent \begin{center}
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/VariabilityIntro}
+\par\end{centering}
+
+\caption{Variability Introduction Screen}
+\end{figure}
+
+\par\end{center}
+
+
+\subsubsection{Within Participant Variability}
+
+For a given participant, responses may vary across repeated measurements
+and for different response variables. The amount of variability can
+dramatically impact power and sample size. The \textit{Within Participant
+Variability} screen allows the user to describe the variability he
+or she expects to observe for each within participant factor and response
+variable.
+
+Separate tabs are presented for each ``source'' of correlation in
+the design. The \emph{Responses} tab allows the user to specify the
+standard deviations of the response variables and any correlation
+between them. If repeated measures are present, a single tab will
+be presented for each level of repeated measures. Figure \ref{fig:Within-Participant-Variability}
+shows an example design in which blood pressure is measured once a
+month for six months. GLIMMPSE will automatically combine the sources
+of correlation into a final covariance matrix.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/WithinParticipantVariability}
+\par\end{centering}
+
+\caption{Within Participant Variability\label{fig:Within-Participant-Variability}}
+
+
+\end{figure}
+
+
+
+\subsubsection{Scale Factors}
+
+While GLIMMPSE requests standard deviations, it actually computes
+variances when it conducts the power or sample size calculations.
+There may be considerable uncertainty about what standard deviation
+or variance value to use. To account for this uncertainty, it is common
+to calculate power or sample size using alternative values for variability.
+\textcolor{black}{Scale factors allow you to consider alternative
+values for variability by scaling the calculated covariance matrix.
+For example, entering the scale factors 0.5, 1, and 2 would compute
+power for the covariance matrix divided by 2, the covariance matrix
+as entered, and the covariance matrix multiplied by 2. }Type each
+value into the text box and press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on your keyboard. To remove an item, click the \includegraphics{Figures/DeleteButton}
+next to the item.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ScaleFactorsForVariability}
+\par\end{centering}
+
+\noindent \begin{centering}
+\caption{Scale Factors for Variability Screen}
+
+\par\end{centering}
+
+\end{figure}
+
+
+
+\subsection{Options}
+
+This screen provides an introduction to the Options section.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/Options}
+\par\end{centering}
+
+\caption{Options}
+
+
+\end{figure}
+
+
+
+\subsubsection{Power Calculation Method}
+
+For designs with a baseline covariate, two different methods are available
+to calculate power: quantile and unconditional power. For theoretical
+details, please see \citet{glueck_adjusting_2003}. Select the power
+methods by clicking the check boxes. If quantile power is selected,
+the user must also specify one or more quantile values. For example,
+median power would be obtained by selecting \emph{Quantile} power
+and entering ``0.5'' in the quantile list box. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/PowerMethods}
+\par\end{centering}
+
+\caption{Statistical Tests}
+\end{figure}
+
+
+
+\subsubsection{Confidence Intervals}
+
+Power analysis involves some uncertainty in the choices for means
+and variability. Therefore, the \emph{Confidence Intervals} screen
+allows the user to request confidence intervals on the power results.
+To include confidence intervals, uncheck the checkbox. The information
+on the confidence interval screen describes the data set (or publication)
+from which the choices for means and variances were obtained. For
+example, if a scientist were calculating power based on the means
+and variances obtained from pilot data, the scientist would enter
+information describing the pilot data set. The following information
+is required:
+
+The \emph{Assumptions} section allows the user to indicate if he or
+she is uncertain about the variance, but reasonably certain of the
+mean values, or uncertain of both the means and variance. 
+
+The \emph{Upper and lower tail probabilities} define the width of
+the confidence interval. For example, a centered 95\% confidence interval
+would have both upper and lower tail probabilities of 0.025.
+
+The \emph{Total sample size} value indicates the number of independent
+sampling units in the pilot data set (or publication).
+
+The \emph{Rank of the design matrix} describes a property of the predictor
+matrix used in the pilot data set. Please see \citet{muller_linear_2006}
+for details about matrix rank.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ConfidenceIntervals}
+\par\end{centering}
+
+\caption{Confidence Intervals}
+
+
+\end{figure}
+
+
+
+\subsubsection{Power Curve Options}
+
+The \emph{Power Curve Options} screen allows the user to create a
+power curve. A power curve describes the change in power (Y axis of
+the power curve) relative to the total sample size, regression coefficient
+scale factor, or the variability scale factor (all options for the
+X axis of the power curve).
+
+To create a power curve, the user must 1) uncheck the check box, 2)
+select the value to appear on the horizontal axis, and 3) add one
+or more data series.
+
+Depending on the study design, the user may request a large number
+of power or sample size values in a single request. A data series
+is defined by selecting a subset of the power or sample size values.
+The user creates a data series by selecting values for several study
+design variables and clicking the checkbox. A data series will be
+displayed as a single line on the power curve plot, as shown in Figure
+.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/PowerCurveMatrixMode} 
+\par\end{centering}
+
+\caption{Power Curve}
+\end{figure}
+
+
+Note that the \emph{Power Curve Options} screen is the final screen
+in the GLIMMPSE wizard. \textcolor{black}{If the study design is not
+complete, the Calculate button will be disabled}\textcolor{red}{{} \includegraphics[height=11pt]{Figures/CalculateButtonDisabled}}\textcolor{black}{.
+If you click on the Calculate button while it is disabled, a modal
+will appear on the screen and list the missing inputs, as shown in
+Figure \ref{fig:Incomplete-Study-Design}.}
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/IncompleteStudyDesignPopUp}
+\par\end{centering}
+
+\caption{Incomplete Study Design Modal \label{fig:Incomplete-Study-Design}}
+\end{figure}
+
+
+
+\subsection{Calculate}
+
+When sufficient information for your power or sample size calculation
+has been entered, the \textit{Calculate} button will be highlighted
+green. Click \includegraphics[height=11pt]{Figures/CalculateButtonEnabled}
+to receive the results of your power analysis. Example results are
+shown in Figures \ref{fig:Results-Table} and \ref{fig:Results-Plot}.
+For detailed information regarding the Power Results table, refer
+to Table \ref{table:info}. When calculating sample size for a clustered
+design, Power Results provide total sample size, with a breakdown
+of sample size per unit, as shown in Figure \ref{fig:Total-Sample-Size-ClusteredDesign}. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/Results}
+\par\end{centering}
+
+\caption{Results Table\label{fig:Results-Table}}
+\end{figure}
+
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/SampleSizeClustererdDesign}
+\par\end{centering}
+
+\caption{Total Sample Size for Clustered Design \label{fig:Total-Sample-Size-ClusteredDesign}}
+\end{figure}
+
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/PowerCurvePlot}
+\par\end{centering}
+
+\caption{Results Plot \label{fig:Results-Plot}}
+
+
+\end{figure}
+
+
+
+\section{\textit{Matrix Mode} Screen-by-Screen Tour}
+
+\textit{Matrix Mode} allows direct input of all matrices required
+for a power calculation. In \textit{Matrix Mode} users receive less
+guidance than in \textit{Guided Mode}, and are assumed to possess
+in-depth statistical training. 
+
+
+\subsection{Start}
+
+
+\subsubsection{Introduction}
+
+The \emph{Introduction} screen shown in Figure \ref{fig:Introduction-Screen-for-Matrix-Mode}
+briefly describes the required matrix inputs for the power or sample
+size calculation.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixIntro}
+\par\end{centering}
+
+\caption{Introduction Screen for \emph{Matrix Mode \label{fig:Introduction-Screen-for-Matrix-Mode}}}
+\end{figure}
+
+
+
+\subsubsection{Solving For?}
+
+The \emph{Solving For?} screen shown in Figure \ref{fig:Solving-For?-Screen-MatrixMode}
+allows the user to select either a power or sample size calculation.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixSolvingFor}
+\par\end{centering}
+
+\caption{Solving For? Screen \label{fig:Solving-For?-Screen-MatrixMode}}
+\end{figure}
+
+
+When \emph{Power} is selected, the inputs will be used for a power
+analysis. The power analysis will produce a value(s) between 0 and
+1, representing the probability the study will answer the question
+of interest. When \emph{Total Sample Size} is selected, the inputs
+will be used to calculate the number of individual sampling units
+(also called participants, if referring specifically to people) needed
+for the study to achieve the desired power.
+
+If the number of participants is not set, we recommend solving for
+sample size in order to obtain the appropriate sample size for achieving
+the goals of your study. However, if sample size is set due to budgetary
+or other restrictions, a power calculation will indicate the probability
+that the study will provide a definitive answer to the question of
+interest. 
+
+On the screen, select \emph{Power} or \emph{Total Sample Size} by
+selecting the appropriate radio button.
+
+
+\subsubsection{Desired Power (if solving for Total Sample Size)}
+
+When solving for sample size, the user must enter the desired power
+for the study. Enter the target values as decimals (i.e. 0.95) in
+the Power Values box shown in Figure \ref{fig:Desired-Power-Screen-MatrixMode}
+and press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on your keyboard to add the value to the list.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixDesiredPower}
+\par\end{centering}
+
+\caption{Desired Power Screen \label{fig:Desired-Power-Screen-MatrixMode}}
+\end{figure}
+
+
+
+\subsection{Design}
+
+
+\subsubsection{Design Essence}
+
+In the \textit{Design} section, the user will define the composition
+of the study by specifying the number of groups, how subjects are
+divided into groups, the size of each group, and whether the design
+will include a Gaussian covariate.
+
+\textit{The Design Essence Matrix}
+
+In the general linear multivariate model with fixed predictors, $\boldsymbol{Y}=\boldsymbol{XB}+\boldsymbol{E}$,
+the $\boldsymbol{X}$ matrix represents the study design. The same
+is true for $\boldsymbol{F}$ in the general linear multivariate model
+with fixed predictors and a Gaussian predictor \citep{glueck_adjusting_2003}.
+For simplicity, we will only discuss $\boldsymbol{X}$ (since the
+instructions do not change for $\boldsymbol{F}$). In data analysis,
+the $\boldsymbol{X}$ matrix would contain a single row for each subject.
+Since power analysis does not include actual data, the design ``essence''
+matrix \citep{muller_linear_2006} is a version of the $\boldsymbol{X}$
+matrix that contains a single row for each unique combination of predictors
+in the study design. Note that the essence matrix specifies only the
+fixed, or categorical, predictors in the study design.
+
+For example, consider a 2-factor ANOVA design with 2 levels per factor,
+3 subjects per group, and a cell means coding. In data analysis, the
+design matrix and corresponding essence matrix would be:
+
+\[
+\boldsymbol{X}=\begin{bmatrix}1 & 0 & 1 & 0\\
+1 & 0 & 1 & 0\\
+1 & 0 & 1 & 0\\
+1 & 0 & 0 & 1\\
+1 & 0 & 0 & 1\\
+1 & 0 & 0 & 1\\
+0 & 1 & 1 & 0\\
+0 & 1 & 1 & 0\\
+0 & 1 & 1 & 0\\
+0 & 1 & 0 & 1\\
+0 & 1 & 0 & 1\\
+0 & 1 & 0 & 1
+\end{bmatrix}\implies\text{Es}\left(\boldsymbol{X}\right)=\begin{bmatrix}1 & 0 & 1 & 0\\
+1 & 0 & 0 & 1\\
+0 & 1 & 1 & 0\\
+0 & 1 & 0 & 1
+\end{bmatrix}
+\]
+
+
+GLIMMPSE requires that the design coding is full rank. Unequal group
+sizes may be coded by replicating a row to reflect the relative sizes
+of the groups.
+
+After entering the desired dimensions for the matrix in the row and
+column dimension text boxes, click anywhere on the screen for the
+matrix to be resized. Type in the matrix text boxes shown in Figure
+\ref{fig:Type-I-Error-MatrixMode} to enter the matrix information.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/XEssence}
+\par\end{centering}
+
+\caption{Type I Error \label{fig:Type-I-Error-MatrixMode}}
+\end{figure}
+
+
+
+\subsubsection{Covariate}
+
+Currently, GLIMMPSE only performs power calculations for hypotheses
+about fixed predictor variables. However, a single, continuous, normally
+distributed predictor variable may be included in the analysis.
+
+To include such a predictor, click the checkbox next to \textit{Control
+for a single, normally distributed Gaussian predictor} at the bottom
+of the screen, shown in Figure \ref{fig:Gaussian-Predictor-Screen}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixCovariate}
+\par\end{centering}
+
+\caption{Gaussian Predictor Screen \label{fig:Gaussian-Predictor-Screen}}
+\end{figure}
+
+
+
+\subsubsection{Smallest Group Size}
+
+When solving for power, the user specifies the total sample size for
+the design by the relative number of repeated rows in the design essence
+matrix, and the smallest group size. On the \emph{Smallest Group Size}
+screen, the user may enter one or more values describing the number
+of participants in the smallest group.
+
+To enter one or more per group sample size, type the sample size in
+the\textit{ Per Group Sample Size} box, shown in Figure \ref{fig:Smallest-Group-Size-MatrixMode}.
+After each entry, press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on your keyboard. To delete a value, select the unwanted value and
+click \includegraphics[height=11pt]{Figures/DeleteButton} to remove
+the value from the list.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixSmallestGroupSize}
+\par\end{centering}
+
+\caption{Smallest Group Size Screen \label{fig:Smallest-Group-Size-MatrixMode}}
+\end{figure}
+
+
+
+\subsection{Coefficients}
+
+
+\subsubsection{Beta Coefficients: B Matrix}
+
+This section requires the user to enter choices for values for the
+hypothesis test, $\boldsymbol{\Theta}=\boldsymbol{CBU}$.
+
+In the general linear multivariate model with fixed predictors, $\boldsymbol{Y}=\boldsymbol{XB}+\boldsymbol{E}$,
+the \textbf{$\boldsymbol{B}$} matrix represents the proposed relationship
+between the predictor variables, $\boldsymbol{X}$, and the outcome
+variables, $\boldsymbol{Y}$. The same is true for $\boldsymbol{B}_{F}$
+in the General Linear Multivariate Model with Fixed Predictors and
+a Gaussian Predictor. For simplicity, we will only discuss $\boldsymbol{B}$
+(since the instructions do not change for $\boldsymbol{B}_{F}$).
+To calculate power, enter values for the regression coefficients for
+each unique combination of predictors in the study design. The row
+dimension of $\boldsymbol{B}$ is determined by the number of columns
+in the essence matrix. Change the column dimension of $\boldsymbol{B}$
+to match the intended number of outcomes in the study, or the columns
+of $\boldsymbol{Y}$ in the general linear multivariate model with
+fixed predictors regression equation.
+
+For example, an investigator may want to compare vitamin D and calcium
+levels of children who live in three different regions: urban, suburban,
+and rural. The $\boldsymbol{B}$ matrix would have three pre-specified
+rows, one for each region, and two columns, one for vitamin D and
+one for calcium. To calculate power, the investigator must enter the
+expected mean vitamin D (column 1) and calcium (column 2) levels of
+the children in the rural (row 1), suburban (row 2), and urban (row
+3) regions. The investigator may choose $\boldsymbol{B}=\begin{bmatrix}120 & 4\\
+60 & 8\\
+45 & 10
+\end{bmatrix}$ as shown below:
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/BetaMatrix}
+\par\end{centering}
+
+\caption{Beta Matrix \label{fig:Beta-Matrix-MatrixMode}}
+\end{figure}
+
+
+Enter the number of columns, or the number of outcomes in the study,
+in the column text box (right) in the matrix, as shown in Figure \ref{fig:Beta-Matrix-MatrixMode}.
+Enter proposed values of the $\boldsymbol{B}$ coefficients in their
+corresponding text boxes in the matrix.
+
+
+\subsubsection{Beta Scale Factors}
+
+GLIMMPSE allows users to specify scale factors for the $\boldsymbol{B}$
+matrix in order to generate power or sample size values for different
+coefficient values. Since power is based on proposed regression coefficients,
+it is common to calculate power for the proposed value, as well as
+alternative values such as half and twice the proposed value.
+
+One or more scale factors for the $\boldsymbol{B}$ matrix may be
+specified for inclusion in the power calculation. For example, to
+calculate power for regression coefficients that are half the values
+in your $\boldsymbol{B}$ matrix, enter $0.5$. To use the exact $\boldsymbol{B}$
+matrix specified, enter $1$. To delete a value, select the unwanted
+value and click \includegraphics[height=11pt]{Figures/DeleteButton}
+to remove the value from the list, as shown in Figure \ref{fig:Beta-Scale-Factors-MatrixMode}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/Betascale}
+\par\end{centering}
+
+\caption{Beta Scale Factors \label{fig:Beta-Scale-Factors-MatrixMode} }
+\end{figure}
+
+
+
+\subsection{Hypothesis}
+
+In this section, the user defines the contrast matrices in the study.
+The contrast matrices, $\boldsymbol{C}$ and $\boldsymbol{U}$, consist
+of the hypotheses to be tested. They are used to calculate the expected
+hypothesis matrix, $\boldsymbol{\Theta}=\boldsymbol{CBU}$.
+
+
+\subsubsection{Between-Participant Contrast}
+
+The $\boldsymbol{C}$ matrix consists of the between-participant contrasts.
+The between-participant contrasts test hypotheses between independent
+sampling units. The number of rows in the $\boldsymbol{C}$ matrix
+represent the degrees of freedom for the hypothesis test. For example,
+suppose an investigator wants to compare the average final exam test
+scores of students in class A and class B. The contrast matrix would
+be $\boldsymbol{C}=\begin{bmatrix}1 & -1\end{bmatrix}$. When multiplied
+by $\boldsymbol{B}$, this becomes the difference in the proposed
+average test scores between class A and class B.
+
+Enter the number of rows/number of contrasts in the study, in the
+row text box (left) under $\boldsymbol{C}$ Matrix to resize the blank
+matrix. Fill in the contrasts you wish to test in the matrix, as shown
+in Figure \ref{fig:Between-participant-Contrast-Matrix-MatrixMode}. 
+
+The number of rows in the $\boldsymbol{C}$ matrix cannot exceed the
+number of rows in the essence matrix minus 1. In addition, the $\boldsymbol{C}$
+matrix must conform to the $\boldsymbol{B}$ matrix, so the number
+of columns cannot be adjusted on this screen.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/CMatrix}
+\par\end{centering}
+
+\caption{Between-participant Contrast Matrix \label{fig:Between-participant-Contrast-Matrix-MatrixMode}}
+
+
+\end{figure}
+
+
+
+\subsubsection{Within-Participant Contrast}
+
+The $\boldsymbol{U}$ matrix consists of the within-participants contrasts.
+The within-participants contrasts are the hypotheses that compare
+measurements on the same independent sampling unit.
+
+The $\boldsymbol{U}$ matrix is most useful for multivariate designs
+and repeated measures. For example, suppose an investigator wants
+to examine whether student test scores improve from their midterm
+exams to their final exams. The investigator would have two measurements
+per student, one for the midterm and one for the final. The within-participant
+contrast matrix would be $\boldsymbol{U}=\begin{bmatrix}1 & -1\end{bmatrix}$.
+The matrix contrasts two different test scores, the midterm and the
+final, for the same student. 
+
+Enter the number of columns, or the number of within-subject contrasts,
+in the study, in the column text box (right). Fill in the contrasts
+in the matrix, as shown in Figure \ref{fig:Within-participant-Contrast-Matrix-MatrixMode}.
+
+The $\boldsymbol{U}$ matrix must conform to the $\boldsymbol{B}$
+matrix, so the number of rows cannot be adjusted on this screen.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/UMatrix}
+\par\end{centering}
+
+\caption{Within-participant Contrast Matrix \label{fig:Within-participant-Contrast-Matrix-MatrixMode}}
+
+
+\end{figure}
+
+
+
+\subsubsection{Null Hypothesis}
+
+The null hypothesis matrix, $\boldsymbol{\Theta}_{0}$, represents
+the test values the user expects to observe when the null hypothesis
+is true. When performing a power analysis, the values for the hypothesis
+tests are calculated as $\boldsymbol{\Theta}$ = $\boldsymbol{CBU}$,
+and then compared against $\boldsymbol{\Theta}_{0}$. Commonly, $\boldsymbol{\Theta}_{0}$
+is a matrix of zeroes.
+
+For example, suppose an investigator wants to compare resting metabolic
+rate between subjects with HIV lipoatrophy, subjects with HIV only,
+and healthy controls. The null hypothesis of no difference between
+the three groups is $\boldsymbol{\Theta}_{0}=\begin{bmatrix}0\\
+0
+\end{bmatrix}$, appearing as shown in Figure \ref{fig:Null-Hypothesis-Matrix}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/ThetaMatrix}
+\par\end{centering}
+
+\caption{Null Hypothesis Matrix \label{fig:Null-Hypothesis-Matrix}}
+
+
+\end{figure}
+
+
+Sometimes, however, the null hypothesis is based on previous studies
+or clinical experience. For example, suppose an investigator wants
+to compare foal birth weight between dams who are given feed formula
+A, feed formula B, and standard feed. In order to be cost effective,
+the new feed formulas must improve foal birth weight by more than
+7 kg. The null hypothesis, then is $\boldsymbol{\Theta}_{0}=\begin{bmatrix}7\\
+7
+\end{bmatrix}$, appearing as shown in Figure \ref{fig:Non-zero-Null-Hypothesis}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/Theta2}
+\par\end{centering}
+
+\caption{Non-zero Null Hypothesis Matrix \label{fig:Non-zero-Null-Hypothesis}}
+
+
+\end{figure}
+
+
+$\boldsymbol{\Theta}_{0}$ has the same number of rows as $\boldsymbol{C}$,
+and the same number of columns as $\boldsymbol{U}$. Therefore, its
+size cannot be adjusted on this screen. The user need only enter the
+matrix cell values.
+
+
+\subsubsection{Statistical Tests}
+
+The \emph{Statistical Tests} screen allows the user to select one
+or more statistical tests for the power or sample size calculations.
+A tutorial providing guidelines for selecting a test is available
+from the GLIMMPSE Tutorials page at \url{http://samplesizeshop.org/education/tutorials}.
+Full theoretical details are available in \citet{muller_linear_2006}.
+Select the statistical test(s) by clicking one or more check boxes.
+For designs with a Gaussian covariate, only the Hotelling-Lawley trace
+and the Univariate Approach to Repeated Measures are valid.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixTests}
+\par\end{centering}
+
+\caption{Statistical Tests}
+\end{figure}
+
+
+
+\subsubsection{Type I Error}
+
+Enter the target values for Type I Error as decimals (i.e. 0.05) in
+the Type I Error Values box. The user may specify up to five Type
+I Error values.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixTypeIError}
+\par\end{centering}
+
+\caption{Type I Error}
+\end{figure}
+
+
+
+\subsection{Variability}
+
+Variability describes how much measurements differ from each other.
+In this section, the user defines the covariance of errors and covariance
+related to the Gaussian covariate. 
+
+
+\subsubsection{Error Covariance}
+
+For each independent sampling unit, $\boldsymbol{\Sigma}_{e}$ is
+the covariance of the random errors conditional on the values of the
+fixed predictors. The \emph{Error Covariance} screen allows the user
+to define $\boldsymbol{\Sigma}_{e}$ by directly entering the covariance
+matrix values, as shown in Figure \ref{fig:Error-Covariance}. To
+ensure conformance with the $\boldsymbol{B}$ and $\boldsymbol{U}$
+matrices, the dimensions of the $\boldsymbol{\Sigma}_{e}$ matrix
+cannot be modifed on this screen.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SigmaError}
+\par\end{centering}
+
+\caption{Error Covariance \label{fig:Error-Covariance}}
+\end{figure}
+
+
+
+\subsubsection{Outcomes Covariance}
+
+For designs with a Gaussian covariate, the user must specify the covariance
+of the outcomes, $\boldsymbol{\Sigma}_{Y}$. For each independent
+sampling unit, $\boldsymbol{\Sigma}_{Y}$ is the covariance of the
+outcomes conditional on the fixed predictors. One can think of $\boldsymbol{\Sigma}_{Y}$
+as the error covariance for each independent sampling unit in a model
+containing only the fixed predictors and excluding the Gaussian covariate.
+The \emph{Outcomes Covariance} screen allows the user to define $\boldsymbol{\Sigma}_{Y}$
+by directly entering the covariance matrix values, as shown in Figure
+\ref{fig:Outcomes-Covariance}. To ensure conformance with the $\boldsymbol{B}$
+and $\boldsymbol{U}$ matrices, the dimensions of the $\boldsymbol{\Sigma}_{Y}$
+matrix cannot be modifed on this screen.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SigmaY}
+\par\end{centering}
+
+\caption{Outcomes Covariance \label{fig:Outcomes-Covariance}}
+\end{figure}
+
+
+
+\subsubsection{Variance of Covariate}
+
+For designs with a Gaussian covariate, the covariate is assumed to
+have a Gaussian distribution with mean zero and variance $\sigma_{g}^{2}$.
+The \emph{Variance of Covariate} screen allows the user to enter a
+value for $\sigma_{g}^{2}$, as shown in Figure \ref{fig:Variance-of-Covariate}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SigmaG}
+\par\end{centering}
+
+\caption{Variance of Covariate \label{fig:Variance-of-Covariate}}
+\end{figure}
+
+
+
+\subsubsection{Covariance of Outcomes and Covariate}
+
+When controlling for a Gaussian covariate, power is typically improved
+when the covariate explains some portion of the variance in the outcome.
+The covariance matrix between the outcomes and the Gaussian covariate,
+$\boldsymbol{\Sigma}_{YG}$, describes the association between the
+outcomes and the Gaussian covariate. The \emph{Covariance of Outcomes
+and Covariate} screen allows the user to specify values for $\boldsymbol{\Sigma}_{YG}$,
+as shown in Figure \ref{fig:Covariance-of-Outcomes}. To ensure conformance
+with the $\boldsymbol{\Sigma}_{Y}$ matrix, the dimensions of the
+$\boldsymbol{\Sigma}_{YG}$ matrix cannot be modifed on this screen.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SigmaYG}
+\par\end{centering}
+
+\caption{Covariance of Outcomes and Covariate \label{fig:Covariance-of-Outcomes}}
+\end{figure}
+
+
+
+\subsubsection{Sigma Scale Factors}
+
+GLIMMPSE allows users to specify scale factors for the covariance
+matrices. For the general linear multivariate model with fixed predictors,
+the scale factors are applied to the user-specified $\boldsymbol{\Sigma}_{e}$
+matrix. For the general linear multivariate model with fixed predictors
+and a Gaussian covariate, the scale factors are applied to the $\boldsymbol{\Sigma}_{e}$
+matrix, which is calculated from $\boldsymbol{\Sigma}_{Y}$, $\boldsymbol{\Sigma}_{g}$,
+and $\boldsymbol{\Sigma}_{Yg}$. Since variability can dramatically
+impact power, it is common to calculate power for the proposed value,
+as well as alternative values such as half and twice the proposed
+value.
+
+To specify one or more covariance scale factors, enter the scale factors
+in the $\Sigma_{E}$\textit{ Matrix Scale Factors} box. After each
+entry,press \includegraphics[height=11pt]{\lyxdot \lyxdot /2\lyxdot 0\lyxdot x/Figures/EnterKey}
+on the keyboard. To delete a value, select the unwanted value and
+click \includegraphics[height=11pt]{Figures/DeleteButton} to remove
+the value from the list, as shown in Figure \ref{fig:Covariance-Scale-Factors-MatrixMode}.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/SigmaScale}
+\par\end{centering}
+
+\caption{Covariance Scale Factors \label{fig:Covariance-Scale-Factors-MatrixMode}}
+\end{figure}
+
+
+
+\subsection{Options}
+
+The screen shown in Figure \ref{fig:Options-MatrixMode} provides
+an introduction to the Options section.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixOptions}
+\par\end{centering}
+
+\caption{Options \label{fig:Options-MatrixMode}}
+\end{figure}
+
+
+
+\subsubsection{Power Calculation Method}
+
+For designs with a baseline covariate, two different methods are available
+to calculate power: quantile and unconditional power. For theoretical
+details, please see \citet{glueck_adjusting_2003}. Select the power
+methods by clicking the checkboxes shown in Figure \ref{fig:Power-Method-MatrixMode}.
+If quantile power is selected, the user must also specify one or more
+quantile values. For example, median power would be obtained by selecting
+\emph{Quantile} and entering \textit{0.5} in the \textit{Quantiles}
+list box. 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixPowerMethod}
+\par\end{centering}
+
+\caption{Power Method \label{fig:Power-Method-MatrixMode}}
+\end{figure}
+
+
+
+\subsubsection{Confidence Intervals}
+
+Power analysis involves some uncertainty in the choices for means
+and variability. Therefore, the \emph{Confidence Intervals} screen
+allows the user to request confidence intervals on the power results.
+To include confidence intervals, uncheck the checkbox. The information
+on the confidence interval screen, shown in Figure \ref{fig:Confidence-Intervals-MatrixMode},
+describes the data set (or publication) from which the choices for
+means and variances were obtained. For example, if a scientist was
+calculating power based on the means and variances obtained from pilot
+data, the scientist would enter information describing the pilot data
+set. The following information is required:
+
+The \emph{Assumptions} section allows the user to indicate if he or
+she is uncertain about the variance, but reasonably certain of the
+mean values, or uncertain of both the means and variance. 
+
+The \emph{Upper and lower tail probabilities} define the width of
+the confidence interval. For example, a centered 95\% confidence interval
+would have both upper and lower tail probabilities of 0.025.
+
+The \emph{Total sample size} value indicates the number of independent
+sampling units in the pilot data set (or publication).
+
+The \emph{Rank of the design matrix} describes a property of the predictor
+matrix used in the pilot data set. Please see \citet{muller_linear_2006}
+for details about matrix rank.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/MatrixConfidenceIntervals}
+\par\end{centering}
+
+\caption{Confidence Intervals \label{fig:Confidence-Intervals-MatrixMode}}
+\end{figure}
+
+
+
+\subsubsection{Power Curve Options}
+
+The \emph{Power Curve Options} screen allows the user to create a
+power curve. A power curve describes the change in power (Y axis of
+the power curve) relative to the total sample size, regression coefficient
+scale factor, or the variability scale factor (all options for the
+X axis of the power curve).
+
+To create a power curve, the user must 1) uncheck the check box, 2)
+select the value to appear on the horizontal axis, and 3) add one
+or more data series, as shown in Figure \ref{fig:Power-Curve-MatrixMode}.
+
+Depending on the study design, the user may request a large number
+of power or sample size values in a single request. A data series
+is defined by selecting a subset of the power or sample size values.
+The user creates a data series by selecting values for several study
+design variables and clicking the appropriate checkboxes. A data series
+will be displayed as a single line on the power curve plot.
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[width=6in]{Figures/PowerCurveMatrixMode02}
+\par\end{centering}
+
+\caption{Power Curve \label{fig:Power-Curve-MatrixMode}}
+\end{figure}
+
+
+Note that the \emph{Power Curve Options} screen is the final screen
+in the GLIMMPSE wizard. \textcolor{black}{If the study design is not
+complete, the Calculate button will be disabled \includegraphics[height=11pt]{Figures/CalculateButtonDisabled}.}
+
+
+\subsection{Calculate}
+
+When sufficient information has been entered for your power or sample
+size calculation, the \textit{Calculate} button will be highlighted
+green. Click \includegraphics[height=11pt]{Figures/CalculateButtonEnabled}
+to receive the results of your power analysis. Example results are
+shown in Figure \ref{fig:Results-Table-MatrixMode}. For detailed
+information regarding the Power Results table, refer to Table \ref{table:info}.
+The resulting power curve is shown in Figure 
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/MatrixResults}
+\par\end{centering}
+
+\caption{Results Table\label{fig:Results-Table-MatrixMode}}
+\end{figure}
+
+
+\begin{figure}[H]
+\noindent \begin{centering}
+\includegraphics[scale=0.6]{Figures/PowerCurvePlotMatrixMode}
+\par\end{centering}
+
+\caption{Results Plot \label{fig:Results-Plot-MatrixMode} }
+
+
+\end{figure}
+
+
+
+\section{Additional GLIMMPSE Resources}
+
+Additional resources for GLIMMPSE are available at \url{http://samplesizeshop.org}.
+The Sample Size Shop project is a collaborative effort between the
+University of Florida and the University of Colorado Denver. The goals
+of the project are to develop new statistical methods for calculating
+power and sample size, provide user friendly software to perform the
+power and sample size calculations, and educate researchers regarding
+both the methods and the software. The following online resources
+are available for the GLIMMPSE software.
+\begin{enumerate}
+\item Tutorials demonstrating power and sample size calculations with GLIMMPSE
+for a variety of study designs are available at \url{http://samplesizeshop.org/education/tutorials}
+\item Validation reports showing the accuracy of GLIMMPSE calculations are
+available at \linebreak\url{http://samplesizeshop.org/documentation/glimmpse/glimmpse-validation-results-2/}
+\item Technical documentation for the software is available at \linebreak\url{http://samplesizeshop.org/documentation/glimmpse/}
+\item GLIMMPSE software modules are available for downloaded from \linebreak\url{http://samplesizeshop.org/software-downloads/glimmpse-software-downloads/}
+\end{enumerate}
+\bibliographystyle{\string"C:/Users/munjala/Dropbox/Latex (1)/Local Tex Files/bibtex/bst/jss/jss\string"}
+\addcontentsline{toc}{section}{\refname}\bibliography{GLIMMPSEBibliography}
+
+\end{document}
