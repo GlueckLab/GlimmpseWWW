@@ -152,7 +152,7 @@
         <!-- Parse URL for code and call the relevant controller function -->
         function saveCallback(event) {
 
-            window.alert('inside savecallback');
+            //window.alert('inside savecallback');
             <!-- Parse the URL to obtain Dropbox authentication code -->
             var url = event.url;
             var code = /\?code=(.+)$/.exec(url);
@@ -166,14 +166,13 @@
             }
 
             if (code) {
-                window.alert('found the code');
+                //window.alert('found the code');
                 <!-- Exchange the authorization code for an access token -->
 
                 $.post('https://api.dropbox.com/1/oauth2/token', {
                             code: codeValue,
                             <!-- @Client_Id@ -->
                             <!-- @Client_Secret@ -->
-
                             redirect_uri: 'https://facebook.com',
                             grant_type: 'authorization_code'
                         },  function(data) {
@@ -182,8 +181,8 @@
                 ).done(function(data) {
                             //alert("success for token auth");
                             token = data.access_token;
-                            alert('token:' + token);
-                            window.alert('type of service:' + typeOfService);
+                            //alert('token:' + token);
+                            //window.alert('type of service:' + typeOfService);
                             if (typeOfService == 'saveDesign') {
                                 angular.element($('#fileNameDiv')).scope().saveDropboxDesignFile();
                             }
@@ -191,8 +190,8 @@
                                 angular.element($('#fileNameDiv')).scope().saveDropboxResultsFile();
                             }
                             else if (typeOfService == 'uploadDesign') {
-                                window.alert('type of service:' + typeOfService);
-                                angular.element($('#fileNameDiv')).scope().uploadAccess();
+                                //window.alert('type of service:' + typeOfService);
+                                angular.element($('#fileNameDiv')).scope().uploadFromDropbox();
                             }
 
                 }).fail(function() {
@@ -467,27 +466,28 @@
         </li>
 
         <li ng-show="isMobile">
-
                 <!--
-                <label class="none"> -->
-                <input type="button" id="dropboxUpload" data-toggle="modal" data-target="#selectDropboxFileModal">
+                <label class="none">
+                <input type="button" id="dropboxUpload" data-toggle="modal"
+                       data-target="#selectDropboxFileModal"
+                       data-ng-click="uploadAccess()">
                     <span class="glyphicon glyphicon-open"></span>   Upload From Dropbox
                 </input>
-
+                -->
                 <!-- </label> -->
 
-            <!--
+
             <form id="uploadFromDropboxForm" enctype="multipart/form-data">
                 <label class="none">
                     <span class="glyphicon glyphicon-open"></span> Upload From Dropbox
                     <input id="dropboxUpload" name="file"
                            data-toggle="modal" data-target="#selectDropboxFileModal"
-
+                           data-ng-click="uploadAccess()"
                            style="display:none;" />
                 </label>
 
             </form>
-            -->
+
         </li>
 
         <li>
@@ -1189,13 +1189,20 @@
                             <label>Processing</label>
                         </div>
 
+                        <!--
+                        <div class="alert alert-success" ng-show="!uploadProcessin
+                        && uploadFileAccess && uploadSuccess">
+                            Your study design has been successfully uploaded.
+                        </div>
+                        -->
+
                         <div class="alert alert-danger" ng-show="!uploadProcessing
                          && !uploadAccess && !uploadSuccess">
                             Request to the dropbox server failed. Please try again later.
                         </div>
 
                         <div class="well" id="dropboxFileSelect" ng-show="!uploadProcessing
-                        ">
+                        && uploadFileAccess">
                             <div ng-repeat="file in FilesFromDropbox">
                                 <input type="radio" name="dropboxfile"
                                        ng-model="file.selected"
@@ -1209,14 +1216,23 @@
                 <div class="modal-footer">
                     <button type="submit" id="submitUploadDesignDropbox"
                             data-dismiss="modal"
-                            class="btn btn-primary" aria-hidden="true" ng-disabled="uploadProcessing">
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="uploadProcessing
+                            || (!uploadProcessing && uploadFileAccess && uploadSuccess)">
                         Select File
                     </button>
                     <!-- onclick ="angular.element(this).scope().uploadFileFromDropbox()" -->
                     <button class="btn btn-warning" data-dismiss="modal"
-                            type="submit" id="uploadStudyDesign"
+                            type="submit"
                             ng-click="designNameSuccess = undefined"
+                            ng-show="!uploadProcessing && (!uploadFileAccess || !uploadSuccess)"
                             aria-hidden="true">Cancel</button>
+
+                    <button class="btn btn-warning" data-dismiss="modal"
+                            type="submit"
+                            ng-click="designNameSuccess = undefined"
+                            ng-show="!uploadProcessing && uploadFileAccess && uploadSuccess"
+                            aria-hidden="true">Close</button>
+
 
                 </div>
             </div>

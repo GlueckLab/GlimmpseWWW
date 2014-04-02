@@ -666,11 +666,11 @@ glimmpseApp.controller('stateController',
         // show/hide processing for emailDesign
         $scope.resultsEmailProcessing = false;
 
-        $scope.uploadProcessing = true;
+        $scope.uploadProcessing = false;
 
         $scope.uploadSuccess = false;
 
-        $scope.uploadAccess = false;
+        $scope.uploadFileListAccess = false;
 
         //study design files for dropbox
         $scope.FilesFromDropbox = [];
@@ -1012,7 +1012,7 @@ glimmpseApp.controller('stateController',
                 $scope.resultsFile = null;
 
                 $scope.uploadProcessing = false;
-                $scope.uploadAccess = false;
+                $scope.uploadFileAccess = false;
                 $scope.uploadSuccess = false;
 
             });
@@ -1185,17 +1185,22 @@ glimmpseApp.controller('stateController',
      * Enable processing mode for access to dropbox to upload design file
      */
     $scope.uploadAccess = function() {
+        //window.alert('inside upload access');
         // enable processing
-        $scope.uploadProcessing = true;
-        $scope.FilesFromDropbox = [];
-        window.alert('inside upload access');
-        $scope.typeOfDropboxService = 'uploadDesign';
-        $scope.dropboxToken = $window.token;
-        $scope.uploadFromDropbox();
+        $scope.apply(function() {
+            $scope.uploadProcessing = true;
+            $scope.uploadFileAccess = false;
+            $scope.uploadSuccess = false;
+            $scope.FilesFromDropbox = [];
+            $scope.typeOfDropboxService = 'uploadDesign';
+        });
     };
 
+
+
     $scope.uploadFromDropbox = function()
-        {
+    {
+        $scope.dropboxToken = $window.token;
 
         // contact dropbox service to access the existing glimmpseDesigns folder for .json files.
         $.ajax({
@@ -1213,10 +1218,9 @@ glimmpseApp.controller('stateController',
                 if (response.length === 0) {
                     window.alert('No json files were found in your dropbox.');
                 }
-
                 // update the .json file list retrieved from dropbox glimmpseDesigns folder
                 else {
-                    window.alert('number of files:' + response.length);
+                    //window.alert('number of files:' + response.length);
                     for (var i=0; i < response.length; i++ ) {
                         // Parse filename from path
                         var fileName = /glimmpseDesigns\/(.+)$/.exec(response[i].path);
@@ -1229,7 +1233,7 @@ glimmpseApp.controller('stateController',
                 /* handle the error */
                 $scope.apply(function() {
                     $scope.uploadProcessing = false;
-                    $scope.uploadAccess = false;
+                    $scope.uploadFileAccess = false;
                     $scope.uploadSuccess = false;
                 });
 
@@ -1241,21 +1245,21 @@ glimmpseApp.controller('stateController',
      * Update list of files retrieved from dropbox
      */
     $scope.updateFilesFromDropbox = function(fileListFromDropbox) {
-        window.alert('inside update file list');
+        //window.alert('inside update file list');
         $scope.localFileVariable = [];
-        //var filesFromDropboxList = fileListFromDropbox;
+
         for (var i=0; i < fileListFromDropbox.length; i++) {
             $scope.localFileVariable.push(
                 {label: fileListFromDropbox[i], selected: false}
             );
         }
-        window.alert('file list updated');
+        //window.alert('file list updated');
         /* apply scope to update FilesFromDropbox variable */
         $scope.$apply(function() {
             $scope.FilesFromDropbox = $scope.localFileVariable;
             $scope.uploadProcessing = false;
-            $scope.uploadAccess = true;
-            //$scope.uploadSuccess = true;
+            $scope.uploadFileAccess = true;
+            $scope.uploadSuccess = false;
         });
         return true;
     };
@@ -1281,14 +1285,19 @@ glimmpseApp.controller('stateController',
             url: $scope.dropboxURL,
             dataType: "json"
         }).done(function(response) {
-                window.alert('file accessed');
+                //window.alert('file accessed');
                 $scope.studyDesignFromDropbox =  JSON.stringify(response);
+                $scope.$apply(function() {
+                    $scope.uploadProcessing = false;
+                    $scope.uploadFileAccess = true;
+                    $scope.uploadSuccess = true;
+                });
                 $scope.uploadFileFromDropbox();
         }).fail(function() {
             alert('Request to access the selected file from Dropbox failed.');
             $scope.$apply(function() {
                 $scope.uploadProcessing = false;
-                $scope.uploadAccess = false;
+                $scope.uploadFileAccess = false;
                 $scope.uploadSuccess = false;
             });
         });
@@ -1315,6 +1324,11 @@ glimmpseApp.controller('stateController',
 
             $scope.mode = $scope.studyDesign.viewTypeEnum;
             $scope.view =  $scope.glimmpseConstants.viewTypeStudyDesign;
+            $scope.$apply(function() {
+                $scope.uploadProcessing = false;
+                $scope.uploadFileAccess = true;
+                $scope.uploadSuccess = true;
+            });
             window.alert('Your study design has been successfully uploaded');
         });
 
