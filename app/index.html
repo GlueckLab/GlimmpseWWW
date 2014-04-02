@@ -53,6 +53,10 @@
     <script type="text/javascript"
             src="lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
+
+    <!-- <script type="text/javascript" charset="utf-8" src="phonegap.js"></script> -->
+
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
         imageFont: null,
@@ -68,6 +72,7 @@
     <script src="lib/jquery.form.min.js"></script>
     <script src="lib/highcharts.js"></script>
     <script src="lib/exporting.js"></script>
+
 
     <!-- order matters here, so be careful if you edit -->
     <!-- Angular.js scripts -->
@@ -89,6 +94,7 @@
     <script src="js/services/studyDesignService.js"></script>
     <script src="js/services/studyDesignMetaData.js"></script>
     <script src="js/services/powerService.js"></script>
+    <script src="js/services/dropboxService.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/controllers/controllers.js"></script>
     <!-- endbuild -->
@@ -132,128 +138,131 @@
     <script type="text/javascript">
 
 
-
+        var studyDesignFileName = null;
+        var resultsFileName = null;
         var authWindow = null;
-        var deferred = null;
-        function myCallback(e) {
-            alert('inside callback');
-            var url = e.originalEvent.url;
+        var codeValue = null;
+        var customURL = null;
+        var token = null;
+        var fileNameToRetrieve = null;
+        var fileListFromDropbox = [];
+        var dropboxFileName = null;
+        var typeOfService = 'save';
+
+        <!-- Parse URL for code and call the relevant controller function -->
+        function saveCallback(event) {
+
+            window.alert('inside savecallback');
+            <!-- Parse the URL to obtain Dropbox authentication code -->
+            var url = event.url;
             var code = /\?code=(.+)$/.exec(url);
             var error = /\?error=(.+)$/.exec(url);
 
             if (code || error) {
-                //Always close the browser when match is found
-                alert('math found');
+                <!-- Close the browser when a match is found -->
+                codeValue = code[1];
+                //alert('match found; closing the window');
                 authWindow.close();
             }
 
             if (code) {
-                //Exchange the authorization code for an access token
+                window.alert('found the code');
+                <!-- Exchange the authorization code for an access token -->
+
                 $.post('https://api.dropbox.com/1/oauth2/token', {
-                    code: code[1],
-                    client_id: options.client_id,
-                    client_secret: options.client_secret,
-                    redirect_uri: options.redirect_uri,
-                    grant_type: 'authorization_code'
-                }).done(function(data) {
-                            alert('success');
-                            deferred.resolve(data);
-                        }).fail(function(response) {
-                            alert('fail');
-                            deferred.reject(response.responseJSON);
-                        });
-            } else if (error) {
-                //The user denied access to the app
-                deferred.reject({
-                    error: error[1]
+                            code: codeValue,
+                            <!-- @Client_Id@ -->
+                            <!-- @Client_Secret@ -->
+
+                            redirect_uri: 'https://facebook.com',
+                            grant_type: 'authorization_code'
+                        },  function(data) {
+
+                        }, "json"
+                ).done(function(data) {
+                            //alert("success for token auth");
+                            token = data.access_token;
+                            alert('token:' + token);
+                            window.alert('type of service:' + typeOfService);
+                            if (typeOfService == 'saveDesign') {
+                                angular.element($('#fileNameDiv')).scope().saveDropboxDesignFile();
+                            }
+                            else if (typeOfService == 'saveResults') {
+                                angular.element($('#fileNameDiv')).scope().saveDropboxResultsFile();
+                            }
+                            else if (typeOfService == 'uploadDesign') {
+                                window.alert('type of service:' + typeOfService);
+                                angular.element($('#fileNameDiv')).scope().uploadAccess();
+                            }
+
+                }).fail(function() {
+                    alert("Request to the dropbox server failed. Please try again later");
+                    angular.element($('#fileNameDiv')).scope().failedToGetToken();
                 });
             }
+
         }
-        function getAuthCode()
+
+        $(document).ready(function()
         {
-            alert("Hello World!");
+            <!-- Initiate call to access dropbox to save .json study design -->
 
-            var dropboxapi = {
-                authorize: function(options) {
-                    deferred = $.Deferred();
+            $("#submitSaveDesignDropbox").click(function()
+            {
+                    typeOfService = 'saveDesign';
                     var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
-                        client_id: options.client_id,
-                        //redirect_uri: options.redirect_uri,
-                        response_type: 'code'
-                        //scope: options.scope
-                    });  // end authUrl
+                    <!-- @Client_Id@ -->
+                    //client_id: '20al1r5ssivuiav',
+                    redirect_uri: 'https://facebook.com',
+                    response_type: 'code'
+                    });
+                    authWindow = window.open(authUrl, '_blank', 'location=no');
+                    authWindow.addEventListener('loadstart', saveCallback, false);
+            });
 
-                    //Open the OAuth consent page in the InAppBrowser
-                    authWindow = window.open(authUrl, '_blank', 'location=yes');
+            <!-- Initiate call to access dropbox to save .csv results -->
+            $("#submitSaveResultsDropbox").click(function()
+            {
+                     typeOfService = 'saveResults';
+                     var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
+                     <!-- @Client_Id@ -->
+                     //client_id: '20al1r5ssivuiav',
+                     redirect_uri: 'https://facebook.com',
+                     response_type: 'code'
+                     });
+                     authWindow = window.open(authUrl, '_blank', 'location=no');
+                     authWindow.addEventListener('loadstart', saveCallback, false);
+            });
 
-                    $(authWindow).on('loadstart', function(e) {
-                        alert('inside loadstart');
-                        var url = e.originalEvent.url;
-                        var code = /\?code=(.+)$/.exec(url);
-                        var error = /\?error=(.+)$/.exec(url);
+            $("#dropboxUpload").click(function()
+            {
+                typeOfService = 'uploadDesign';
+                var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
+                    <!-- @Client_Id@ -->
+                    //client_id: '20al1r5ssivuiav',
+                    redirect_uri: 'https://facebook.com',
+                    response_type: 'code'
+                });
+                authWindow = window.open(authUrl, '_blank', 'location=no');
+                authWindow.addEventListener('loadstart', saveCallback, false);
+            });
 
-                        if (code || error) {
-                            //Always close the browser when match is found
-                            alert('closing the window');
-                            authWindow.close();
-                        }
+            $("#indexDropboxUpload").click(function()
+            {
+                typeOfService = 'uploadDesign';
+                var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
+                    <!-- @Client_Id@ -->
+                    //client_id: '20al1r5ssivuiav',
+                    redirect_uri: 'https://facebook.com',
+                    response_type: 'code'
+                });
+                authWindow = window.open(authUrl, '_blank', 'location=no');
+                authWindow.addEventListener('loadstart', saveCallback, false);
+            });
 
-                        if (code) {
-                            alert('got the code');
-                            //Exchange the authorization code for an access token
-                            $.post('https://api.dropbox.com/1/oauth2/token', {
-                                code: code[1],
-                                client_id: options.client_id,
-                                client_secret: options.client_secret,
-                                //redirect_uri: options.redirect_uri,
-                                grant_type: 'authorization_code'
-                            }).done(function(data) {
-                                        alert('success; got token');
-                                        deferred.resolve(data);
-                                    }).fail(function(response) {
-                                        alert('failed to get token');
-                                        deferred.reject(response.responseJSON);
-                                    });
-                        } else if (error) {
-                            //The user denied access to the app
-                            deferred.reject({
-                                error: error[1]
-                            });
-                        }
-                    }); // $(authWindow).on('loadstart', function(e)
+    });  <!-- end document ready -->
 
-                    return deferred.promise();
-                }// end authorize: function(options)
-            };  // end var dropboxapi;
-            alert('right before deviceready');
-
-            function ondeviceready() {
-                alert('inside device ready');
-                var $loginButton = $('#login a');
-                var $loginStatus = $('#login p');
-
-                //$loginButton.on('click', function() {
-                dropboxapi.authorize({
-                    client_id: '20al1r5ssivuiav',
-                    client_secret: '2ohxu1m65crignz'
-                    //redirect_uri: 'http://localhost'
-                    //scope: 'https://www.googleapis.com/auth/analytics.readonly'
-                }).done(function(data) {
-                            alert('success' + 'Access Token: ' + data.access_token);
-                            //$loginStatus.html('Access Token: ' + data.access_token);
-                        }).fail(function(data) {
-                            alert('fail' + data.error);
-                            //$loginStatus.html(data.error);
-                        });
-            }
-            $(document).on('deviceready', ondeviceready());
-            //});
-            //});
-
-        }  // end function getAuthCode();
-        //document.addEventListener('deviceready', onDeviceReady(), true);
     </script>
-
 
 </head>
 
@@ -294,6 +303,7 @@
                     <a ng-show="!isMobile" href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
                        target="_blank">
                         Tutorials for common designs
+
                     </a>
                     <!-- for mobile -->
                     <a ng-show="isMobile" href="#"
@@ -310,86 +320,8 @@
                                '_system', 'location=yes');">
                         User Manual
                     </a>
-                    <!-- for web -->
-                    <a ng-show="!isMobile" href="http://samplesizeshop.org" rel="external" target="_blank">SampleSizeShop.org</a>
-                    <!-- for mobile -->
-                    <a ng-show="isMobile" href="#" onclick="window.open('http://samplesizeshop.org', '_system', 'location=yes');">
-                        SampleSizeShop.org
-                    </a>
                 </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a ng-show="!isMobile" href="http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/"
-                               target="_blank">
-                            Tutorials for common designs
-                            </a>
-                            <!-- for mobile -->
-                            <a ng-show="isMobile" href="#"
-                               onclick="window.open('http://samplesizeshop.org/education/tutorials/tutorials-for-selecting-and-using-various-study-designs/',
-                               '_system', 'location=yes');">
-                                Tutorials for common designs
-                            </a>
-                        </li>
-                        <li>
-                            <a ng-show="!isMobile" href="http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf" target="_blank">User Manual</a>
-                            <!-- for mobile -->
-                            <a ng-show="isMobile" href="#"
-                               onclick="window.open('http://samplesizeshop.org/files/2012/08/GLIMMPSEUserManual_v2.0.0.pdf',
-                               '_system', 'location=yes');">
-                                User Manual
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/about/" target="_blank">
-                                About Glimmpse
-                            </a>
-                            <!-- for mobile -->
-                            <a ng-show="isMobile" href="#"
-                               onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/about/',
-                               '_system', 'location=yes');">
-                                About Glimmpse
-                            </a>
-                        </li>
-                        <li>
-                            <a ng-show="!isMobile" href="http://samplesizeshop.org/documentation/glimmpse/" target="_blank">
-                                Documentation
-                            </a>
-                            <!-- for mobile -->
-                            <a ng-show="isMobile" href="#"
-                               onclick="window.open('http://samplesizeshop.org/documentation/glimmpse/',
-                               '_system', 'location=yes');">
-                                Documentation
-                            </a>
-                        </li>
-                        <li>
-                            <a ng-show="!isMobile" href="http://samplesizeshop.org/software-downloads/glimmpse/" target="_blank">
-                                Downloads
-                            </a>
-                            <!-- for mobile -->
-                            <a ng-show="isMobile" href="#"
-                               onclick="window.open('http://samplesizeshop.org/software-downloads/glimmpse/',
-                               '_system', 'location=yes');">
-                                Downloads
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a ng-show="!isMobile" href="feedback.html" target="_blank">Feedback</a>
-                    <a ng-show="isMobile" href="#"
-                       onclick="window.open('feedback.html',
-                               '_blank', 'location=yes');">
-                        Feedback
 
-                    </a>
-                </li>
             </ul>
         </li>
         <li class="dropdown">
@@ -484,17 +416,16 @@
                         </button>
                     </div>
                 </li>
+
                 <li ng-show="isMobile">
-                    <form name="saveForm" method='post' action="{{uriSave}}" target="_blank">
-                        <div>
-                            <input type="hidden" name="filename" value="study.json"/>
-                            <input type="hidden" name="data" value='{{studyDesignJSON}}' />
-                        </div>
-                        <button type="submit" data-ng-click="updateStudyDesignJSON()">
+                    <div>
+                        <button data-toggle="modal" data-target="#saveStudyDesignModal"
+                                data-ng-click="updateStudyDesignJSON()">
                             Save Design to Dropbox
                         </button>
-                    </form>
+                    </div>
                 </li>
+
                 <li ng-show="isMobile">
                     <div>
                         <button data-toggle="modal" data-target="#emailResultsModal"
@@ -504,21 +435,19 @@
                         </button>
                     </div>
                 </li>
+
                 <li ng-show="isMobile">
-                    <form name="saveResultsToCSVForm" method='post' action="{{uriSave}}" target="_blank">
-                        <div>
-                            <input type="hidden" name="filename" value="results.csv"/>
-                            <input type="hidden" name="data" value='{{resultsCSV}}' />
-                        </div>
-                        <button type="submit" data-ng-click="updateResultsCSV()"
-                                ng-disabled="powerService.cachedResults == undefined">
-                            Save Results to Dropbox
+                    <div>
+                        <button data-toggle="modal" data-target="#saveResultsModal"
+                                data-ng-click="updateResultsCSV()">
+                            Save Results to Dropbox   <!-- ng-disabled="powerService.cachedResults == undefined" -->
                         </button>
-                    </form>
+                    </div>
                 </li>
+
             </ul>
         </li>
-        <li>
+        <li ng-show="!isMobile">
             <form id="navUploadForm" enctype="multipart/form-data"
                   action="{{uriUpload}}">
                 <label class="none">
@@ -536,6 +465,31 @@
 
             </a> -->
         </li>
+
+        <li ng-show="isMobile">
+
+                <!--
+                <label class="none"> -->
+                <input type="button" id="dropboxUpload" data-toggle="modal" data-target="#selectDropboxFileModal">
+                    <span class="glyphicon glyphicon-open"></span>   Upload From Dropbox
+                </input>
+
+                <!-- </label> -->
+
+            <!--
+            <form id="uploadFromDropboxForm" enctype="multipart/form-data">
+                <label class="none">
+                    <span class="glyphicon glyphicon-open"></span> Upload From Dropbox
+                    <input id="dropboxUpload" name="file"
+                           data-toggle="modal" data-target="#selectDropboxFileModal"
+
+                           style="display:none;" />
+                </label>
+
+            </form>
+            -->
+        </li>
+
         <li>
             <a href="#" ng-click="reset()">
                 <span class="glyphicon glyphicon-trash"></span> Clear
@@ -589,7 +543,7 @@
         </div>
     </div>
 
-    <div class="row vmargin15 hpadding0 box gray-box rounded-box">
+    <div class="row vmargin15 hpadding0 box gray-box rounded-box" ng-show="!isMobile">
         <div class="col-md-3 col-sm-3 col-xs-12">
             <form id="uploadForm" enctype="multipart/form-data"
                   action="{{uriUpload}}">
@@ -600,6 +554,31 @@
                            style="display:none;" />
                 </label>
             </form>
+        </div>
+
+        <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
+            <div class="mode-description rounded-box">
+                If you have previously saved a study design from GLIMMPSE, you may upload it here.
+                Click 'Upload a Study Design' to select your study design file.
+            </div>
+        </div>
+    </div>
+
+    <div class="row vmargin15 hpadding0 box gray-box rounded-box" ng-show="isMobile">
+        <div class="col-md-3 col-sm-3 col-xs-12">
+
+            <form id="indexUploadFromDropboxForm" enctype="multipart/form-data">
+                <label class="btn btn-mode">
+                    <span>Upload From Dropbox</span>
+                    <input id="indexDropboxUpload" name="file"
+                           data-toggle="modal" data-target="#selectDropboxFileModal"
+
+                           style="display:none;" />
+                </label>
+
+            </form>
+
+
         </div>
 
         <div class="col-md-9 col-md-offset-0 col-sm-8 col-sm-offset-1  visible-sm visible-md visible-lg">
@@ -1066,6 +1045,179 @@
                     </button>
                     <button class="btn btn-warning" data-dismiss="modal" ng-click="resultsEmailSuccess = undefined"
                             aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="saveStudyDesignModal" tabindex="-1"
+     role="dialog" aria-labelledby="saveStudyDesignModal" aria-hidden="true">
+
+    <form id="saveDesignDropboxForm" enctype="multipart/form-data"
+          name="saveDesignDropboxForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Save your study design to dropbox</h3>
+                    <label>Type the file name below and click "Send" to save your study design.
+                        The file will be saved in your Dropbox folder.</label>
+                </div>
+                <div class="modal-body">
+                    <div class="processing rounded-box" ng-show="designNameProcessing">
+                        <label>Processing</label>
+                    </div>
+                    <div class="alert alert-success" ng-show="!designNameProcessing
+                    && designNameSuccess !== undefined && designNameSuccess">
+                        Your file has been saved to your Dropbox folder as "glimmpseDesigns/{{studyDesignDropboxFileName}}".
+                    </div>
+
+                    <div class="alert alert-danger" ng-show="!designNameProcessing &&
+                         designNameSuccess !== undefined && !designNameSuccess">
+                        Request to the dropbox server failed. Please try again later.
+                    </div>
+
+                    <div class="well" ng-show="!designNameProcessing">
+                        <div>
+                            <input type="hidden" name="filename" value="study.json"/>
+                            <input type="hidden" name="data" value='{{studyDesignJSON}}' />
+                        </div>
+                        <div class="form-group" id="fileNameDiv">
+                            <label>File Name</label>
+                            <input class="form-control" type="text" placeholder="Enter the file name" name="designFileName"
+                                   ng-model="designFile" required />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submitSaveDesignDropbox"
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="!saveDesignDropboxForm.$valid || designNameProcessing">
+                        Send
+                    </button>
+
+                    <!-- type= "submit" id="submitSaveDesignDropbox" -->
+                    <!--  onclick="angular.element(this).scope().saveDropboxDesignFile()" -->
+                    <button class="btn btn-warning" data-dismiss="modal"
+                            type="submit"
+                            ng-click="designNameSuccess = undefined"
+                            aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="saveResultsModal" tabindex="-1"
+     role="dialog" aria-labelledby="saveResultsModal" aria-hidden="true">
+
+    <form id="saveResultsDropboxForm" enctype="multipart/form-data"
+          name="saveResultsDropboxForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Save your power results to dropbox</h3>
+                    <label>Type the file name below and click "Send" to save your power results.
+                        The file will be saved in your Dropbox folder.</label>
+                </div>
+                <div class="modal-body">
+                    <div class="processing rounded-box" ng-show="resultsNameProcessing">
+                        <label>Processing</label>
+                    </div>
+                    <div class="alert alert-success" ng-show="!resultsNameProcessing
+                    && resultsNameSuccess !== undefined && resultsNameSuccess">
+                        Your file has been saved to your Dropbox folder as "glimmpseDesigns/{{resultsDropboxFileName}}".
+                    </div>
+
+                    <div class="alert alert-danger" ng-show="!resultsNameProcessing &&
+                         resultsNameSuccess !== undefined && !resultsNameSuccess">
+                        Request to the dropbox server failed. Please try again later.
+                    </div>
+
+                    <div class="well"  ng-show="!resultsNameProcessing">
+                        <div>
+                            <input type="hidden" name="filename" value="study.json"/>
+                            <input type="hidden" name="data" value='{{resultsCSV}}' />
+                        </div>
+                        <div class="form-group" id="resultsFileNameDiv">
+                            <label>File Name</label>
+                            <input class="form-control" type="text" placeholder="Enter the file name" name="designFileName"
+                                   ng-model="resultsFile" required />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type= "submit" id="submitSaveResultsDropbox"
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="!saveResultsDropboxForm.$valid
+                            ">
+                        <!-- onclick="angular.element(this).scope().saveDropboxResultsFileName(this)" -->
+                        Send
+                    </button>
+                    <button class="btn btn-warning" data-dismiss="modal"
+                            type="submit"
+                            ng-click="resultsNameSuccess = undefined"
+                            aria-hidden="true">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="selectDropboxFileModal" tabindex="-1"
+     role="dialog" aria-labelledby="selectDropboxFileModal" aria-hidden="true"
+     ng-show="1 == 0">
+
+    <form id="selectDropboxFileForm" enctype="multipart/form-data"
+          name="selectDropboxFileForm" method="post">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Select your study design from dropbox</h3>
+                    <label>Choose a file name below and click "Select File" to upload your study
+                        design.
+                    </label>
+                </div>
+                <div class="modal-body">
+
+                    <div class="modal-body">
+                        <div class="processing rounded-box" ng-show="uploadProcessing">
+                            <label>Processing</label>
+                        </div>
+
+                        <div class="alert alert-danger" ng-show="!uploadProcessing
+                         && !uploadAccess && !uploadSuccess">
+                            Request to the dropbox server failed. Please try again later.
+                        </div>
+
+                        <div class="well" id="dropboxFileSelect" ng-show="!uploadProcessing
+                        ">
+                            <div ng-repeat="file in FilesFromDropbox">
+                                <input type="radio" name="dropboxfile"
+                                       ng-model="file.selected"
+                                       ng-click="updateSelectedDropboxFile(file)">
+                                {{file.label}}
+                                </input>
+
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submitUploadDesignDropbox"
+                            data-dismiss="modal"
+                            class="btn btn-primary" aria-hidden="true" ng-disabled="uploadProcessing">
+                        Select File
+                    </button>
+                    <!-- onclick ="angular.element(this).scope().uploadFileFromDropbox()" -->
+                    <button class="btn btn-warning" data-dismiss="modal"
+                            type="submit" id="uploadStudyDesign"
+                            ng-click="designNameSuccess = undefined"
+                            aria-hidden="true">Cancel</button>
+
                 </div>
             </div>
         </div>

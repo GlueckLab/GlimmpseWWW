@@ -17,29 +17,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-/*
-* Environment specific configuration
- */
-glimmpseApp.constant('config', {
 
-    /*** scheme for accessing web services ***/
-    schemePower: '',
-    schemeFile: '',
-    schemeScripts: '',
+glimmpseApp.factory('dropboxService', function($http, $q, config, glimmpseConstants){
+    var dropboxServiceInstance = {};
 
-    /*** hostnames for web services ***/
-    hostPower: '',
-    hostFile: '',
-    hostScripts: '',
+    dropboxServiceInstance.dropboxServiceToken = undefined;
 
-    /*** URIs for web services ***/
-    uriPower: "/power/power",
-    uriSampleSize: "/power/samplesize",
-    uriCIWidth: "/power/ciwidth",
-    uriMatrices: "/power/matrix/html",
-    uriUpload: "/file/upload",
-    uriSave: "/file/saveas",
+    dropboxServiceInstance.fileListFromDropbox = null;
 
-    /** Flag indicating if we are running on a mobile device - reset by build **/
-    isMobile: true
+    dropboxServiceInstance.status = false;
+
+    dropboxServiceInstance.studyDesignFileName = undefined;
+
+    dropboxServiceInstance.resultsFileName = undefined;
+
+    dropboxServiceInstance.customURL = undefined;
+
+    dropboxServiceInstance.studyDesignData = undefined;
+
+    dropboxServiceInstance.resultsData = undefined;
+
+    /**
+     *  Access dropbox for saving the file
+     */
+
+    dropboxServiceInstance.saveStudyDesign = function() {
+        window.alert('inside dropboxservice with token:');
+        var defer = $q.defer();
+    };
+
+    return dropboxServiceInstance;
+
 });
+

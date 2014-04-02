@@ -34,6 +34,7 @@
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />
     <preference name="prerendered-icon" value="true" />
+    <preference name="stay-in-webview" value="false" />
     <preference name="ios-statusbarstyle" value="black-opaque" />
     <preference name="detect-data-types" value="true" />
     <preference name="exit-on-suspend" value="false" />
@@ -68,7 +69,8 @@
     <gap:splash gap:platform="ios" height="768" src="res/screen/GlimmpseScreen1024x768.png" width="1024" />
     <gap:splash gap:platform="winphone" src="res/screen/windows-phone/screen-portrait.jpg" />
 
-    <!-- <gap:plugin name="org.apache.cordova.inappbrowser" />  -->
+    <gap:plugin name="org.apache.cordova.inappbrowser" />
+    <!-- <gap:plugin name="org.apache.cordova.inappbrowser" /> -->
     <access origin="*"/>
 
 </widget>

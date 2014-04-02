@@ -117,7 +117,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         xAxisDesiredPower: "DESIRED_POWER"
 
     })
-    .config(['$routeProvider', function($routeProvider, studyDesignService, powerService) {
+    .config(['$routeProvider', function($routeProvider, studyDesignService, powerService, dropboxService) {
         /*
         * Main route provider for the study design tab
          */

@@ -201,6 +201,20 @@ module.exports = function(grunt) {
                         to: '<%= pkg.version %>'
                     }
                 ]
+            },
+            appKey: {
+                src: ["build/dist/index.html"],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: '<!-- @Client_Id@ -->',
+                        to: "client_id: '<%= grunt.option('client_id')%>',"
+                    },
+                    {
+                        from: '<!-- @Client_Secret@ -->',
+                        to: "client_secret: '<%= grunt.option('client_secret')%>',"
+                    }
+                ]
             }
         },
         // cleanup the scripts and includes to use minified, concatenated files
