@@ -21,27 +21,34 @@
 glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimmpseConstants){
     var dropboxServiceInstance = {};
 
-    dropboxServiceInstance.dropboxAuthCode = undefined;
+    // Dropbox processing status
+    dropboxServiceInstance.dropboxStatus = 'READY';
 
-    dropboxServiceInstance.dropboxServiceToken = undefined;
+    dropboxServiceInstance.dropboxAuthCode = null;
 
-    dropboxServiceInstance.fileListFromDropbox = null;
-
-    dropboxServiceInstance.status = false;
-
-    dropboxServiceInstance.studyDesignFileName = undefined;
-
-    dropboxServiceInstance.resultsFileName = undefined;
+    dropboxServiceInstance.dropboxServiceToken = null;
 
     dropboxServiceInstance.customURL = undefined;
-
-    dropboxServiceInstance.studyDesignData = undefined;
-
-    dropboxServiceInstance.resultsData = undefined;
 
     /**
      *  Access dropbox for saving the file
      */
+
+    /**
+     *
+     * @param code
+     */
+    dropboxServiceInstance.setStatus = function(status) {
+        dropboxServiceInstance.dropboxStatus = status;
+    };
+
+    /**
+     *
+     * @param code
+     */
+    dropboxServiceInstance.getStatus = function() {
+        return(dropboxServiceInstance.dropboxStatus);
+    };
 
     /**
      * Store the authentication code for the lifetime of the
@@ -49,57 +56,40 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
      * @param code
      */
     dropboxServiceInstance.storeCode = function(code) {
-        dropboxAuthCode = code;
+        dropboxServiceInstance.dropboxAuthCode = code;
     };
 
     /**
-     * Store the authentication code for subsequent requests,
-     * and get a new token.
-     *
-     * @param codeValue code obtained from the Oauth2 protocol
-     * @returns {*}
+     * Store the access token for the lifetime of the
+     * application.
+     * @param code
      */
+    dropboxServiceInstance.storeToken = function(token) {
+        $window.alert("token: " + token);
+        dropboxServiceInstance.dropboxServiceToken = token;
+        $window.alert("token: " + dropboxServiceInstance.dropboxServiceToken);
+    };
+
     dropboxServiceInstance.getToken = function() {
-
-        //Creating a deferred object
-        var deferred = $q.defer();
-
-        var entityBody = {
-            code: dropboxAuthCode,
-            client_id: config.dropboxClientId,
-            client_secret: config.dropboxClientSecret,
-            redirect_uri: 'http://localhost',
-            grant_type: 'authorization_code'
-        };
-
-        window.alert("BODY: " + angular.toJson(entityBody));
-        //Calling Web API to fetch shopping cart items
-        $http.post("https://api.dropbox.com/1/oauth2/token",
-                angular.toJson(entityBody)).success(function(response){
-                var accessTokenInfo = angular.parseJSON(response);
-                // store the token
-                dropboxServiceToken = accessTokenInfo.access_token;
-                //Passing data to deferred's resolve function on successful completion
-                deferred.resolve(response);
-            }).error(function(response) {
-                //Sending a friendly error message in case of failure
-                deferred.reject(response);
-            });
-
-        //Returning the promise object
-        return deferred.promise;
+        return(dropboxServiceInstance.dropboxServiceToken);
     };
 
     /**
-     * Save the specified study design information to the user's dropbox
+     * Save the specified file to the user's dropbox
      */
-    dropboxServiceInstance.saveStudyDesign = function(studyDesignJSON) {
+    dropboxServiceInstance.saveFile = function(filename, data) {
+        // save to the glimmpseDesigns folder
+        var url = 'https://api-content.dropbox.com/1/files_put/dropbox/glimmpseDesigns/' +
+            filename;
+
         //Creating a deferred object
         var deferred = $q.defer();
 
+        // add authentication headers
+        $http.defaults.headers.common.Authorization = 'Bearer ' + dropboxServiceInstance.dropboxServiceToken;
+
         //Calling Web API to fetch shopping cart items
-        $http.post(config.schemePower + config.hostPower + config.uriPower,
-                studyDesignJSON).success(function(response){
+        $http.post(url, data).success(function(response){
                 //Passing data to deferred's resolve function on successful completion
                 deferred.resolve(response);
             }).error(function(response) {
@@ -109,6 +99,65 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
 
         //Returning the promise object
         return deferred.promise;
+
+    };
+
+
+    /**
+     * Save the specified file to the user's dropbox
+     * We use Ajax calls here instead of the defer/promise mechanism
+     * since this is called directly from javascript
+     */
+    dropboxServiceInstance.getStudyDesignFileList = function(successCallback, errorCallback) {
+
+        // search existing glimmpseDesigns folder for .json files.
+        $.ajax({
+            type: 'POST',
+            beforeSend: function (request)
+            {
+                request.setRequestHeader("Authorization", 'Bearer' + ' ' + dropboxServiceInstance.dropboxServiceToken);
+            },
+            url: 'https://api.dropbox.com/1/search/dropbox/glimmpseDesigns/',
+            data: {query: ".json"},
+            dataType: "json"
+        }).done(function(response) {
+                successCallback(response);
+            }).fail(function(response) {
+                errorCallback(response);
+            });
+
+    };
+
+
+    /**
+     * Save the specified file to the user's dropbox
+     * We use Ajax calls here instead of the defer/promise mechanism
+     * since this is called directly from javascript
+     */
+    dropboxServiceInstance.getFile = function(filename) {
+
+        // save to the glimmpseDesigns folder
+        var url = 'https://api-content.dropbox.com/1/files/dropbox/' +
+            filename;
+
+        //Creating a deferred object
+        var deferred = $q.defer();
+
+        // add authentication headers
+        $http.defaults.headers.common.Authorization = 'Bearer ' + dropboxServiceInstance.dropboxServiceToken;
+
+        //Calling Web API to fetch shopping cart items
+        $http.get(url).success(function(response){
+            //Passing data to deferred's resolve function on successful completion
+            deferred.resolve(response);
+        }).error(function(response) {
+                //Sending a friendly error message in case of failure
+                deferred.reject(response);
+            });
+
+        //Returning the promise object
+        return deferred.promise;
+
     };
 
 

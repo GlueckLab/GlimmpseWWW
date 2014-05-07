@@ -41,5 +41,5 @@ glimmpseApp.constant('config', {
     uriSave: "/file/saveas",
 
     /** Flag indicating if we are running on a mobile device - reset by build **/
-    isMobile: true
+    isMobile: false
 });
