@@ -65,9 +65,7 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
      * @param code
      */
     dropboxServiceInstance.storeToken = function(token) {
-        $window.alert("token: " + token);
         dropboxServiceInstance.dropboxServiceToken = token;
-        $window.alert("token: " + dropboxServiceInstance.dropboxServiceToken);
     };
 
     dropboxServiceInstance.getToken = function() {

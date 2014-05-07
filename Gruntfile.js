@@ -178,16 +178,7 @@ module.exports = function(grunt) {
                     {
                         from: "isMobile: false",
                         to: "isMobile: true"
-                    },
-                    {
-                        from: "dropboxClientId: ''",
-                        to: "dropboxClientId: '<%= grunt.option('dropboxClientId')%>',"
-                    },
-                    {
-                        from: "dropboxClientSecret: ''",
-                        to: "dropboxClientSecret: '<%= grunt.option('dropboxClientSecret')%>',"
                     }
-
                 ]
             },
             phonegapjs: {

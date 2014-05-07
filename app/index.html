@@ -113,10 +113,6 @@
             typeOfService = requestedService;
             // check if we already have a authentication code
             var token = angular.element($('#fileNameDiv')).scope().dropboxService.getToken();
-            // REMOVE
-            //token = "nTczf-q-NEIAAAAAAAAEy-A5bCtGqshmOui63slTiSa2CVriv_nlZhD187BSVqs2";
-            //angular.element($('#fileNameDiv')).scope().dropboxService.storeToken(token);
-            // END REMOVE
             if (token == null) {
                 // the token had expired or is not available, so restart the Oauth process
                 var authUrl = 'https://www.dropbox.com/1/oauth2/authorize?' + $.param({
@@ -127,8 +123,6 @@
                 authWindow = window.open(authUrl, '_blank', 'location=no');
                 authWindow.addEventListener('loadstart', dropboxParseCodeAndContinueOauth, false);
 
-                //REMOVE
-                dropboxParseCodeAndContinueOauth({url: "foo?code=nTczf-q-NEIAAAAAAAAEygzeqBb9t3FwbwmtV6bb5xI"});
             } else {
                 if (typeOfService == 'uploadDesignFromDropbox') {
                     angular.element($('#fileNameDiv')).scope().updateDropboxFileList();
@@ -457,7 +451,7 @@
 
                 <button class="btn btn-mode" onclick="dropboxStartOauth('uploadDesignFromDropbox')"
                         ng-show="isMobile"
-                        data-toggle="modal" data-target="#selectDropboxFileModalModeSelect">
+                        data-toggle="modal" data-target="#selectDropboxFileModal">
                     Upload From Dropbox
                 </button>
             </div>
@@ -469,58 +463,6 @@
                 </div>
             </div>
         </div>
-
-
-
-        <!-- Modal - total hack since it appears that 2 buttons cannot open the same modal-->
-        <div class="modal fade" id="selectDropboxFileModalModeSelect" tabindex="-1"
-             role="dialog" aria-labelledby="selectDropboxFileModalModeSelect" aria-hidden="true">
-
-            <form id="selectDropboxFileModalModeSelectForm" enctype="multipart/form-data"
-                  name="selectDropboxFileModalModeSelectForm" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Select a study design from your Dropbox</h3>
-                            <label>Click on a study design file below to upload your study design.
-                            </label>
-                        </div>
-                        <div class="modal-body">
-
-                            <div class="modal-body">
-                                <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'CONNECTING'">
-                                    <label>Retrieving study design files</label>
-                                </div>
-                                <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'PROCESSING'">
-                                    <label>Processing</label>
-                                </div>
-                                <div class="alert alert-danger" ng-show="dropboxService.getStatus() == 'ERROR'">
-                                    Request to the dropbox server failed. Please try again later.
-                                </div>
-                                <div class="alert alert-success" ng-show="dropboxService.getStatus() == 'SUCCESS'">
-                                    Your study design has been uploaded.  Click "Close" to continue.
-                                </div>
-                                <div class="well" ng-show="dropboxService.getStatus() == 'READY'">
-                                    <div ng-repeat="file in dropboxFileList track by $id($index)">
-                                        <a href="#" ng-click="uploadFileFromDropbox(file.path)">
-                                            {{file.path}}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-warning" data-dismiss="modal"
-                                        ng-click="dropboxService.setStatus('READY');setMode(studyDesign.viewTypeEnum);setView(glimmpseConstants.viewTypeStudyDesign);"
-                                        aria-hidden="true">
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-
     </div>
 
 
@@ -1088,55 +1030,55 @@
                 </div>
             </form>
         </div>
+    </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="selectDropboxFileModal" tabindex="-1"
-             role="dialog" aria-labelledby="selectDropboxFileModal" aria-hidden="true">
+    <!-- Modal -->
+    <div class="modal fade" id="selectDropboxFileModal" tabindex="-1"
+         role="dialog" aria-labelledby="selectDropboxFileModal" aria-hidden="true">
 
-            <form id="selectDropboxFileForm" enctype="multipart/form-data"
-                  name="selectDropboxFileForm" method="post">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Select a study design from your Dropbox</h3>
-                            <label>Click on a study design file below to upload your study design.
-                            </label>
-                        </div>
+        <form id="selectDropboxFileForm" enctype="multipart/form-data"
+              name="selectDropboxFileForm" method="post">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Select a study design from your Dropbox</h3>
+                        <label>Click on a study design file below to upload your study design.
+                        </label>
+                    </div>
+                    <div class="modal-body">
+
                         <div class="modal-body">
-
-                            <div class="modal-body">
-                                <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'CONNECTING'">
-                                    <label>Retrieving study design files</label>
-                                </div>
-                                <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'PROCESSING'">
-                                    <label>Processing</label>
-                                </div>
-                                <div class="alert alert-danger" ng-show="dropboxService.getStatus() == 'ERROR'">
-                                    Request to the dropbox server failed. Please try again later.
-                                </div>
-                                <div class="alert alert-success" ng-show="dropboxService.getStatus() == 'SUCCESS'">
-                                    Your study design has been uploaded.  Click "Close" to continue.
-                                </div>
-                                <div class="well" ng-show="dropboxService.getStatus() == 'READY'">
-                                    <div ng-repeat="file in dropboxFileList track by $id($index)">
-                                        <a href="#" ng-click="uploadFileFromDropbox(file.path)">
-                                            {{file.path}}
-                                        </a>
-                                    </div>
+                            <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'CONNECTING'">
+                                <label>Retrieving study design files</label>
+                            </div>
+                            <div class="processing rounded-box" ng-show="dropboxService.getStatus() == 'PROCESSING'">
+                                <label>Processing</label>
+                            </div>
+                            <div class="alert alert-danger" ng-show="dropboxService.getStatus() == 'ERROR'">
+                                Request to the dropbox server failed. Please try again later.
+                            </div>
+                            <div class="alert alert-success" ng-show="dropboxService.getStatus() == 'SUCCESS'">
+                                Your study design has been uploaded.  Click "Close" to continue.
+                            </div>
+                            <div class="well" ng-show="dropboxService.getStatus() == 'READY'">
+                                <div class="vmargin5" ng-repeat="file in dropboxFileList track by $id($index)">
+                                    <a href="#" ng-click="uploadFileFromDropbox(file.path)">
+                                        {{file.path}}
+                                    </a>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-warning" data-dismiss="modal"
-                                        ng-click="dropboxService.setStatus('READY');setMode(studyDesign.viewTypeEnum);setView(glimmpseConstants.viewTypeStudyDesign);"
-                                        aria-hidden="true">
-                                    Close
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-warning" data-dismiss="modal"
+                                    ng-click="dropboxService.setStatus('READY');setMode(studyDesign.viewTypeEnum);setView(glimmpseConstants.viewTypeStudyDesign);"
+                                    aria-hidden="true">
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 
     <!-- footer -->
