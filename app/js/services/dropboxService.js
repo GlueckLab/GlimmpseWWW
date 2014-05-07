@@ -90,7 +90,14 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
         $http.post(url, data).success(function(response){
                 //Passing data to deferred's resolve function on successful completion
                 deferred.resolve(response);
-            }).error(function(response) {
+            }).error(function(response, status) {
+                /*
+                 * if the request is not unauthorized, clear the current token.
+                 * This will force the user to re-authorize on the next request.
+                 */
+                if (status == 401) {
+                    dropboxServiceInstance.dropboxServiceToken = null;
+                }
                 //Sending a friendly error message in case of failure
                 deferred.reject(response);
             });
@@ -121,6 +128,13 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
         }).done(function(response) {
                 successCallback(response);
             }).fail(function(response) {
+                /*
+                 * if the request is not unauthorized, clear the current token.
+                 * This will force the user to re-authorize on the next request.
+                 */
+                if (response.status == 401) {
+                    dropboxServiceInstance.dropboxServiceToken = null;
+                }
                 errorCallback(response);
             });
 
@@ -148,7 +162,14 @@ glimmpseApp.factory('dropboxService', function($http, $q, config, $window, glimm
         $http.get(url).success(function(response){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(response);
-        }).error(function(response) {
+        }).error(function(response, status) {
+                /*
+                 * if the request is not unauthorized, clear the current token.
+                 * This will force the user to re-authorize on the next request.
+                 */
+                if (status == 401) {
+                    dropboxServiceInstance.dropboxServiceToken = null;
+                }
                 //Sending a friendly error message in case of failure
                 deferred.reject(response);
             });
