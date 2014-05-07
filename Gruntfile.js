@@ -67,7 +67,10 @@ module.exports = function(grunt) {
     grunt.log.writeln("Building release for hosts power=" +
         grunt.option('hostPower') +
         ", file=" + grunt.option('hostFile') +
-        ", and scripts=" + grunt.option('hostScripts')
+        ", and scripts=" + grunt.option('hostScripts') +
+        ", with pgPassword=" + grunt.option('pgPassword') +
+        ", dropboxClientId=" + grunt.option('dropboxClientId') +
+        ", and dropboxClientSecret=" + grunt.option('dropboxClientSecret')
     );
 
     // initialize tasks
@@ -208,11 +211,11 @@ module.exports = function(grunt) {
                 replacements: [
                     {
                         from: '<!-- @Client_Id@ -->',
-                        to: "client_id: '<%= grunt.option('client_id')%>',"
+                        to: "client_id: '<%= grunt.option('dropboxClientId')%>',"
                     },
                     {
                         from: '<!-- @Client_Secret@ -->',
-                        to: "client_secret: '<%= grunt.option('client_secret')%>',"
+                        to: "client_secret: '<%= grunt.option('dropboxClientSecret')%>',"
                     }
                 ]
             }
