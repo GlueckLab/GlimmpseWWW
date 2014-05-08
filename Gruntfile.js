@@ -132,8 +132,8 @@ module.exports = function(grunt) {
             www: {
                 files: [
                     {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'},
-                    {expand: true, flatten: true, src: ['resources/icons/GlimmpseIcon*.png'], dest: 'build/www/res/icons/'},
-                    {expand: true, flatten: true, src: ['resources/icons/*.png'], dest: 'build/www/res/screen/'}
+                    {expand: true, flatten: true, src: ['resources/icons/GlimmpseIcon*.png'], dest: 'build/www/resources/icons/'},
+                    {expand: true, flatten: true, src: ['resources/screen/GlimmpseScreen*.png'], dest: 'build/www/resources/screen/'}
                 ]
             },
             // hack to avoid uglify problem in usemin
