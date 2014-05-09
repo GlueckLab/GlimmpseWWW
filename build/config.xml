@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<widget id="edu.ucdenver.bios.glimmpse" version="@VERSION@" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="glimmpse.samplesizeshop.org" version="@VERSION@" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Glimmpse</name>
     <description>
         Glimmpse calculates power and sample size for the general linear multivariate model
