@@ -67,7 +67,10 @@ module.exports = function(grunt) {
     grunt.log.writeln("Building release for hosts power=" +
         grunt.option('hostPower') +
         ", file=" + grunt.option('hostFile') +
-        ", and scripts=" + grunt.option('hostScripts')
+        ", and scripts=" + grunt.option('hostScripts') +
+        ", with pgPassword=" + grunt.option('pgPassword') +
+        ", dropboxClientId=" + grunt.option('dropboxClientId') +
+        ", and dropboxClientSecret=" + grunt.option('dropboxClientSecret')
     );
 
     // initialize tasks
@@ -128,7 +131,9 @@ module.exports = function(grunt) {
             },
             www: {
                 files: [
-                    {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'}
+                    {expand: true, cwd: 'build/dist/', src: ['**'], dest: 'build/www/'},
+                    {expand: true, flatten: true, src: ['resources/icons/GlimmpseIcon*.png'], dest: 'build/www/resources/icons/'},
+                    {expand: true, flatten: true, src: ['resources/screen/GlimmpseScreen*.png'], dest: 'build/www/resources/screen/'}
                 ]
             },
             // hack to avoid uglify problem in usemin
@@ -179,6 +184,16 @@ module.exports = function(grunt) {
                     }
                 ]
             },
+            phonegapjs: {
+                src: ["build/dist/index.html"],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: '<!-- PHONEGAPJS -->',
+                        to: '<script type="text/javascript" charset="utf-8" src="cordova.js"></script>'
+                    }
+                ]
+            },
             version: {
                 src: ['build/dist/index.html', 'build/dist/feedback.html', 'build/dist/config.xml'],
                 overwrite: true,
@@ -187,6 +202,20 @@ module.exports = function(grunt) {
                     {
                         from: '@VERSION@',                   // string replacement
                         to: '<%= pkg.version %>'
+                    }
+                ]
+            },
+            appKey: {
+                src: ["build/dist/index.html"],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: '<!-- @Client_Id@ -->',
+                        to: "client_id: '<%= grunt.option('dropboxClientId')%>',"
+                    },
+                    {
+                        from: '<!-- @Client_Secret@ -->',
+                        to: "client_secret: '<%= grunt.option('dropboxClientSecret')%>',"
                     }
                 ]
             }
@@ -259,6 +288,7 @@ module.exports = function(grunt) {
             },
             release: {
                 options: {
+                    timeout: 300000,
                     archive: "build/artifacts/glimmpsewww-mobile-<%= pkg.version %>.zip",
                     "appId": "704192",
                     "user": {
