@@ -52,8 +52,11 @@
     <icon gap:platform="blackberry" gap:state="hover" src="resources/icon/blackberry/icon-80.png" /> -->
     <icon gap:platform="ios" height="57" src="resources/icons/GlimmpseIcon57x57.png" width="57" />
     <icon gap:platform="ios" height="72" src="resources/icons/GlimmpseIcon72x72.png" width="72" />
+    <icon gap:platform="ios" height="76" src="resources/icons/GlimmpseIcon76x76.png" width="76" />
     <icon gap:platform="ios" height="114" src="resources/icons/GlimmpseIcon114x114.png" width="114" />
+    <icon gap:platform="ios" height="120" src="resources/icons/GlimmpseIcon120x120.png" width="120" />
     <icon gap:platform="ios" height="144" src="resources/icons/GlimmpseIcon144x144.png" width="144" />
+    <icon gap:platform="ios" height="152" src="resources/icons/GlimmpseIcon152x152.png" width="152" />
     <!--
     <icon gap:platform="webos" src="resources/icon/webos/icon-64.png" />
     <icon gap:platform="winphone" src="resources/icon/windows-phone/icon-48.png" />
