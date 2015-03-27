@@ -129,8 +129,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         var errorInvalid = "The file did not contain a valid study design. Please try again.";
 
         // read uuid
-        if (object.hasOwnProperty("uuid") &&
-            (object.uuid === null || object.uuid instanceof Array)) {
+        if (object.hasOwnProperty("uuid")) {
             studyDesignInstance.uuid = object.uuid;
         } else {
             throw errorInvalid;
