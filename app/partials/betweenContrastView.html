@@ -21,13 +21,13 @@
 </script>
 <h3>Between-Participant Contrast: $\boldsymbol{C}$ Matrix</h3>
 <p>
-    The $\boldsymbol{C}$ matrix defines the contrasts for between-participant effects. The number of rows in the $\boldsymbol{C}$
-    matrix is at most one fewer than the number of rows in $Es(\boldsymbol{X})$. The number of columns in $\boldsymbol{C}$ must equal
-    the number of columns in $\boldsymbol{B}$. To ensure conforming matrices, the number of columns of $\boldsymbol{C}$
-    cannot be adjusted on this screen.
+    The $\boldsymbol{C}$ matrix defines the contrasts for between-participant effects.
+    The number of rows in $\boldsymbol{C}$ must be less than or equal to the number of rows in $\boldsymbol{B}$.
+    The number of columns in $\boldsymbol{C}$ must equal the number of rows in $\boldsymbol{B}$.
+    To ensure conforming matrices, the number of columns in $\boldsymbol{C}$ cannot be adjusted on this screen.
 </p>
 <p>
-    Enter your between-subject contrast matrix below.
+    Enter your between-participant contrast matrix below.
 </p>
 
 <ng-resizable-matrix ng-model="betweenContrastMatrix" rowresizable='true' columnresizable='false'

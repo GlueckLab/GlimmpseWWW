@@ -605,7 +605,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 data: [[0]]
             }
         });
-        // default null hypothesis (theta null) matrix
+        // default error covariance (sigma E) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
             name: glimmpseConstants.matrixSigmaE,

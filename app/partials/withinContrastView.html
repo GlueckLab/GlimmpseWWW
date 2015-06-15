@@ -19,16 +19,16 @@
 <script>
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 </script>
-<h3>Within-Subject Contrast: $\boldsymbol{U}$ Matrix</h3>
+<h3>Within-Participant Contrast: $\boldsymbol{U}$ Matrix</h3>
 <p>
-    The $\boldsymbol{U}$ matrix defines the contrasts for within-subject effects. The matrix
-    is necessary for multivariate and repeated measures designs. The number of
-    rows in $\boldsymbol{U}$ must equal the number of columns in $\boldsymbol{B}$. To ensure conforming matrices,
-    the row dimension of $\boldsymbol{U}$ cannot be adjusted on this screen.
-
+    The $\boldsymbol{U}$ matrix defines the contrasts for within-participant effects.
+    The matrix is necessary for multivariate and repeated measures designs.
+    The number of rows in $\boldsymbol{U}$ must equal the number of columns in $\boldsymbol{B}$.
+    The number of columns in $\boldsymbol{U}$ must be less than or equal to the number of columns in $\boldsymbol{B}$.
+    To ensure conforming matrices, the number of rows in $\boldsymbol{U}$ cannot be adjusted on this screen.
 </p>
 <p>
-    Enter your within-subject contrast matrix below.
+    Enter your within-participant contrast matrix below.
 </p>
 
 <ng-resizable-matrix ng-model="withinContrastMatrix" rowresizable='false' columnresizable='true'
