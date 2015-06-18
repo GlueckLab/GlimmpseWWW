@@ -758,13 +758,13 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Model > Smallest Group Size"); }
                 // hypothesis menu
                 if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
-                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
                 if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
                 // means menu
                 if (!$scope.testDone($scope.state.means)) { $scope.incompleteViews.push("Means > Means"); }
                 if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Means > Scale Factors"); }
                 // variability menu
-                if (!$scope.testDone($scope.state.variabilityWithin)) { $scope.incompleteViews.push("Variability > Within Participant"); }
+                if (!$scope.testDone($scope.state.variabilityWithin)) { $scope.incompleteViews.push("Variability > Within-Participant"); }
                 if (!$scope.testDone($scope.state.variabilityCovariate)) { $scope.incompleteViews.push("Variability > Covariate"); }
                 if (!$scope.testDone($scope.state.variabilityScale)) { $scope.incompleteViews.push("Variability > Scale Factors"); }
 
@@ -778,10 +778,10 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.beta)) { $scope.incompleteViews.push("Coefficients > Beta Coefficients"); }
                 if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Coefficients > Beta Scale Factors"); }
                 // hypothesis menu
-                if (!$scope.testDone($scope.state.betweenContrast)) { $scope.incompleteViews.push("Hypothesis > Between Participant Contrast"); }
-                if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within Participant Contrast"); }
-                if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Theta Null"); }
-                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+                if (!$scope.testDone($scope.state.betweenContrast)) { $scope.incompleteViews.push("Hypothesis > Between-Participant Contrast"); }
+                if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within-Participant Contrast"); }
+                if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Null Hypothesis Matrix"); }
+                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
                 if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
                 // variability menu
                 if (!$scope.testDone($scope.state.sigmaE)) { $scope.incompleteViews.push("Variability > Error Covariance"); }
