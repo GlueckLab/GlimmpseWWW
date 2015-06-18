@@ -758,13 +758,13 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Model > Smallest Group Size"); }
                 // hypothesis menu
                 if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
-                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
                 if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
                 // means menu
                 if (!$scope.testDone($scope.state.means)) { $scope.incompleteViews.push("Means > Means"); }
                 if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Means > Scale Factors"); }
                 // variability menu
-                if (!$scope.testDone($scope.state.variabilityWithin)) { $scope.incompleteViews.push("Variability > Within Participant"); }
+                if (!$scope.testDone($scope.state.variabilityWithin)) { $scope.incompleteViews.push("Variability > Within-Participant"); }
                 if (!$scope.testDone($scope.state.variabilityCovariate)) { $scope.incompleteViews.push("Variability > Covariate"); }
                 if (!$scope.testDone($scope.state.variabilityScale)) { $scope.incompleteViews.push("Variability > Scale Factors"); }
 
@@ -778,10 +778,10 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.beta)) { $scope.incompleteViews.push("Coefficients > Beta Coefficients"); }
                 if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Coefficients > Beta Scale Factors"); }
                 // hypothesis menu
-                if (!$scope.testDone($scope.state.betweenContrast)) { $scope.incompleteViews.push("Hypothesis > Between Participant Contrast"); }
-                if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within Participant Contrast"); }
-                if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Theta Null"); }
-                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Test"); }
+                if (!$scope.testDone($scope.state.betweenContrast)) { $scope.incompleteViews.push("Hypothesis > Between-Participant Contrast"); }
+                if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within-Participant Contrast"); }
+                if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Null Hypothesis Matrix"); }
+                if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
                 if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
                 // variability menu
                 if (!$scope.testDone($scope.state.sigmaE)) { $scope.incompleteViews.push("Variability > Error Covariance"); }
@@ -1624,7 +1624,7 @@ glimmpseApp.controller('stateController',
                     if ($scope.studyDesign.gaussianCovariate) {
                         var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
                         if (sigmaYg !== undefined) {
-                            $scope.matrixUtils.resizeRows(sigmaYg, sigmaYg.rows,
+                            $scope.matrixUtils.resizeRows(sigmaYg,
                                 $scope.studyDesign.getNumberOfResponses(), 0, 1);
                         }
                     }
@@ -2017,7 +2017,7 @@ glimmpseApp.controller('stateController',
             // if the design has a covariate, resize the sigmaYg matrix
             if ($scope.studyDesign.gaussianCovariate) {
                 var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                $scope.matrixUtils.resizeRows(sigmaYg, sigmaYg.rows,
+                $scope.matrixUtils.resizeRows(sigmaYg,
                     $scope.studyDesign.getNumberOfResponses(), 0, 0);
             }
         };
@@ -3404,10 +3404,10 @@ glimmpseApp.controller('stateController',
             if (newValue != oldValue) {
                 // resize beta
                 var beta = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
-                $scope.matrixUtils.resizeRows(beta, beta.rows, newValue, 0, 0);
+                $scope.matrixUtils.resizeRows(beta, newValue, 0, 0);
                 // resize C
                 var betweenContrast = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBetweenContrast);
-                $scope.matrixUtils.resizeColumns(betweenContrast, betweenContrast.columns, newValue, 0, 0);
+                $scope.matrixUtils.resizeColumns(betweenContrast, newValue, 0, 0);
             }
         });
     })
@@ -3430,10 +3430,10 @@ glimmpseApp.controller('stateController',
                 if ($scope.studyDesign.gaussianCovariate) {
                     // resize sigmaYG
                     var sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                    $scope.matrixUtils.resizeRows(sigmaYG, sigmaYG.rows, newValue, 1, 1);
+                    $scope.matrixUtils.resizeRows(sigmaYG, newValue, 1, 1);
                     // resize beta random
                     var betaRandom = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-                    $scope.matrixUtils.resizeColumns(betaRandom, betaRandom.columns, newValue, 1, 1);
+                    $scope.matrixUtils.resizeColumns(betaRandom, newValue, 1, 1);
                     // resize sigma Y
                     sigma = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaY);
                 } else {
@@ -3441,12 +3441,12 @@ glimmpseApp.controller('stateController',
                     sigma = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaE);
                 }
                 // resize either sigma Y or E, depending on covariate status
-                $scope.matrixUtils.resizeRows(sigma, sigma.rows, newValue, 0, 1);
-                $scope.matrixUtils.resizeColumns(sigma, sigma.columns, newValue, 0, 1);
+                $scope.matrixUtils.resizeRows(sigma, newValue, 0, 1);
+                $scope.matrixUtils.resizeColumns(sigma, newValue, 0, 1);
 
                 // resize U
                 var withinContrast = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixWithinContrast);
-                $scope.matrixUtils.resizeRows(withinContrast, withinContrast.rows, newValue, 0, 1);
+                $scope.matrixUtils.resizeRows(withinContrast, newValue, 0, 1);
             }
         });
     })
@@ -3467,17 +3467,16 @@ glimmpseApp.controller('stateController',
             if (designEssence !== undefined) {
                 var dim = Math.min(designEssence.rows, designEssence.columns);
                 if (dim > 1) {
-                    $scope.maxRows = designEssence.columns - 1;
+                    $scope.maxRows = designEssence.columns;
                 }
             }
-
         }
 
         $scope.$watch('betweenContrastMatrix.rows', function(newValue, oldValue) {
             if (newValue != oldValue) {
                 // resize theta null
                 var thetaNull = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixThetaNull);
-                $scope.matrixUtils.resizeRows(thetaNull, thetaNull.rows, newValue, 0, 0);
+                $scope.matrixUtils.resizeRows(thetaNull, newValue, 0, 0);
             }
         });
     })
@@ -3493,13 +3492,18 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.withinContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixWithinContrast);
+            $scope.maxColumns = 1;
+            var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
+            if (beta !== undefined) {
+                $scope.maxColumns = beta.columns;
+            }
         }
 
-        $scope.$watch('withinContrastMatrix.rows', function(newValue, oldValue) {
+        $scope.$watch('withinContrastMatrix.columns', function(newValue, oldValue) {
             if (newValue != oldValue) {
                 // resize theta null
                 var thetaNull = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixThetaNull);
-                $scope.matrixUtils.resizeColumns(thetaNull, thetaNull.columns, newValue, 0, 0);
+                $scope.matrixUtils.resizeColumns(thetaNull, newValue, 0, 0);
             }
         });
     })

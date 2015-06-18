@@ -65,9 +65,9 @@
                     Trend hypotheses test if the effect of a single predictor follows a particular polynomial pattern,
                     such as a linear or quadratic trend, across different levels of the predictor.
                 </p>
-                <h3>Interaction Hypotheses</h3>
+                <h3>Interaction Hypothesis</h3>
                 <p>
-                    Interaction effect hypothesis test if the effect of one predictor changes depending
+                    Interaction effect hypotheses test if the effect of one predictor changes depending
                     on the value of one or more additional predictors. An interaction test also can be
                     interpreted as a test of differences of differences, as well as a test of parallel
                     trajectories of response.
@@ -100,7 +100,7 @@
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
 
                     <div>
@@ -116,7 +116,7 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
@@ -138,7 +138,7 @@
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
@@ -153,7 +153,7 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
@@ -195,7 +195,7 @@
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
                     <div ng-repeat="map in betweenFactorMapMetaDataList">
                         <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
@@ -219,7 +219,7 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">

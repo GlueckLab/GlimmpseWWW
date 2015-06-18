@@ -690,14 +690,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             }
 
             if (beta.rows != rows) {
-                matrixUtilities.resizeRows(beta, beta.rows, rows, 0, 0);
+                matrixUtilities.resizeRows(beta, rows, 0, 0);
             }
             if (beta.columns != columns) {
-                matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
+                matrixUtilities.resizeColumns(beta, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
                     if (betaRandom.columns != columns) {
-                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
+                        matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
                     }
                 }
             }

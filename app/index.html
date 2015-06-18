@@ -610,7 +610,7 @@
                                         <label ng-show="!viewAllowed(state.hypothesis)">Hypothesis</label>
                                     </div>
                                     <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                        <a href="#/test">Statistical Test</a>
+                                        <a href="#/test">Statistical Tests</a>
                                     </div>
                                     <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                         <a href="#/typeIError">Type I Error</a>
@@ -647,8 +647,8 @@
                                  ng-show="getMode() == glimmpseConstants.modeGuided">
                                 <div class="panel-body">
                                     <div class="{{isActive('/variabilityWithin') && 'active'}} {{state.variabilityWithin}}" >
-                                        <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within Participant</a>
-                                        <label ng-show="!viewAllowed(state.variabilityWithin)">Within Participant</label>
+                                        <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within-Participant</a>
+                                        <label ng-show="!viewAllowed(state.variabilityWithin)">Within-Participant</label>
                                     </div>
                                     <div class="{{isActive('/variabilityCovariate') && 'active'}} {{state.variabilityCovariate}}" >
                                         <a href="#/variabilityCovariate" ng-show="viewAllowed(state.variabilityCovariate)">Covariate</a>
@@ -716,16 +716,16 @@
                             <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                                 <div class="panel-body">
                                     <div class="{{isActive('/betweenContrast') && 'active'}} {{state.betweenContrast}}" >
-                                        <a href="#/betweenContrast">Between Participant Contrast</a>
+                                        <a href="#/betweenContrast">Between-Participant Contrast</a>
                                     </div>
                                     <div class="{{isActive('/withinContrast') && 'active'}} {{state.withinContrast}}" >
-                                        <a href="#/withinContrast">Within Participant Contrast</a>
+                                        <a href="#/withinContrast">Within-Participant Contrast</a>
                                     </div>
                                     <div class="{{isActive('/thetaNull') && 'active'}} {{state.thetaNull}}" >
                                         <a href="#/thetaNull">Null Hypothesis Matrix</a>
                                     </div>
                                     <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                        <a href="#/test">Statistical Test</a>
+                                        <a href="#/test">Statistical Tests</a>
                                     </div>
                                     <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                         <a href="#/typeIError">Type I Error</a>
