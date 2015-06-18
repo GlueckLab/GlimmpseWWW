@@ -123,11 +123,15 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Resize the rows of a matrix
      * @param matrix
-     * @param oldRows
      * @param newRows
      */
-    matrixUtilitiesInstance.resizeRows = function(matrix, oldRows, newRows,
+    matrixUtilitiesInstance.resizeRows = function(matrix, newRows,
                                                   defaultOffDiagonal, defaultDiagonal) {
+        if (newRows === undefined) {
+            return;
+        }
+
+        var oldRows = matrix.data.data.length;
         matrix.rows = newRows;
         if (newRows > oldRows) {
             for(var r = oldRows; r < newRows; r++) {
@@ -145,11 +149,15 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Resize the columns of a matrix
      * @param matrix
-     * @param oldColumns
      * @param newColumns
      */
-    matrixUtilitiesInstance.resizeColumns = function(matrix, oldColumns, newColumns,
+    matrixUtilitiesInstance.resizeColumns = function(matrix, newColumns,
                                                      defaultOffDiagonal, defaultDiagonal) {
+        if (newColumns === undefined) {
+            return;
+        }
+
+        var oldColumns = matrix.data.data[0].length;
         matrix.columns = newColumns;
         if (newColumns > oldColumns) {
             for(var r = 0; r < matrix.rows; r++) {
