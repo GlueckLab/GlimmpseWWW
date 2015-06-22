@@ -482,8 +482,8 @@ glimmpseApp.controller('stateController',
 
             // check if design matrix is valid
         $scope.getStateDesignEssence = function() {
-            if ($scope.matrixUtils.isValidMatrix(
-                $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixXEssence))) {
+            var designEssence = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixXEssence);
+            if ($scope.matrixUtils.isValidMatrix(designEssence) && designEssence.rows >= designEssence.columns) {
                 return glimmpseConstants.stateComplete;
             }
             return glimmpseConstants.stateIncomplete;
@@ -3462,10 +3462,10 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.betweenContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixBetweenContrast);
-            $scope.maxRows = 1;
+            $scope.maxCRows = 1;
             var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
             if (beta !== undefined) {
-                $scope.maxRows = beta.rows;
+                $scope.maxCRows = beta.rows;
             }
         }
 
@@ -3489,10 +3489,10 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.withinContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixWithinContrast);
-            $scope.maxColumns = 1;
+            $scope.maxUColumns = 1;
             var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
             if (beta !== undefined) {
-                $scope.maxColumns = beta.columns;
+                $scope.maxUColumns = beta.columns;
             }
         }
 
