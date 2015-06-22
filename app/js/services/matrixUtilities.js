@@ -34,15 +34,19 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         if (matrix === null || matrix === undefined) {
             return false;
         }
+        if (matrix.rows === null || matrix.rows === undefined || matrix.rows <= 0) {
+            return false;
+        }
+        if (matrix.columns === null || matrix.columns === undefined || matrix.columns <= 0) {
+            return false;
+        }
 
         // make sure data matches row/columns specified
         if (matrix.rows != matrix.data.data.length) {
             return false;
         }
-        if (matrix.rows > 0) {
-            if (matrix.columns != matrix.data.data[0].length) {
-                return false;
-            }
+        if (matrix.columns != matrix.data.data[0].length) {
+            return false;
         }
         // make sure no cells are null
         for(var r = 0; r < matrix.rows; r++) {
