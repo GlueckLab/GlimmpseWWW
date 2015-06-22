@@ -3463,12 +3463,9 @@ glimmpseApp.controller('stateController',
             $scope.betweenContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixBetweenContrast);
             $scope.maxRows = 1;
-            var designEssence = studyDesignService.getMatrixByName(glimmpseConstants.matrixXEssence);
-            if (designEssence !== undefined) {
-                var dim = Math.min(designEssence.rows, designEssence.columns);
-                if (dim > 1) {
-                    $scope.maxRows = designEssence.columns;
-                }
+            var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
+            if (beta !== undefined) {
+                $scope.maxRows = beta.rows;
             }
         }
 
