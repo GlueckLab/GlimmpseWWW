@@ -109,16 +109,13 @@
                         <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
                             <a href="#/repeatedMeasures">Repeated Measures</a>
                         </div>
+                        <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
+                            <a href="#/smallestGroupSize" ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+                            <label ng-show="!viewAllowed(state.smallestGroupSize)">Smallest Group Size</label>
+                        </div>
                         <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
                             <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Sizes</a>
                             <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Sizes</label>
-                        </div>
-                        <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                            <a href="#/smallestGroupSize"
-                               ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                            <label ng-show="!viewAllowed(state.smallestGroupSize)">
-                                Smallest Group Size
-                            </label>
                         </div>
                     </div>
                 </div>
