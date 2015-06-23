@@ -754,7 +754,7 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.covariates)) { $scope.incompleteViews.push("Model > Covariate"); }
                 if (!$scope.testDone($scope.state.responseVariables)) { $scope.incompleteViews.push("Model > Response Variables"); }
                 if (!$scope.testDone($scope.state.repeatedMeasures)) { $scope.incompleteViews.push("Model > Repeated Measures"); }
-                if (!$scope.testDone($scope.state.relativeGroupSize)) { $scope.incompleteViews.push("Model > Relative Group Size"); }
+                if (!$scope.testDone($scope.state.relativeGroupSize)) { $scope.incompleteViews.push("Model > Relative Group Sizes"); }
                 if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Model > Smallest Group Size"); }
                 // hypothesis menu
                 if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
