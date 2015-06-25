@@ -750,7 +750,7 @@ glimmpseApp.controller('stateController',
                 // GUIDED MODE
                 // model menu
                 if (!$scope.testDone($scope.state.isu)) { $scope.incompleteViews.push("Model > Clustering"); }
-                if (!$scope.testDone($scope.state.predictors)) { $scope.incompleteViews.push("Model > Predictors"); }
+                if (!$scope.testDone($scope.state.predictors)) { $scope.incompleteViews.push("Model > Predictors and Groups"); }
                 if (!$scope.testDone($scope.state.covariates)) { $scope.incompleteViews.push("Model > Covariate"); }
                 if (!$scope.testDone($scope.state.responseVariables)) { $scope.incompleteViews.push("Model > Response Variables"); }
                 if (!$scope.testDone($scope.state.repeatedMeasures)) { $scope.incompleteViews.push("Model > Repeated Measures"); }
