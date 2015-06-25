@@ -68,9 +68,9 @@
            <div class="category-list white-box padding10 rounded-box" ng-show="currentPredictor != undefined">
                <form name="categoriesForm" novalidate ng-submit="addCategory()">
                    <div class="form-group">
-                       <label>Category Names for '{{currentPredictor.predictorName}}'</label>
+                       <label>Values for '{{currentPredictor.predictorName}}'</label>
                        <input class="form-control" name="newCategory" type="text"
-                              placeholder="Enter category for '{{currentPredictor.predictorName}}'"
+                              placeholder="Enter value for '{{currentPredictor.predictorName}}'"
                               ng-model="newCategoryName"
                               autocomplete="off" autofocus required />
                    </div>
@@ -90,7 +90,7 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-       {{studyDesign.betweenParticipantFactorList}}
+       Between Participant Factor List: {{studyDesign.betweenParticipantFactorList}}
     </div>
     <div class="vmargin15">
        current predictor = {{currentPredictor}}
