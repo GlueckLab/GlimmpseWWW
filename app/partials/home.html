@@ -20,24 +20,30 @@
 
     <!-- Calculate button -->
     <div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
-        <a class="btn btn-calculate" href="#/results/report"
-           ng-click="calculate()">
-            Calculate
-        </a>
+      <a class="btn btn-calculate" href="#/results/report"
+          ng-click="calculate()">
+        Calculate{{glimmpseConstants.debug
+                     ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                     : ''}}
+      </a>
     </div>
     <div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
-        <button data-ng-click="showIncompleteItemsDialog()"
-                class="btn btn-calculate-disabled"
-                data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
-
+      <button data-ng-click="showIncompleteItemsDialog()"
+          class="btn btn-calculate-disabled"
+          data-toggle="modal" data-target="#incompleteDialog">
+        Calculate{{glimmpseConstants.debug
+                     ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                     : ''}}
+      </button>
     </div>
     <!-- results nav -->
     <div ng-show="powerService.cachedResults != undefined">
-
         <div class="panel-group">
             <div class="panel panel-default">
                 <div class="btn btn-results">
-                    Results
+                    Results{{glimmpseConstants.debug
+                               ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                               : ''}}
                 </div>
                 <div class="panel-body" >
                     <div class="{{isActive('/results/report') && 'active'}}" >
