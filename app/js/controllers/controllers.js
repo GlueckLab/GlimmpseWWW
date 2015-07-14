@@ -130,7 +130,7 @@ glimmpseApp.controller('stateController',
                     if (cluster.groupName === undefined || cluster.groupName.length <= 0 ||
                         cluster.groupSize === undefined || cluster.groupSize < 1 ||
                         cluster.intraClusterCorrelation === undefined ||
-                        cluster.intraClusterCorreation < -1 || cluster.intraClusterCorreation > 1) {
+                        cluster.intraClusterCorrelation < -1 || cluster.intraClusterCorrelation > 1) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
                 }
@@ -816,7 +816,7 @@ glimmpseApp.controller('stateController',
          * clear the study design
          */
         $scope.reset = function() {
-            if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            if (glimmpseConstants.debug || confirm('This action will clear any unsaved study design information.  Continue?')) {
                 $scope.studyDesign.reset();
                 $scope.powerService.clearCache();
                 $scope.metaData.reset();
