@@ -1241,7 +1241,6 @@ glimmpseApp.controller('stateController',
                         $scope.testDone($scope.state.typeIError) &&
                         $scope.testDone($scope.state.designEssence) &&
                         $scope.testDone($scope.state.covariates) &&
-                        $scope.testDone($scope.state.relativeGroupSize) &&
                         $scope.testDone($scope.state.smallestGroupSize) &&
                         $scope.testDone($scope.state.beta) &&
                         $scope.testDone($scope.state.meansScale) &&
