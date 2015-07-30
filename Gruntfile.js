@@ -369,6 +369,7 @@ module.exports = function(grunt) {
         'cssmin',
         'copy:minfiles',
         'usemin',
+        'replace:version',
         'zip:glimmpse'
     ]);
 
