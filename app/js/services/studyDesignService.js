@@ -38,7 +38,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /** Indicates what the user is solving for */
     studyDesignInstance.solutionTypeEnum = glimmpseConstants.solutionTypePower;
 
-    /** The name of the independent sampling unit (deprecated) */
+    /** The term to be used for a participant in the study */
     studyDesignInstance.participantLabel = null;
 
     /** Indicates whether the design was built in matrix or guided mode */
@@ -159,7 +159,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             throw errorInvalid;
         }
 
-        // The name of the independent sampling unit (deprecated)
+        // The term to be used for a participant in the study
         if (object.hasOwnProperty("participantLabel")) {
             studyDesignInstance.participantLabel = object.participantLabel;
         } else {

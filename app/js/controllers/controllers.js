@@ -1954,15 +1954,21 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.pluralize = owl.pluralize;
+            // $scope.aOrAn = AvsAn.query;
         }
 
         $scope.addCluster = function() {
 
             if (studyDesignService.clusteringTree.length < 3) {
-                studyDesignService.clusteringTree.push({
+                studyDesignService.clusteringTree.unshift({
                     idx: studyDesignService.clusteringTree.length,
                     node: 0, parent: 0
                 });
+                /* idx does not actually seem to be used */
+                for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
+                    studyDesignService.clusteringTree[i].idx = i;
+                }
             }
         };
         /**
@@ -1970,7 +1976,11 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeCluster = function() {
 
-            studyDesignService.clusteringTree.pop();
+            studyDesignService.clusteringTree.shift();
+            /* idx does not actually seem to be used */
+            for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
+                studyDesignService.clusteringTree[i].idx = i;
+            }
         };
 
         /**
@@ -3588,6 +3598,8 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.pluralize = owl.pluralize;
+            // $scope.aOrAn = AvsAn.query;
             $scope.powerService = powerService;
             $scope.processing = false;
             $scope.gridData = {};
@@ -3690,7 +3702,7 @@ glimmpseApp.controller('stateController',
                 var selectedResult = $scope.resultsGridOptions.selectedItems[0];
                 $scope.currentResultDetails = undefined;
                 $scope.currentResultDetails = {
-                    isu: 'participant',
+                    isu: $scope.studyDesign.participantLabel ? $scope.studyDesign.participantLabel : 'participant',
                     totalObsPerISU: 1,
                     power: selectedResult.actualPower.toFixed(3),
                     totalSampleSize: selectedResult.totalSampleSize,

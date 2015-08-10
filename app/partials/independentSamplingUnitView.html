@@ -37,30 +37,51 @@
     You may specify up to 3 levels of clustering.
 </p>
 
-<div>
+<p>
+    What term would you like to use for a participant in the study? (For example, student.)
+    <input name="participant" class="form-control" type="text"
+           placeholder="participant" ng-model="studyDesign.participantLabel" autocomplete="off" autofocus>
+</p>
 
+<div>
     <button class="btn btn-primary vmargin15" ng-show="studyDesign.clusteringTree.length <= 0"
             data-ng-click="addCluster()">Add Clustering</button>
+
+    <div>
+        <button class="btn btn-primary vmargin15" ng-show="studyDesign.clusteringTree.length > 0"
+                ng-disabled="studyDesign.clusteringTree.length >= 3"
+                data-ng-click="addCluster()">Add Clustering Level</button>
+        <button class="btn btn-warning vmargin15" ng-show="studyDesign.clusteringTree.length > 0"
+                data-ng-click="removeCluster()">Remove Clustering Level</button>
+        <button class="btn btn-danger vmargin15" ng-show="studyDesign.clusteringTree.length > 0"
+                data-ng-click="removeClustering()">Remove Clustering</button>
+    </div>
+
+    <br/>
 
     <div class="well" ng-repeat="cluster in studyDesign.clusteringTree">
         <form novalidate name="clusteringForm">
             <div class="form-group">
-                <label ng-show="$index == 0">
-                    Cluster name (Level {{$index+1}})
+                <label>
+                    Clustering level {{$index+1}} name
                 </label>
-                <label ng-show="$index > 0">
-                    {{studyDesign.clusteringTree[$index-1].groupName}} subcluster name (Level {{$index+1}})
-                </label>
-                <input ng-show="$index == 0" name="clusterName" class="form-control" type="text"
-                       placeholder="Enter cluster name" ng-model="cluster.groupName"
-                       autocomplete="off" autofocus required>
-                <input ng-show="$index > 0" name="clusterName" class="form-control" type="text"
-                       placeholder="Enter subcluster name" ng-model="cluster.groupName"
+                <input name="clusterName" class="form-control" type="text"
+                       placeholder="Enter name" ng-model="cluster.groupName"
                        autocomplete="off" autofocus required>
             </div>
             <div class="form-group">
-                <label ng-show="$index+1 < studyDesign.clusteringTree.length">Number of subclusters</label>
-                <label ng-show="$index+1 == studyDesign.clusteringTree.length">Number of observations</label>
+                <label>
+                    Number of
+                    {{$index == studyDesign.clusteringTree.length - 1
+                        ? (studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants')
+                        : studyDesign.clusteringTree[$index + 1].groupName
+                            ? pluralize(studyDesign.clusteringTree[$index + 1].groupName)
+                            : 'CL' + ($index + 2) + 's'}}
+                    in each
+                    {{studyDesign.clusteringTree[$index].groupName
+                        ? studyDesign.clusteringTree[$index].groupName
+                        : 'CL' + ($index + 1)}}
+                </label>
                 <input name="nOfObs" class="form-control" type="number" placeholder="" ng-model="cluster.groupSize"
                        min='1' step='1' autocomplete="off" autofocus required>
                 <div class="alert alert-danger" class="form-control"  ng-show="clusteringForm.nOfObs.$error.min">Please enter a positive number</div>
@@ -75,18 +96,8 @@
         </form>
     </div>
 
-    <div>
-        <button class="btn btn-primary" ng-show="studyDesign.clusteringTree.length > 0 && studyDesign.clusteringTree.length < 3"
-                data-ng-click="addCluster()">Add Subcluster</button>
-        <button class="btn btn-warning" ng-show="studyDesign.clusteringTree.length == 1"
-                data-ng-click="removeCluster()">Remove Cluster</button>
-        <button class="btn btn-warning" ng-show="studyDesign.clusteringTree.length > 1"
-                data-ng-click="removeCluster()">Remove Subcluster</button>
-        <button class="btn btn-danger" ng-show="studyDesign.clusteringTree.length > 1"
-                data-ng-click="removeClustering()">Remove Clustering</button>
-    </div>
-
     <div ng-show="glimmpseConstants.debug == true">
+        <div class="vmargin15">Participant: {{studyDesign.participantLabel ? studyDesign.participantLabel : 'participant'}}</div>
         <div class="vmargin15">Clustering tree: {{studyDesign.clusteringTree}}</div>
     </div>
 
