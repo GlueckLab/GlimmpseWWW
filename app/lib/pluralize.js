@@ -140,6 +140,9 @@ owl.pluralize = (function() {
     //   Example:
     //     pluralize("château", 2 "châteaux") -> "châteaux"
     function pluralize(word, count, plural) {
+        // handle undefined reasonably; added by Wes.
+        if ( typeof word === 'undefined' ) return '';
+
         // handle the empty string reasonably.
         if ( word === '' ) return '';
 
