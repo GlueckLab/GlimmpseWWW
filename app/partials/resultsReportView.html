@@ -39,18 +39,18 @@
             <label>Independent Sampling Unit</label>
             <div class="well white-box">
                 <label>{{currentResultDetails.isu}}</label>
-                <ul ng-show="studyDesign.clusteringTree.length > 0">
-                    <li ng-show="studyDesign.clusteringTree.length > 1">
+                <ul ng-if="studyDesign.clusteringTree.length > 0">
+                    <li ng-if="studyDesign.clusteringTree.length > 1">
                         {{studyDesign.clusteringTree[0].groupSize}}
                         {{pluralize(studyDesign.clusteringTree[1].groupName)}}
                         in each {{currentResultDetails.isu}}
                     </li>
-                    <li ng-show="studyDesign.clusteringTree.length > 2">
+                    <li ng-if="studyDesign.clusteringTree.length > 2">
                         {{studyDesign.clusteringTree[1].groupSize}}
                         {{pluralize(studyDesign.clusteringTree[2].groupName)}}
                         in each {{studyDesign.clusteringTree[1].groupName}}
                     </li>
-                    <li ng-show="studyDesign.clusteringTree.length > 1">
+                    <li ng-if="studyDesign.clusteringTree.length > 1">
                         {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupSize}}
                         {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
                         in each {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupName}}
@@ -67,10 +67,10 @@
         </div>
         <div>
             <label>Sample Size Details</label>
-            <div ng-show="metaData.predictorCombinationList.length <= 0">
+            <div ng-if="metaData.predictorCombinationList.length <= 0">
                 <label class="form-control">Total Sample Size: {{currentResultDetails.totalSampleSize}}</label>
             </div>
-            <div ng-show="metaData.predictorCombinationList.length > 0">
+            <div ng-if="metaData.predictorCombinationList.length > 0">
                 <table class="scroll table table-striped table-bordered table-condensed">
                     <tr>
                         <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
@@ -107,7 +107,7 @@
     <div ng-bind-html-unsafe="powerService.cachedError"></div>
 </div>
 
-<div ng-show="glimmpseConstants.debug">
+<div ng-if="glimmpseConstants.debug">
     <div class="vmargin15">
         {{gridData}}
     </div>
