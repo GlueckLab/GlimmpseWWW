@@ -1,4 +1,3 @@
-<!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
 * Copyright (C) 2013 Regents of the University of Colorado.
@@ -17,25 +16,26 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>
-    Repeated Measures
-</h3>
+<h3>Repeated Measures</h3>
 
 <p>
-    Repeated measures are present when a response variable is measured on each research
-    participant on two or more occasions or under two or more conditions.
+    GLIMMPSE allows you to define within-participant factors, specified as repeated measures.
+    Repeated measures are present when a response variable is measured on each independent
+    sampling unit on two or more occasions or under two or more conditions.
+    The values of the repeated measures (that is, the levels of the within-participant factors)
+    distinguish the occasions or conditions.
 </p>
 
 <p>
-    If the study includes repeated measurements, click “Add repeated measures” and follow
-    the prompts. The text entered in the "Units" text box indicates the dimension over
-    which measures were taken (ex. time, days, locations, etc.). The choice of "Type"
-    indicates whether the repeated measures are numeric (ex. time), ordinal (ex. 1st,
-    2nd, 3rd), or categorical (ex. arm, leg, hand).
+    If the study includes repeated measurements, click "Add Repeated Measures" and follow
+    the prompts. The text entered in the "Dimension" text box indicates the dimension over
+    which measures were taken (e.g. time, days, locations, etc.). The choice of "Type"
+    indicates whether the repeated measures are numeric (e.g. time), ordinal (e.g. 1st,
+    2nd, 3rd), or categorical (e.g. arm, leg, hand).
 </p>
 
 <p>
-    You may specify up to 3 factors of repeated measures.
+    You may specify up to 3 repeated measures.
 </p>
 
 <div>
@@ -45,9 +45,9 @@
     <div class="well" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
         <form novalidate name="rmForm">
             <div class="form-group">
-                <label>Units (Level {{$index+1}})</label>
+                <label>Dimension (Repeated Measure {{$index+1}})</label>
                 <input name="dimension" class="form-control" type="text"
-                       placeholder="Enter the units for this factor of repeated measures (time, scenarios, etc.)"
+                       placeholder="Enter the dimension for this repeated measure (time, scenarios, etc.)"
                        ng-model="factor.dimension" ng-change="updateDimension(factor, $index)"
                        autocomplete="off" autofocus required >
             </div>
@@ -79,13 +79,12 @@
         </form>
     </div>
 
-
     <div>
         <button class="btn btn-primary"
                 ng-show="studyDesign.repeatedMeasuresTree.length > 0 && studyDesign.repeatedMeasuresTree.length < 3"
-                data-ng-click="addLevel()">Add Level</button>
+                data-ng-click="addLevel()">Add Repeated Measure</button>
         <button class="btn btn-warning" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
-                data-ng-click="removeLevel()">Remove Level</button>
+                data-ng-click="removeLevel()">Remove Repeated Measure</button>
         <button class="btn btn-danger" ng-show="studyDesign.repeatedMeasuresTree.length > 0"
                 data-ng-click="removeRepeatedMeasures()">Clear All</button>
     </div>
@@ -101,7 +100,4 @@
             Covariance: {{studyDesign.covariance}}
         </div>
     </div>
-
 </div>
-
-

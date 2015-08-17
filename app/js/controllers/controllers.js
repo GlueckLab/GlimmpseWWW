@@ -130,7 +130,7 @@ glimmpseApp.controller('stateController',
                     if (cluster.groupName === undefined || cluster.groupName.length <= 0 ||
                         cluster.groupSize === undefined || cluster.groupSize < 1 ||
                         cluster.intraClusterCorrelation === undefined ||
-                        cluster.intraClusterCorreation < -1 || cluster.intraClusterCorreation > 1) {
+                        cluster.intraClusterCorrelation < -1 || cluster.intraClusterCorrelation > 1) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
                 }
@@ -750,12 +750,12 @@ glimmpseApp.controller('stateController',
                 // GUIDED MODE
                 // model menu
                 if (!$scope.testDone($scope.state.isu)) { $scope.incompleteViews.push("Model > Clustering"); }
-                if (!$scope.testDone($scope.state.predictors)) { $scope.incompleteViews.push("Model > Predictors"); }
+                if (!$scope.testDone($scope.state.predictors)) { $scope.incompleteViews.push("Model > Predictors and Groups"); }
                 if (!$scope.testDone($scope.state.covariates)) { $scope.incompleteViews.push("Model > Covariate"); }
                 if (!$scope.testDone($scope.state.responseVariables)) { $scope.incompleteViews.push("Model > Response Variables"); }
                 if (!$scope.testDone($scope.state.repeatedMeasures)) { $scope.incompleteViews.push("Model > Repeated Measures"); }
-                if (!$scope.testDone($scope.state.relativeGroupSize)) { $scope.incompleteViews.push("Model > Relative Group Size"); }
                 if (!$scope.testDone($scope.state.smallestGroupSize)) { $scope.incompleteViews.push("Model > Smallest Group Size"); }
+                if (!$scope.testDone($scope.state.relativeGroupSize)) { $scope.incompleteViews.push("Model > Relative Group Sizes"); }
                 // hypothesis menu
                 if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
                 if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
@@ -816,7 +816,7 @@ glimmpseApp.controller('stateController',
          * clear the study design
          */
         $scope.reset = function() {
-            if (confirm('This action will clear any unsaved study design information.  Continue?')) {
+            if (glimmpseConstants.debug || confirm('This action will clear any unsaved study design information.  Continue?')) {
                 $scope.studyDesign.reset();
                 $scope.powerService.clearCache();
                 $scope.metaData.reset();
@@ -1241,7 +1241,6 @@ glimmpseApp.controller('stateController',
                         $scope.testDone($scope.state.typeIError) &&
                         $scope.testDone($scope.state.designEssence) &&
                         $scope.testDone($scope.state.covariates) &&
-                        $scope.testDone($scope.state.relativeGroupSize) &&
                         $scope.testDone($scope.state.smallestGroupSize) &&
                         $scope.testDone($scope.state.beta) &&
                         $scope.testDone($scope.state.meansScale) &&
@@ -1955,15 +1954,21 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.pluralize = owl.pluralize;
+            // $scope.aOrAn = AvsAn.query;
         }
 
         $scope.addCluster = function() {
 
             if (studyDesignService.clusteringTree.length < 3) {
-                studyDesignService.clusteringTree.push({
+                studyDesignService.clusteringTree.unshift({
                     idx: studyDesignService.clusteringTree.length,
                     node: 0, parent: 0
                 });
+                /* idx does not actually seem to be used */
+                for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
+                    studyDesignService.clusteringTree[i].idx = i;
+                }
             }
         };
         /**
@@ -1971,7 +1976,11 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeCluster = function() {
 
-            studyDesignService.clusteringTree.pop();
+            studyDesignService.clusteringTree.shift();
+            /* idx does not actually seem to be used */
+            for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
+                studyDesignService.clusteringTree[i].idx = i;
+            }
         };
 
         /**
@@ -3589,6 +3598,8 @@ glimmpseApp.controller('stateController',
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
+            $scope.pluralize = owl.pluralize;
+            // $scope.aOrAn = AvsAn.query;
             $scope.powerService = powerService;
             $scope.processing = false;
             $scope.gridData = {};
@@ -3691,7 +3702,7 @@ glimmpseApp.controller('stateController',
                 var selectedResult = $scope.resultsGridOptions.selectedItems[0];
                 $scope.currentResultDetails = undefined;
                 $scope.currentResultDetails = {
-                    isu: 'participant',
+                    isu: $scope.studyDesign.participantLabel ? $scope.studyDesign.participantLabel : 'participant',
                     totalObsPerISU: 1,
                     power: selectedResult.actualPower.toFixed(3),
                     totalSampleSize: selectedResult.totalSampleSize,

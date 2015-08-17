@@ -58,6 +58,7 @@
     <script src="lib/jquery.form.min.js"></script>
     <script src="lib/highcharts.js"></script>
     <script src="lib/exporting.js"></script>
+    <script src="lib/pluralize.js"></script>
 
     <!-- order matters here, so be careful if you edit -->
     <!-- Angular.js scripts -->
@@ -493,24 +494,30 @@
             <div class="col-md-3 visible-md visible-lg">
                 <!-- Calculate button -->
                 <div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
-                    <a class="btn btn-calculate" href="#/results/report"
-                       ng-click="calculate()">
-                        Calculate
-                    </a>
+                  <a class="btn btn-calculate" href="#/results/report"
+                      ng-click="calculate()">
+                    Calculate{{glimmpseConstants.debug
+                                 ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                 : ''}}
+                  </a>
                 </div>
                 <div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
-                    <button data-ng-click="showIncompleteItemsDialog()"
-                            class="btn btn-calculate-disabled"
-                            data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
-
+                  <button data-ng-click="showIncompleteItemsDialog()"
+                      class="btn btn-calculate-disabled"
+                      data-toggle="modal" data-target="#incompleteDialog">
+                    Calculate{{glimmpseConstants.debug
+                                 ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                 : ''}}
+                  </button>
                 </div>
                 <!-- results nav -->
                 <div ng-show="powerService.cachedResults != undefined">
-
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="btn btn-results">
-                                Results
+                                Results{{glimmpseConstants.debug
+                                           ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                           : ''}}
                             </div>
                             <div class="panel-body" >
                                 <div class="{{isActive('/results/report') && 'active'}}" >
@@ -571,7 +578,7 @@
                                         <a href="#/isu">Clustering</a>
                                     </div>
                                     <div class="{{isActive('/predictors') && 'active'}} {{state.predictors}}" >
-                                        <a href="#/predictors">Predictors</a>
+                                        <a href="#/predictors">Predictors and Groups</a>
                                     </div>
                                     <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
                                         <a href="#/covariates">Covariate</a>
@@ -582,16 +589,13 @@
                                     <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
                                         <a href="#/repeatedMeasures">Repeated Measures</a>
                                     </div>
-                                    <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
-                                        <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Size</a>
-                                        <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Size</label>
-                                    </div>
                                     <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                                        <a href="#/smallestGroupSize"
-                                           ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                                        <label ng-show="!viewAllowed(state.smallestGroupSize)">
-                                            Smallest Group Size
-                                        </label>
+                                        <a href="#/smallestGroupSize" ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
+                                        <label ng-show="!viewAllowed(state.smallestGroupSize)">Smallest Group Size</label>
+                                    </div>
+                                    <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
+                                        <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Sizes</a>
+                                        <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Sizes</label>
                                     </div>
                                 </div>
                             </div>

@@ -16,8 +16,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Size of the Smallest Group</h3>
-
+<h3>Smallest Group Size</h3>
 
 <p>
     Enter the number of independent sampling units (participants, clusters) in the
@@ -34,9 +33,12 @@
     <form name="samplsSizeForm" novalidate ng-submit="addSampleSize()">
         <div class="form-group">
             <label>Smallest Group Size</label>
-            <input class="form-control" name="newSampleSize" type="number" placeholder="Enter a sample size value" ng-model="newSampleSize"
-                   min='2' step='1' autocomplete="off" autofocus required >
-            <div class="alert alert-danger" ng-show="samplsSizeForm.newSampleSize.$error.min">Please enter an integer greater than 2</div>
+            <input class="form-control" name="newSampleSize" type="number"
+                   placeholder="Enter a sample size value" ng-model="newSampleSize"
+                   min='2' step='1' autocomplete="off" autofocus required>
+            <div class="alert alert-danger" ng-show="samplsSizeForm.newSampleSize.$error.min">
+                Please enter an integer greater than 2
+            </div>
         </div>
     </form>
     <ul class="list-unstyled">
@@ -45,7 +47,4 @@
             <button data-ng-click="deleteSampleSize(samplesize)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
-
 </div>
-
-
