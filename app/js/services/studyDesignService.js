@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2013 Regents of the University of Colorado.
+ * Copyright (C) 2015 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -243,7 +243,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             if (object.sampleSizeList === null) {
                 studyDesignInstance.sampleSizeList = [];
             } else {
-                studyDesignInstance.sampleSizeList = object.sampleSizeList;
+                studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
+                    return {
+                        idx: idx,
+                        value: typeof e.value !== 'number' || e.value < 2 ? 2 : Math.floor(e.value)
+                    };
+                });
             }
         } else {
             throw errorInvalid;
