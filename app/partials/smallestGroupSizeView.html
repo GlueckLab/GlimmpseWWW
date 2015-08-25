@@ -29,14 +29,14 @@
 </p>
 
 <div class="well">
-    <form name="samplsSizeForm" novalidate ng-submit="addSampleSize()">
+    <form name="sampleSizeForm" novalidate ng-submit="addSampleSize()">
         <div class="form-group">
             <label>Smallest Group Size</label>
-            <input class="form-control" name="newSampleSize" type="number"
+            <input class="form-control" name="newSampleSize" type="number" ng-pattern="/^\d+$/"
                    placeholder="Enter a sample size value" ng-model="newSampleSize"
                    min='2' step='1' autocomplete="off" autofocus required>
-            <div class="alert alert-danger" ng-show="samplsSizeForm.newSampleSize.$error.min">
-                Please enter an integer greater than 2
+            <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.min">
+                Please enter an integer greater than 1
             </div>
         </div>
     </form>
@@ -46,4 +46,8 @@
             <button data-ng-click="deleteSampleSize(samplesize)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
+</div>
+
+<div ng-show="glimmpseConstants.debug == true">
+    Sample Size List: {{studyDesign.sampleSizeList}}
 </div>
