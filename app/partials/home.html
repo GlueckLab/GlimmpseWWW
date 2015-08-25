@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -115,13 +115,9 @@
                         <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
                             <a href="#/repeatedMeasures">Repeated Measures</a>
                         </div>
-                        <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                            <a href="#/smallestGroupSize" ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                            <label ng-show="!viewAllowed(state.smallestGroupSize)">Smallest Group Size</label>
-                        </div>
-                        <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
-                            <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Sizes</a>
-                            <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Sizes</label>
+                        <div class="{{isActive('/groupSizes') && 'active'}} {{state.groupSizes}}" >
+                            <a href="#/groupSizes" ng-show="viewAllowed(state.groupSizes)">Group Sizes</a>
+                            <label ng-show="!viewAllowed(state.groupSizes)">Group Sizes</label>
                         </div>
                     </div>
                 </div>
