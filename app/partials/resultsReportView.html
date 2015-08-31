@@ -39,8 +39,15 @@
             <label>Independent Sampling Unit</label>
             <div class="well white-box">
                 <label>{{currentResultDetails.isu}}</label>
-                <ul ng-if="studyDesign.clusteringTree.length > 0">
-                    <li ng-if="studyDesign.clusteringTree.length > 1">
+                <ul ng-if="studyDesign.clusteringTree.length == 1">
+                    <li>
+                        {{currentResultDetails.totalObsPerISU}}
+                        {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
+                        in each {{currentResultDetails.isu}}
+                    </li>
+                </ul>
+                <ul ng-if="studyDesign.clusteringTree.length > 1">
+                    <li>
                         {{studyDesign.clusteringTree[0].groupSize}}
                         {{pluralize(studyDesign.clusteringTree[1].groupName)}}
                         in each {{currentResultDetails.isu}}
@@ -50,7 +57,7 @@
                         {{pluralize(studyDesign.clusteringTree[2].groupName)}}
                         in each {{studyDesign.clusteringTree[1].groupName}}
                     </li>
-                    <li ng-if="studyDesign.clusteringTree.length > 1">
+                    <li>
                         {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupSize}}
                         {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
                         in each {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupName}}
