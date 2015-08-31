@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2013 Regents of the University of Colorado.
+ * Copyright (C) 2015 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /** Indicates what the user is solving for */
     studyDesignInstance.solutionTypeEnum = glimmpseConstants.solutionTypePower;
 
-    /** The name of the independent sampling unit (deprecated) */
+    /** The term to be used for a participant in the study */
     studyDesignInstance.participantLabel = null;
 
     /** Indicates whether the design was built in matrix or guided mode */
@@ -159,7 +159,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             throw errorInvalid;
         }
 
-        // The name of the independent sampling unit (deprecated)
+        // The term to be used for a participant in the study
         if (object.hasOwnProperty("participantLabel")) {
             studyDesignInstance.participantLabel = object.participantLabel;
         } else {
@@ -243,7 +243,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             if (object.sampleSizeList === null) {
                 studyDesignInstance.sampleSizeList = [];
             } else {
-                studyDesignInstance.sampleSizeList = object.sampleSizeList;
+                studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
+                    return {
+                        idx: idx,
+                        value: typeof e.value !== 'number' || e.value < 2 ? 2 : Math.floor(e.value)
+                    };
+                });
             }
         } else {
             throw errorInvalid;
@@ -690,14 +695,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             }
 
             if (beta.rows != rows) {
-                matrixUtilities.resizeRows(beta, beta.rows, rows, 0, 0);
+                matrixUtilities.resizeRows(beta, rows, 0, 0);
             }
             if (beta.columns != columns) {
-                matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
+                matrixUtilities.resizeColumns(beta, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
                     if (betaRandom.columns != columns) {
-                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
+                        matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
                     }
                 }
             }

@@ -69,9 +69,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
              * Add or subtract rows when the user changes the row dimension
              */
             $scope.resizeRows = function() {
-                var oldRows = $scope.matrix.data.data.length;
-                var newRows = $scope.matrix.rows;
-                $scope.matrixUtils.resizeRows($scope.matrix, oldRows, newRows,
+                $scope.matrixUtils.resizeRows($scope.matrix, $scope.matrix.rows,
                     $scope.defaultOffDiagonal, $scope.defaultDiagonal);
             };
 
@@ -79,9 +77,7 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
              * Add or remove columns when the user changes the column dimension
              */
             $scope.resizeColumns = function() {
-                var oldColumns = $scope.matrix.data.data[0].length;
-                var newColumns = $scope.matrix.columns;
-                $scope.matrixUtils.resizeColumns($scope.matrix, oldColumns, newColumns,
+                $scope.matrixUtils.resizeColumns($scope.matrix, $scope.matrix.columns,
                     $scope.defaultOffDiagonal, $scope.defaultDiagonal);
             };
 

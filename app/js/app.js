@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2013 Regents of the University of Colorado.
+ * Copyright (C) 2015 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -143,11 +143,11 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             .when('/isu',
             {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'clusteringController' }
         )
-            .when('/relativeGroupSize',
-            {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'relativeGroupSizeController' }
-        )
             .when('/smallestGroupSize',
             {templateUrl: 'partials/smallestGroupSizeView.html', controller: 'sampleSizeController' }
+        )
+            .when('/groupSizes',
+            {templateUrl: 'partials/groupSizesView.html', controller: 'groupSizesController' }
         )
             .when('/responseVariables',
             {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }

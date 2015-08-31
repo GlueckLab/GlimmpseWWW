@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -58,6 +58,7 @@
     <script src="lib/jquery.form.min.js"></script>
     <script src="lib/highcharts.js"></script>
     <script src="lib/exporting.js"></script>
+    <script src="lib/pluralize.js"></script>
 
     <!-- order matters here, so be careful if you edit -->
     <!-- Angular.js scripts -->
@@ -493,24 +494,30 @@
             <div class="col-md-3 visible-md visible-lg">
                 <!-- Calculate button -->
                 <div ng-show="calculateAllowed() && powerService.cachedResults == undefined">
-                    <a class="btn btn-calculate" href="#/results/report"
-                       ng-click="calculate()">
-                        Calculate
-                    </a>
+                  <a class="btn btn-calculate" href="#/results/report"
+                      ng-click="calculate()">
+                    Calculate{{glimmpseConstants.debug
+                                 ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                 : ''}}
+                  </a>
                 </div>
                 <div ng-show="!calculateAllowed() && powerService.cachedResults == undefined" >
-                    <button data-ng-click="showIncompleteItemsDialog()"
-                            class="btn btn-calculate-disabled"
-                            data-toggle="modal" data-target="#incompleteDialog">Calculate</button>
-
+                  <button data-ng-click="showIncompleteItemsDialog()"
+                      class="btn btn-calculate-disabled"
+                      data-toggle="modal" data-target="#incompleteDialog">
+                    Calculate{{glimmpseConstants.debug
+                                 ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                 : ''}}
+                  </button>
                 </div>
                 <!-- results nav -->
                 <div ng-show="powerService.cachedResults != undefined">
-
                     <div class="panel-group">
                         <div class="panel panel-default">
                             <div class="btn btn-results">
-                                Results
+                                Results{{glimmpseConstants.debug
+                                           ? ' (' + (getMode() == glimmpseConstants.modeGuided ? 'guided' : 'matrix') + ')'
+                                           : ''}}
                             </div>
                             <div class="panel-body" >
                                 <div class="{{isActive('/results/report') && 'active'}}" >
@@ -571,7 +578,7 @@
                                         <a href="#/isu">Clustering</a>
                                     </div>
                                     <div class="{{isActive('/predictors') && 'active'}} {{state.predictors}}" >
-                                        <a href="#/predictors">Predictors</a>
+                                        <a href="#/predictors">Predictors and Groups</a>
                                     </div>
                                     <div class="{{isActive('/covariates') && 'active'}} {{state.covariates}}" >
                                         <a href="#/covariates">Covariate</a>
@@ -582,16 +589,9 @@
                                     <div class="{{isActive('/repeatedMeasures') && 'active'}} {{state.repeatedMeasures}}" >
                                         <a href="#/repeatedMeasures">Repeated Measures</a>
                                     </div>
-                                    <div class="{{isActive('/relativeGroupSize') && 'active'}} {{state.relativeGroupSize}}" >
-                                        <a href="#/relativeGroupSize" ng-show="viewAllowed(state.relativeGroupSize)">Relative Group Size</a>
-                                        <label ng-show="!viewAllowed(state.relativeGroupSize)">Relative Group Size</label>
-                                    </div>
-                                    <div class="{{isActive('/smallestGroupSize') && 'active'}} {{state.smallestGroupSize}}" >
-                                        <a href="#/smallestGroupSize"
-                                           ng-show="viewAllowed(state.smallestGroupSize)">Smallest Group Size</a>
-                                        <label ng-show="!viewAllowed(state.smallestGroupSize)">
-                                            Smallest Group Size
-                                        </label>
+                                    <div class="{{isActive('/groupSizes') && 'active'}} {{state.groupSizes}}" >
+                                        <a href="#/groupSizes" ng-show="viewAllowed(state.groupSizes)">Group Sizes</a>
+                                        <label ng-show="!viewAllowed(state.groupSizes)">Group Sizes</label>
                                     </div>
                                 </div>
                             </div>
@@ -610,7 +610,7 @@
                                         <label ng-show="!viewAllowed(state.hypothesis)">Hypothesis</label>
                                     </div>
                                     <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                        <a href="#/test">Statistical Test</a>
+                                        <a href="#/test">Statistical Tests</a>
                                     </div>
                                     <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                         <a href="#/typeIError">Type I Error</a>
@@ -647,8 +647,8 @@
                                  ng-show="getMode() == glimmpseConstants.modeGuided">
                                 <div class="panel-body">
                                     <div class="{{isActive('/variabilityWithin') && 'active'}} {{state.variabilityWithin}}" >
-                                        <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within Participant</a>
-                                        <label ng-show="!viewAllowed(state.variabilityWithin)">Within Participant</label>
+                                        <a href="#/variabilityWithin" ng-show="viewAllowed(state.variabilityWithin)">Within-Participant</a>
+                                        <label ng-show="!viewAllowed(state.variabilityWithin)">Within-Participant</label>
                                     </div>
                                     <div class="{{isActive('/variabilityCovariate') && 'active'}} {{state.variabilityCovariate}}" >
                                         <a href="#/variabilityCovariate" ng-show="viewAllowed(state.variabilityCovariate)">Covariate</a>
@@ -716,16 +716,16 @@
                             <div id="nav-contrasts" class="panel-collapse collapse" ng-show="getMode() == glimmpseConstants.modeMatrix">
                                 <div class="panel-body">
                                     <div class="{{isActive('/betweenContrast') && 'active'}} {{state.betweenContrast}}" >
-                                        <a href="#/betweenContrast">Between Participant Contrast</a>
+                                        <a href="#/betweenContrast">Between-Participant Contrast</a>
                                     </div>
                                     <div class="{{isActive('/withinContrast') && 'active'}} {{state.withinContrast}}" >
-                                        <a href="#/withinContrast">Within Participant Contrast</a>
+                                        <a href="#/withinContrast">Within-Participant Contrast</a>
                                     </div>
                                     <div class="{{isActive('/thetaNull') && 'active'}} {{state.thetaNull}}" >
                                         <a href="#/thetaNull">Null Hypothesis Matrix</a>
                                     </div>
                                     <div class="{{isActive('/test') && 'active'}} {{state.test}}" >
-                                        <a href="#/test">Statistical Test</a>
+                                        <a href="#/test">Statistical Tests</a>
                                     </div>
                                     <div class="{{isActive('/typeIError') && 'active'}} {{state.typeIError}}" >
                                         <a href="#/typeIError">Type I Error</a>
@@ -1091,11 +1091,13 @@
     <!-- footer -->
     <div class="row">
         <div class="col-md-12 text-center vmargin15">
-            <div>Copyright 2012 University of Colorado Denver. GLIMMPSE is released under the
+            <div>Copyright 2015 University of Colorado Denver. GLIMMPSE is released under the
                 <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License version 2.0</a>.</div>
             <div>
                 GLIMMPSE version @VERSION@ is funded by NIDCR 1 R01 DE020832-01A1 to the University of Florida
                 (Keith E. Muller, PI; Deborah Glueck, University of Colorado site PI)
+            </div>
+            <div>
                 Previous funding was received from an American Recovery
                 and Re-investment Act supplement (3K07CA088811-06S) for NCI grant K07CA088811.
             </div>
