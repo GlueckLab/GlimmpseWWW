@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -41,7 +41,9 @@
             <!-- help popup -->
             <div class="well white-box" ng-show="showHelp">
                 <p>
-                    The following hypothesis types are supported in GLIMMPSE.
+                    GLIMMPSE supports the following hypothesis types,
+                    for between-participant-factors, within-participant factors,
+                    and interactions between them.
                 </p>
 
                 <h3>Grand Mean Hypothesis</h3>
@@ -56,19 +58,21 @@
                 </p>
                 <h3>Main Effect Hypothesis</h3>
                 <p>
-                    Main effect hypotheses test for the effect of a single predictor variable averaged across
+                    Main effect hypotheses test for the effect of a single factor averaged across
                     all other factors. For example, testing if responses of participants in an active drug group
-                    differ on average from participant responses in a placebo group is a common main effect hypothesis.
+                    differ on average from participant responses in a placebo group is a common main effect hypothesis
+                    for a between-participant effect.
                 </p>
                 <h3>Trend Hypothesis</h3>
                 <p>
-                    Trend hypotheses test if the effect of a single predictor follows a particular polynomial pattern,
-                    such as a linear or quadratic trend, across different levels of the predictor.
+                    Trend hypotheses test if the effect of a single factor follows a particular polynomial pattern,
+                    such as a linear or quadratic trend, across different levels of the factor.
+                    Trend hypotheses are often of interest for repeated measures.
                 </p>
                 <h3>Interaction Hypothesis</h3>
                 <p>
-                    Interaction effect hypotheses test if the effect of one predictor changes depending
-                    on the value of one or more additional predictors. An interaction test also can be
+                    Interaction effect hypotheses test if the effect of one factor changes depending
+                    on the value of one or more additional factors. An interaction test also can be
                     interpreted as a test of differences of differences, as well as a test of parallel
                     trajectories of response.
                 </p>
@@ -168,7 +172,7 @@
             </div>
             <!-- trend type -->
             <div ng-show="currentBetweenFactorMapMetaData != undefined || currentWithinFactorMapMetaData != undefined">
-                <label>Select the type of trend for the predictor of interest.</label>
+                <label>Select the type of trend for the factor of interest.</label>
                 <div class="well white-box">
                     <div ng-show="currentBetweenFactorMapMetaData != undefined">
                         <ng-trend-select ng-model="currentBetweenFactorMapMetaData.factorMap.type"
@@ -189,7 +193,7 @@
         </div>
         <!-- Details for the interaction hypothesis -->
         <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisInteraction">
-            <label>Select two or more predictors to include in the interaction
+            <label>Select two or more factors to include in the interaction
                 hypothesis.</label>
             <p>To test for a trend in a given factor, click the factor name and select a trend.</p>
             <div class="well white-box">
