@@ -764,6 +764,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 break;
             case glimmpseConstants.trendLinear:
             case glimmpseConstants.trendAllPolynomial:
+            case glimmpseConstants.trendAllNonconstantPolynomial:
             case glimmpseConstants.trendChangeFromBaseline:
                 if (numValues > 1) {
                     return currentTrend;
@@ -779,7 +780,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /**
      * Select the best hypothesis type for current predictors and repeated measures.
      * Makes sure that the selected type is valid for the predictors and repeated measures.
-     * Called a predictor or repeated measure is deleted from the model
+     * Called when a predictor or repeated measure is deleted from the model.
      */
     studyDesignInstance.getBestHypothesisType = function(currentType) {
         var thetaNull;
@@ -809,6 +810,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 break;
             case glimmpseConstants.hypothesisMainEffect:
+            case glimmpseConstants.hypothesisManova:
             case glimmpseConstants.hypothesisTrend:
                 if (totalFactors > 0) {
                     return currentType;
