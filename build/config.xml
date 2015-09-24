@@ -72,7 +72,7 @@
     <gap:splash gap:platform="ios" height="768" src="resources/screen/GlimmpseScreen1024x768.png" width="1024" />
     <gap:splash gap:platform="winphone" src="resources/screen/windows-phone/screen-portrait.jpg" />
 
-    <gap:plugin name="org.apache.cordova.inappbrowser" />
+    <gap:plugin name="org.crosswalk.engine" version="1.3.0" source="pgb"\>
     <!-- <gap:plugin name="org.apache.cordova.inappbrowser" /> -->
     <access origin="*"/>
 
