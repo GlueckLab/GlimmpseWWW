@@ -32,11 +32,21 @@
     <form name="sampleSizeForm" novalidate ng-submit="addSampleSize()">
         <div class="form-group">
             <label>Smallest Group Size</label>
-            <input class="form-control" name="newSampleSize" type="number" ng-pattern="/^\d+$/"
-                   placeholder="Enter a sample size value" ng-model="newSampleSize"
-                   min='2' step='1' autocomplete="off" autofocus required>
-            <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.min">
-                Please enter an integer greater than 1
+            <div ng-if="glimmpseConstants.platform !== 'android'">
+                <input class="form-control" name="newSampleSize" type="number" ng-pattern="/^\d+$/"
+                       placeholder="Enter a sample size value" ng-model="newSampleSize"
+                       min='2' step='1' autocomplete="off" autofocus required>
+                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.min">
+                    Please enter an integer greater than 1
+                </div>
+            </div>
+            <div ng-if="glimmpseConstants.platform === 'android'">
+                <input class="form-control" name="newSampleSize" type="text" ng-pattern="/^0*(?:(?:1\d+)|(?:[2-9]\d*))$/"
+                       placeholder="Enter a sample size value" ng-model="newSampleSize"
+                       autocomplete="off" autofocus required>
+                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.pattern">
+                    Please enter an integer greater than 1
+                </div>
             </div>
         </div>
     </form>

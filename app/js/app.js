@@ -116,8 +116,10 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
         xAxisSigmaScale: "VARIABILITY_SCALE_FACTOR",
         xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR",
-        xAxisDesiredPower: "DESIRED_POWER"
+        xAxisDesiredPower: "DESIRED_POWER",
 
+        // platform
+        platform: /android/i.test(window.navigator.userAgent) ? 'android' : 'other'
     })
     .config(['$routeProvider', function($routeProvider, studyDesignService, powerService, dropboxService) {
         /*
