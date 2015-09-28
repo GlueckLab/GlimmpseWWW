@@ -1533,7 +1533,7 @@ glimmpseApp.controller('stateController',
                 // add the power to the list
                 studyDesignService.sampleSizeList.push({
                     idx: studyDesignService.sampleSizeList.length,
-                    value: +newN
+                    value: newN
                 });
             }
             // reset the new sample size to null
@@ -1592,7 +1592,7 @@ glimmpseApp.controller('stateController',
                 // add the power to the list
                 studyDesignService.sampleSizeList.push({
                     idx: studyDesignService.sampleSizeList.length,
-                    value: +newN
+                    value: newN
                 });
             }
             // reset the new sample size to null
