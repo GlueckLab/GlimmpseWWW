@@ -43,6 +43,7 @@
     <preference name="disable-cursor" value="false" />
     <preference name="android-minSdkVersion" value="7" />
     <preference name="android-installLocation" value="auto" />
+    <preference name="android-build-tool" value="ant" />
     <icon src="resources/icon/GlimmpseIcon72x72.png" />
     <icon gap:density="ldpi" gap:platform="android" src="resources/icons/GlimmpseIcon32x32.png" />
     <icon gap:density="mdpi" gap:platform="android" src="resources/icons/GlimmpseIcon48x48.png" />
