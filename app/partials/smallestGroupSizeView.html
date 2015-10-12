@@ -36,7 +36,7 @@
                 <input class="form-control" name="newSampleSizeNumber" type="number" ng-pattern="/^\d+$/"
                        placeholder="Enter a sample size value" ng-model="newSampleSize"
                        min='2' step='1' autocomplete="off" autofocus required>
-                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.min">
+                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSizeNumber.$error.min">
                     Please enter an integer greater than 1
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 <input class="form-control" name="newSampleSizeText" type="text" ng-pattern="/^0*(?:(?:1\d+)|(?:[2-9]\d*))$/"
                        placeholder="Enter a sample size value" ng-model="newSampleSize"
                        autocomplete="off" autofocus required>
-                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.pattern">
+                <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSizeText.$error.pattern">
                     Please enter an integer greater than 1
                 </div>
             </div>
