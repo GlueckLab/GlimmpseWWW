@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@
         before the experiment is observed. Scale factors allow you to consider alternative values
         for the means by scaling the values entered on the previous screen. For example, entering the scale
         factors 0.5, 1, and 2 would compute power for the the mean values divided by 2,
-        the mean values as specified, and the mean values multiplied by 2.
+        the mean values as entered, and the mean values multiplied by 2.
     </p>
 </div>
 
@@ -49,9 +49,24 @@
     <form name="scaleFactorMeansForm" novalidate ng-submit="addScaleFactorForMeans()">
         <div class="form-group">
             <label>Scale Factor for Means</label>
-            <input class="form-control" name="newFactor" type="number"
-                   placeholder="Scale Factors for Means" ng-model="newScaleFactorForMeans"
-                   step='0.5' autocomplete="off" autofocus required >
+            <div ng-if="glimmpseConstants.platform !== 'android'">
+              <input class="form-control" name="newFactor" type="number"
+                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
+                     placeholder="Scale Factors for Means" ng-model="$parent.newScaleFactorForMeans"
+                     step='0.5' autocomplete="off" autofocus required >
+              <div class="alert alert-danger" ng-show="scaleFactorMeansForm.newFactor.$error.pattern">
+                Please enter a positive number
+              </div>
+            </div>
+            <div ng-if="glimmpseConstants.platform === 'android'">
+              <input class="form-control" name="newFactor" type="text"
+                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
+                     placeholder="Scale Factors for Means" ng-model="$parent.newScaleFactorForMeans"
+                     ' autocomplete="off" autofocus required >
+              <div class="alert alert-danger" ng-show="scaleFactorMeansForm.newFactor.$error.pattern">
+                Please enter a positive number
+              </div>
+            </div>
         </div>
     </form>
     <ul class="list-unstyled">
@@ -60,6 +75,4 @@
             <button data-ng-click="deleteScaleFactorForMeans(factor)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
-
 </div>
-

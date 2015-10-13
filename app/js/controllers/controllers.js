@@ -1416,7 +1416,7 @@ glimmpseApp.controller('stateController',
                 // add the scale factor to the list
                 studyDesignService.sigmaScaleList.push({
                     idx: studyDesignService.sigmaScaleList.length,
-                    value: newScale
+                    value: +newScale
                 });
             }
             // reset the new factor to null
@@ -1475,7 +1475,7 @@ glimmpseApp.controller('stateController',
                 // add the scale factor to the list
                 studyDesignService.betaScaleList.push({
                     idx: studyDesignService.betaScaleList.length,
-                    value: newScale
+                    value: +newScale
                 });
             }
             // reset the new factor to null
