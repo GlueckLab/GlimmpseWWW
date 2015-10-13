@@ -3714,12 +3714,15 @@ glimmpseApp.controller('stateController',
             }
 
             $scope.columnDefs = [
-                { field: 'actualPower', displayName: 'Power', width: 80, cellFilter:'number:3'},
+                { field: 'actualPower', displayName: 'Power', width: 80,
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) | number:3}}</span></div>'},
+                /* TODO: should display dash instead of confidence limits if they are zero, perhaps; see totalSampleSize field */
                 { field: 'confidenceInterval', displayName: 'Confidence Limits',
-                    cellTemplate: "<div>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</div>",
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</span></div>',
                     visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null),
                     width: 200},
-                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200 },
+                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200,
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null && row.getProperty(col.field) < 0 ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>'},
                 { field: 'nominalPower.value', displayName: 'Target Power', cellFilter:'number:3',
                     visible: ($scope.studyDesign.solutionTypeEnum != glimmpseConstants.solutionTypePower),
                     width: 200},
@@ -3803,7 +3806,8 @@ glimmpseApp.controller('stateController',
                     totalObsPerISU: 1,
                     power: selectedResult.actualPower.toFixed(3),
                     totalSampleSize: selectedResult.totalSampleSize,
-                    perGroupSampleSizeList: []
+                    perGroupSampleSizeList: [],
+                    errorMessage: selectedResult.errorMessage
                 };
 
                 // update the ISU if clustering present

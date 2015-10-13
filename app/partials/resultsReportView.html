@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -31,6 +31,12 @@
     <!-- selected result details -->
     <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
         <h4>Details</h4>
+        <div class="form-group" ng-if="currentResultDetails.errorMessage != null">
+            <label>Error</label>
+            <div class="well white-box">
+                <label>{{currentResultDetails.errorMessage}}</label>
+            </div>
+        </div>
         <div class="form-group">
             <label>Power</label>
             <label class="form-control">{{currentResultDetails.power}}</label>
@@ -69,10 +75,8 @@
                     </li>
                 </ul>
             </div>
-
-
         </div>
-        <div>
+        <div ng-if="currentResultDetails.totalSampleSize >= 0">
             <label>Sample Size Details</label>
             <div ng-if="metaData.predictorCombinationList.length <= 0">
                 <label class="form-control">Total Sample Size: {{currentResultDetails.totalSampleSize}}</label>
