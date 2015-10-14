@@ -49,23 +49,13 @@
     <form name="scaleFactorMeansForm" novalidate ng-submit="addScaleFactorForMeans()">
         <div class="form-group">
             <label>Scale Factor for Means</label>
-            <div ng-if="glimmpseConstants.platform !== 'android'">
-              <input class="form-control" name="newFactor" type="number"
-                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
-                     placeholder="Scale Factors for Means" ng-model="$parent.newScaleFactorForMeans"
-                     step='0.5' autocomplete="off" autofocus required >
-              <div class="alert alert-danger" ng-show="scaleFactorMeansForm.newFactor.$error.pattern">
-                Please enter a positive number
-              </div>
-            </div>
-            <div ng-if="glimmpseConstants.platform === 'android'">
-              <input class="form-control" name="newFactor" type="text"
-                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
-                     placeholder="Scale Factors for Means" ng-model="$parent.newScaleFactorForMeans"
-                     ' autocomplete="off" autofocus required >
-              <div class="alert alert-danger" ng-show="scaleFactorMeansForm.newFactor.$error.pattern">
-                Please enter a positive number
-              </div>
+            <input class="form-control" name="newFactor"
+                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
+                   ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
+                   placeholder="Scale Factors for Means" ng-model="newScaleFactorForMeans"
+                   step='0.5' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="scaleFactorMeansForm.newFactor.$error.pattern">
+              Please enter a positive number
             </div>
         </div>
     </form>

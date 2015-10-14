@@ -54,23 +54,13 @@
     <form name="scaleFactorVarianceForm" novalidate ng-submit="addScaleFactorForVariance()">
         <div class="form-group">
             <label>Scale Factors for Variability</label>
-            <div ng-if="glimmpseConstants.platform !== 'android'">
-              <input class="form-control" name="newFactor" type="number"
-                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
-                     placeholder="Scale Factors for Variability" ng-model="$parent.newScaleFactorForVariance"
-                     step='0.5' autocomplete="off" autofocus required >
-              <div class="alert alert-danger" ng-show="scaleFactorVarianceForm.newFactor.$error.pattern">
-                Please enter a positive number
-              </div>
-            </div>
-            <div ng-if="glimmpseConstants.platform === 'android'">
-              <input class="form-control" name="newFactor" type="text"
-                     ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
-                     placeholder="Scale Factors for Variability" ng-model="$parent.newScaleFactorForVariance"
-                     autocomplete="off" autofocus required >
-              <div class="alert alert-danger" ng-show="scaleFactorVarianceForm.newFactor.$error.pattern">
-                Please enter a positive number
-              </div>
+            <input class="form-control" name="newFactor"
+                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
+                   ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
+                   placeholder="Scale Factors for Variability" ng-model="newScaleFactorForVariance"
+                   step='0.5' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="scaleFactorVarianceForm.newFactor.$error.pattern">
+              Please enter a positive number
             </div>
         </div>
     </form>
