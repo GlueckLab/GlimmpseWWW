@@ -1319,7 +1319,7 @@ glimmpseApp.controller('stateController',
                 // add the power to the list
                 studyDesignService.nominalPowerList.push({
                     idx: studyDesignService.nominalPowerList.length,
-                    value: newPower
+                    value: +newPower
                 });
             }
             // reset the new power to null
@@ -1378,7 +1378,7 @@ glimmpseApp.controller('stateController',
                 // add the power to the list
                 studyDesignService.alphaList.push({
                     idx: studyDesignService.alphaList.length,
-                    alphaValue: newAlpha
+                    alphaValue: +newAlpha
                 });
             }
             // reset the new power to null
@@ -2779,7 +2779,7 @@ glimmpseApp.controller('stateController',
                 // add the power to the list
                 studyDesignService.quantileList.push({
                     idx: studyDesignService.quantileList.length,
-                    value: newQuantile
+                    value: +newQuantile
                 });
             }
             // reset the new response to null
