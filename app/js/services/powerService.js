@@ -52,7 +52,7 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
             deferred.resolve(data);
         }).error(function(data, status) {
             //Sending a friendly error message in case of failure
-            deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
+            deferred.reject(data != '' ? data : 'Error in retrieving results from "' + (config.schemePower + config.hostPower + config.uriPower) + '" (HTTP status code ' + status + ')');
         });
 
         //Returning the promise object
