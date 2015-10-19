@@ -47,12 +47,12 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
 
         //Calling Web API to fetch shopping cart items
         $http.post(config.schemePower + config.hostPower + config.uriPower,
-                studyDesignJSON).success(function(response){
+                studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
-            deferred.resolve(response);
-        }).error(function(response) {
+            deferred.resolve(data);
+        }).error(function(data, status) {
             //Sending a friendly error message in case of failure
-            deferred.reject(response);
+            deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
         });
 
         //Returning the promise object
@@ -71,9 +71,9 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
                 studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
-        }).error(function(response) {
+        }).error(function(data, status) {
                 //Sending a friendly error message in case of failure
-                deferred.reject(response);
+                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
             });
 
         //Returning the promise object
@@ -94,9 +94,9 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
                 studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
-        }).error(function(response){
+        }).error(function(data, status){
                 //Sending a friendly error message in case of failure
-                deferred.reject(response);
+                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
             });
 
         //Returning the promise object
@@ -116,9 +116,9 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
                 studyDesignJSON).success(function(data){
             //Passing data to deferred's resolve function on successful completion
             deferred.resolve(data);
-        }).error(function(response){
+        }).error(function(data, status){
                 //Sending a friendly error message in case of failure
-                deferred.reject(response);
+                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
             });
 
         //Returning the promise object
