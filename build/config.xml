@@ -43,6 +43,7 @@
     <preference name="android-minSdkVersion" value="7" />
     <preference name="android-installLocation" value="auto" />
     <preference name='phonegap-version' value='cli-5.2.0' />
+    <preference name="SplashScreenDelay" value="10000" />
     <icon src="resources/icon/GlimmpseIcon72x72.png" />
     <icon gap:density="ldpi" gap:platform="android" src="resources/icons/GlimmpseIcon32x32.png" />
     <icon gap:density="mdpi" gap:platform="android" src="resources/icons/GlimmpseIcon48x48.png" />
@@ -79,4 +80,5 @@
     <gap:plugin name="cordova-plugin-inappbrowser" source="npm" version="1.0.1"/>
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
     <allow-navigation href="*"/>
+    <gap:plugin name="cordova-plugin-splashscreen" source="npm" version="2.1.0"/>
 </widget>
