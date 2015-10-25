@@ -115,12 +115,7 @@
 </div>
 
 <div ng-show="powerService.cachedError != undefined && processing == false">
-  <div ng-show="powerService.cachedError != ''">
-    <div ng-bind-html-unsafe="powerService.cachedError"></div>
-  </div>
-  <div ng-show="powerService.cachedError == ''">
-    <div>Unknown error in retrieving results.</div>
-  </div>
+  <div ng-bind-html-unsafe="powerService.cachedError"></div>
 </div>
 
 <div ng-if="glimmpseConstants.debug">
