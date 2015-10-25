@@ -22,7 +22,6 @@
  * Retrieved via JSON from the Power Web Service
  */
 
-
 glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants){
     var powerServiceInstance = {};
 
@@ -39,92 +38,53 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
     powerServiceInstance.cachedMatrixError = undefined;
 
     /**
-     * Retrieve power results from the power service
+     * Retrieve results from the power service.
      */
-    powerServiceInstance.calculatePower = function(studyDesignJSON) {
-        //Creating a deferred object
+    powerServiceInstance._retrieveResults = function(studyDesignJSON, uri) {
+        //Create a deferred object.
         var deferred = $q.defer();
 
-        //Calling Web API to fetch shopping cart items
-        $http.post(config.schemePower + config.hostPower + config.uriPower,
+        //Call the web API.
+        $http.post(config.schemePower + config.hostPower + uri,
                 studyDesignJSON).success(function(data){
-            //Passing data to deferred's resolve function on successful completion
+            //Pass data to deferred object's resolve function on successful completion.
             deferred.resolve(data);
         }).error(function(data, status) {
-            //Sending a friendly error message in case of failure
-            deferred.reject(data != '' ? data : 'Error in retrieving results from "' + (config.schemePower + config.hostPower + config.uriPower) + '" (HTTP status code ' + status + ')');
+            //Send a friendly error message in case of failure.
+            deferred.reject(data !== '' ? data : 'Error in retrieving results (HTTP status code ' + status + ').');
         });
 
-        //Returning the promise object
+        //Return the promise object.
         return deferred.promise;
     };
 
     /**
-     *  Retrieve sample size results from the power service
+     * Retrieve power results from the power service.
+     */
+    powerServiceInstance.calculatePower = function(studyDesignJSON) {
+        return powerServiceInstance._retrieveResults(studyDesignJSON, config.uriPower);
+    };
+
+    /**
+     *  Retrieve sample size results from the power service.
      */
     powerServiceInstance.calculateSampleSize = function(studyDesignJSON) {
-        //Creating a deferred object
-        var deferred = $q.defer();
-
-        //Calling Web API to fetch shopping cart items
-        $http.post(config.schemePower + config.hostPower + config.uriSampleSize,
-                studyDesignJSON).success(function(data){
-            //Passing data to deferred's resolve function on successful completion
-            deferred.resolve(data);
-        }).error(function(data, status) {
-                //Sending a friendly error message in case of failure
-                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
-            });
-
-        //Returning the promise object
-        return deferred.promise;
+        return powerServiceInstance._retrieveResults(studyDesignJSON, config.uriSampleSize);
     };
 
     /**
-     * Someday, this will do the Jiroutek math.
-     * @param studyDesignJSON
-     * @returns {*|Function|Function|Function|Function|Function|Function}
+     *  Retrieve CI width results from the power service.
      */
     powerServiceInstance.calculateConfidenceIntervalWidth = function(studyDesignJSON) {
-        //Creating a deferred object
-        var deferred = $q.defer();
-
-        //Calling Web API to fetch shopping cart items
-        $http.post(config.schemePower + config.hostPower + config.uriCIWidth,
-                studyDesignJSON).success(function(data){
-            //Passing data to deferred's resolve function on successful completion
-            deferred.resolve(data);
-        }).error(function(data, status){
-                //Sending a friendly error message in case of failure
-                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
-            });
-
-        //Returning the promise object
-        return deferred.promise;
+        return powerServiceInstance._retrieveResults(studyDesignJSON, config.uriCIWidth);
     };
-
 
     /**
-     *  Retrieve sample size results from the power service
+     *  Retrieve matrices results from the power service.
      */
     powerServiceInstance.getMatrices = function(studyDesignJSON) {
-        //Creating a deferred object
-        var deferred = $q.defer();
-
-        //Calling Web API to fetch shopping cart items
-        $http.post(config.schemePower + config.hostPower + config.uriMatrices,
-                studyDesignJSON).success(function(data){
-            //Passing data to deferred's resolve function on successful completion
-            deferred.resolve(data);
-        }).error(function(data, status){
-                //Sending a friendly error message in case of failure
-                deferred.reject(data != '' ? data : 'Error in retrieving results (HTTP status code ' + status + ')');
-            });
-
-        //Returning the promise object
-        return deferred.promise;
+        return powerServiceInstance._retrieveResults(studyDesignJSON, config.uriMatrices);
     };
-
 
     /**
      * Clear cached results
@@ -138,4 +98,3 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
 
     return powerServiceInstance;
 });
-
