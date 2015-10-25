@@ -18,10 +18,10 @@
 -->
 <h3>Power Results</h3>
 
-<div class="processing rounded-box" ng-show="processing==true">
+<div class="processing rounded-box" ng-if="processing == true">
     <label>Processing</label>
 </div>
-<div class="well" ng-show="gridData != undefined && processing == false">
+<div class="well" ng-if="gridData != undefined && processing == false">
     <p>
         Click on a result for more details.
     </p>
@@ -29,7 +29,7 @@
     <div class="gridStyle"
          ng-grid="resultsGridOptions"></div>
     <!-- selected result details -->
-    <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
+    <div class="well vmargin15" ng-if="currentResultDetails !== undefined">
         <h4>Details</h4>
         <div class="form-group" ng-if="currentResultDetails.errorMessage != null">
             <label>Error</label>
@@ -114,7 +114,7 @@
     </div>
 </div>
 
-<div ng-show="powerService.cachedError != undefined && processing == false">
+<div ng-if="powerService.cachedError != undefined && processing == false">
   <div ng-bind-html-unsafe="powerService.cachedError"></div>
 </div>
 
