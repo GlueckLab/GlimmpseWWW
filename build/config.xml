@@ -37,13 +37,11 @@
     <preference name="ios-statusbarstyle" value="black-opaque" />
     <preference name="detect-data-types" value="true" />
     <preference name="exit-on-suspend" value="false" />
-    <preference name="show-splash-screen-spinner" value="true" />
-    <preference name="auto-hide-splash-screen" value="true" />
     <preference name="disable-cursor" value="false" />
     <preference name="android-minSdkVersion" value="7" />
     <preference name="android-installLocation" value="auto" />
     <preference name='phonegap-version' value='cli-5.2.0' />
-    <preference name="SplashScreenDelay" value="10000" />
+    <preference name="SplashScreenDelay" value="15000" />
     <icon src="resources/icon/GlimmpseIcon72x72.png" />
     <icon gap:density="ldpi" gap:platform="android" src="resources/icons/GlimmpseIcon32x32.png" />
     <icon gap:density="mdpi" gap:platform="android" src="resources/icons/GlimmpseIcon48x48.png" />
@@ -81,4 +79,5 @@
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
     <allow-navigation href="*"/>
     <gap:plugin name="cordova-plugin-splashscreen" source="npm" version="2.1.0"/>
+    <content src="main.html"/>
 </widget>
