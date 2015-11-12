@@ -380,6 +380,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                  * In future, we should find a more elegant solution
                  */
                 var tmpHypothesis = object.hypothesis[0];
+                if (tmpHypothesis.repeatedMeasuresMapTree === null) {
+                    tmpHypothesis.repeatedMeasuresMapTree = [];
+                }
+                if (tmpHypothesis.betweenParticipantFactorMapList === null) {
+                    tmpHypothesis.betweenParticipantFactorMapList = [];
+                }
                 studyDesignInstance.hypothesis = [
                     {
                         idx: 1,
