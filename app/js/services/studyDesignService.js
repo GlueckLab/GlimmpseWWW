@@ -333,6 +333,15 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.repeatedMeasuresTree = [];
             } else {
                 studyDesignInstance.repeatedMeasuresTree = object.repeatedMeasuresTree;
+                for(var ii = 0; ii < studyDesignInstance.repeatedMeasuresTree.length; ii++) {
+                    var factor = studyDesignInstance.repeatedMeasuresTree[ii];
+                    if (factor.spacingList === null) {
+                        factor.spacingList = [
+                            {idx: 1, value: 1},
+                            {idx: 2, value: 2}
+                        ];
+                    }
+                }
             }
         } else {
             throw errorInvalid;
