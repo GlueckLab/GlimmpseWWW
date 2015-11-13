@@ -598,6 +598,7 @@ glimmpseApp.controller('stateController',
             $scope.state.predictors = $scope.getStatePredictors();
             $scope.state.covariates = $scope.getStateCovariate();
             $scope.state.isu = $scope.getStateClustering();
+            $scope.state.smallestGroupSize = $scope.getStateSmallestGroupSize();
             $scope.state.groupSizes = $scope.getStateGroupSizes();
             $scope.state.responseVariables = $scope.getStateResponseVariables();
             $scope.state.repeatedMeasures = $scope.getStateRepeatedMeasures();
@@ -605,7 +606,7 @@ glimmpseApp.controller('stateController',
             $scope.state.means = $scope.getStateMeans();
             $scope.state.meansScale = $scope.getStateScaleFactorsForMeans();
             $scope.state.variabilityWithin = $scope.getStateWithinVariability();
-            $scope.state. variabilityCovariate = $scope.getStateCovariateVariability();
+            $scope.state.variabilityCovariate = $scope.getStateCovariateVariability();
             $scope.state.variabilityScale = $scope.getStateScaleFactorsForVariability();
             $scope.state.test = $scope.getStateStatisticalTest();
             $scope.state.powerMethod = $scope.getStatePowerMethod();
@@ -620,7 +621,6 @@ glimmpseApp.controller('stateController',
             $scope.state.sigmaY = $scope.getStateSigmaY();
             $scope.state.sigmaG = $scope.getStateSigmaG();
             $scope.state.sigmaYG = $scope.getStateSigmaYG();
-
         };
         /**** END SCREEN STATE FUNCTIONS ****/
 
