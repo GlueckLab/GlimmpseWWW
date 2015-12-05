@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -42,13 +42,13 @@
         </tr>
         <tr ng-show="levels > 1">
             <td>
-                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendAllPolynomial}}"
+                <input type="radio" name="{{radiogroup}}" ng-model="type" value="{{constants.trendAllNonconstantPolynomial}}"
                        ng-click="onselect()">
-                All polynomial trends
+                All nonconstant polynomial trends
                 </input>
             </td>
             <td>
-                <img src="img/all_polynomial_trends.png"/>
+                <img src="img/all_nonconstant_polynomial_trends.png"/>
             </td>
         </tr>
         <tr ng-show="levels > 1">

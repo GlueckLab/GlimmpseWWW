@@ -59,6 +59,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         // hypothesis types
         hypothesisGrandMean: 'GRAND_MEAN',
         hypothesisMainEffect: 'MAIN_EFFECT',
+        hypothesisManova: 'MANOVA',
         hypothesisTrend: 'TREND',
         hypothesisInteraction: 'INTERACTION',
 
@@ -66,6 +67,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         trendNone: 'NONE',
         trendChangeFromBaseline: 'CHANGE_FROM_BASELINE',
         trendAllPolynomial: 'ALL_POLYNOMIAL',
+        trendAllNonconstantPolynomial: 'ALL_NONCONSTANT_POLYNOMIAL',
         trendLinear: 'LINEAR',
         trendQuadratic: 'QUADRATIC',
         trendCubic: 'CUBIC',
@@ -114,8 +116,10 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
         xAxisSigmaScale: "VARIABILITY_SCALE_FACTOR",
         xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR",
-        xAxisDesiredPower: "DESIRED_POWER"
+        xAxisDesiredPower: "DESIRED_POWER",
 
+        // platform
+        platform: /android/i.test(window.navigator.userAgent) ? 'android' : 'other'
     })
     .config(['$routeProvider', function($routeProvider, studyDesignService, powerService, dropboxService) {
         /*

@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -30,10 +30,14 @@
     <form name="alphaForm" novalidate ng-submit="addTypeIErrorRate()">
         <div class="form-group">
             <label>Type I Error Rate</label>
-            <input class="form-control" name="newAlpha" type="number" placeholder="Enter a Type I error value" ng-model="newTypeIErrorRate"
-                   min='0' max='1' step='0.01' autocomplete="off" autofocus required >
-            <div class="alert alert-danger" class="form-control"  ng-show="alphaForm.newAlpha.$error.min">Please enter a number between 0 and 1</div>
-            <div class="alert alert-danger" class="form-control"  ng-show="alphaForm.newAlpha.$error.max">Please enter a number between 0 and 1</div>
+            <input class="form-control" name="newAlpha"
+                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
+                   ng-pattern="/^0*(?:(?:\.\d*)?|1(?:\.0*)?)$/"
+                   placeholder="Enter a Type I error value" ng-model="newTypeIErrorRate"
+                   step='0.01' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" class="form-control"  ng-show="alphaForm.newAlpha.$error.pattern">
+                Please enter a number between 0 and 1
+            </div>
         </div>
 
     </form>

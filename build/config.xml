@@ -27,7 +27,6 @@
         Sample Size Shop Team (primary developers: Dr. Sarah Kreidler and Dr. Aarti Munjal)
     </author>
     <feature name="http://api.phonegap.com/1.0/device" />
-
     <preference name="permissions" value="none" />
     <preference name="orientation" value="default" />
     <preference name="target-device" value="universal" />
@@ -38,18 +37,21 @@
     <preference name="ios-statusbarstyle" value="black-opaque" />
     <preference name="detect-data-types" value="true" />
     <preference name="exit-on-suspend" value="false" />
-    <preference name="show-splash-screen-spinner" value="true" />
-    <preference name="auto-hide-splash-screen" value="true" />
     <preference name="disable-cursor" value="false" />
     <preference name="android-minSdkVersion" value="7" />
+    <preference name="android-targetSdkVersion" value="14" />
     <preference name="android-installLocation" value="auto" />
+    <preference name='phonegap-version' value='cli-5.2.0' />
+    <preference name="SplashScreenDelay" value="15000" />
     <icon src="resources/icon/GlimmpseIcon72x72.png" />
     <icon gap:density="ldpi" gap:platform="android" src="resources/icons/GlimmpseIcon32x32.png" />
     <icon gap:density="mdpi" gap:platform="android" src="resources/icons/GlimmpseIcon48x48.png" />
     <icon gap:density="hdpi" gap:platform="android" src="resources/icons/GlimmpseIcon72x72.png" />
     <icon gap:density="xhdpi" gap:platform="android" src="resources/icons/GlimmpseIcon96x96.png" />
-    <!-- <icon gap:platform="blackberry" src="resources/icon/blackberry/icon-80.png" />
-    <icon gap:platform="blackberry" gap:state="hover" src="resources/icon/blackberry/icon-80.png" /> -->
+    <!--
+    <icon gap:platform="blackberry" src="resources/icon/blackberry/icon-80.png" />
+    <icon gap:platform="blackberry" gap:state="hover" src="resources/icon/blackberry/icon-80.png" />
+    -->
     <icon gap:platform="ios" height="57" src="resources/icons/GlimmpseIcon57x57.png" width="57" />
     <icon gap:platform="ios" height="72" src="resources/icons/GlimmpseIcon72x72.png" width="72" />
     <icon gap:platform="ios" height="76" src="resources/icons/GlimmpseIcon76x76.png" width="76" />
@@ -60,20 +62,23 @@
     <!--
     <icon gap:platform="webos" src="resources/icon/webos/icon-64.png" />
     <icon gap:platform="winphone" src="resources/icon/windows-phone/icon-48.png" />
-    <icon gap:platform="winphone" gap:role="background" src="resources/icon/windows-phone/icon-173.png" />  -->
+    <icon gap:platform="winphone" gap:role="background" src="resources/icon/windows-phone/icon-173.png" />
+    -->
     <gap:splash gap:density="ldpi" gap:platform="android" src="resources/screen/GlimmpseScreen426x320.png" />
     <gap:splash gap:density="mdpi" gap:platform="android" src="resources/screen/GlimmpseScreen470x320.png" />
     <gap:splash gap:density="hdpi" gap:platform="android" src="resources/screen/GlimmpseScreen640x480.png" />
     <gap:splash gap:density="xhdpi" gap:platform="android" src="resources/screen/GlimmpseScreen960x720.png" />
-    <!-- <gap:splash gap:platform="blackberry" src="resources/screen/blackberry/screen-225.png" /> -->
+    <!--
+    <gap:splash gap:platform="blackberry" src="resources/screen/blackberry/screen-225.png" />
+    -->
     <gap:splash gap:platform="ios" height="960" src="resources/screen/GlimmpseScreen640x960.png" width="640" />
     <gap:splash gap:platform="ios" height="1136" src="resources/screen/GlimmpseScreen640x1136.png" width="640" />
     <gap:splash gap:platform="ios" height="1024" src="resources/screen/GlimmpseScreen768x1024.png" width="768" />
     <gap:splash gap:platform="ios" height="768" src="resources/screen/GlimmpseScreen1024x768.png" width="1024" />
     <gap:splash gap:platform="winphone" src="resources/screen/windows-phone/screen-portrait.jpg" />
-
-    <gap:plugin name="org.apache.cordova.inappbrowser" />
-    <!-- <gap:plugin name="org.apache.cordova.inappbrowser" /> -->
-    <access origin="*"/>
-
+    <gap:plugin name="cordova-plugin-inappbrowser" source="npm" version="1.0.1"/>
+    <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
+    <allow-navigation href="*"/>
+    <gap:plugin name="cordova-plugin-splashscreen" source="npm" version="2.1.0"/>
+    <content src="main.html"/>
 </widget>

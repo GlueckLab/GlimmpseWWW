@@ -95,6 +95,10 @@ button:focus {
     border: 1px solid #CC0000;
 }
 
+.errorBorderless {
+    color:#CC0000;
+}
+
 .box {
     border: 1px solid #CBD1D6;
     padding: 10px;

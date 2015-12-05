@@ -333,6 +333,15 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.repeatedMeasuresTree = [];
             } else {
                 studyDesignInstance.repeatedMeasuresTree = object.repeatedMeasuresTree;
+                for(var ii = 0; ii < studyDesignInstance.repeatedMeasuresTree.length; ii++) {
+                    var factor = studyDesignInstance.repeatedMeasuresTree[ii];
+                    if (factor.spacingList === null) {
+                        factor.spacingList = [
+                            {idx: 1, value: 1},
+                            {idx: 2, value: 2}
+                        ];
+                    }
+                }
             }
         } else {
             throw errorInvalid;
@@ -371,6 +380,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                  * In future, we should find a more elegant solution
                  */
                 var tmpHypothesis = object.hypothesis[0];
+                if (tmpHypothesis.repeatedMeasuresMapTree === null) {
+                    tmpHypothesis.repeatedMeasuresMapTree = [];
+                }
+                if (tmpHypothesis.betweenParticipantFactorMapList === null) {
+                    tmpHypothesis.betweenParticipantFactorMapList = [];
+                }
                 studyDesignInstance.hypothesis = [
                     {
                         idx: 1,
@@ -764,6 +779,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 break;
             case glimmpseConstants.trendLinear:
             case glimmpseConstants.trendAllPolynomial:
+            case glimmpseConstants.trendAllNonconstantPolynomial:
             case glimmpseConstants.trendChangeFromBaseline:
                 if (numValues > 1) {
                     return currentTrend;
@@ -779,7 +795,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /**
      * Select the best hypothesis type for current predictors and repeated measures.
      * Makes sure that the selected type is valid for the predictors and repeated measures.
-     * Called a predictor or repeated measure is deleted from the model
+     * Called when a predictor or repeated measure is deleted from the model.
      */
     studyDesignInstance.getBestHypothesisType = function(currentType) {
         var thetaNull;
@@ -809,6 +825,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 break;
             case glimmpseConstants.hypothesisMainEffect:
+            case glimmpseConstants.hypothesisManova:
             case glimmpseConstants.hypothesisTrend:
                 if (totalFactors > 0) {
                     return currentType;

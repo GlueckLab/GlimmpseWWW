@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -44,9 +44,7 @@
         and 2 would compute power for the covariance matrix divided by 2,
         the covariance matrix as entered, and the covariance matrix multiplied by 2.
     </p>
-
 </div>
-
 
 <p>
     Type each value into the text box and click "enter" on your keyboard. To remove an item, click the "x" next to the item.
@@ -56,10 +54,14 @@
     <form name="scaleFactorVarianceForm" novalidate ng-submit="addScaleFactorForVariance()">
         <div class="form-group">
             <label>Scale Factors for Variability</label>
-            <input class="form-control" name="newFactor" type="number"
+            <input class="form-control" name="newFactor"
+                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
+                   ng-pattern="/^0*(?:[1-9][0-9]*(?:[\.][0-9]*)?|\.0*[1-9][0-9]*)$/"
                    placeholder="Scale Factors for Variability" ng-model="newScaleFactorForVariance"
-                   min='0.000001' step='0.5' autocomplete="off" autofocus required >
-            <div class="alert alert-danger" ng-show="scaleFactorVarianceForm.newFactor.$error.min">Please enter a positive number</div>
+                   step='0.5' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="scaleFactorVarianceForm.newFactor.$error.pattern">
+              Please enter a positive number
+            </div>
         </div>
     </form>
     <ul class="list-unstyled">
@@ -68,6 +70,4 @@
             <button data-ng-click="deleteScaleFactorForVariance(factor)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>
-
 </div>
-
