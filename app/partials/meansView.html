@@ -21,14 +21,14 @@
 <h3>Means</h3>
 
 <p>
-    The table below shows the mean values for each outcome within each study subgroup.
-    The study subgroups are listed along the left hand side of the table, and the
+    The table below shows the mean values for each outcome within each group in the study.
+    The groups are listed along the left hand side of the table, and the
     outcomes are listed across the top.
 </p>
 
 <p>
-    Enter the mean values you expect to observe for each outcome within each study subgroup.
-    The table should contain at least one value that is non-zero. Also, at least two subgroups
+    Enter the mean values you expect to observe for each outcome within each group.
+    The table should contain at least one value that is non-zero. Also, at least two groups
     should have means which differ by a scientifically meaningful amount.
 </p>
 
@@ -145,72 +145,3 @@
 
     </div>
 </div>
-
-     <!--
-<div class="input-group" ng-show="studyDesign.betweenParticipantFactorList.length > 0 &&
-        studyDesign.responseList.length > 0">
-
-<table>
-       <tr>
-            <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
-                {{predictor.predictorName}}
-            </th>
-
-            <th ng-repeat="variable in studyDesign.responseList">{{variable.name}}
-            </th>
-        </tr>
-
-        <tr ng-repeat="i in groupsList">
-           <td ng-repeat="count in groupsTable track by $id($index)">
-                {{count[i]}}
-           </td>
-            <td ng-repeat="variable in studyDesign.responseList track by $id($index)">
-                    <input type="text"
-                           ng-model="studyDesign.matrixSet[studyDesign.getMatrixSetListIndexByName('beta')].data.data[$parent.$index]
-                           [startColumn*studyDesign.responseList.length + $index]"
-                           >
-                    </input>
-
-            </td>
-        </tr>
-</table>
-
-    <div>
-        <button value="left" ng-show="startColumn > 0"
-                ng-click="shiftLeft()">
-            left
-        </button>
-
-        <button value="right"
-                ng-click="shiftRight()">
-            right
-        </button>
-
-    </div>
-
-</div>
-    <p ng-show="studyDesign.repeatedMeasuresTree.length > 0">
-        Select the time (location, etc.) from the list(s) below.
-        This will allow you to edit the means at the selected time (location, etc.).
-    </p>
-<div>
-        <table ng-repeat="measure in studyDesign.repeatedMeasuresTree">
-            <tr>
-                  <td>
-                      {{measure.dimension}}
-                  </td>
-                   <td>
-                       <select id="optionForMeansTime">
-                           <option ng-repeat="number in measure.spacingList">
-                               {{number.value}}
-                           </option>
-                       </select>
-                   </td>
-            </tr>
-        </table>
-</div>
-
-    <div ng-show="glimmpseConstants.debug == true">
-        {{studyDesign.matrixSet}}
-    </div>
-</div>    -->

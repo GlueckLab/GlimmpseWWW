@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -31,11 +31,14 @@ Type each value into the list box and click "enter" on your keyboard. To remove 
     <form name="nominalPowerForm" novalidate ng-submit="addNominalPower()">
         <div class="form-group">
             <label>Desired Power</label>
-            <input class="form-control" name="newPower" type="number" placeholder="Enter a power value" ng-model="newNominalPower"
-                   min='0' max='1' step='0.01'
-                   autocomplete="off" autofocus required >
-            <div class="alert alert-danger" ng-show="nominalPowerForm.newPower.$error.min">Please enter a number between 0 and 1</div>
-            <div class="alert alert-danger" ng-show="nominalPowerForm.newPower.$error.max">Please enter a number between 0 and 1</div>
+            <input class="form-control" name="newPower"
+                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
+                   ng-pattern="/^0*(?:(?:\.\d*)?|1(?:\.0*)?)$/"
+                   placeholder="Enter a power value" ng-model="newNominalPower"
+                   step='0.01' autocomplete="off" autofocus required >
+            <div class="alert alert-danger" ng-show="nominalPowerForm.newPower.$error.pattern">
+                Please enter a number between 0 and 1
+            </div>
         </div>
     </form>
     <ul class="list-unstyled">

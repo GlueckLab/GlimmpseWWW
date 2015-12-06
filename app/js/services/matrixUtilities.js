@@ -34,15 +34,19 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         if (matrix === null || matrix === undefined) {
             return false;
         }
+        if (matrix.rows === null || matrix.rows === undefined || matrix.rows <= 0) {
+            return false;
+        }
+        if (matrix.columns === null || matrix.columns === undefined || matrix.columns <= 0) {
+            return false;
+        }
 
         // make sure data matches row/columns specified
         if (matrix.rows != matrix.data.data.length) {
             return false;
         }
-        if (matrix.rows > 0) {
-            if (matrix.columns != matrix.data.data[0].length) {
-                return false;
-            }
+        if (matrix.columns != matrix.data.data[0].length) {
+            return false;
         }
         // make sure no cells are null
         for(var r = 0; r < matrix.rows; r++) {
@@ -123,11 +127,15 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Resize the rows of a matrix
      * @param matrix
-     * @param oldRows
      * @param newRows
      */
-    matrixUtilitiesInstance.resizeRows = function(matrix, oldRows, newRows,
+    matrixUtilitiesInstance.resizeRows = function(matrix, newRows,
                                                   defaultOffDiagonal, defaultDiagonal) {
+        if (newRows === undefined) {
+            return;
+        }
+
+        var oldRows = matrix.data.data.length;
         matrix.rows = newRows;
         if (newRows > oldRows) {
             for(var r = oldRows; r < newRows; r++) {
@@ -145,11 +153,15 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Resize the columns of a matrix
      * @param matrix
-     * @param oldColumns
      * @param newColumns
      */
-    matrixUtilitiesInstance.resizeColumns = function(matrix, oldColumns, newColumns,
+    matrixUtilitiesInstance.resizeColumns = function(matrix, newColumns,
                                                      defaultOffDiagonal, defaultDiagonal) {
+        if (newColumns === undefined) {
+            return;
+        }
+
+        var oldColumns = matrix.data.data[0].length;
         matrix.columns = newColumns;
         if (newColumns > oldColumns) {
             for(var r = 0; r < matrix.rows; r++) {

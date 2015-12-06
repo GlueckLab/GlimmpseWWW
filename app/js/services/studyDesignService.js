@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2013 Regents of the University of Colorado.
+ * Copyright (C) 2015 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /** Indicates what the user is solving for */
     studyDesignInstance.solutionTypeEnum = glimmpseConstants.solutionTypePower;
 
-    /** The name of the independent sampling unit (deprecated) */
+    /** The term to be used for a participant in the study */
     studyDesignInstance.participantLabel = null;
 
     /** Indicates whether the design was built in matrix or guided mode */
@@ -129,8 +129,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         var errorInvalid = "The file did not contain a valid study design. Please try again.";
 
         // read uuid
-        if (object.hasOwnProperty("uuid") &&
-            (object.uuid === null || object.uuid instanceof Array)) {
+        if (object.hasOwnProperty("uuid")) {
             studyDesignInstance.uuid = object.uuid;
         } else {
             throw errorInvalid;
@@ -160,7 +159,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             throw errorInvalid;
         }
 
-        // The name of the independent sampling unit (deprecated)
+        // The term to be used for a participant in the study
         if (object.hasOwnProperty("participantLabel")) {
             studyDesignInstance.participantLabel = object.participantLabel;
         } else {
@@ -244,7 +243,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             if (object.sampleSizeList === null) {
                 studyDesignInstance.sampleSizeList = [];
             } else {
-                studyDesignInstance.sampleSizeList = object.sampleSizeList;
+                studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
+                    return {
+                        idx: idx,
+                        value: typeof e.value !== 'number' || e.value < 2 ? 2 : Math.floor(e.value)
+                    };
+                });
             }
         } else {
             throw errorInvalid;
@@ -329,6 +333,15 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.repeatedMeasuresTree = [];
             } else {
                 studyDesignInstance.repeatedMeasuresTree = object.repeatedMeasuresTree;
+                for(var ii = 0; ii < studyDesignInstance.repeatedMeasuresTree.length; ii++) {
+                    var factor = studyDesignInstance.repeatedMeasuresTree[ii];
+                    if (factor.spacingList === null) {
+                        factor.spacingList = [
+                            {idx: 1, value: 1},
+                            {idx: 2, value: 2}
+                        ];
+                    }
+                }
             }
         } else {
             throw errorInvalid;
@@ -367,6 +380,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                  * In future, we should find a more elegant solution
                  */
                 var tmpHypothesis = object.hypothesis[0];
+                if (tmpHypothesis.repeatedMeasuresMapTree === null) {
+                    tmpHypothesis.repeatedMeasuresMapTree = [];
+                }
+                if (tmpHypothesis.betweenParticipantFactorMapList === null) {
+                    tmpHypothesis.betweenParticipantFactorMapList = [];
+                }
                 studyDesignInstance.hypothesis = [
                     {
                         idx: 1,
@@ -606,7 +625,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 data: [[0]]
             }
         });
-        // default null hypothesis (theta null) matrix
+        // default error covariance (sigma E) matrix
         studyDesignInstance.matrixSet.push({
             idx: 0,
             name: glimmpseConstants.matrixSigmaE,
@@ -691,14 +710,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             }
 
             if (beta.rows != rows) {
-                matrixUtilities.resizeRows(beta, beta.rows, rows, 0, 0);
+                matrixUtilities.resizeRows(beta, rows, 0, 0);
             }
             if (beta.columns != columns) {
-                matrixUtilities.resizeColumns(beta, beta.columns, columns, 0, 0);
+                matrixUtilities.resizeColumns(beta, columns, 0, 0);
                 if (studyDesignInstance.gaussianCovariate) {
                     betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
                     if (betaRandom.columns != columns) {
-                        matrixUtilities.resizeColumns(betaRandom, betaRandom.columns, columns, 1, 1);
+                        matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
                     }
                 }
             }
@@ -760,6 +779,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 break;
             case glimmpseConstants.trendLinear:
             case glimmpseConstants.trendAllPolynomial:
+            case glimmpseConstants.trendAllNonconstantPolynomial:
             case glimmpseConstants.trendChangeFromBaseline:
                 if (numValues > 1) {
                     return currentTrend;
@@ -775,7 +795,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /**
      * Select the best hypothesis type for current predictors and repeated measures.
      * Makes sure that the selected type is valid for the predictors and repeated measures.
-     * Called a predictor or repeated measure is deleted from the model
+     * Called when a predictor or repeated measure is deleted from the model.
      */
     studyDesignInstance.getBestHypothesisType = function(currentType) {
         var thetaNull;
@@ -805,6 +825,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 break;
             case glimmpseConstants.hypothesisMainEffect:
+            case glimmpseConstants.hypothesisManova:
             case glimmpseConstants.hypothesisTrend:
                 if (totalFactors > 0) {
                     return currentType;

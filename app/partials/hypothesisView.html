@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@
 
 <p>
     To specify a hypothesis, select the type of hypothesis from the dropdown list
-    and entered the details.  Note that trends within
+    and enter the details.  Note that trends within
     an interaction hypothesis may be specified by selecting the "Interaction" button.
     For more information about the type of hypothesis, click the "More Info" link.
 </p>
@@ -41,7 +41,9 @@
             <!-- help popup -->
             <div class="well white-box" ng-show="showHelp">
                 <p>
-                    The following hypothesis types are supported in GLIMMPSE.
+                    GLIMMPSE supports the following hypothesis types,
+                    for between-participant-factors, within-participant factors,
+                    and interactions between them.
                 </p>
 
                 <h3>Grand Mean Hypothesis</h3>
@@ -56,19 +58,25 @@
                 </p>
                 <h3>Main Effect Hypothesis</h3>
                 <p>
-                    Main effect hypotheses test for the effect of a single predictor variable averaged across
-                    all other factors. For example, testing if responses of participants in the treatment group
-                    differ on average from participant responses in a placebo group is a common main effect hypothesis.
+                    Main effect hypotheses test for the effect of a single factor averaged across
+                    all other factors. For example, testing if responses of participants in an active drug group
+                    differ on average from participant responses in a placebo group is a common main effect hypothesis
+                    for a between-participant effect.
+                </p>
+                <h3>MANOVA Hypothesis</h3>
+                <p>
+                    A MANOVA hypothesis combines the Grand Mean hypothesis and the "all possible trends" hypothesis.
                 </p>
                 <h3>Trend Hypothesis</h3>
                 <p>
-                    Trend hypotheses test if the effect of a single predictor follows a particular polynomial pattern,
-                    such as a linear or quadratic trend, across different levels of the predictor.
+                    Trend hypotheses test if the effect of a single factor follows a particular polynomial pattern,
+                    such as a linear or quadratic trend, across different levels of the factor.
+                    Trend hypotheses are often of interest for repeated measures.
                 </p>
-                <h3>Interaction Hypotheses</h3>
+                <h3>Interaction Hypothesis</h3>
                 <p>
-                    Interaction effect hypothesis test if the effect of one predictor changes depending
-                    on the value of one or more additional predictors. An interaction test also can be
+                    Interaction effect hypotheses test if the effect of one factor changes depending
+                    on the value of one or more additional factors. An interaction test also can be
                     interpreted as a test of differences of differences, as well as a test of parallel
                     trajectories of response.
                 </p>
@@ -100,7 +108,7 @@
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
 
                     <div>
@@ -116,12 +124,49 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="mainEffectSingleSelect"
                                    ng-click="updateWithinFactorSingleSelect(map)"
+                                   ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
+                            {{map.factorMap.repeatedMeasuresNode.dimension}}
+                            </input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Details for the MANOVA hypothesis -->
+        <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisManova">
+            <label>
+                Select one factor of interest for the MANOVA hypothesis.
+            </label>
+            <div class="well white-box">
+                <div ng-show="betweenFactorMapMetaDataList.length > 0">
+                    <label>
+                        Between-Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in betweenFactorMapMetaDataList">
+                            <input type="radio" name="manovaSingleSelect"
+                                   ng-change="updateBetweenFactorSingleSelect(map, true)"
+                                   ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
+                            {{map.factorMap.betweenParticipantFactor.predictorName}}
+                            </input>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
+                    <label>
+                        Within-Participant Factors
+                    </label>
+                    <div>
+                        <div ng-repeat="map in withinFactorMapMetaDataList">
+                            <input type="radio" name="manovaSingleSelect"
+                                   ng-change="updateWithinFactorSingleSelect(map, true)"
                                    ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
@@ -138,12 +183,12 @@
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
                             <input type="radio" name="trendSingleSelect"
-                                   ng-click="updateBetweenFactorSingleSelect(map)"
+                                   ng-change="updateBetweenFactorSingleSelect(map)"
                                    ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
@@ -153,12 +198,12 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="trendSingleSelect"
-                                   ng-click="updateWithinFactorSingleSelect(map)"
+                                   ng-change="updateWithinFactorSingleSelect(map)"
                                    ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
@@ -168,7 +213,7 @@
             </div>
             <!-- trend type -->
             <div ng-show="currentBetweenFactorMapMetaData != undefined || currentWithinFactorMapMetaData != undefined">
-                <label>Select the type of trend for the predictor of interest.</label>
+                <label>Select the type of trend for the factor of interest.</label>
                 <div class="well white-box">
                     <div ng-show="currentBetweenFactorMapMetaData != undefined">
                         <ng-trend-select ng-model="currentBetweenFactorMapMetaData.factorMap.type"
@@ -184,18 +229,16 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
         <!-- Details for the interaction hypothesis -->
         <div class="form-group" ng-show="hypothesis.type == glimmpseConstants.hypothesisInteraction">
-            <label>Select two or more predictors to include in the interaction
+            <label>Select two or more factors to include in the interaction
                 hypothesis.</label>
             <p>To test for a trend in a given factor, click the factor name and select a trend.</p>
             <div class="well white-box">
                 <div ng-show="betweenFactorMapMetaDataList.length > 0">
                     <label>
-                        Between Participant Factors
+                        Between-Participant Factors
                     </label>
                     <div ng-repeat="map in betweenFactorMapMetaDataList">
                         <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
@@ -219,7 +262,7 @@
 
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
-                        Within Participant Factors
+                        Within-Participant Factors
                     </label>
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
@@ -246,23 +289,23 @@
     </form>
 </div>
 
-<div ng-show="glimmpseConstants.debug == true">
+<div ng-show="glimmpseConstants.debug">
     <div class="vmargin15">
-        Full list between: {{betweenFactorMapMetaDataList}}
+        betweenFactorMapMetaDataList: {{betweenFactorMapMetaDataList}}
     </div>
     <div class="vmargin15">
-        Full list within: {{withinFactorMapMetaDataList}}
+        withinFactorMapMetaDataList: {{withinFactorMapMetaDataList}}
     </div>
     <div class="vmargin15">
-        Hypothesis: {{hypothesis}}
+        hypothesis: {{hypothesis}}
     </div>
     <div class="vmargin15">
-        Current Between: {{currentBetweenFactorMapMetaData}}
+        currentBetweenFactorMapMetaData: {{currentBetweenFactorMapMetaData}}
     </div>
     <div class="vmargin15">
-        Current Within: {{currentWithinFactorMapMetaData}}
+        currentWithinFactorMapMetaData: {{currentWithinFactorMapMetaData}}
     </div>
     <div class="vmargin15">
-        Theta null: {{thetaNull}}
+        thetaNull: {{thetaNull}}
     </div>
 </div>

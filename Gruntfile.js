@@ -121,7 +121,7 @@ module.exports = function(grunt) {
             libs: {
                 cwd: 'app/lib/',
                 expand: true,
-                src: ['MathJax/**', 'PHPMailer/**'],
+                src: ['PHPMailer/**'],
                 dest: 'build/dist/lib/'
             },
             config: {
@@ -358,6 +358,25 @@ module.exports = function(grunt) {
             'phonegap-build:release'
         ]
     );
+    // creates a release distribution in the www directory
+    // but does not run phonegap build remotely
+    grunt.registerTask('phonegap-prep',
+        [
+            'jshint',
+            'clean',
+            'copy:dist',
+            'copy:libs',
+            'copy:config',
+            'useminPrepare',
+            'concat',
+            'cssmin',
+            'copy:minfiles',
+            'usemin',
+            'replace',
+            'copy:www',
+            'zip:glimmpse-mobile'
+        ]
+    );
     //grunt.registerTask('build_mobile', ['release']);
     grunt.registerTask('test', ['jshint', 'karma:unit']);
     grunt.registerTask('default', [
@@ -369,6 +388,7 @@ module.exports = function(grunt) {
         'cssmin',
         'copy:minfiles',
         'usemin',
+        'replace:version',
         'zip:glimmpse'
     ]);
 

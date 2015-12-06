@@ -16,8 +16,9 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Smallest Group Size</h3>
+<h3>Group Sizes</h3>
 
+<div ng-show="studyDesign.solutionTypeEnum != glimmpseConstants.solutionTypeSampleSize">
 <p>
     Enter the number of independent sampling units (participants, clusters) in the
     smallest group in the study. You may enter multiple values for the smallest group
@@ -51,5 +52,58 @@
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
-    sampleSizeList: {{studyDesign.sampleSizeList}}
+    Sample Size List: {{studyDesign.sampleSizeList}}
+</div>
+</div>
+
+<div ng-show="studyDesign.betweenParticipantFactorList.length > 0 && state.predictors == glimmpseConstants.stateComplete">
+<p>
+    Specify the relative sizes of the groups.
+</p>
+<p>
+    For equal group sizes, select a "1" in the drop-down list next to each group. This is the default study design.
+</p>
+
+<p>
+For unequal group sizes, specify the ratio of the group sizes. For example, consider a design
+    with an active drug group and a placebo group. If twice as many study participants receive
+    the placebo, a value of "2" would be selected for the placebo group, and a value of "1"
+    would be selected for the active drug group.
+</p>
+
+<div class="well">
+    <table class="scroll table table-striped table-bordered table-condensed">
+        <tr>
+            <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                {{predictor.predictorName}}
+            </th>
+            <th>
+                Relative Group Size
+            </th>
+        </tr>
+        <tr ng-repeat="relativeGroupSize in studyDesign.relativeGroupSizeList">
+            <td ng-repeat="column in metaData.predictorCombinationList">
+                {{column[$parent.$index]}}
+            </td>
+            <td>
+                <select ng-model="relativeGroupSize.value" required>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div ng-show="glimmpseConstants.debug == true">
+    Relative Group Size List: {{studyDesign.relativeGroupSizeList}}
+</div>
 </div>

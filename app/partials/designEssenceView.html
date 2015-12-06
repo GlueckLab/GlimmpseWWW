@@ -32,7 +32,7 @@
     Enter the $Es(\boldsymbol{X})$ matrix below. To change the row dimension of the matrix, enter the updated number
     of rows in the left-most textbox above the matrix data. To change the column dimension, enter the
     desired number of columns in the right-most textbox above the matrix data. Please use a full rank
-    coding for this matrix.
+    coding for this matrix, and specify at least as many rows as columns.
 </p>
 
 <ng-resizable-matrix ng-model="designEssenceMatrix" rowresizable='true' columnresizable='true'
@@ -44,4 +44,5 @@
 <div ng-show="glimmpseConstants.debug">
     <div>{{designEssenceMatrix}}</div>
     <div>{{studyDesign.getMatrixByName('beta')}}</div>
+    <div>{{studyDesign.getMatrixByName('betweenSubjectContrast')}}</div>
 </div>

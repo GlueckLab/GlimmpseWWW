@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2015 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -18,10 +18,10 @@
 -->
 <h3>Power Results</h3>
 
-<div class="processing rounded-box" ng-show="processing==true">
+<div class="processing rounded-box" ng-if="processing == true">
     <label>Processing</label>
 </div>
-<div class="well" ng-show="gridData != undefined && processing == false">
+<div class="well" ng-if="gridData != undefined && processing == false">
     <p>
         Click on a result for more details.
     </p>
@@ -29,8 +29,14 @@
     <div class="gridStyle"
          ng-grid="resultsGridOptions"></div>
     <!-- selected result details -->
-    <div class="well vmargin15" ng-show="currentResultDetails !== undefined">
+    <div class="well vmargin15" ng-if="currentResultDetails !== undefined">
         <h4>Details</h4>
+        <div class="form-group" ng-if="currentResultDetails.errorMessage != null">
+            <label>Error</label>
+            <div class="well white-box">
+                <label>{{currentResultDetails.errorMessage}}</label>
+            </div>
+        </div>
         <div class="form-group">
             <label>Power</label>
             <label class="form-control">{{currentResultDetails.power}}</label>
@@ -39,33 +45,43 @@
             <label>Independent Sampling Unit</label>
             <div class="well white-box">
                 <label>{{currentResultDetails.isu}}</label>
-                <ul ng-show="studyDesign.clusteringTree.length > 0">
-                    <li ng-show="studyDesign.clusteringTree.length > 1">
-                        {{studyDesign.clusteringTree[0].groupSize}} {{studyDesign.clusteringTree[1].groupName}}
-                        units within each {{currentResultDetails.isu}}
+                <ul ng-if="studyDesign.clusteringTree.length == 1">
+                    <li>
+                        {{currentResultDetails.totalObsPerISU}}
+                        {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
+                        in each {{currentResultDetails.isu}}
                     </li>
-                    <li ng-show="studyDesign.clusteringTree.length > 2">
-                        {{studyDesign.clusteringTree[1].groupSize}} {{studyDesign.clusteringTree[2].groupName}}
-                        units within each {{studyDesign.clusteringTree[1].groupName}}
+                </ul>
+                <ul ng-if="studyDesign.clusteringTree.length > 1">
+                    <li>
+                        {{studyDesign.clusteringTree[0].groupSize}}
+                        {{pluralize(studyDesign.clusteringTree[1].groupName)}}
+                        in each {{currentResultDetails.isu}}
                     </li>
-                    <li ng-show="studyDesign.clusteringTree.length > 1">
-                        {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupSize}} participants
-                        within each {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupName}}
+                    <li ng-if="studyDesign.clusteringTree.length > 2">
+                        {{studyDesign.clusteringTree[1].groupSize}}
+                        {{pluralize(studyDesign.clusteringTree[2].groupName)}}
+                        in each {{studyDesign.clusteringTree[1].groupName}}
                     </li>
                     <li>
-                        Total of {{currentResultDetails.totalObsPerISU}} participants within each {{currentResultDetails.isu}}
+                        {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupSize}}
+                        {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
+                        in each {{studyDesign.clusteringTree[studyDesign.clusteringTree.length-1].groupName}}
+                    </li>
+                    <li>
+                        (a total of {{currentResultDetails.totalObsPerISU}}
+                        {{studyDesign.participantLabel ? pluralize(studyDesign.participantLabel) : 'participants'}}
+                        in each {{currentResultDetails.isu}})
                     </li>
                 </ul>
             </div>
-
-
         </div>
-        <div>
+        <div ng-if="currentResultDetails.totalSampleSize >= 0">
             <label>Sample Size Details</label>
-            <div ng-show="metaData.predictorCombinationList.length <= 0">
-                <label class="form-control">Total Sample Size (one-sample design): {{currentResultDetails.totalSampleSize}}</label>
+            <div ng-if="metaData.predictorCombinationList.length <= 0">
+                <label class="form-control">Total Sample Size: {{currentResultDetails.totalSampleSize}}</label>
             </div>
-            <div ng-show="metaData.predictorCombinationList.length > 0">
+            <div ng-if="metaData.predictorCombinationList.length > 0">
                 <table class="scroll table table-striped table-bordered table-condensed">
                     <tr>
                         <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
@@ -73,7 +89,7 @@
                         </th>
                         <th>
                             <div>Per Group Sample Size</div>
-                            <div>(units: {{currentResultDetails.isu}})</div>
+                            <div>({{pluralize(currentResultDetails.isu)}})</div>
                         </th>
                     </tr>
                     <tr ng-repeat="perGroupN in currentResultDetails.perGroupSampleSizeList track by $id($index)">
@@ -98,15 +114,15 @@
     </div>
 </div>
 
-<div ng-show="powerService.cachedError != undefined && processing == false">
-    <div ng-bind-html-unsafe="powerService.cachedError"></div>
+<div ng-if="powerService.cachedError != undefined && processing == false">
+  <div ng-bind-html-unsafe="powerService.cachedError"></div>
 </div>
 
-<div ng-show="glimmpseConstants.debug">
+<div ng-if="glimmpseConstants.debug">
     <div class="vmargin15">
-        {{gridData}}
+        gridData: {{gridData}}
     </div>
-    <div>
-        Divisor: {{sampleSizeDivisor}}
+    <div class="vmargin15">
+        sampleSizeDivisor: {{sampleSizeDivisor}}
     </div>
 </div>

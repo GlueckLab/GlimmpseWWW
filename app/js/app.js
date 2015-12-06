@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2013 Regents of the University of Colorado.
+ * Copyright (C) 2015 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -59,6 +59,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         // hypothesis types
         hypothesisGrandMean: 'GRAND_MEAN',
         hypothesisMainEffect: 'MAIN_EFFECT',
+        hypothesisManova: 'MANOVA',
         hypothesisTrend: 'TREND',
         hypothesisInteraction: 'INTERACTION',
 
@@ -66,6 +67,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         trendNone: 'NONE',
         trendChangeFromBaseline: 'CHANGE_FROM_BASELINE',
         trendAllPolynomial: 'ALL_POLYNOMIAL',
+        trendAllNonconstantPolynomial: 'ALL_NONCONSTANT_POLYNOMIAL',
         trendLinear: 'LINEAR',
         trendQuadratic: 'QUADRATIC',
         trendCubic: 'CUBIC',
@@ -114,8 +116,10 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
         xAxisSigmaScale: "VARIABILITY_SCALE_FACTOR",
         xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR",
-        xAxisDesiredPower: "DESIRED_POWER"
+        xAxisDesiredPower: "DESIRED_POWER",
 
+        // platform
+        platform: /android/i.test(window.navigator.userAgent) ? 'android' : 'other'
     })
     .config(['$routeProvider', function($routeProvider, studyDesignService, powerService, dropboxService) {
         /*
@@ -143,11 +147,11 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             .when('/isu',
             {templateUrl: 'partials/independentSamplingUnitView.html', controller: 'clusteringController' }
         )
-            .when('/relativeGroupSize',
-            {templateUrl: 'partials/relativeGroupSizesView.html', controller: 'relativeGroupSizeController' }
-        )
             .when('/smallestGroupSize',
             {templateUrl: 'partials/smallestGroupSizeView.html', controller: 'sampleSizeController' }
+        )
+            .when('/groupSizes',
+            {templateUrl: 'partials/groupSizesView.html', controller: 'groupSizesController' }
         )
             .when('/responseVariables',
             {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }
