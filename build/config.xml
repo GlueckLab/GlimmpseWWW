@@ -79,6 +79,7 @@
     <gap:plugin name="cordova-plugin-inappbrowser" source="npm" version="1.0.1"/>
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
     <allow-navigation href="*"/>
+    <access origin="*"/>
     <gap:plugin name="cordova-plugin-splashscreen" source="npm" version="2.1.0"/>
     <content src="main.html"/>
 </widget>
