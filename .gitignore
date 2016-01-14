@@ -1,1 +1,15 @@
 .tmp
+.gradle/
+local/
+.idea/
+*.iml
+.project/
+.settings
+build/artifacts/
+build/classes/
+build/libs/
+build/tmp/
+text/results/
+node_modules
+
+.DS_Store
