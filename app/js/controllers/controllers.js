@@ -1331,7 +1331,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Edit an existing nominal power
+         * Edit an existing nominal power value
          */
         $scope.editNominalPower = function(power) {
             $scope.editedNominalPower = power;
@@ -1390,7 +1390,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing alpha value
+         * Delete an existing type I error rate
          */
         $scope.deleteTypeIErrorRate = function(alpha) {
             studyDesignService.alphaList.splice(
@@ -1449,7 +1449,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing scale factor value
+         * Delete an existing scale factor for covariance
          */
         $scope.deleteScaleFactorForVariance = function(factor) {
             studyDesignService.sigmaScaleList.splice(
@@ -1508,7 +1508,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing scale factor value
+         * Delete an existing scale factor for means
          */
         $scope.deleteScaleFactorForMeans = function(factor) {
             studyDesignService.betaScaleList.splice(
@@ -1566,7 +1566,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing nominal power value
+         * Delete an existing sample size
          */
         $scope.deleteSampleSize = function(samplesize) {
             studyDesignService.sampleSizeList.splice(
@@ -1625,7 +1625,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing nominal power value
+         * Delete an existing sample size
          */
         $scope.deleteSampleSize = function(samplesize) {
             studyDesignService.sampleSizeList.splice(
@@ -1650,18 +1650,16 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * When a response is added or remove, this function
+         * When a response is added or removed, this function
          * ensures that the beta matrix and covariance structures
          * are still in sync with the responses list
          */
         $scope.syncStudyDesign = function() {
-
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
             // update the beta matrix
             $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
+                                            $scope.metaData.getNumberOfResponseCombinations());
 
             // update covariance of the responses
             var covariance = $scope.studyDesign.getCovarianceByName(glimmpseConstants.covarianceResponses);
@@ -1676,9 +1674,8 @@ glimmpseApp.controller('stateController',
                 if ($scope.studyDesign.gaussianCovariate) {
                     $scope.studyDesign.removeMatrixByName(glimmpseConstants.matrixSigmaYG);
                 }
-
             } else {
-                // update the size of the existsing covariance or create a fresh one
+                // update the size of the existing covariance or create a fresh one
                 if (covariance === undefined) {
                     $scope.studyDesign.covariance.push(
                         $scope.matrixUtils.createUnstructuredCorrelation(glimmpseConstants.covarianceResponses,
@@ -1702,8 +1699,6 @@ glimmpseApp.controller('stateController',
                     }
                 }
             }
-
-
         };
 
         /**
@@ -1726,11 +1721,12 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing nominal power value
+         * Delete an existing response variable
          */
         $scope.deleteResponse = function(response) {
             studyDesignService.responseList.splice(
                 studyDesignService.responseList.indexOf(response), 1);
+
             // update the study design
             $scope.syncStudyDesign();
         };
@@ -1769,6 +1765,7 @@ glimmpseApp.controller('stateController',
             // update the list of combinations of predictors
             $scope.metaData.updatePredictorCombinations();
             var numCombos = $scope.metaData.getNumberOfPredictorCombinations();
+            // update the beta matrix
             $scope.studyDesign.resizeBeta(numCombos,
                 $scope.metaData.getNumberOfResponseCombinations()
             );
@@ -1802,7 +1799,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete an existing predictor variable
+         * Delete an existing predictor name
          */
         $scope.deletePredictor = function(factor) {
             if (factor == $scope.currentPredictor) {
@@ -1858,7 +1855,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Delete the specified category
+         * Delete an existing category name
          */
         $scope.deleteCategory = function(category) {
             $scope.currentPredictor.categoryList.splice(
@@ -1866,7 +1863,6 @@ glimmpseApp.controller('stateController',
 
             // sync the study design
             $scope.syncStudyDesign();
-
 
             // if the predictor appears in the hypothesis, make sure the selected trend
             // is still valid
@@ -2085,7 +2081,7 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * When a response is added or remove, this function
+         * When a level of repeated measures is added or removed, this function
          * ensures that the beta matrix is still in sync with the responses list
          */
         $scope.syncTotalResponses = function() {
@@ -2107,7 +2103,6 @@ glimmpseApp.controller('stateController',
          * Add a new level of repeated measures
          */
         $scope.addLevel = function() {
-
             if ($scope.studyDesign.repeatedMeasuresTree.length < 3) {
                 $scope.studyDesign.repeatedMeasuresTree.push({
                     idx: 0,
@@ -2132,7 +2127,6 @@ glimmpseApp.controller('stateController',
                     );
                 }
             }
-
         };
 
         /**
@@ -2194,7 +2188,7 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Remove a repeated measure
+         * Delete an existing level of repeated measures
          */
         $scope.removeLevel = function() {
             var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
