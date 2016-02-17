@@ -1657,6 +1657,7 @@ glimmpseApp.controller('stateController',
         $scope.syncStudyDesign = function() {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
+
             // update the beta matrix
             $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
                                             $scope.metaData.getNumberOfResponseCombinations());
@@ -2473,7 +2474,6 @@ glimmpseApp.controller('stateController',
                     }
                 };
                 $scope.studyDesign.matrixSet.push($scope.thetaNull);
-
             } else if ($scope.hypothesis.type == $scope.glimmpseConstants.hypothesisMainEffect ||
                 $scope.hypothesis.type == $scope.glimmpseConstants.hypothesisManova ||
                 $scope.hypothesis.type == $scope.glimmpseConstants.hypothesisTrend) {
@@ -2490,7 +2490,6 @@ glimmpseApp.controller('stateController',
                     $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
                     $scope.currentBetweenFactorMapMetaData.selected = true;
-
                 } else if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
                     $scope.hypothesis.betweenParticipantFactorMapList.splice(1,
                         $scope.hypothesis.betweenParticipantFactorMapList.length-1);
@@ -2498,7 +2497,6 @@ glimmpseApp.controller('stateController',
                     $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
                     $scope.currentBetweenFactorMapMetaData.selected = true;
-
                 } else if ($scope.hypothesis.repeatedMeasuresMapTree.length > 0) {
                     $scope.hypothesis.repeatedMeasuresMapTree.splice(1,
                         $scope.hypothesis.repeatedMeasuresMapTree.length-1);
@@ -2507,6 +2505,7 @@ glimmpseApp.controller('stateController',
                         $scope.getWithinFactorMapMetaData($scope.hypothesis.repeatedMeasuresMapTree[0]);
                     $scope.currentWithinFactorMapMetaData.selected = true;
                 }
+
                 // if the user switched to or from MANOVA, adjust the factorMap type as necessary
                 if ($scope.hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
                     if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
@@ -2528,7 +2527,7 @@ glimmpseApp.controller('stateController',
             }
         };
 
-        /****** handlers for the single selection cases of main effects and trends ****/
+        /****** handlers for the single selection cases of main effects, MANOVAs, and trends ****/
         /**
          * Add or remove a between participant factor from the hypothesis object
          * for main effect, MANOVA, or trend hypotheses
