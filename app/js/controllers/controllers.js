@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2015 Regents of the University of Colorado.
+ * Copyright (C) 2016 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -4032,7 +4032,7 @@ glimmpseApp.controller('stateController',
 
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisBetaScale) {
-                    $scope.chartConfig.xAxis.title.text = 'Regresssion Coefficient Scale Factor';
+                    $scope.chartConfig.xAxis.title.text = 'Regression Coefficient Scale Factor';
 
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisSigmaScale) {
