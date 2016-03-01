@@ -64,7 +64,9 @@
                 </p>
                 <h3>MANOVA Hypothesis</h3>
                 <p>
-                    A MANOVA hypothesis combines the Grand Mean hypothesis and the "all possible trends" hypothesis.
+                    A MANOVA hypothesis combines the Grand Mean hypothesis and the "all nonconstant polynomial"
+                    trend hypothesis. GLIMMPSE supports MANOVA hypotheses for only one fixed predictor,
+                    and only for study designs including no repeated measures.
                 </p>
                 <h3>Trend Hypothesis</h3>
                 <p>
@@ -150,7 +152,7 @@
                     <div>
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
                             <input type="radio" name="manovaSingleSelect"
-                                   ng-change="updateBetweenFactorSingleSelect(map, true)"
+                                   ng-change="updateBetweenFactorSingleSelect(map)"
                                    ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
@@ -158,6 +160,7 @@
                     </div>
                 </div>
 
+                <!--
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
                         Within-Participant Factors
@@ -165,13 +168,14 @@
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="manovaSingleSelect"
-                                   ng-change="updateWithinFactorSingleSelect(map, true)"
+                                   ng-change="updateWithinFactorSingleSelect(map)"
                                    ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
                         </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
         <!-- Details for the trend hypothesis -->
@@ -242,10 +246,7 @@
                     <div ng-repeat="map in betweenFactorMapMetaDataList">
                         <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
                             <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
-                                {{map.factorMap.betweenParticipantFactor.predictorName}}
-                                <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
-                                    : {{getTrendLabel(map.factorMap.type)}}
-                                </span>
+                                {{map.factorMap.betweenParticipantFactor.predictorName}} : {{getTrendLabel(map.factorMap.type)}}
                             </button>
                         </input>
                         <div ng-show="map.showTrends" class="well white-box">
@@ -267,10 +268,7 @@
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="checkbox" ng-model="map.selected" ng-click="updateWithinFactorMultiSelect(map)">
                                 <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
-                                    {{map.factorMap.repeatedMeasuresNode.dimension}}
-                                    <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
-                                        : {{getTrendLabel(map.factorMap.type)}}
-                                    </span>
+                                    {{map.factorMap.repeatedMeasuresNode.dimension}} : {{getTrendLabel(map.factorMap.type)}}
                                 </button>
                             </input>
                             <div ng-show="map.showTrends" class="well white-box">
