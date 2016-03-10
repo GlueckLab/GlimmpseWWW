@@ -2112,8 +2112,8 @@ glimmpseApp.controller('stateController',
                     repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
                     numberOfMeasurements: 2,
                     spacingList: [
-                        {idx: 1, value: 1},
-                        {idx: 2, value: 2}
+                        {idx: 1, value: 0},
+                        {idx: 2, value: 1}
                     ]
                 });
 
@@ -2156,7 +2156,7 @@ glimmpseApp.controller('stateController',
             }
             if (factor.numberOfMeasurements > factor.spacingList.length) {
                 // assumes that the max value is the last value
-                var startValue = 1;
+                var startValue = 0;
                 if (factor.spacingList.length > 0) {
                     startValue = factor.spacingList[factor.spacingList.length-1].value + 1;
                 }
