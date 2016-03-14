@@ -2248,7 +2248,7 @@ glimmpseApp.controller('stateController',
         $scope.resetToEqualSpacing = function(factor) {
             if (factor.spacingList !== undefined) {
                 for(var i = 0; i < factor.spacingList.length; i++) {
-                    factor.spacingList[i].value = i+1;
+                    factor.spacingList[i].value = i;
                 }
             }
         };
