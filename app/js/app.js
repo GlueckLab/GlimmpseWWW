@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2015 Regents of the University of Colorado.
+ * Copyright (C) 2016 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -66,7 +66,6 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         // trend types
         trendNone: 'NONE',
         trendChangeFromBaseline: 'CHANGE_FROM_BASELINE',
-        trendAllPolynomial: 'ALL_POLYNOMIAL',
         trendAllNonconstantPolynomial: 'ALL_NONCONSTANT_POLYNOMIAL',
         trendLinear: 'LINEAR',
         trendQuadratic: 'QUADRATIC',

@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2015 Regents of the University of Colorado.
+ * Copyright (C) 2016 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1657,6 +1657,7 @@ glimmpseApp.controller('stateController',
         $scope.syncStudyDesign = function() {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
+
             // update the beta matrix
             $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
                                             $scope.metaData.getNumberOfResponseCombinations());
@@ -2111,8 +2112,8 @@ glimmpseApp.controller('stateController',
                     repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
                     numberOfMeasurements: 2,
                     spacingList: [
-                        {idx: 1, value: 1},
-                        {idx: 2, value: 2}
+                        {idx: 1, value: 0},
+                        {idx: 2, value: 1}
                     ]
                 });
 
@@ -2125,6 +2126,12 @@ glimmpseApp.controller('stateController',
                     $scope.studyDesign.covariance.splice(rmLevel, 0,
                         $scope.matrixUtils.createLEARCorrelation("", 2)
                     );
+                }
+
+                // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
+                var hypothesis = $scope.studyDesign.hypothesis[0];
+                if (hypothesis !== undefined && hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
+                    hypothesis.type = $scope.glimmpseConstants.hypothesisInteraction;
                 }
             }
         };
@@ -2149,7 +2156,7 @@ glimmpseApp.controller('stateController',
             }
             if (factor.numberOfMeasurements > factor.spacingList.length) {
                 // assumes that the max value is the last value
-                var startValue = 1;
+                var startValue = 0;
                 if (factor.spacingList.length > 0) {
                     startValue = factor.spacingList[factor.spacingList.length-1].value + 1;
                 }
@@ -2241,7 +2248,7 @@ glimmpseApp.controller('stateController',
         $scope.resetToEqualSpacing = function(factor) {
             if (factor.spacingList !== undefined) {
                 for(var i = 0; i < factor.spacingList.length; i++) {
-                    factor.spacingList[i].value = i+1;
+                    factor.spacingList[i].value = i;
                 }
             }
         };
@@ -2315,11 +2322,14 @@ glimmpseApp.controller('stateController',
             $scope.showHelp = false;
             // make sure we have a valid theta null in case of grand mean hypotheses
 
-            // determine which types of hypotheses are valid for the current design
-            // main effects and trends require at least one between or within factor
-            // interactions require a total of at least two factors
-            var totalFactors = studyDesignService.betweenParticipantFactorList.length +
-                studyDesignService.repeatedMeasuresTree.length;
+            // Determine which types of hypotheses are valid for the current design.
+            // Grand means are always valid.
+            // Main effects and trends require at least one between or within factor.
+            // MANOVAs require at least one between factor and no within factors.
+            // Interactions require a total of at least two factors.
+            var betweenFactors = studyDesignService.betweenParticipantFactorList.length;
+            var withinFactors = studyDesignService.repeatedMeasuresTree.length;
+            var totalFactors = betweenFactors + withinFactors;
             // TODO - move the display labels to constants
             $scope.validTypeList.push({
                 label: "Grand Mean",
@@ -2330,10 +2340,14 @@ glimmpseApp.controller('stateController',
                     label: "Main Effect",
                     value: glimmpseConstants.hypothesisMainEffect
                 });
+            }
+            if (betweenFactors > 0 && withinFactors === 0) {
                 $scope.validTypeList.push({
                     label: "MANOVA",
                     value: glimmpseConstants.hypothesisManova
                 });
+            }
+            if (totalFactors > 0) {
                 $scope.validTypeList.push({
                     label: "Trend",
                     value: glimmpseConstants.hypothesisTrend
@@ -2473,7 +2487,6 @@ glimmpseApp.controller('stateController',
                     }
                 };
                 $scope.studyDesign.matrixSet.push($scope.thetaNull);
-
             } else if ($scope.hypothesis.type == $scope.glimmpseConstants.hypothesisMainEffect ||
                 $scope.hypothesis.type == $scope.glimmpseConstants.hypothesisManova ||
                 $scope.hypothesis.type == $scope.glimmpseConstants.hypothesisTrend) {
@@ -2490,7 +2503,6 @@ glimmpseApp.controller('stateController',
                     $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
                     $scope.currentBetweenFactorMapMetaData.selected = true;
-
                 } else if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
                     $scope.hypothesis.betweenParticipantFactorMapList.splice(1,
                         $scope.hypothesis.betweenParticipantFactorMapList.length-1);
@@ -2498,7 +2510,6 @@ glimmpseApp.controller('stateController',
                     $scope.currentBetweenFactorMapMetaData =
                         $scope.getBetweenFactorMapMetaData($scope.hypothesis.betweenParticipantFactorMapList[0]);
                     $scope.currentBetweenFactorMapMetaData.selected = true;
-
                 } else if ($scope.hypothesis.repeatedMeasuresMapTree.length > 0) {
                     $scope.hypothesis.repeatedMeasuresMapTree.splice(1,
                         $scope.hypothesis.repeatedMeasuresMapTree.length-1);
@@ -2507,28 +2518,10 @@ glimmpseApp.controller('stateController',
                         $scope.getWithinFactorMapMetaData($scope.hypothesis.repeatedMeasuresMapTree[0]);
                     $scope.currentWithinFactorMapMetaData.selected = true;
                 }
-                // if the user switched to or from MANOVA, adjust the factorMap type as necessary
-                if ($scope.hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
-                    if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0) {
-                        $scope.currentBetweenFactorMapMetaData.factorMap.type = $scope.glimmpseConstants.trendAllPolynomial;
-                    }
-                    if ($scope.hypothesis.repeatedMeasuresMapTree.length > 0) {
-                        $scope.currentWithinFactorMapMetaData.factorMap.type = $scope.glimmpseConstants.trendAllPolynomial;
-                    }
-                } else {
-                    if ($scope.hypothesis.betweenParticipantFactorMapList.length > 0 &&
-                        $scope.currentBetweenFactorMapMetaData.factorMap.type === $scope.glimmpseConstants.trendAllPolynomial) {
-                        $scope.currentBetweenFactorMapMetaData.factorMap.type = $scope.glimmpseConstants.trendNone;
-                    }
-                    if ($scope.hypothesis.repeatedMeasuresMapTree.length > 0 &&
-                        $scope.currentWithinFactorMapMetaData.factorMap.type === $scope.glimmpseConstants.trendAllPolynomial) {
-                        $scope.currentWithinFactorMapMetaData.factorMap.type = $scope.glimmpseConstants.trendNone;
-                    }
-                }
             }
         };
 
-        /****** handlers for the single selection cases of main effects and trends ****/
+        /****** handlers for the single selection cases of main effects, MANOVAs, and trends ****/
         /**
          * Add or remove a between participant factor from the hypothesis object
          * for main effect, MANOVA, or trend hypotheses
@@ -2536,7 +2529,7 @@ glimmpseApp.controller('stateController',
          * We can't just ng-model this directly since we need to update
          * the old mapping (selected=false) before we move on
          */
-        $scope.updateBetweenFactorSingleSelect = function(map, manovaHack) {
+        $scope.updateBetweenFactorSingleSelect = function(map) {
             // clear the selection flag on the other mappings
             $scope.deselectAllFactors();
             $scope.hypothesis.betweenParticipantFactorMapList = [];
@@ -2549,14 +2542,6 @@ glimmpseApp.controller('stateController',
 
             // store in the hypothesis
             $scope.hypothesis.betweenParticipantFactorMapList.push(map.factorMap);
-
-            if (manovaHack === true) {
-                map.factorMap.type = $scope.glimmpseConstants.trendAllPolynomial;
-            } else {
-                if (map.factorMap.type === $scope.glimmpseConstants.trendAllPolynomial) {
-                    map.factorMap.type = $scope.glimmpseConstants.trendNone;
-                }
-            }
         };
 
         /**
@@ -2566,7 +2551,7 @@ glimmpseApp.controller('stateController',
          * We can't just ng-model this directly since we need to update
          * the old mapping (selected=false) before we move on
          */
-        $scope.updateWithinFactorSingleSelect = function(map, manovaHack) {
+        $scope.updateWithinFactorSingleSelect = function(map) {
             // clear the selection flag on the other mappings
             $scope.deselectAllFactors();
             $scope.hypothesis.betweenParticipantFactorMapList = [];
@@ -2579,14 +2564,6 @@ glimmpseApp.controller('stateController',
 
             // store in the hypothesis
             $scope.hypothesis.repeatedMeasuresMapTree.push(map.factorMap);
-
-            if (manovaHack === true) {
-                map.factorMap.type = $scope.glimmpseConstants.trendAllPolynomial;
-            } else {
-                if (map.factorMap.type === $scope.glimmpseConstants.trendAllPolynomial) {
-                    map.factorMap.type = $scope.glimmpseConstants.trendNone;
-                }
-            }
         };
 
         /********* handlers for the multiselect interaction case *******/
@@ -2627,7 +2604,7 @@ glimmpseApp.controller('stateController',
             // todo - move to utility class or constants
         $scope.getTrendLabel = function(type) {
             if (type == glimmpseConstants.trendNone) {
-                return 'None';
+                return 'All pairwise comparisons';
             } else if (type == glimmpseConstants.trendChangeFromBaseline) {
                 return 'Change from baseline';
             } else if (type == glimmpseConstants.trendLinear) {
@@ -4033,7 +4010,7 @@ glimmpseApp.controller('stateController',
 
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisBetaScale) {
-                    $scope.chartConfig.xAxis.title.text = 'Regresssion Coefficient Scale Factor';
+                    $scope.chartConfig.xAxis.title.text = 'Regression Coefficient Scale Factor';
 
                 } else if (studyDesignService.powerCurveDescriptions.horizontalAxisLabelEnum ==
                     glimmpseConstants.xAxisSigmaScale) {
