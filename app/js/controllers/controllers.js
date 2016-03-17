@@ -218,6 +218,12 @@ glimmpseApp.controller('stateController',
                         factor.spacingList.length <= 0) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
+                    for(var j = 0; j < factor.spacingList.length; j++) {
+                        var spacing = factor.spacingList[j];
+                        if (!/^\d+$/.test(spacing.value)) {
+                            return $scope.glimmpseConstants.stateIncomplete;
+                        }
+                    }
                 }
             }
             return $scope.glimmpseConstants.stateComplete;

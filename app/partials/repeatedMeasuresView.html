@@ -66,10 +66,18 @@
             </div>
             <div class="form-group" ng-show="factor.repeatedMeasuresDimensionType == glimmpseConstants.repeatedMeasuresTypeNumeric">
                 <label>Spacing</label>
-                <input ng-repeat="spacing in factor.spacingList"
-                       class="vmargin5 form-control" type="number" ng-model="spacing.value"
-                       min='0' autofocus required >
-                </input>
+                <div ng-repeat="spacing in factor.spacingList">
+                  <ng-form name="spacingForm">
+                    <input class="vmargin5 form-control" name="spacing"
+                        ng-attr-type="number" ng-model="spacing.value"
+                        ng-pattern="/^\d+$/"
+                        step='1' autocomplete="off" autofocus required>
+                    </input>
+                    <div class="alert alert-danger" ng-show="spacingForm.spacing.$error.pattern">
+                        Please enter a nonnegative integer
+                    </div>
+                  </ng-form>
+                </div>
                 <div class="vmargin5">
                     <button class="btn btn-xs btn-primary" ng-click="resetToEqualSpacing(factor)">
                         Reset to Equal Spacing
