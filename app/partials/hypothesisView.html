@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2015 Regents of the University of Colorado.
+* Copyright (C) 2016 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -26,8 +26,7 @@
 
 <p>
     To specify a hypothesis, select the type of hypothesis from the dropdown list
-    and enter the details.  Note that trends within
-    an interaction hypothesis may be specified by selecting the "Interaction" button.
+    and enter the details.
     For more information about the type of hypothesis, click the "More Info" link.
 </p>
 
@@ -42,7 +41,7 @@
             <div class="well white-box" ng-show="showHelp">
                 <p>
                     GLIMMPSE supports the following hypothesis types,
-                    for between-participant-factors, within-participant factors,
+                    for between-participant factors, within-participant factors,
                     and interactions between them.
                 </p>
 
@@ -61,11 +60,13 @@
                     Main effect hypotheses test for the effect of a single factor averaged across
                     all other factors. For example, testing if responses of participants in an active drug group
                     differ on average from participant responses in a placebo group is a common main effect hypothesis
-                    for a between-participant effect.
+                    for a between-participant factor.
                 </p>
                 <h3>MANOVA Hypothesis</h3>
                 <p>
-                    A MANOVA hypothesis combines the Grand Mean hypothesis and the "all possible trends" hypothesis.
+                    A MANOVA hypothesis combines the Grand Mean hypothesis and the "all nonconstant polynomial"
+                    trend hypothesis. GLIMMPSE supports MANOVA hypotheses for only one fixed predictor,
+                    and only for study designs including no repeated measures.
                 </p>
                 <h3>Trend Hypothesis</h3>
                 <p>
@@ -75,7 +76,7 @@
                 </p>
                 <h3>Interaction Hypothesis</h3>
                 <p>
-                    Interaction effect hypotheses test if the effect of one factor changes depending
+                    Interaction hypotheses test if the effect of one factor changes depending
                     on the value of one or more additional factors. An interaction test also can be
                     interpreted as a test of differences of differences, as well as a test of parallel
                     trajectories of response.
@@ -151,7 +152,7 @@
                     <div>
                         <div ng-repeat="map in betweenFactorMapMetaDataList">
                             <input type="radio" name="manovaSingleSelect"
-                                   ng-change="updateBetweenFactorSingleSelect(map, true)"
+                                   ng-change="updateBetweenFactorSingleSelect(map)"
                                    ng-model="$parent.currentBetweenFactorMapMetaData" ng-value="map">
                             {{map.factorMap.betweenParticipantFactor.predictorName}}
                             </input>
@@ -159,6 +160,7 @@
                     </div>
                 </div>
 
+                <!--
                 <div class="vmargin5" ng-show="withinFactorMapMetaDataList.length > 0">
                     <label>
                         Within-Participant Factors
@@ -166,13 +168,14 @@
                     <div>
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="radio" name="manovaSingleSelect"
-                                   ng-change="updateWithinFactorSingleSelect(map, true)"
+                                   ng-change="updateWithinFactorSingleSelect(map)"
                                    ng-model="$parent.currentWithinFactorMapMetaData" ng-value="map">
                             {{map.factorMap.repeatedMeasuresNode.dimension}}
                             </input>
                         </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
         <!-- Details for the trend hypothesis -->
@@ -243,10 +246,7 @@
                     <div ng-repeat="map in betweenFactorMapMetaDataList">
                         <input type="checkbox" ng-model="map.selected" ng-click="updateBetweenFactorMultiSelect(map)">
                             <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
-                                {{map.factorMap.betweenParticipantFactor.predictorName}}
-                                <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
-                                    : {{getTrendLabel(map.factorMap.type)}}
-                                </span>
+                                {{map.factorMap.betweenParticipantFactor.predictorName}} : {{getTrendLabel(map.factorMap.type)}}
                             </button>
                         </input>
                         <div ng-show="map.showTrends" class="well white-box">
@@ -268,10 +268,7 @@
                         <div ng-repeat="map in withinFactorMapMetaDataList">
                             <input type="checkbox" ng-model="map.selected" ng-click="updateWithinFactorMultiSelect(map)">
                                 <button class="btn btn-sm btn-default" ng-click="map.showTrends = !map.showTrends">
-                                    {{map.factorMap.repeatedMeasuresNode.dimension}}
-                                    <span ng-show="map.factorMap.type != glimmpseConstants.trendNone">
-                                        : {{getTrendLabel(map.factorMap.type)}}
-                                    </span>
+                                    {{map.factorMap.repeatedMeasuresNode.dimension}} : {{getTrendLabel(map.factorMap.type)}}
                                 </button>
                             </input>
                             <div ng-show="map.showTrends" class="well white-box">

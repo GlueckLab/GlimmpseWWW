@@ -1,6 +1,6 @@
 /*
  * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
- * Copyright (C) 2015 Regents of the University of Colorado.
+ * Copyright (C) 2016 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -337,8 +337,8 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                     var factor = studyDesignInstance.repeatedMeasuresTree[ii];
                     if (factor.spacingList === null) {
                         factor.spacingList = [
-                            {idx: 1, value: 1},
-                            {idx: 2, value: 2}
+                            {idx: 1, value: 0},
+                            {idx: 2, value: 1}
                         ];
                     }
                 }
@@ -380,6 +380,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                  * In future, we should find a more elegant solution
                  */
                 var tmpHypothesis = object.hypothesis[0];
+                if (studyDesignInstance.repeatedMeasuresTree.length > 0) {
+                    // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
+                    if (tmpHypothesis.type == glimmpseConstants.hypothesisManova) {
+                        tmpHypothesis.type = glimmpseConstants.hypothesisInteraction;
+                    }
+                }
                 if (tmpHypothesis.repeatedMeasuresMapTree === null) {
                     tmpHypothesis.repeatedMeasuresMapTree = [];
                 }
@@ -402,7 +408,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                             studyDesignInstance.getBetweenFactorByJson(angular.toJson(factorMap.betweenParticipantFactor));
                         if (betweenFactor !== undefined) {
                             studyDesignInstance.hypothesis[0].betweenParticipantFactorMapList.push({
-                                type: factorMap.type,
+                                type: factorMap.type == 'ALL_POLYNOMIAL' ? glimmpseConstants.trendNone : factorMap.type,
                                 betweenParticipantFactor: betweenFactor
                             });
                         }
@@ -415,13 +421,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                             studyDesignInstance.getWithinFactorByJson(angular.toJson(rmFactorMap.repeatedMeasuresNode));
                         if (rmFactor !== undefined) {
                             studyDesignInstance.hypothesis[0].repeatedMeasuresMapTree.push({
-                                type: rmFactorMap.type,
+                                type: rmFactorMap.type == 'ALL_POLYNOMIAL' ? glimmpseConstants.trendNone : rmFactorMap.type,
                                 repeatedMeasuresNode: rmFactor
                             });
                         }
                     }
                 }
-
             }
         } else {
             throw errorInvalid;
@@ -778,7 +783,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
                 break;
             case glimmpseConstants.trendLinear:
-            case glimmpseConstants.trendAllPolynomial:
             case glimmpseConstants.trendAllNonconstantPolynomial:
             case glimmpseConstants.trendChangeFromBaseline:
                 if (numValues > 1) {
