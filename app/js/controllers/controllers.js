@@ -411,7 +411,7 @@ glimmpseApp.controller('stateController',
                 if ($scope.studyDesign.powerMethodList.length > 0) {
                     var quantileChecked = false;
                     for(var i in $scope.studyDesign.powerMethodList) {
-                        if ($scope.studyDesign.powerMethodList[i].value == 'quantile') {
+                        if ($scope.studyDesign.powerMethodList[i].powerMethodEnum == glimmpseConstants.powerMethodQuantile) {
                             quantileChecked = true;
                             break;
                         }
