@@ -2712,7 +2712,7 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * Add or remote power methods from the power methods list
+         * Add or remove power methods from the power methods list
          * depending on the checkbox status
          *
          * @param methodName name of the method
