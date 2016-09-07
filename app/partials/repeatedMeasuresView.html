@@ -27,11 +27,15 @@
 </p>
 
 <p>
-    If the study includes repeated measurements, click "Add Repeated Measures" and follow
+    If the study includes repeated measures, click "Add Repeated Measures" and follow
     the prompts. The text entered in the "Dimension" text box indicates the dimension over
     which measures were taken (e.g. time, days, locations, etc.). The choice of "Type"
     indicates whether the repeated measures are numeric (e.g. time), ordinal (e.g. 1st,
     2nd, 3rd), or categorical (e.g. arm, leg, hand).
+</p>
+
+<p>
+    If the repeated measures are numeric, the spacing values must be nonnegative integers.
 </p>
 
 <p>
@@ -66,10 +70,18 @@
             </div>
             <div class="form-group" ng-show="factor.repeatedMeasuresDimensionType == glimmpseConstants.repeatedMeasuresTypeNumeric">
                 <label>Spacing</label>
-                <input ng-repeat="spacing in factor.spacingList"
-                       class="vmargin5 form-control" type="number" ng-model="spacing.value"
-                       min='0' autofocus required >
-                </input>
+                <div ng-repeat="spacing in factor.spacingList">
+                  <ng-form name="spacingForm">
+                    <input class="vmargin5 form-control" name="spacing"
+                        ng-attr-type="number" ng-model="spacing.value"
+                        ng-pattern="/^\d+$/"
+                        step='1' autocomplete="off" autofocus required>
+                    </input>
+                    <div class="alert alert-danger" ng-show="spacingForm.spacing.$error.pattern">
+                        Please enter a nonnegative integer
+                    </div>
+                  </ng-form>
+                </div>
                 <div class="vmargin5">
                     <button class="btn btn-xs btn-primary" ng-click="resetToEqualSpacing(factor)">
                         Reset to Equal Spacing

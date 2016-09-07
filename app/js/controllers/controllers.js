@@ -218,6 +218,12 @@ glimmpseApp.controller('stateController',
                         factor.spacingList.length <= 0) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
+                    for(var j = 0; j < factor.spacingList.length; j++) {
+                        var spacing = factor.spacingList[j];
+                        if (!/^\d+$/.test(spacing.value)) {
+                            return $scope.glimmpseConstants.stateIncomplete;
+                        }
+                    }
                 }
             }
             return $scope.glimmpseConstants.stateComplete;
@@ -405,7 +411,7 @@ glimmpseApp.controller('stateController',
                 if ($scope.studyDesign.powerMethodList.length > 0) {
                     var quantileChecked = false;
                     for(var i in $scope.studyDesign.powerMethodList) {
-                        if ($scope.studyDesign.powerMethodList[i].value == 'quantile') {
+                        if ($scope.studyDesign.powerMethodList[i].powerMethodEnum == glimmpseConstants.powerMethodQuantile) {
                             quantileChecked = true;
                             break;
                         }
@@ -2706,7 +2712,7 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * Add or remote power methods from the power methods list
+         * Add or remove power methods from the power methods list
          * depending on the checkbox status
          *
          * @param methodName name of the method
