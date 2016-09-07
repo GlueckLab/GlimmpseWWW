@@ -1,6 +1,6 @@
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2016 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -47,15 +47,18 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-        Response vars: {{studyDesign.responseList}}
+        studyDesign.responseList: {{studyDesign.responseList}}
     </div>
     <div class="vmargin15">
-        Covariance set: {{studyDesign.covariance}}
+        studyDesign.covariance: {{studyDesign.covariance}}
     </div>
     <div class="vmargin15">
-        Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
+        metaData.getNumberOfResponseCombinations(): {{metaData.getNumberOfResponseCombinations()}}
     </div>
     <div class="vmargin15">
-        Matrix set {{studyDesign.matrixSet}}
+        metaData.responseCombinationList: {{metaData.responseCombinationList}}
+    </div>
+    <div class="vmargin15">
+        studyDesign.matrixSet: {{studyDesign.matrixSet}}
     </div>
 </div>

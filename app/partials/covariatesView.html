@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2013 Regents of the University of Colorado.
+* Copyright (C) 2016 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<h3>Controlling for a single, normally distributed predictor</h3>
+<h3>Controlling for a single, normally distributed covariate</h3>
 
 <p>
     A common experimental design is an analysis of covariance, which includes one or
@@ -34,13 +34,13 @@
 
 <p>
     GLIMMPSE can calculate power for hypotheses concerning the fixed predictors,
-    optionally controlling for a single normally distributed predictor. If you plan
-    to include a single normally distributed predictor in your model, click the check box below.
+    optionally controlling for a single normally distributed covariate. If you plan
+    to include a single normally distributed covariate in your model, click the check box below.
 </p>
 
 <p>
     At present, the GLIMMPSE software does not calculate power for multiple normally
-    distributed predictors nor non-normally distributed predictors.
+    distributed covariates nor non-normally distributed covariates.
 </p>
 
 <div class="well">
@@ -48,7 +48,7 @@
         <input type="checkbox" name="newCovariateDesign"
                 data-ng-model="studyDesign.gaussianCovariate"
                 ng-click="updateMatrixSet()">
-            Control for a single, normally distributed predictor.
+            Control for a single, normally distributed covariate.
         </input>
     </div>
 </div>

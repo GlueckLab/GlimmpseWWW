@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 * GLIMMPSE (General Linear Multivariate Model Power and Sample size)
-* Copyright (C) 2015 Regents of the University of Colorado.
+* Copyright (C) 2016 Regents of the University of Colorado.
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -46,8 +46,8 @@
                         the off-diagonal cells.
                     </div>
                     <div ng-show="currentCovariance.type == glimmpseConstants.correlationTypeUnstructured">
-
-                        <form name="stddevForm" ng-show="currentCovariance.name == glimmpseConstants.covarianceResponses">
+                        <form name="stddevForm" novalidate
+                                ng-show="currentCovariance.name == glimmpseConstants.covarianceResponses">
                             <p>
                                 Enter the standard deviation you expect to observe for each response. Note that
                                 Glimmpse currently assumes that the standard deviation is constant across
@@ -66,7 +66,7 @@
                     </div>
                     <div ng-show="currentCovariance.type == glimmpseConstants.correlationTypeLear">
                         <p>
-                            The LEAR model describes correlation which monotonely decreases with distance
+                            The LEAR model describes correlation which monotonically decreases with distance
                             between repeated measurements. The model has two correlation parameters, the
                             base correlation and the decay rate. The base correlation describes the correlation
                             between measurements taken 1 unit apart. The decay rate describes the rate of decrease
@@ -145,7 +145,7 @@
                         </button>
                         <button class="btn btn-primary" ng-model="covariance.type" ng-click="updateType()"
                                 btn-radio="glimmpseConstants.correlationTypeLear">
-                            Lear correlation
+                            LEAR correlation
                         </button>
                     </div>
                     <div class="btn-group" ng-show="currentCovariance.name == glimmpseConstants.covarianceResponses">
