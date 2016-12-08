@@ -34,7 +34,7 @@
         <div class="form-group" ng-if="currentResultDetails.errorMessage != null">
             <label>Error</label>
             <div class="well white-box">
-                <label>{{currentResultDetails.errorMessage}}</label>
+                <label ng-bind-html-unsafe="currentResultDetails.errorMessage"></label>
             </div>
         </div>
         <div class="form-group">
