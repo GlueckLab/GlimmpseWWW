@@ -3694,30 +3694,83 @@ glimmpseApp.controller('stateController',
                 $scope.sampleSizeDivisor = 1;
             }
 
+            $scope.headerCellTemplate =
+                /* ORIGINAL: lifted from app/lib/ng-grid-2.0.7.min.js
+                    '<div class="ngHeaderSortColumn {{col.headerClass}}" ng-style="{\'cursor\': col.cursor}" '                 +
+                            'ng-class="{ \'ngSorted\': !noSortVisible }">'                                                     +
+                        '<div ng-click="col.sort($event)" ng-class="\'colt\' + col.index" class="ngHeaderText">'               +
+                            '{{col.displayName}}'                                                                              +
+                        '</div>'                                                                                               +
+                        '<div class="ngSortButtonDown" ng-show="col.showSortButtonDown()"></div>'                              +
+                        '<div class="ngSortButtonUp" ng-show="col.showSortButtonUp()"></div>'                                  +
+                        '<div class="ngSortPriority">{{col.sortPriority}}</div>'                                               +
+                        '<div ng-class="{ ngPinnedIcon: col.pinned, ngUnPinnedIcon: !col.pinned }" ng-click="togglePin(col)" ' +
+                                'ng-show="col.pinnable">'                                                                      +
+                        '</div>'                                                                                               +
+                    '</div>'                                                                                                   +
+                    '<div ng-show="col.resizable" class="ngHeaderGrip" ng-click="col.gripClick($event)" '                      +
+                            'ng-mousedown="col.gripOnMouseDown($event)">'                                                      +
+                    '</div>'
+                */
+
+                /* MODIFICATION: turn on word-wrapping for col.displayName */
+                    '<div class="ngHeaderSortColumn {{col.headerClass}}" ng-style="{\'cursor\': col.cursor}" '                 +
+                            'ng-class="{ \'ngSorted\': !noSortVisible }">'                                                     +
+                        '<div ng-click="col.sort($event)" ng-class="\'colt\' + col.index" class="ngHeaderText">'               +
+                            '<div style=\'white-space: normal\'>{{col.displayName}}</div>'                                     +
+                        '</div>'                                                                                               +
+                        '<div class="ngSortButtonDown" ng-show="col.showSortButtonDown()"></div>'                              +
+                        '<div class="ngSortButtonUp" ng-show="col.showSortButtonUp()"></div>'                                  +
+                        '<div class="ngSortPriority">{{col.sortPriority}}</div>'                                               +
+                        '<div ng-class="{ ngPinnedIcon: col.pinned, ngUnPinnedIcon: !col.pinned }" ng-click="togglePin(col)" ' +
+                                'ng-show="col.pinnable">'                                                                      +
+                        '</div>'                                                                                               +
+                    '</div>'                                                                                                   +
+                    '<div ng-show="col.resizable" class="ngHeaderGrip" ng-click="col.gripClick($event)" '                      +
+                            'ng-mousedown="col.gripOnMouseDown($event)">'                                                      +
+                    '</div>'
+            ;
+
             $scope.columnDefs = [
-                { field: 'actualPower', displayName: 'Power', width: 80,
-                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) | number:3}}</span></div>'},
+                { field: 'actualPower', displayName: 'Power', width: 60,
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) | number:3}}</span></div>',
+                    headerCellTemplate: $scope.headerCellTemplate},
+
                 /* TODO: should display dash instead of confidence limits if they are zero, perhaps; see totalSampleSize field */
-                { field: 'confidenceInterval', displayName: 'Confidence Limits',
-                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</span></div>',
+                { field: 'confidenceInterval', displayName: 'Confidence Limits', width: 100,
                     visible: ($scope.studyDesign.confidenceIntervalDescriptions !== null),
-                    width: 200},
-                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 200,
-                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null && row.getProperty(col.field) < 0 ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>'},
-                { field: 'nominalPower.value', displayName: 'Target Power', cellFilter:'number:3',
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>({{row.entity.confidenceInterval.lowerLimit | number:3}}, {{row.entity.confidenceInterval.upperLimit | number:3}})</span></div>',
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 100,
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null && row.getProperty(col.field) < 0 ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>',
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'nominalPower.value', displayName: 'Target Power', width:60,
                     visible: ($scope.studyDesign.solutionTypeEnum != glimmpseConstants.solutionTypePower),
-                    width: 200},
-                { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 200},
-                { field: 'test.type', displayName: 'Test', width: 200},
-                { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 200},
-                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 200},
-                { field: 'powerMethod.powerMethodEnum', displayName: 'Power Method', width: 200,
-                    visible: $scope.studyDesign.gaussianCovariate
-                },
-                { field: 'quantile.value', displayName: 'Quantile', width: 200,
+                    cellFilter:'number:3',
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'betaScale.value', displayName: 'Means Scale Factor', width: 95,
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'sigmaScale.value', displayName: 'Variability Scale Factor', width: 95,
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'powerMethod.powerMethodEnum', displayName: 'Power Method', width: 125,
+                    visible: $scope.studyDesign.gaussianCovariate,
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'quantile.value', displayName: 'Quantile', width: 80,
                     visible: ($scope.studyDesign.gaussianCovariate &&
-                        $scope.studyDesign.quantileList.length > 0)
-                }
+                        $scope.studyDesign.quantileList.length > 0),
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'test.type', displayName: 'Test', width: 100,
+                    headerCellTemplate: $scope.headerCellTemplate},
+
+                { field: 'alpha.alphaValue', displayName: 'Type I Error Rate', width: 80,
+                    headerCellTemplate: $scope.headerCellTemplate}
             ];
 
             // build grid options
@@ -3728,6 +3781,7 @@ glimmpseApp.controller('stateController',
                 afterSelectionChange: function(data) {
                     $scope.calculateDetails();
                 },
+                headerRowHeight: 50,
                 selectedItems: []
             };
 
