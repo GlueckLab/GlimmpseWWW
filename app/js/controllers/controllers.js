@@ -776,7 +776,7 @@ glimmpseApp.controller('stateController',
                 // hypothesis menu
                 if (!$scope.testDone($scope.state.hypothesis)) { $scope.incompleteViews.push("Hypothesis > Hypothesis"); }
                 if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
-                if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
+                if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error Rate"); }
                 // means menu
                 if (!$scope.testDone($scope.state.means)) { $scope.incompleteViews.push("Means > Means"); }
                 if (!$scope.testDone($scope.state.meansScale)) { $scope.incompleteViews.push("Means > Scale Factors"); }
@@ -799,7 +799,7 @@ glimmpseApp.controller('stateController',
                 if (!$scope.testDone($scope.state.withinContrast)) { $scope.incompleteViews.push("Hypothesis > Within-Participant Contrast"); }
                 if (!$scope.testDone($scope.state.thetaNull)) { $scope.incompleteViews.push("Hypothesis > Null Hypothesis Matrix"); }
                 if (!$scope.testDone($scope.state.test)) { $scope.incompleteViews.push("Hypothesis > Statistical Tests"); }
-                if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error"); }
+                if (!$scope.testDone($scope.state.typeIError)) { $scope.incompleteViews.push("Hypothesis > Type I Error Rate"); }
                 // variability menu
                 if (!$scope.testDone($scope.state.sigmaE)) { $scope.incompleteViews.push("Variability > Error Covariance"); }
                 if (!$scope.testDone($scope.state.sigmaY)) { $scope.incompleteViews.push("Variability > Outcomes Covariance"); }
