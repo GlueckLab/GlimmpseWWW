@@ -40,7 +40,8 @@
         <div class="form-group">
             <label>
                 Enter the correlation you expect to observe between the covariate
-                and each response below
+                and each response below (each correlation must be between -1 and 1,
+                exclusive)
             </label>
             <div class="maxHeight300  scroll">
                 <table class="table table-bordered table-condensed table-striped maxHeight300">
@@ -54,7 +55,8 @@
                             {{entry[$parent.$index]}}
                         </th>
                         <td>
-                            <input class="form-control" type="number" min="-1" max="1"
+                            <input class="form-control" type="number"
+                                   ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                                    data-ng-model="sigmaYG.data.data[$index][0]">
                             </input>
                         </td>
@@ -67,14 +69,13 @@
             <button class="btn btn-primary" ng-click="setSharedCorrelationForAllOutcomes()">
                 Set all correlations to the value below
             </button>
-            <input class="form-control" name="sharedCorrelation" type="number" min="-1" max="1"
+            <input class="form-control" name="sharedCorrelation" type="number"
+                   ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                    data-ng-model="sharedCorrelation">
-            </input>
             <div class="alert alert-danger" class="form-control"
-                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.min">Please enter a number between -1 and 1</div>
-            <div class="alert alert-danger" class="form-control"
-                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.max">Please enter a number between -1 and 1</div>
-
+                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.pattern">
+                Please enter a number between -1 and 1, exclusive
+            </div>
         </div>
     </form>
 
