@@ -61,7 +61,8 @@
                             </div>
                         </form>
                         <p>
-                            Enter the correlations you expect to observe among the responses.
+                            Enter the correlations you expect to observe among the responses
+                            (each off-diagonal correlation must be between -1 and 1, exclusive).
                         </p>
                     </div>
                     <div ng-show="currentCovariance.type == glimmpseConstants.correlationTypeLear">
@@ -78,12 +79,11 @@
                             <div class="form-group">
                                 <label>Base Correlation</label>
                                 <input class="form-control" type="number" name="rho" ng-model="currentCovariance.rho"
-                                       min='-1' max="1" step="0.1" autofocus required ng-change="calculateLear()">
+                                       ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
+                                       step="0.1" autofocus required ng-change="calculateLear()">
                                 </input>
-                                <div class="alert alert-danger" ng-show="learForm.rho.$error.max">
-                                    Please enter a number between -1 and 1</div>
-                                <div class="alert alert-danger" ng-show="learForm.rho.$error.min">
-                                    Please enter a number between -1 and 1</div>
+                                <div class="alert alert-danger" ng-show="learForm.rho.$error.pattern">
+                                    Please enter a number between -1 and 1, exclusive</div>
                             </div>
                             <div class="form-group">
                                 <label>Decay Rate</label>
@@ -91,7 +91,7 @@
                                        min='0' step="0.1" autofocus required ng-change="calculateLear()">
                                 </input>
                                 <div class="alert alert-danger" ng-show="learForm.delta.$error.min">
-                                    Please enter a number between -1 and 1</div>
+                                    Please enter a nonnegative number</div>
                             </div>
                         </form>
                     </div>
@@ -118,12 +118,19 @@
                                     {{rowLabelList[$index]}}
                                 </th>
                                 <td ng-repeat="cell in row track by $id($index)">
-                                    <!-- correlation, so min = -1, max = 1 -->
-                                    <input type="number" class="form-control" min="-1" max="1"
-                                           ng-show="currentCovariance.type != glimmpseConstants.covarianceTypeUnstructured"
+                                    <!-- correlation and not disabled, so min = -1, max = 1 -->
+                                    <input type="number" class="form-control"
+                                           ng-show="currentCovariance.type != glimmpseConstants.covarianceTypeUnstructured && !isCellDisabled($parent.$index, $index)"
+                                           ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                                            ng-model="currentCovariance.blob.data[$parent.$index][$index]"
                                            ng-change="setCellValue($index, $parent.$index, currentCovariance.blob.data[$parent.$index][$index])"
-                                           ng-disabled='isCellDisabled($parent.$index, $index)' />
+                                           ng-disabled='false' />
+                                    <!-- correlation and disabled, so min and max are implicit -->
+                                    <input type="number" class="form-control"
+                                           ng-show="currentCovariance.type != glimmpseConstants.covarianceTypeUnstructured && isCellDisabled($parent.$index, $index)"
+                                           ng-model="currentCovariance.blob.data[$parent.$index][$index]"
+                                           ng-change="setCellValue($index, $parent.$index, currentCovariance.blob.data[$parent.$index][$index])"
+                                           ng-disabled='true' />
                                     <!-- covariance, so no limits -->
                                     <input type="number" class="form-control"
                                            ng-show="currentCovariance.type == glimmpseConstants.covarianceTypeUnstructured"
