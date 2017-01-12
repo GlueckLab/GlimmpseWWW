@@ -23,7 +23,7 @@ try {
     $mail->addAddress('samplesizeshop@gmail.com', 'Sample Size Shop');
 
     //Set the subject line
-    $mail->Subject = 'Glimmpse Feedback';
+    $mail->Subject = 'GLIMMPSE Feedback';
 
     // create the message body
     $mail->Body = "<html><head></head><body>";

@@ -50,7 +50,7 @@
                                 ng-show="currentCovariance.name == glimmpseConstants.covarianceResponses">
                             <p>
                                 Enter the standard deviation you expect to observe for each response. Note that
-                                Glimmpse currently assumes that the standard deviation is constant across
+                                GLIMMPSE currently assumes that the standard deviation is constant across
                                 repeated measurements.
                             </p>
                             <div class="form-group" ng-repeat="stddev in currentCovariance.standardDeviationList">
@@ -172,13 +172,16 @@
 
     <div ng-show="glimmpseConstants.debug == true">
         <div ng-repeat="covar in studyDesign.covariance" class="vmargin15">
-            {{covar}}
-        </div>
-        <div>
-            Current: {{currentCovariance}}
+            covar: {{covar}}
         </div>
         <div class="vmargin15">
-            LEAR: {{minDistance}}, {{maxDistance}}, {{maxMinDiff}}
+            currentCovariance: {{currentCovariance}}
+        </div>
+        <div class="vmargin15">
+            columnLabelList: {{columnLabelList}}
+        </div>
+        <div class="vmargin15">
+            rowLabelList: {{rowLabelList}}
         </div>
     </div>
 </div>
