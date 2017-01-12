@@ -115,7 +115,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var i = 0; i < covar.standardDeviationList.length; i++) {
             var stddev = covar.standardDeviationList[i];
             if (stddev === null || stddev === undefined ||
-                stddev.value === undefined || stddev.value <= 0) {
+                typeof stddev.value !== 'number' || stddev.value <= 0) {
                 return false;
             }
         }
