@@ -1134,8 +1134,8 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Called prior to submission of save form.  Updates
-         * the value of the study design JSON in a hidden field
+         * Called prior to submission of the save form. Updates
+         * the value of the study design JSON for use in a hidden field
          * in the save form.
          */
         $scope.updateStudyDesignJSON = function() {
@@ -1143,8 +1143,8 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Called prior to submission of save form.  Updates
-         * the value of the study design JSON in a hidden field
+         * Called prior to submission of the save form. Updates
+         * the value of the results CSV for use in a hidden field
          * in the save form.
          */
         $scope.updateResultsCSV = function() {
@@ -1169,11 +1169,9 @@ glimmpseApp.controller('stateController',
                             (result.errorCode !== null ? result.errorCode : "") + "," +
                             (result.errorMessage !== null ? result.errorMessage : "") + "\n"
                     ;
-
                 }
             }
             $scope.resultsCSV = resultsCSV;
-
         };
 
         /**
