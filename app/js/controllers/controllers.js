@@ -1980,7 +1980,7 @@ glimmpseApp.controller('stateController',
 
             // lists of indicators of which test is selected
             $scope.testsList = [
-                {label: "Hotelling Lawley Trace",
+                {label: "Hotelling-Lawley Trace",
                     type: $scope.glimmpseConstants.testHotellingLawleyTrace,
                     selected: ($scope.getTestIndexByName($scope.glimmpseConstants.testHotellingLawleyTrace) != -1)},
                 {label: "Pillai-Bartlett Trace",
