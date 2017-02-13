@@ -2116,8 +2116,8 @@ glimmpseApp.controller('stateController',
                     repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
                     numberOfMeasurements: 2,
                     spacingList: [
-                        {idx: 1, value: 0},
-                        {idx: 2, value: 1}
+                        {idx: 1, value: 1},
+                        {idx: 2, value: 2}
                     ]
                 });
 
@@ -2252,7 +2252,7 @@ glimmpseApp.controller('stateController',
         $scope.resetToEqualSpacing = function(factor) {
             if (factor.spacingList !== undefined) {
                 for(var i = 0; i < factor.spacingList.length; i++) {
-                    factor.spacingList[i].value = i;
+                    factor.spacingList[i].value = i + 1;
                 }
             }
         };

@@ -337,8 +337,8 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                     var factor = studyDesignInstance.repeatedMeasuresTree[ii];
                     if (factor.spacingList === null) {
                         factor.spacingList = [
-                            {idx: 1, value: 0},
-                            {idx: 2, value: 1}
+                            {idx: 1, value: 1},
+                            {idx: 2, value: 2}
                         ];
                     }
                 }
