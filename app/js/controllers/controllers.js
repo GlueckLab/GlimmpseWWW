@@ -1001,6 +1001,8 @@ glimmpseApp.controller('stateController',
                             var msg = "Sorry, that file does not contain a valid study design.";
                             if (glimmpseConstants.debug) {
                                 msg += "\n\n" + err;
+                                msg += "\n\n" + responseText;
+                                msg += "\n\n" + statusText;
                             }
                             window.alert(msg);
                         }
