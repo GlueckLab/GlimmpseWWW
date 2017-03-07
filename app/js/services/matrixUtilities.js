@@ -417,7 +417,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      * @returns covariance
      */
     matrixUtilitiesInstance.createLEARCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type unstructured correlation
+        // create an empty covariance object, with type LEAR correlation
         var covariance = {
             idx: 0,
             type: glimmpseConstants.correlationTypeLear,
