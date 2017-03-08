@@ -485,6 +485,56 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         } else {
             throw errorInvalid;
         }
+
+        /*
+            Other parts of the code seem to assume that the response covariance
+            appears last in the studyDesignInstance.covariance array, after all
+            the repeated measures covariances.
+
+            However, we have seen some JSON where this is not the case. I am not
+            sure how that JSON was created. Regardless, we must deal with it.
+
+            To deal with it, we reorder the elements of studyDesignInstance.co-
+            variance here, so that the repeated measures covariances appear
+            first and in the same order as the elements of the studyDesign-
+            Instance.repeatedMeasuresTree array, and the response covariance
+            appears last.
+        */
+
+        // Convenience variables.
+        var rmt = studyDesignInstance.repeatedMeasuresTree;
+        var cov = studyDesignInstance.covariance;
+
+        // Check for length compatibility.
+        if (cov.length != rmt.length + 1) {
+            throw errorInvalid;
+        }
+
+        // Function to look up a covariance by name.
+        var covarianceByName = function(name) {
+            return cov.find(function(o) { return o.name === name; });
+        };
+
+        // Do the reordering of the repeated measures covariances.
+        var cov2 = [];
+        var z;
+        for (var k = 0; k < rmt.length; ++ k) {
+            z = covarianceByName(rmt[k].dimension);
+            if (typeof z === 'undefined') {
+                throw errorInvalid;
+            }
+            cov2.push(z);
+        }
+
+        // Add on the response covariance.
+        z = covarianceByName(glimmpseConstants.covarianceResponses);
+        if (typeof z === 'undefined') {
+            throw errorInvalid;
+        }
+        cov2.push(z);
+
+        // Record the result.
+        studyDesignInstance.covariance = cov2;
     };
 
     /**
