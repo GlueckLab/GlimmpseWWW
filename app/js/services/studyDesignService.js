@@ -126,20 +126,19 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     studyDesignInstance.fromJSON = function(designJSON) {
 
         var object = angular.fromJson(designJSON);
-        var errorInvalid = "The file did not contain a valid study design. Please try again.";
 
         // read uuid
         if (object.hasOwnProperty("uuid")) {
             studyDesignInstance.uuid = object.uuid;
         } else {
-            throw errorInvalid;
+            throw "no uuid";
         }
 
         // read name
         if (object.hasOwnProperty("name")) {
             studyDesignInstance.name = object.name;
         } else {
-            throw errorInvalid;
+            throw "no name";
         }
 
         // read covariate flag
@@ -147,7 +146,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             (object.gaussianCovariate === true || object.gaussianCovariate === false )) {
             studyDesignInstance.gaussianCovariate = object.gaussianCovariate;
         } else {
-            throw errorInvalid;
+            throw "no or invalid gaussianCovariate";
         }
 
         // read solution type flag
@@ -156,14 +155,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 object.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize )) {
             studyDesignInstance.solutionTypeEnum = object.solutionTypeEnum;
         } else {
-            throw errorInvalid;
+            throw "no or invalid solutionTypeEnum";
         }
 
         // The term to be used for a participant in the study
         if (object.hasOwnProperty("participantLabel")) {
             studyDesignInstance.participantLabel = object.participantLabel;
         } else {
-            throw errorInvalid;
+            throw "no participantLabel";
         }
 
         // view type enum
@@ -172,21 +171,21 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 object.viewTypeEnum == glimmpseConstants.modeMatrix)) {
             studyDesignInstance.viewTypeEnum = object.viewTypeEnum;
         } else {
-            throw errorInvalid;
+            throw "no or invalid viewTypeEnum";
         }
 
         // CI description
         if (object.hasOwnProperty("confidenceIntervalDescriptions")) {
             studyDesignInstance.confidenceIntervalDescriptions = object.confidenceIntervalDescriptions;
         } else {
-            throw errorInvalid;
+            throw "no confidenceIntervalDescriptions";
         }
 
         // power curve description
         if (object.hasOwnProperty("powerCurveDescriptions")) {
             studyDesignInstance.powerCurveDescriptions = object.powerCurveDescriptions;
         } else {
-            throw errorInvalid;
+            throw "no powerCurveDescriptions";
         }
 
         // alpha list
@@ -198,7 +197,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                studyDesignInstance.alphaList = object.alphaList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid alphaList";
         }
 
         // beta scale list
@@ -210,7 +209,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.betaScaleList = object.betaScaleList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid betaScaleList";
         }
 
         // sigma scale list
@@ -222,7 +221,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.sigmaScaleList = object.sigmaScaleList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid sigmaScaleList";
         }
 
         // relative group size list
@@ -234,7 +233,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.relativeGroupSizeList = object.relativeGroupSizeList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid relativeGroupSizeList";
         }
 
         // per group sample size list
@@ -251,7 +250,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 });
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid sampleSizeList";
         }
 
         // statistical test list
@@ -263,7 +262,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.statisticalTestList = object.statisticalTestList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid statisticalTestList";
         }
 
         // power method list
@@ -275,7 +274,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.powerMethodList = object.powerMethodList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid powerMethodList";
         }
 
         // quantile list
@@ -287,7 +286,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.quantileList = object.quantileList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid quantileList";
         }
 
         // nominal power list
@@ -299,7 +298,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.nominalPowerList = object.nominalPowerList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid nominalPowerList";
         }
 
         // response list
@@ -311,7 +310,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.responseList = object.responseList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid responseList";
         }
 
         // between participant factor list
@@ -323,7 +322,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.betweenParticipantFactorList = object.betweenParticipantFactorList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid betweenParticipantFactorList";
         }
 
         // repeated measures tree
@@ -344,7 +343,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid repeatedMeasuresTree";
         }
 
         // clustering tree
@@ -356,7 +355,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.clusteringTree = object.clusteringTree;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid clusteringTree";
         }
 
         // hypothesis
@@ -429,7 +428,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid hypothesis";
         }
 
         // covariance
@@ -471,7 +470,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid covariance";
         }
 
         // matrices
@@ -483,7 +482,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.matrixSet = object.matrixSet;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid matrixSet";
         }
 
         /*
@@ -503,11 +502,12 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
 
         // Convenience variables.
         var rmt = studyDesignInstance.repeatedMeasuresTree;
+        var nrc = studyDesignInstance.responseList.length > 0 ? 1 : 0;
         var cov = studyDesignInstance.covariance;
 
         // Check for length compatibility.
-        if (cov.length != rmt.length + 1) {
-            throw errorInvalid;
+        if (cov.length != rmt.length + nrc) {
+            throw cov.length + " covariances instead of " + rmt.length + " + " + nrc;
         }
 
         // Function to look up a covariance by name.
@@ -521,17 +521,19 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         for (var k = 0; k < rmt.length; ++ k) {
             z = covarianceByName(rmt[k].dimension);
             if (typeof z === 'undefined') {
-                throw errorInvalid;
+                throw "no covariance named '" + rmt[k].dimension + "'";
             }
             cov2.push(z);
         }
 
-        // Add on the response covariance.
-        z = covarianceByName(glimmpseConstants.covarianceResponses);
-        if (typeof z === 'undefined') {
-            throw errorInvalid;
+        if (nrc > 0) {
+            // Add on the response covariance.
+            z = covarianceByName(glimmpseConstants.covarianceResponses);
+            if (typeof z === 'undefined') {
+                throw "no covariance named '" + glimmpseConstants.covarianceResponses + "'";
+            }
+            cov2.push(z);
         }
-        cov2.push(z);
 
         // Record the result.
         studyDesignInstance.covariance = cov2;
