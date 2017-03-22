@@ -2875,7 +2875,9 @@ glimmpseApp.controller('stateController',
                         $scope.columnLabelList.push(value);
                     }
                 } else {
-                    var rmFactor = $scope.studyDesign.repeatedMeasuresTree[0];
+                    var rmFactor = $scope.studyDesign.repeatedMeasuresTree[
+                                    $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
+                                   ];
                     for(var sidx = 0; sidx < rmFactor.spacingList.length; sidx++) {
                         var spacingEntry = rmFactor.spacingList[sidx].value;
                         $scope.rowLabelList.push($scope.currentCovariance.name + " " + spacingEntry);
