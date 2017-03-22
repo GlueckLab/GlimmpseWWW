@@ -108,8 +108,8 @@
                     <div class='xscroll'>
                         <table class="table table-bordered">
                             <tr>
-                                <th>&nbsp</th>
-                                <th ng-repeat="colLabel in columnLabelList">
+                                <th>&nbsp;</th>
+                                <th ng-repeat="colLabel in columnLabelList track by $index">
                                     {{colLabel}}
                                 </th>
                             </tr>
