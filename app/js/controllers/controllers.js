@@ -203,7 +203,7 @@ glimmpseApp.controller('stateController',
          * Get the state of the repeated measures view.  The view
          * is complete when
          * 1. No repeated measures are specified, or
-         * 2. Information for all repeated measures are complete
+         * 2. Information for all repeated measures is complete
          *
          * @returns {string}
          */
@@ -218,11 +218,17 @@ glimmpseApp.controller('stateController',
                         factor.spacingList.length <= 0) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
+                    var spacingValue, previousSpacingValue;
                     for(var j = 0; j < factor.spacingList.length; j++) {
-                        var spacing = factor.spacingList[j];
-                        if (!/^\d+$/.test(spacing.value)) {
+                        spacingValue = factor.spacingList[j].value;
+                        if (!/^\d+$/.test(spacingValue)) {
                             return $scope.glimmpseConstants.stateIncomplete;
                         }
+                        spacingValue = +spacingValue;
+                        if (j > 0 && spacingValue <= previousSpacingValue) {
+                            return $scope.glimmpseConstants.stateIncomplete;
+                        }
+                        previousSpacingValue = spacingValue;
                     }
                 }
             }
@@ -324,12 +330,15 @@ glimmpseApp.controller('stateController',
          * screen is blocked when the user has not yet completed the
          * response variables and repeated measures screens.  The
          * screen is complete when all variability information for
-         * responses and each level of repeated measures are entered
+         * responses and each level of repeated measures are entered.
          *
          * @returns blocked, complete, or incomplete
          */
         $scope.getStateWithinVariability = function() {
             if ($scope.studyDesign.responseList.length <= 0) {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+            if (!$scope.testDone($scope.state.repeatedMeasures)) {
                 return $scope.glimmpseConstants.stateBlocked;
             }
             if ($scope.studyDesign.covariance.length > 0) {
