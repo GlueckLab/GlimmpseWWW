@@ -27,7 +27,7 @@
 </p>
 
 <p>
-    If the study includes repeated measures, click "Add Repeated Measures" and follow
+    If the study includes repeated measures, click "Add Repeated Measure" and follow
     the prompts. The text entered in the "Dimension" text box indicates the dimension over
     which measures were taken (e.g. time, days, locations, etc.). The choice of "Type"
     indicates whether the repeated measures are numeric (e.g. time), ordinal (e.g. 1st,
@@ -45,7 +45,7 @@
 
 <div>
     <button class="btn btn-primary vmargin15" ng-show="studyDesign.repeatedMeasuresTree.length <= 0"
-            data-ng-click="addLevel()">Add Repeated Measures</button>
+            data-ng-click="addLevel()">Add Repeated Measure</button>
 
     <div class="well" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
         <form novalidate name="rmForm">
