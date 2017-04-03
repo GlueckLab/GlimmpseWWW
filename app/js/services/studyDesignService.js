@@ -788,6 +788,61 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     };
 
     /**
+     * Adjust the beta matrix after a number of measurements is changed.
+     *
+     * @param i    Index of repeated measure whose number of measuresments
+     *             has changed.
+     * @param oldN Its previous number of measurements.
+     */
+    studyDesignInstance.adjustBetaOnChangeToNumberOfMeasurements = function(i, oldN) {
+        var beta       = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+        var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
+            }
+        );
+        var nRM = noms.length;
+        var newN = noms[i];
+
+        if (oldN === newN) {
+            return;
+        }
+
+        var j;
+
+        // vertical swath width (per measurement)
+        var vsw0 = nRV;
+        for (j = i + 1; j < nRM; ++ j) {
+            vsw0 *= noms[j];
+        }
+
+        // number of vertical swaths
+        var N = 1;
+        for (j = 0; j < i; ++ j) {
+            N *= noms[j];
+        }
+
+        // vertical swath width (total; positive if inserting, negative if deleting)
+        var vsw = (newN - oldN) * vsw0;
+
+        var stride = oldN * vsw0;
+        var locus = N * stride;
+        if (vsw < 0) {
+            locus += vsw;
+        }
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustColumns(beta, vsw, locus);
+            if (studyDesignInstance.gaussianCovariate) {
+                matrixUtilities.adjustColumns(betaRandom, vsw, locus);
+            }
+            locus -= stride;
+        }
+    };
+
+    /**
      * Update the relative group sizes list
      * @param newSize
      */
