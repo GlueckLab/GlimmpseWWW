@@ -2098,16 +2098,43 @@ glimmpseApp.controller('stateController',
 
         /**
          * When a level of repeated measures is added or removed, this function
-         * ensures that the beta matrix is still in sync with the responses list
+         * ensures that the beta matrix and sigmaYg matrices are still in sync
+         * with the responses list.
          */
-        $scope.syncTotalResponses = function() {
+        $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure = function() {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
+
             // update the beta matrix
             $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
                 $scope.metaData.getNumberOfResponseCombinations()
             );
-            // if the design has a covariate, resize the sigmaYg matrix
+
+            // if the design has a covariate, update the sigmaYg matrix
+            if ($scope.studyDesign.gaussianCovariate) {
+                var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+                $scope.matrixUtils.resizeRows(sigmaYg,
+                    $scope.studyDesign.getNumberOfResponses(), 0, 0);
+            }
+        };
+
+        /**
+         * When a number of measurements of a repeated measure is changed, this
+         * function ensures that the beta matrix and sigmaYg matrices are still
+         * in sync with the responses list.
+         *
+         * @param i    Index of repeated measure whose number of measuresments
+         *             has changed.
+         * @param oldN Its previous number of measurements.
+         */
+        $scope.syncTotalResponsesOnChangeToNumberOfMeasurements = function(i, oldN) {
+            // update the list of combinations of responses
+            $scope.metaData.updateResponseCombinations();
+
+            // update the beta matrix
+            $scope.studyDesign.adjustBetaOnChangeToNumberOfMeasurements(i, oldN);
+
+            // if the design has a covariate, update the sigmaYg matrix
             if ($scope.studyDesign.gaussianCovariate) {
                 var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
                 $scope.matrixUtils.resizeRows(sigmaYg,
@@ -2132,8 +2159,8 @@ glimmpseApp.controller('stateController',
                     ]
                 });
 
-                /* synchronize the study design */
-                $scope.syncTotalResponses();
+                // update the beta matrix and number of responses
+                $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
 
                 // add a covariance object
                 var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
@@ -2169,18 +2196,20 @@ glimmpseApp.controller('stateController',
             if (factor.spacingList === undefined) {
                 factor.spacingList = [];
             }
-            if (factor.numberOfMeasurements > factor.spacingList.length) {
+            var oldN = factor.spacingList.length;
+            var newN = factor.numberOfMeasurements;
+            if (newN > oldN) {
                 // assumes that the max value is the last value
                 var startValue = 0;
-                if (factor.spacingList.length > 0) {
-                    startValue = factor.spacingList[factor.spacingList.length-1].value + 1;
+                if (oldN > 0) {
+                    startValue = factor.spacingList[oldN-1].value + 1;
                 }
-                for(var i = factor.spacingList.length; i < factor.numberOfMeasurements; i++) {
+                for(var i = oldN; i < newN; i++) {
                     factor.spacingList.push({idx: factor.spacingList.length+1, value: startValue});
                     startValue++;
                 }
-            } else if (factor.numberOfMeasurements < factor.spacingList.length) {
-                factor.spacingList.splice(factor.numberOfMeasurements);
+            } else if (newN < oldN) {
+                factor.spacingList.splice(newN);
 
                 // if this factor is included in the hypothesis, make sure the
                 // chosen trend is still valid
@@ -2189,15 +2218,15 @@ glimmpseApp.controller('stateController',
                     for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
                         var map = hypothesis.repeatedMeasuresMapTree[rmi];
                         if (map.repeatedMeasuresNode == factor) {
-                            map.type = $scope.studyDesign.getBestTrend(map.type, factor.numberOfMeasurements);
+                            map.type = $scope.studyDesign.getBestTrend(map.type, newN);
                             break;
                         }
                     }
                 }
             }
 
-            // update the meta data
-            $scope.syncTotalResponses();
+            // update the beta matrix and number of responses
+            $scope.syncTotalResponsesOnChangeToNumberOfMeasurements(rmLevel, oldN);
 
             /* resize the covariance associated with this factor
              * note, no need to do so if the user selected the LEAR correlation
@@ -2205,8 +2234,7 @@ glimmpseApp.controller('stateController',
              */
             var covariance = $scope.studyDesign.covariance[rmLevel];
             $scope.matrixUtils.resizeCovariance(covariance,
-                covariance.rows, factor.numberOfMeasurements, 0, 1);
-
+                covariance.rows, newN, 0, 1);
         };
 
         /**
@@ -2221,7 +2249,7 @@ glimmpseApp.controller('stateController',
             // remove the repeated measures level from the tree
             var factor = $scope.studyDesign.repeatedMeasuresTree.pop();
             // update the beta matrix and number of responses
-            $scope.syncTotalResponses();
+            $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
             // if the factor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
             if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
@@ -2252,7 +2280,7 @@ glimmpseApp.controller('stateController',
                 hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
             }
             // update the beta matrix and number of responses
-            $scope.syncTotalResponses();
+            $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
         };
 
         /**
