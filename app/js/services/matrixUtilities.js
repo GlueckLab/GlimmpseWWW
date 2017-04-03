@@ -151,6 +151,39 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
+     * Adjust the columns of a matrix, by inserting or deleting
+     * a number of columns at an insertion point (column index).
+     *
+     * @param matrix The matrix.
+     * @param delta  The number of columns to insert (if positive)
+     *               or delete (if negative).
+     * @param locus  The insertion or deletion point.
+     */
+    matrixUtilitiesInstance.adjustColumns = function(matrix, delta, locus) {
+        if (delta === 0) {
+            return;
+        }
+
+        var rows = matrix.data.data;
+        var r;
+
+        matrix.columns += delta;
+        if (delta > 0) {
+            var spliceArgumentSupplier = function(e, i) {return i === 0 ? locus : 0;};
+            var spliceArgumentCount = {length: 2 + delta};
+            var spliceArguments = Array.apply(null, spliceArgumentCount).map(spliceArgumentSupplier);
+            for (r = 0; r < matrix.rows; r++) {
+//              rows[r].splice(locus, 0, 0, ..., 0);
+                Array.prototype.splice.apply(rows[r], spliceArguments);
+            }
+        } else {
+            for (r = 0; r < matrix.rows; r++) {
+                rows[r].splice(locus, - delta);
+            }
+        }
+    };
+
+    /**
      * Resize the columns of a matrix
      * @param matrix
      * @param newColumns
