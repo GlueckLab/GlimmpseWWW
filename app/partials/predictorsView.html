@@ -98,24 +98,27 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-       Between Participant Factor List: {{studyDesign.betweenParticipantFactorList}}
+       studyDesign.betweenParticipantFactorList: {{studyDesign.betweenParticipantFactorList}}
     </div>
     <div class="vmargin15">
-       current predictor = {{currentPredictor}}
+       currentPredictor: {{currentPredictor}}
     </div>
     <div class="vmargin15">
-        Matrices: {{studyDesign.matrixSet}}
+        studyDesign.matrixSet: {{studyDesign.matrixSet}}
     </div>
     <div class="vmargin15">
-        Meta Data: {{metaData.predictorCombinationList}}
+        metaData.predictorCombinationList: {{metaData.predictorCombinationList}}
     </div>
     <div class="vmargin15">
-        Beta rows: {{metaData.getNumberOfPredictorCombinations()}}, columns: {{metaData.getNumberOfResponseCombinations()}}
+        metaData.getNumberOfPredictorCombinations(): {{metaData.getNumberOfPredictorCombinations()}}
     </div>
     <div class="vmargin15">
-        Relative Size List: {{studyDesign.relativeGroupSizeList}}
+        metaData.getNumberOfResponseCombinations(): {{metaData.getNumberOfResponseCombinations()}}
     </div>
     <div class="vmargin15">
-        Hypothesis: {{studyDesign.hypothesis[0]}}
+        studyDesign.relativeGroupSizeList: {{studyDesign.relativeGroupSizeList}}
+    </div>
+    <div class="vmargin15">
+        studyDesign.hypothesis[0]: {{studyDesign.hypothesis[0]}}
     </div>
 </div>
