@@ -103,14 +103,20 @@
     </div>
 
     <div ng-show="glimmpseConstants.debug == true">
-        <div>
-            RM Tree: {{studyDesign.repeatedMeasuresTree}}
+        <div class="vmargin15">
+            studyDesign.repeatedMeasuresTree: {{studyDesign.repeatedMeasuresTree}}
         </div>
-        <div>
-            Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
+        <div class="vmargin15">
+            metaData.getNumberOfResponseCombinations(): ({{metaData.getNumberOfResponseCombinations()}})
         </div>
-        <div>
-            Covariance: {{studyDesign.covariance}}
+        <div class="vmargin15">
+            metaData.responseCombinationList: {{metaData.responseCombinationList}}
+        </div>
+        <div class="vmargin15">
+            studyDesign.covariance: {{studyDesign.covariance}}
+        </div>
+        <div class="vmargin15">
+            studyDesign.getMatrixByName('beta'): {{studyDesign.getMatrixByName('beta')}}
         </div>
     </div>
 </div>
