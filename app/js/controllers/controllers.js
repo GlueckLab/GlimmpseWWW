@@ -2299,6 +2299,8 @@ glimmpseApp.controller('stateController',
                 for(var i = 0; i < factor.spacingList.length; i++) {
                     factor.spacingList[i].value = i + 1;
                 }
+                // update the list of combinations of responses
+                $scope.metaData.updateResponseCombinations();
             }
         };
 
