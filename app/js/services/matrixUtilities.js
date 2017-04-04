@@ -27,6 +27,18 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     var matrixUtilitiesInstance = {};
 
     /**
+     * Construct an array.
+     *
+     * @param count    The number of elements in the array.
+     * @param supplier A function supplying the elements in the
+     *                 array, suitable as the first argument to
+     *                 Array.prototype.map.
+     */
+    matrixUtilitiesInstance.array = function(count, supplier) {
+        return Array.apply(null, {length: count}).map(supplier);
+    };
+
+    /**
      * Check if a matrix is valid
      * @param matrix
      */
@@ -125,6 +137,44 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
+     * Adjust the rows of a matrix, by inserting or deleting
+     * a number of rows at an insertion point (row index).
+     * Inserted rows are filled with zeros.
+     *
+     * @param matrix The matrix.
+     * @param delta  The number of rows to insert (if positive)
+     *               or delete (if negative).
+     * @param locus  The insertion or deletion point.
+     */
+    matrixUtilitiesInstance.adjustRows = function(matrix, delta, locus) {
+        if (delta === 0) {
+            return;
+        }
+
+        var rows = matrix.data.data;
+
+        matrix.rows += delta;
+        if (delta > 0) {
+            var zeros =
+                matrixUtilitiesInstance.array(
+                    matrix.columns,
+                    function(e, i) {return 0;}
+                );
+
+            var spliceArguments =
+                matrixUtilitiesInstance.array(
+                    2 + delta,
+                    function(e, i) {return i === 0 ? locus : zeros.slice();}
+                );
+
+//          rows.splice(locus, 0, [0, 0, ..., 0], ..., [0, 0, ..., 0]);
+            Array.prototype.splice.apply(rows, spliceArguments);
+        } else {
+            rows.splice(locus, - delta);
+        }
+    };
+
+    /**
      * Resize the rows of a matrix
      * @param matrix
      * @param newRows
@@ -153,6 +203,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Adjust the columns of a matrix, by inserting or deleting
      * a number of columns at an insertion point (column index).
+     * Inserted columns are filled with zeros.
      *
      * @param matrix The matrix.
      * @param delta  The number of columns to insert (if positive)
@@ -169,9 +220,12 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         matrix.columns += delta;
         if (delta > 0) {
-            var spliceArgumentSupplier = function(e, i) {return i === 0 ? locus : 0;};
-            var spliceArgumentCount = {length: 2 + delta};
-            var spliceArguments = Array.apply(null, spliceArgumentCount).map(spliceArgumentSupplier);
+            var spliceArguments =
+                    matrixUtilitiesInstance.array(
+                        2 + delta,
+                        function(e, i) {return i === 0 ? locus : 0;}
+                    );
+
             for (r = 0; r < matrix.rows; r++) {
 //              rows[r].splice(locus, 0, 0, ..., 0);
                 Array.prototype.splice.apply(rows[r], spliceArguments);

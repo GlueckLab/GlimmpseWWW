@@ -790,7 +790,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /**
      * Adjust the beta matrix after a number of measurements is changed.
      *
-     * @param i    Index of repeated measure whose number of measuresments
+     * @param i    Index of repeated measure whose number of measurements
      *             has changed.
      * @param oldN Its previous number of measurements.
      */
@@ -814,9 +814,9 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         var j;
 
         // vertical swath width (per measurement)
-        var vsw0 = nRV;
+        var sw0 = nRV;
         for (j = i + 1; j < nRM; ++ j) {
-            vsw0 *= noms[j];
+            sw0 *= noms[j];
         }
 
         // number of vertical swaths
@@ -826,18 +826,69 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         }
 
         // vertical swath width (total; positive if inserting, negative if deleting)
-        var vsw = (newN - oldN) * vsw0;
+        var sw = (newN - oldN) * sw0;
 
-        var stride = oldN * vsw0;
+        var stride = oldN * sw0;
         var locus = N * stride;
-        if (vsw < 0) {
-            locus += vsw;
+        if (sw < 0) {
+            locus += sw;
         }
         for (var k = 0; k < N; ++ k) {
-            matrixUtilities.adjustColumns(beta, vsw, locus);
+            matrixUtilities.adjustColumns(beta, sw, locus);
             if (studyDesignInstance.gaussianCovariate) {
-                matrixUtilities.adjustColumns(betaRandom, vsw, locus);
+                matrixUtilities.adjustColumns(betaRandom, sw, locus);
             }
+            locus -= stride;
+        }
+    };
+
+    /**
+     * Adjust the sigmaYg matrix after a number of measurements is changed.
+     *
+     * @param i    Index of repeated measure whose number of measurements
+     *             has changed.
+     * @param oldN Its previous number of measurements.
+     */
+    studyDesignInstance.adjustSigmaYgOnChangeToNumberOfMeasurements = function(i, oldN) {
+        var sigmaYg = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
+            }
+        );
+        var nRM = noms.length;
+        var newN = noms[i];
+
+        if (oldN === newN) {
+            return;
+        }
+
+        var j;
+
+        // horizontal swath width (per measurement)
+        var sw0 = nRV;
+        for (j = i + 1; j < nRM; ++ j) {
+            sw0 *= noms[j];
+        }
+
+        // number of horizontal swaths
+        var N = 1;
+        for (j = 0; j < i; ++ j) {
+            N *= noms[j];
+        }
+
+        // horizontal swath width (total; positive if inserting, negative if deleting)
+        var sw = (newN - oldN) * sw0;
+
+        var stride = oldN * sw0;
+        var locus = N * stride;
+        if (sw < 0) {
+            locus += sw;
+        }
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustRows(sigmaYg, sw, locus);
             locus -= stride;
         }
     };

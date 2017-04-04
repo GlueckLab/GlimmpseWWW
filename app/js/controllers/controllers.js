@@ -2136,9 +2136,7 @@ glimmpseApp.controller('stateController',
 
             // if the design has a covariate, update the sigmaYg matrix
             if ($scope.studyDesign.gaussianCovariate) {
-                var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                $scope.matrixUtils.resizeRows(sigmaYg,
-                    $scope.studyDesign.getNumberOfResponses(), 0, 0);
+                $scope.studyDesign.adjustSigmaYgOnChangeToNumberOfMeasurements(i, oldN);
             }
         };
 
