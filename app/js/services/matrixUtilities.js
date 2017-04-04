@@ -528,7 +528,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var r = 0; r < dimension; r++) {
             var colData = [];
             for(var c = 0; c < dimension; c++) {
-                colData.push((r == c ? 1 : 0));
+                colData.push((r == c ? 1 : 0.1));
             }
             covariance.blob.data.push(colData);
         }
