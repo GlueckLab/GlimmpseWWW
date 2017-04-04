@@ -2236,6 +2236,14 @@ glimmpseApp.controller('stateController',
         };
 
         /**
+         * Update spacing of repeated measure
+         */
+        $scope.updateSpacing = function() {
+            // update the list of combinations of responses
+            $scope.metaData.updateResponseCombinations();
+        };
+
+        /**
          * Delete an existing level of repeated measures
          */
         $scope.removeLevel = function() {

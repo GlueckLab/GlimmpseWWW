@@ -74,7 +74,7 @@
                 <div ng-repeat="spacing in factor.spacingList">
                   <ng-form name="spacingForm">
                     <input class="vmargin5 form-control" name="spacing"
-                        ng-attr-type="number" ng-model="spacing.value"
+                        ng-attr-type="number" ng-model="spacing.value" ng-change="updateSpacing()"
                         ng-pattern="/^\d+$/"
                         step='1' autocomplete="off" autofocus required>
                     </input>
