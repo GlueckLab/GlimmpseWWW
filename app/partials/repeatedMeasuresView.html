@@ -53,7 +53,7 @@
                 <label>Dimension (Repeated Measure {{$index+1}})</label>
                 <input name="dimension" class="form-control" type="text"
                        placeholder="Enter the dimension for this repeated measure (time, scenarios, etc.)"
-                       ng-model="factor.dimension" ng-change="updateDimension(factor, $index)"
+                       ng-model="factor.dimension" ng-change="updateDimension($index)"
                        autocomplete="off" autofocus required >
             </div>
             <div class="form-group">
@@ -65,7 +65,7 @@
             <div class="form-group">
                 <label>Number of measurements</label>
                 <select class="form-control" ng-model="factor.numberOfMeasurements"
-                        ng-change="updateNumberOfMeasurements(factor, $index)"
+                        ng-change="updateNumberOfMeasurements($index)"
                         ng-options="option as option for option in validNumberOfMeasurements" required>
                 </select>
             </div>

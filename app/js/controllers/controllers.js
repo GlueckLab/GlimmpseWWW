@@ -2097,28 +2097,6 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * When a level of repeated measures is added or removed, this function
-         * ensures that the beta matrix and sigmaYg matrices are still in sync
-         * with the responses list.
-         */
-        $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure = function() {
-            // update the list of combinations of responses
-            $scope.metaData.updateResponseCombinations();
-
-            // update the beta matrix
-            $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
-
-            // if the design has a covariate, update the sigmaYg matrix
-            if ($scope.studyDesign.gaussianCovariate) {
-                var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                $scope.matrixUtils.resizeRows(sigmaYg,
-                    $scope.studyDesign.getNumberOfResponses(), 0, 0);
-            }
-        };
-
-        /**
          * When a number of measurements of a repeated measure is changed, this
          * function ensures that the beta matrix and sigmaYg matrices are still
          * in sync with the responses list.
@@ -2127,7 +2105,7 @@ glimmpseApp.controller('stateController',
          *             has changed.
          * @param oldN Its previous number of measurements.
          */
-        $scope.syncTotalResponsesOnChangeToNumberOfMeasurements = function(i, oldN) {
+        $scope.syncTotalResponses = function(i, oldN) {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
 
@@ -2144,70 +2122,75 @@ glimmpseApp.controller('stateController',
          * Add a new level of repeated measures
          */
         $scope.addLevel = function() {
-            if ($scope.studyDesign.repeatedMeasuresTree.length < 3) {
-                $scope.studyDesign.repeatedMeasuresTree.push({
-                    idx: 0,
-                    node: 0,
-                    parent: 0,
-                    repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
-                    numberOfMeasurements: 2,
-                    spacingList: [
-                        {idx: 1, value: 1},
-                        {idx: 2, value: 2}
-                    ]
-                });
-
-                // update the beta matrix and number of responses
-                $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
-
-                // add a covariance object
-                var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
-                if (rmLevel >= 0) {
-                    $scope.studyDesign.covariance.splice(rmLevel, 0,
-                        $scope.matrixUtils.createLEARCorrelation("", 2)
-                    );
-                }
-
-                // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
-                var hypothesis = $scope.studyDesign.hypothesis[0];
-                if (hypothesis !== undefined && hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
-                    hypothesis.type = $scope.glimmpseConstants.hypothesisInteraction;
-                }
+            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length;
+            if (rmLevel > 2) {
+                return;
             }
+
+            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // of the model in sync, we first add the level with 1 measurement "by
+            // brute force", and then update the level's number of measurements to 2.
+
+            var rmFactor = {
+                idx: 0,
+                node: 0,
+                parent: 0,
+                repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
+                numberOfMeasurements: 1,
+                spacingList: [
+                    {idx: 1, value: 1}
+                ]
+            };
+            $scope.studyDesign.repeatedMeasuresTree.push(rmFactor);
+
+            // add a covariance object
+            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation("", 2));
+
+            // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
+            var hypothesis = $scope.studyDesign.hypothesis[0];
+            if (hypothesis !== undefined && hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
+                hypothesis.type = $scope.glimmpseConstants.hypothesisInteraction;
+            }
+
+            rmFactor.numberOfMeasurements = 2;
+            $scope.updateNumberOfMeasurements(rmLevel);
         };
 
         /**
          * When the units are changed, update the corresponding
          * name in the covariance list
          *
-         * @param factor
          * @param rmLevel
          */
-        $scope.updateDimension = function(factor, rmLevel) {
-            $scope.studyDesign.covariance[rmLevel].name = factor.dimension;
+        $scope.updateDimension = function(rmLevel) {
+            $scope.studyDesign.covariance[rmLevel].name = $scope.studyDesign.repeatedMeasuresTree[rmLevel].dimension;
         };
 
         /**
          * Update spacingList of repeated measure
+         *
+         * @param rmLevel
          */
-        $scope.updateNumberOfMeasurements = function(factor, rmLevel) {
-            if (factor.spacingList === undefined) {
-                factor.spacingList = [];
+        $scope.updateNumberOfMeasurements = function(rmLevel) {
+            var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
+
+            if (rmFactor.spacingList === undefined) {
+                rmFactor.spacingList = [];
             }
-            var oldN = factor.spacingList.length;
-            var newN = factor.numberOfMeasurements;
+            var oldN = rmFactor.spacingList.length;
+            var newN = rmFactor.numberOfMeasurements;
             if (newN > oldN) {
                 // assumes that the max value is the last value
                 var startValue = 0;
                 if (oldN > 0) {
-                    startValue = factor.spacingList[oldN-1].value + 1;
+                    startValue = rmFactor.spacingList[oldN-1].value + 1;
                 }
                 for(var i = oldN; i < newN; i++) {
-                    factor.spacingList.push({idx: factor.spacingList.length+1, value: startValue});
+                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: startValue});
                     startValue++;
                 }
             } else if (newN < oldN) {
-                factor.spacingList.splice(newN);
+                rmFactor.spacingList.splice(newN);
 
                 // if this factor is included in the hypothesis, make sure the
                 // chosen trend is still valid
@@ -2215,7 +2198,7 @@ glimmpseApp.controller('stateController',
                 if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
                     for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
                         var map = hypothesis.repeatedMeasuresMapTree[rmi];
-                        if (map.repeatedMeasuresNode == factor) {
+                        if (map.repeatedMeasuresNode == rmFactor) {
                             map.type = $scope.studyDesign.getBestTrend(map.type, newN);
                             break;
                         }
@@ -2224,7 +2207,7 @@ glimmpseApp.controller('stateController',
             }
 
             // update the beta matrix and number of responses
-            $scope.syncTotalResponsesOnChangeToNumberOfMeasurements(rmLevel, oldN);
+            $scope.syncTotalResponses(rmLevel, oldN);
 
             /* resize the covariance associated with this factor
              * note, no need to do so if the user selected the LEAR correlation
@@ -2247,21 +2230,33 @@ glimmpseApp.controller('stateController',
          * Delete an existing level of repeated measures
          */
         $scope.removeLevel = function() {
-            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
+            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length - 1;
+            if (rmLevel < 0) {
+                return;
+            }
+
+            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // of the model in sync, we first update the level's number of measurements
+            // to 1, and then remove the level "by brute force".
+
+            var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
+
+            rmFactor.numberOfMeasurements = 1;
+            $scope.updateNumberOfMeasurements(rmLevel);
 
             // remove the covariance object corresponding to this level of repeated measures
             $scope.studyDesign.covariance.splice(rmLevel, 1);
 
             // remove the repeated measures level from the tree
-            var factor = $scope.studyDesign.repeatedMeasuresTree.pop();
-            // update the beta matrix and number of responses
-            $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
+            $scope.studyDesign.repeatedMeasuresTree.pop();
+            $scope.metaData.updateResponseCombinations(); // TODO: sub-optimal; we have to do this twice in this path
+
             // if the factor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
             if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
                 for(var i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
                     var map = hypothesis.repeatedMeasuresMapTree[i];
-                    if (map.repeatedMeasuresNode == factor) {
+                    if (map.repeatedMeasuresNode == rmFactor) {
                         hypothesis.repeatedMeasuresMapTree.splice(i, 1);
                         break;
                     }
@@ -2274,30 +2269,21 @@ glimmpseApp.controller('stateController',
          * Remove all levels of repeated measures
          */
         $scope.removeRepeatedMeasures = function() {
-            var maxRmLevel = studyDesignService.repeatedMeasuresTree.length;
-            // remove the covariance objects related to the repeated measures
-            studyDesignService.covariance.splice(0, maxRmLevel);
-            // clear the tree
-            studyDesignService.repeatedMeasuresTree = [];
-            // clear any repeated measures from the hypothesis
-            var hypothesis = $scope.studyDesign.hypothesis[0];
-            if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
-                hypothesis.repeatedMeasuresMapTree = [];
-                hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
+            var i, n;
+            for (i = 0, n = studyDesignService.repeatedMeasuresTree.length; i < n; ++ i) {
+                $scope.removeLevel();
             }
-            // update the beta matrix and number of responses
-            $scope.syncTotalResponsesOnAddingOrRemovingRepeatedMeasure();
         };
 
         /**
          * Reset the spacing list to equal spacing
          *
-         * @param factor
+         * @param rmFactor
          */
-        $scope.resetToEqualSpacing = function(factor) {
-            if (factor.spacingList !== undefined) {
-                for(var i = 0; i < factor.spacingList.length; i++) {
-                    factor.spacingList[i].value = i + 1;
+        $scope.resetToEqualSpacing = function(rmFactor) {
+            if (rmFactor.spacingList !== undefined) {
+                for(var i = 0; i < rmFactor.spacingList.length; i++) {
+                    rmFactor.spacingList[i].value = i + 1;
                 }
                 // update the list of combinations of responses
                 $scope.metaData.updateResponseCombinations();
