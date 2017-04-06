@@ -2105,7 +2105,7 @@ glimmpseApp.controller('stateController',
          *             has changed.
          * @param oldN Its previous number of measurements.
          */
-        $scope.syncTotalResponses = function(i, oldN) {
+        $scope.syncStudyDesign = function(i, oldN) {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
 
@@ -2207,7 +2207,7 @@ glimmpseApp.controller('stateController',
             }
 
             // update the beta matrix and number of responses
-            $scope.syncTotalResponses(rmLevel, oldN);
+            $scope.syncStudyDesign(rmLevel, oldN);
 
             /* resize the covariance associated with this factor
              * note, no need to do so if the user selected the LEAR correlation
