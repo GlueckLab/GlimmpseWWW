@@ -172,7 +172,7 @@
 
     <div ng-show="glimmpseConstants.debug == true">
         <div ng-repeat="covar in studyDesign.covariance" class="vmargin15">
-            covar: {{covar}}
+            studyDesign.covariance[{{$index}}]: {{covar}}
         </div>
         <div class="vmargin15">
             currentCovariance: {{currentCovariance}}
