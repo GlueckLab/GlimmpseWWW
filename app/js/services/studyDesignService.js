@@ -795,9 +795,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      * @param oldN Its previous number of measurements.
      */
     studyDesignInstance.adjustBetaOnChangeToNumberOfMeasurements = function(i, oldN) {
-        var beta       = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
-        var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-
         var nRV = studyDesignInstance.responseList.length;
         var noms = studyDesignInstance.repeatedMeasuresTree.map(
             function(rm) {
@@ -810,6 +807,9 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         if (oldN === newN) {
             return;
         }
+
+        var beta       = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+        var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
 
         var j;
 
@@ -833,6 +833,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         if (sw < 0) {
             locus += sw;
         }
+
         for (var k = 0; k < N; ++ k) {
             matrixUtilities.adjustColumns(beta, sw, locus);
             if (studyDesignInstance.gaussianCovariate) {
@@ -850,8 +851,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      * @param oldN Its previous number of measurements.
      */
     studyDesignInstance.adjustSigmaYgOnChangeToNumberOfMeasurements = function(i, oldN) {
-        var sigmaYg = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-
         var nRV = studyDesignInstance.responseList.length;
         var noms = studyDesignInstance.repeatedMeasuresTree.map(
             function(rm) {
@@ -864,6 +863,8 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         if (oldN === newN) {
             return;
         }
+
+        var sigmaYg = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixSigmaYG);
 
         var j;
 
