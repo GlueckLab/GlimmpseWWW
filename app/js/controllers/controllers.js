@@ -1775,7 +1775,7 @@ glimmpseApp.controller('stateController',
 
         /**
          * Updates the dimensions of the beta matrix and relative group
-         * size list when a predictor or category is added/deleted
+         * size list when a predictor or category is added/deleted.
          */
         $scope.syncStudyDesign = function() {
             // update the list of combinations of predictors
@@ -2270,7 +2270,7 @@ glimmpseApp.controller('stateController',
          */
         $scope.removeRepeatedMeasures = function() {
             var i, n;
-            for (i = 0, n = studyDesignService.repeatedMeasuresTree.length; i < n; ++ i) {
+            for (i = 0, n = $scope.studyDesign.repeatedMeasuresTree.length; i < n; ++ i) {
                 $scope.removeLevel();
             }
         };
