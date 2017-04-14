@@ -74,12 +74,21 @@
        <!-- Right hand panel showing category names for the selected predictor -->
        <div class="col-md-6">
            <div class="category-list white-box padding10 rounded-box" ng-show="currentPredictor != undefined">
-               <form name="categoriesForm" novalidate ng-submit="addCategory()">
+               <form name="categoriesForm" novalidate
+                    gl-submit="$parent.addCategory()"
+                    gl-submit-if="
+                           $parent.currentPredictor.categoryList.length != 9
+                        || confirm(
+                              'You’re about to add the tenth value for ‘{{$parent.currentPredictor.predictorName}}’. '
+                            + 'Are you sure?'
+                           )
+                    "
+               >
                    <div class="form-group">
-                       <label>Values for '{{currentPredictor.predictorName}}'</label>
+                       <label>Values for '{{$parent.currentPredictor.predictorName}}'</label>
                        <input class="form-control" name="newCategory" type="text"
-                              placeholder="Enter value for '{{currentPredictor.predictorName}}'"
-                              ng-model="newCategoryName"
+                              placeholder="Enter value for '{{$parent.currentPredictor.predictorName}}'"
+                              ng-model="$parent.newCategoryName"
                               autocomplete="off" autofocus required />
                    </div>
                </form>
