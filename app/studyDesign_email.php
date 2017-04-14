@@ -28,7 +28,7 @@ try {
     // create the message body
     $mail->Body = "<html><head></head><body>";
     $mail->Body .= "<p>Dear " . $_REQUEST["name"] . "</p>";
-    $mail->Body .= "<p>Details:</p><p>" . 'Thank you for using Glimmpse.
+    $mail->Body .= "<p>Details:</p><p>" . 'Thank you for using GLIMMPSE.
     Your study design object is attached to this email. To learn more about
     power and sample size, please visit http://samplesizeshop.org.' . "</p>";
     $mail->Body .= "</body></html>";

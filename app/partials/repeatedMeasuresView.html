@@ -27,7 +27,7 @@
 </p>
 
 <p>
-    If the study includes repeated measures, click "Add Repeated Measures" and follow
+    If the study includes repeated measures, click "Add Repeated Measure" and follow
     the prompts. The text entered in the "Dimension" text box indicates the dimension over
     which measures were taken (e.g. time, days, locations, etc.). The choice of "Type"
     indicates whether the repeated measures are numeric (e.g. time), ordinal (e.g. 1st,
@@ -35,7 +35,8 @@
 </p>
 
 <p>
-    If the repeated measures are numeric, the spacing values must be nonnegative integers.
+    If the repeated measures are numeric, the spacing values must be unique nonnegative integers,
+    in ascending order.
 </p>
 
 <p>
@@ -44,7 +45,7 @@
 
 <div>
     <button class="btn btn-primary vmargin15" ng-show="studyDesign.repeatedMeasuresTree.length <= 0"
-            data-ng-click="addLevel()">Add Repeated Measures</button>
+            data-ng-click="addLevel()">Add Repeated Measure</button>
 
     <div class="well" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
         <form novalidate name="rmForm">
@@ -52,7 +53,7 @@
                 <label>Dimension (Repeated Measure {{$index+1}})</label>
                 <input name="dimension" class="form-control" type="text"
                        placeholder="Enter the dimension for this repeated measure (time, scenarios, etc.)"
-                       ng-model="factor.dimension" ng-change="updateDimension(factor, $index)"
+                       ng-model="factor.dimension" ng-change="updateDimension($index)"
                        autocomplete="off" autofocus required >
             </div>
             <div class="form-group">
@@ -64,7 +65,7 @@
             <div class="form-group">
                 <label>Number of measurements</label>
                 <select class="form-control" ng-model="factor.numberOfMeasurements"
-                        ng-change="updateNumberOfMeasurements(factor, $index)"
+                        ng-change="updateNumberOfMeasurements($index)"
                         ng-options="option as option for option in validNumberOfMeasurements" required>
                 </select>
             </div>
@@ -73,7 +74,7 @@
                 <div ng-repeat="spacing in factor.spacingList">
                   <ng-form name="spacingForm">
                     <input class="vmargin5 form-control" name="spacing"
-                        ng-attr-type="number" ng-model="spacing.value"
+                        ng-attr-type="number" ng-model="spacing.value" ng-change="updateSpacing()"
                         ng-pattern="/^\d+$/"
                         step='1' autocomplete="off" autofocus required>
                     </input>
@@ -102,14 +103,20 @@
     </div>
 
     <div ng-show="glimmpseConstants.debug == true">
-        <div>
-            RM Tree: {{studyDesign.repeatedMeasuresTree}}
+        <div class="vmargin15">
+            studyDesign.repeatedMeasuresTree: {{studyDesign.repeatedMeasuresTree}}
         </div>
-        <div>
-            Response combinations ({{metaData.getNumberOfResponseCombinations()}}): {{metaData.responseCombinationList}}
+        <div class="vmargin15">
+            metaData.getNumberOfResponseCombinations(): ({{metaData.getNumberOfResponseCombinations()}})
         </div>
-        <div>
-            Covariance: {{studyDesign.covariance}}
+        <div class="vmargin15">
+            metaData.responseCombinationList: {{metaData.responseCombinationList}}
+        </div>
+        <div class="vmargin15">
+            studyDesign.covariance: {{studyDesign.covariance}}
+        </div>
+        <div class="vmargin15">
+            studyDesign.getMatrixByName(glimmpseConstants.matrixBeta): {{studyDesign.getMatrixByName(glimmpseConstants.matrixBeta)}}
         </div>
     </div>
 </div>

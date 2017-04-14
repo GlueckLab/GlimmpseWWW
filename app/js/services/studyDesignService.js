@@ -126,20 +126,19 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     studyDesignInstance.fromJSON = function(designJSON) {
 
         var object = angular.fromJson(designJSON);
-        var errorInvalid = "The file did not contain a valid study design. Please try again.";
 
         // read uuid
         if (object.hasOwnProperty("uuid")) {
             studyDesignInstance.uuid = object.uuid;
         } else {
-            throw errorInvalid;
+            throw "no uuid";
         }
 
         // read name
         if (object.hasOwnProperty("name")) {
             studyDesignInstance.name = object.name;
         } else {
-            throw errorInvalid;
+            throw "no name";
         }
 
         // read covariate flag
@@ -147,7 +146,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
             (object.gaussianCovariate === true || object.gaussianCovariate === false )) {
             studyDesignInstance.gaussianCovariate = object.gaussianCovariate;
         } else {
-            throw errorInvalid;
+            throw "no or invalid gaussianCovariate";
         }
 
         // read solution type flag
@@ -156,14 +155,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 object.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize )) {
             studyDesignInstance.solutionTypeEnum = object.solutionTypeEnum;
         } else {
-            throw errorInvalid;
+            throw "no or invalid solutionTypeEnum";
         }
 
         // The term to be used for a participant in the study
         if (object.hasOwnProperty("participantLabel")) {
             studyDesignInstance.participantLabel = object.participantLabel;
         } else {
-            throw errorInvalid;
+            throw "no participantLabel";
         }
 
         // view type enum
@@ -172,21 +171,21 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 object.viewTypeEnum == glimmpseConstants.modeMatrix)) {
             studyDesignInstance.viewTypeEnum = object.viewTypeEnum;
         } else {
-            throw errorInvalid;
+            throw "no or invalid viewTypeEnum";
         }
 
         // CI description
         if (object.hasOwnProperty("confidenceIntervalDescriptions")) {
             studyDesignInstance.confidenceIntervalDescriptions = object.confidenceIntervalDescriptions;
         } else {
-            throw errorInvalid;
+            throw "no confidenceIntervalDescriptions";
         }
 
         // power curve description
         if (object.hasOwnProperty("powerCurveDescriptions")) {
             studyDesignInstance.powerCurveDescriptions = object.powerCurveDescriptions;
         } else {
-            throw errorInvalid;
+            throw "no powerCurveDescriptions";
         }
 
         // alpha list
@@ -198,7 +197,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                studyDesignInstance.alphaList = object.alphaList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid alphaList";
         }
 
         // beta scale list
@@ -210,7 +209,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.betaScaleList = object.betaScaleList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid betaScaleList";
         }
 
         // sigma scale list
@@ -222,7 +221,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.sigmaScaleList = object.sigmaScaleList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid sigmaScaleList";
         }
 
         // relative group size list
@@ -234,7 +233,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.relativeGroupSizeList = object.relativeGroupSizeList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid relativeGroupSizeList";
         }
 
         // per group sample size list
@@ -251,7 +250,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 });
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid sampleSizeList";
         }
 
         // statistical test list
@@ -263,7 +262,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.statisticalTestList = object.statisticalTestList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid statisticalTestList";
         }
 
         // power method list
@@ -275,7 +274,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.powerMethodList = object.powerMethodList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid powerMethodList";
         }
 
         // quantile list
@@ -287,7 +286,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.quantileList = object.quantileList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid quantileList";
         }
 
         // nominal power list
@@ -299,7 +298,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.nominalPowerList = object.nominalPowerList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid nominalPowerList";
         }
 
         // response list
@@ -311,7 +310,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.responseList = object.responseList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid responseList";
         }
 
         // between participant factor list
@@ -323,7 +322,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.betweenParticipantFactorList = object.betweenParticipantFactorList;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid betweenParticipantFactorList";
         }
 
         // repeated measures tree
@@ -337,14 +336,14 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                     var factor = studyDesignInstance.repeatedMeasuresTree[ii];
                     if (factor.spacingList === null) {
                         factor.spacingList = [
-                            {idx: 1, value: 0},
-                            {idx: 2, value: 1}
+                            {idx: 1, value: 1},
+                            {idx: 2, value: 2}
                         ];
                     }
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid repeatedMeasuresTree";
         }
 
         // clustering tree
@@ -356,7 +355,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.clusteringTree = object.clusteringTree;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid clusteringTree";
         }
 
         // hypothesis
@@ -429,7 +428,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid hypothesis";
         }
 
         // covariance
@@ -471,7 +470,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 }
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid covariance";
         }
 
         // matrices
@@ -483,8 +482,61 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.matrixSet = object.matrixSet;
             }
         } else {
-            throw errorInvalid;
+            throw "no or invalid matrixSet";
         }
+
+        /*
+            Other parts of the code seem to assume that the response covariance
+            appears last in the studyDesignInstance.covariance array, after all
+            the repeated measures covariances.
+
+            However, we have seen some JSON where this is not the case. I am not
+            sure how that JSON was created. Regardless, we must deal with it.
+
+            To deal with it, we reorder the elements of studyDesignInstance.co-
+            variance here, so that the repeated measures covariances appear
+            first and in the same order as the elements of the studyDesign-
+            Instance.repeatedMeasuresTree array, and the response covariance
+            appears last.
+        */
+
+        // Convenience variables.
+        var rmt = studyDesignInstance.repeatedMeasuresTree;
+        var nrc = studyDesignInstance.responseList.length > 0 ? 1 : 0;
+        var cov = studyDesignInstance.covariance;
+
+        // Check for length compatibility.
+        if (cov.length != rmt.length + nrc) {
+            throw cov.length + " covariances instead of " + rmt.length + " + " + nrc;
+        }
+
+        // Function to look up a covariance by name.
+        var covarianceByName = function(name) {
+            return cov.find(function(o) { return o.name === name; });
+        };
+
+        // Do the reordering of the repeated measures covariances.
+        var cov2 = [];
+        var z;
+        for (var k = 0; k < rmt.length; ++ k) {
+            z = covarianceByName(rmt[k].dimension);
+            if (typeof z === 'undefined') {
+                throw "no covariance named '" + rmt[k].dimension + "'";
+            }
+            cov2.push(z);
+        }
+
+        if (nrc > 0) {
+            // Add on the response covariance.
+            z = covarianceByName(glimmpseConstants.covarianceResponses);
+            if (typeof z === 'undefined') {
+                throw "no covariance named '" + glimmpseConstants.covarianceResponses + "'";
+            }
+            cov2.push(z);
+        }
+
+        // Record the result.
+        studyDesignInstance.covariance = cov2;
     };
 
     /**
@@ -576,70 +628,84 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     };
 
     /**
-     * Initialize the default matrices in matrix mode
+     * Initialize the default matrices.
      */
     studyDesignInstance.initializeDefaultMatrices = function() {
         studyDesignInstance.matrixSet = [];
-        // default design matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixXEssence,
-            rows: glimmpseConstants.matrixDefaultN,
-            columns: glimmpseConstants.matrixDefaultQ,
-            data: {
-                data: [[1,0],[0,1]]
-            }
-        });
-        // default beta matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixBeta,
-            rows: glimmpseConstants.matrixDefaultQ,
-            columns: glimmpseConstants.matrixDefaultP,
-            data: {
-                data: [[1],[0]]
-            }
-        });
-        // default between participant contrast (C) matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixBetweenContrast,
-            rows: glimmpseConstants.matrixDefaultA,
-            columns: glimmpseConstants.matrixDefaultQ,
-            data: {
-                data: [[1, -1]]
-            }
-        });
-        // default within participant contrast (U) matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixWithinContrast,
-            rows: glimmpseConstants.matrixDefaultP,
-            columns: glimmpseConstants.matrixDefaultB,
-            data: {
-                data: [[1]]
-            }
-        });
-        // default null hypothesis (theta null) matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixThetaNull,
-            rows: glimmpseConstants.matrixDefaultA,
-            columns: glimmpseConstants.matrixDefaultB,
-            data: {
-                data: [[0]]
-            }
-        });
-        // default error covariance (sigma E) matrix
-        studyDesignInstance.matrixSet.push({
-            idx: 0,
-            name: glimmpseConstants.matrixSigmaE,
-            rows: glimmpseConstants.matrixDefaultP,
-            columns: glimmpseConstants.matrixDefaultP,
-            data: {
-                data: [[1]]
-            }
-        });
+
+        if (studyDesignInstance.viewTypeEnum === glimmpseConstants.modeMatrix) {
+            // default design matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixXEssence,
+                rows: glimmpseConstants.matrixDefaultN,
+                columns: glimmpseConstants.matrixDefaultQ,
+                data: {
+                    data: [[1,0],[0,1]]
+                }
+            });
+            // default beta matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixBeta,
+                rows: glimmpseConstants.matrixDefaultQ,
+                columns: glimmpseConstants.matrixDefaultP,
+                data: {
+                    data: [[1],[0]]
+                }
+            });
+            // default between participant contrast (C) matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixBetweenContrast,
+                rows: glimmpseConstants.matrixDefaultA,
+                columns: glimmpseConstants.matrixDefaultQ,
+                data: {
+                    data: [[1, -1]]
+                }
+            });
+            // default within participant contrast (U) matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixWithinContrast,
+                rows: glimmpseConstants.matrixDefaultP,
+                columns: glimmpseConstants.matrixDefaultB,
+                data: {
+                    data: [[1]]
+                }
+            });
+            // default null hypothesis (theta null) matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixThetaNull,
+                rows: glimmpseConstants.matrixDefaultA,
+                columns: glimmpseConstants.matrixDefaultB,
+                data: {
+                    data: [[0]]
+                }
+            });
+            // default error covariance (sigma E) matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixSigmaE,
+                rows: glimmpseConstants.matrixDefaultP,
+                columns: glimmpseConstants.matrixDefaultP,
+                data: {
+                    data: [[1]]
+                }
+            });
+        } else {
+            // default beta matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixBeta,
+                rows: 1,
+                columns: 0,
+                data: {
+                    data: [[]]
+                }
+            });
+        }
     };
 
     /**
@@ -701,37 +767,205 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
      */
     studyDesignInstance.resizeBeta = function(rows, columns) {
         // update beta as needed
-        if (rows > 0 && columns > 0) {
-            var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
-            var betaRandom;
-            if (beta === undefined) {
-                beta = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBeta, rows, columns, 0);
-                studyDesignInstance.matrixSet.push(beta);
-                if (studyDesignInstance.gaussianCovariate) {
-                    betaRandom = matrixUtilities.createNamedFilledMatrix(glimmpseConstants.matrixBetaRandom,
-                        1, columns, 1);
-                    studyDesignInstance.matrixSet.push(betaRandom);
-                }
-            }
+        var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
 
-            if (beta.rows != rows) {
-                matrixUtilities.resizeRows(beta, rows, 0, 0);
-            }
-            if (beta.columns != columns) {
-                matrixUtilities.resizeColumns(beta, columns, 0, 0);
-                if (studyDesignInstance.gaussianCovariate) {
-                    betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-                    if (betaRandom.columns != columns) {
-                        matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
-                    }
+        if (beta.rows != rows) {
+            matrixUtilities.resizeRows(beta, rows, 0, 0);
+        }
+
+        if (beta.columns != columns) {
+            matrixUtilities.resizeColumns(beta, columns, 0, 0);
+            if (studyDesignInstance.gaussianCovariate) {
+                var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                if (betaRandom.columns != columns) {
+                    matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
                 }
             }
-        } else {
-            // design not valid, so we delete beta
-            studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBeta);
-            if (studyDesignInstance.gaussianCovariate) {
-                studyDesignInstance.removeMatrixByName(glimmpseConstants.matrixBetaRandom);
+        }
+    };
+
+    /**
+     * Adjust the beta matrix after a number of measurements is changed.
+     *
+     * @param i    Index of repeated measure whose number of measurements
+     *             has changed.
+     * @param oldN Its previous number of measurements.
+     */
+    studyDesignInstance.adjustBetaOnChangeToNumberOfMeasurements = function(i, oldN) {
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
             }
+        );
+        var nRM = noms.length;
+        var newN = noms[i];
+
+        if (oldN === newN) {
+            return;
+        }
+
+        var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+
+        var j;
+
+        // vertical swath width (per measurement)
+        var sw0 = nRV;
+        for (j = i + 1; j < nRM; ++ j) {
+            sw0 *= noms[j];
+        }
+
+        // number of vertical swaths
+        var N = 1;
+        for (j = 0; j < i; ++ j) {
+            N *= noms[j];
+        }
+
+        // vertical swath width (total; positive if inserting, negative if deleting)
+        var sw = (newN - oldN) * sw0;
+
+        var stride = oldN * sw0;
+        var locus = N * stride;
+        if (sw < 0) {
+            locus += sw;
+        }
+
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustColumns(beta, sw, locus);
+            if (studyDesignInstance.gaussianCovariate) {
+                var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                matrixUtilities.adjustColumns(betaRandom, sw, locus);
+            }
+            locus -= stride;
+        }
+    };
+
+    /**
+     * Adjust the beta matrix after a response variable is added or removed.
+     *
+     * @param i     Index of response variable that was added or removed.
+     * @param delta +1 if it was added, -1 if it was removed.
+     */
+    studyDesignInstance.adjustBetaOnChangeToResponseVariables = function(i, delta) {
+        if (delta === 0) {
+            return;
+        }
+
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
+            }
+        );
+        var nRM = noms.length;
+
+        var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+
+        var j;
+
+        // number of vertical swaths
+        var N = 1;
+        for (j = 0; j < nRM; ++ j) {
+            N *= noms[j];
+        }
+
+        var stride = nRV - delta;
+        var locus = (N - 1) * stride + i;
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustColumns(beta, delta, locus);
+            if (studyDesignInstance.gaussianCovariate) {
+                var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
+                matrixUtilities.adjustColumns(betaRandom, delta, locus);
+            }
+            locus -= stride;
+        }
+    };
+
+    /**
+     * Adjust the sigmaYg matrix after a number of measurements is changed.
+     *
+     * @param i    Index of repeated measure whose number of measurements
+     *             has changed.
+     * @param oldN Its previous number of measurements.
+     */
+    studyDesignInstance.adjustSigmaYgOnChangeToNumberOfMeasurements = function(i, oldN) {
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
+            }
+        );
+        var nRM = noms.length;
+        var newN = noms[i];
+
+        if (oldN === newN) {
+            return;
+        }
+
+        var sigmaYg = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+
+        var j;
+
+        // horizontal swath width (per measurement)
+        var sw0 = nRV;
+        for (j = i + 1; j < nRM; ++ j) {
+            sw0 *= noms[j];
+        }
+
+        // number of horizontal swaths
+        var N = 1;
+        for (j = 0; j < i; ++ j) {
+            N *= noms[j];
+        }
+
+        // horizontal swath width (total; positive if inserting, negative if deleting)
+        var sw = (newN - oldN) * sw0;
+
+        var stride = oldN * sw0;
+        var locus = N * stride;
+        if (sw < 0) {
+            locus += sw;
+        }
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustRows(sigmaYg, sw, locus);
+            locus -= stride;
+        }
+    };
+
+    /**
+     * Adjust the sigmaYg matrix after a response variable is added or removed.
+     *
+     * @param i     Index of response variable that was added or removed.
+     * @param delta +1 if it was added, -1 if it was removed.
+     */
+    studyDesignInstance.adjustSigmaYgOnChangeToResponseVariables = function(i, delta) {
+        if (delta === 0) {
+            return;
+        }
+
+        var nRV = studyDesignInstance.responseList.length;
+        var noms = studyDesignInstance.repeatedMeasuresTree.map(
+            function(rm) {
+                return rm.spacingList.length;
+            }
+        );
+        var nRM = noms.length;
+
+        var sigmaYg = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixSigmaYG);
+
+        var j;
+
+        // number of horizontal swaths
+        var N = 1;
+        for (j = 0; j < nRM; ++ j) {
+            N *= noms[j];
+        }
+
+        var stride = nRV - delta;
+        var locus = (N - 1) * stride + i;
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustRows(sigmaYg, delta, locus);
+            locus -= stride;
         }
     };
 

@@ -50,7 +50,7 @@
                                 ng-show="currentCovariance.name == glimmpseConstants.covarianceResponses">
                             <p>
                                 Enter the standard deviation you expect to observe for each response. Note that
-                                Glimmpse currently assumes that the standard deviation is constant across
+                                GLIMMPSE currently assumes that the standard deviation is constant across
                                 repeated measurements.
                             </p>
                             <div class="form-group" ng-repeat="stddev in currentCovariance.standardDeviationList">
@@ -72,7 +72,7 @@
                             base correlation and the decay rate. The base correlation describes the correlation
                             between measurements taken 1 unit apart. The decay rate describes the rate of decrease
                             in the base correlation as the distance or time between repeated measurements increases.
-                            Our experience with biological and behavioral data lead us to suggest using decay
+                            Our experience with biological and behavioral data leads us to suggest using decay
                             values between 0.05 and 0.5.
                         </p>
                         <form name="learForm" novalidate>
@@ -108,8 +108,8 @@
                     <div class='xscroll'>
                         <table class="table table-bordered">
                             <tr>
-                                <th>&nbsp</th>
-                                <th ng-repeat="colLabel in columnLabelList">
+                                <th>&nbsp;</th>
+                                <th ng-repeat="colLabel in columnLabelList track by $index">
                                     {{colLabel}}
                                 </th>
                             </tr>
@@ -172,13 +172,16 @@
 
     <div ng-show="glimmpseConstants.debug == true">
         <div ng-repeat="covar in studyDesign.covariance" class="vmargin15">
-            {{covar}}
-        </div>
-        <div>
-            Current: {{currentCovariance}}
+            studyDesign.covariance[{{$index}}]: {{covar}}
         </div>
         <div class="vmargin15">
-            LEAR: {{minDistance}}, {{maxDistance}}, {{maxMinDiff}}
+            currentCovariance: {{currentCovariance}}
+        </div>
+        <div class="vmargin15">
+            columnLabelList: {{columnLabelList}}
+        </div>
+        <div class="vmargin15">
+            rowLabelList: {{rowLabelList}}
         </div>
     </div>
 </div>

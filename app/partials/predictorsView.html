@@ -74,12 +74,21 @@
        <!-- Right hand panel showing category names for the selected predictor -->
        <div class="col-md-6">
            <div class="category-list white-box padding10 rounded-box" ng-show="currentPredictor != undefined">
-               <form name="categoriesForm" novalidate ng-submit="addCategory()">
+               <form name="categoriesForm" novalidate
+                    gl-submit="$parent.addCategory()"
+                    gl-submit-if="
+                           $parent.currentPredictor.categoryList.length != 9
+                        || confirm(
+                              'You’re about to add the tenth value for ‘{{$parent.currentPredictor.predictorName}}’. '
+                            + 'Are you sure?'
+                           )
+                    "
+               >
                    <div class="form-group">
-                       <label>Values for '{{currentPredictor.predictorName}}'</label>
+                       <label>Values for '{{$parent.currentPredictor.predictorName}}'</label>
                        <input class="form-control" name="newCategory" type="text"
-                              placeholder="Enter value for '{{currentPredictor.predictorName}}'"
-                              ng-model="newCategoryName"
+                              placeholder="Enter value for '{{$parent.currentPredictor.predictorName}}'"
+                              ng-model="$parent.newCategoryName"
                               autocomplete="off" autofocus required />
                    </div>
                </form>
@@ -98,24 +107,27 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-       Between Participant Factor List: {{studyDesign.betweenParticipantFactorList}}
+       studyDesign.betweenParticipantFactorList: {{studyDesign.betweenParticipantFactorList}}
     </div>
     <div class="vmargin15">
-       current predictor = {{currentPredictor}}
+       currentPredictor: {{currentPredictor}}
     </div>
     <div class="vmargin15">
-        Matrices: {{studyDesign.matrixSet}}
+        studyDesign.matrixSet: {{studyDesign.matrixSet}}
     </div>
     <div class="vmargin15">
-        Meta Data: {{metaData.predictorCombinationList}}
+        metaData.predictorCombinationList: {{metaData.predictorCombinationList}}
     </div>
     <div class="vmargin15">
-        Beta rows: {{metaData.getNumberOfPredictorCombinations()}}, columns: {{metaData.getNumberOfResponseCombinations()}}
+        metaData.getNumberOfPredictorCombinations(): {{metaData.getNumberOfPredictorCombinations()}}
     </div>
     <div class="vmargin15">
-        Relative Size List: {{studyDesign.relativeGroupSizeList}}
+        metaData.getNumberOfResponseCombinations(): {{metaData.getNumberOfResponseCombinations()}}
     </div>
     <div class="vmargin15">
-        Hypothesis: {{studyDesign.hypothesis[0]}}
+        studyDesign.relativeGroupSizeList: {{studyDesign.relativeGroupSizeList}}
+    </div>
+    <div class="vmargin15">
+        studyDesign.hypothesis[0]: {{studyDesign.hypothesis[0]}}
     </div>
 </div>
