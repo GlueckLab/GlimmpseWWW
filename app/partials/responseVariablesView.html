@@ -39,7 +39,7 @@
     </form>
     <ul class="list-unstyled">
         <li class="list-item box rounded-box" ng-repeat="response in studyDesign.responseList">
-            <label ng-dblclick="editResponse(response)">{{response.name}}</label>
+            <label>{{response.name}}</label>
             <button data-ng-click="deleteResponse(response)" class="glyphicon glyphicon-remove"></button>
         </li>
     </ul>

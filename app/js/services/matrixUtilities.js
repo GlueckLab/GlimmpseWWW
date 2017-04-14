@@ -22,9 +22,20 @@
  * Retrieved via JSON from the Power Web Service
  */
 
-
 glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     var matrixUtilitiesInstance = {};
+
+    /**
+     * Construct an array.
+     *
+     * @param count    The number of elements in the array.
+     * @param supplier A function supplying the elements in the
+     *                 array, suitable as the first argument to
+     *                 Array.prototype.map.
+     */
+    matrixUtilitiesInstance.array = function(count, supplier) {
+        return Array.apply(null, {length: count}).map(supplier);
+    };
 
     /**
      * Check if a matrix is valid
@@ -115,7 +126,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var i = 0; i < covar.standardDeviationList.length; i++) {
             var stddev = covar.standardDeviationList[i];
             if (stddev === null || stddev === undefined ||
-                stddev.value === undefined || stddev.value <= 0) {
+                typeof stddev.value !== 'number' || stddev.value <= 0) {
                 return false;
             }
         }
@@ -125,12 +136,79 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
+     * Adjust an array, by inserting or deleting a number of elements
+     * at an insertion or deletion point (array index).
+     *
+     * @param array    The array.
+     * @param delta    The number of elements to insert (if positive)
+     *                 or delete (if negative).
+     * @param locus    The insertion or deletion point.
+     * @param supplier The function to supply the values of inserted
+     *                 elements.
+     */
+    matrixUtilitiesInstance.adjustArray = function(array, delta, locus, supplier) {
+        if (delta === 0) {
+            return;
+        }
+
+        if (delta > 0) {
+            var spliceArguments =
+                    matrixUtilitiesInstance.array(
+                        2 + delta,
+                        function(e, i) {return i === 0 ? locus : i === 1 ? 0 : supplier(i - 2);}
+                    );
+
+//          array.splice(locus, 0, supplier(0), supplier(1), ..., supplier(delta - 1));
+            Array.prototype.splice.apply(array, spliceArguments);
+        } else {
+            array.splice(locus, - delta);
+        }
+    };
+
+    /**
+     * Adjust the rows of a matrix, by inserting or deleting
+     * a number of rows at an insertion or deletion point (row
+     * index). Elements in inserted rows are left undefined.
+     *
+     * @param matrix The matrix.
+     * @param delta  The number of rows to insert (if positive)
+     *               or delete (if negative).
+     * @param locus  The insertion or deletion point.
+     */
+    matrixUtilitiesInstance.adjustRows = function(matrix, delta, locus) {
+        if (delta === 0) {
+            return;
+        }
+
+        var rows = matrix.data.data;
+
+        matrix.rows += delta;
+        if (delta > 0) {
+            var undefineds =
+                matrixUtilitiesInstance.array(
+                    matrix.columns,
+                    function(e, i) {return undefined;}
+                );
+
+            var spliceArguments =
+                matrixUtilitiesInstance.array(
+                    2 + delta,
+                    function(e, i) {return i === 0 ? locus : undefineds.slice();}
+                );
+
+//          rows.splice(locus, 0, [undefined, undefined, ..., undefined], ..., [undefined, undefined, ..., undefined]);
+            Array.prototype.splice.apply(rows, spliceArguments);
+        } else {
+            rows.splice(locus, - delta);
+        }
+    };
+
+    /**
      * Resize the rows of a matrix
      * @param matrix
      * @param newRows
      */
-    matrixUtilitiesInstance.resizeRows = function(matrix, newRows,
-                                                  defaultOffDiagonal, defaultDiagonal) {
+    matrixUtilitiesInstance.resizeRows = function(matrix, newRows, defaultOffDiagonal, defaultDiagonal) {
         if (newRows === undefined) {
             return;
         }
@@ -141,12 +219,49 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             for(var r = oldRows; r < newRows; r++) {
                 var newRow = [];
                 for(var c = 0; c < matrix.columns; c++) {
-                    newRow.push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                    newRow.push(r == c ? defaultDiagonal : defaultOffDiagonal);
                 }
                 matrix.data.data.push(newRow);
             }
         } else if (newRows < oldRows) {
             matrix.data.data.splice(newRows, oldRows - newRows);
+        }
+    };
+
+    /**
+     * Adjust the columns of a matrix, by inserting or deleting
+     * a number of columns at an insertion or deletion point
+     * (column index). Elements in inserted columns are left undefined.
+     *
+     * @param matrix The matrix.
+     * @param delta  The number of columns to insert (if positive)
+     *               or delete (if negative).
+     * @param locus  The insertion or deletion point.
+     */
+    matrixUtilitiesInstance.adjustColumns = function(matrix, delta, locus) {
+        if (delta === 0) {
+            return;
+        }
+
+        var rows = matrix.data.data;
+        var r;
+
+        matrix.columns += delta;
+        if (delta > 0) {
+            var spliceArguments =
+                    matrixUtilitiesInstance.array(
+                        2 + delta,
+                        function(e, i) {return i === 0 ? locus : i === 1 ? 0 : undefined;}
+                    );
+
+            for (r = 0; r < matrix.rows; r++) {
+//              rows[r].splice(locus, 0, undefined, undefined, ..., undefined);
+                Array.prototype.splice.apply(rows[r], spliceArguments);
+            }
+        } else {
+            for (r = 0; r < matrix.rows; r++) {
+                rows[r].splice(locus, - delta);
+            }
         }
     };
 
@@ -166,7 +281,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         if (newColumns > oldColumns) {
             for(var r = 0; r < matrix.rows; r++) {
                 for(var c = oldColumns; c < newColumns; c++) {
-                    matrix.data.data[r].push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                    matrix.data.data[r].push(r == c ? defaultDiagonal : defaultOffDiagonal);
                 }
             }
 
@@ -197,7 +312,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var r = 0; r < size; r++) {
             var colData = [];
             for(var c = 0; c < size; c++) {
-                colData.push((r == c ? 1 : 0));
+                colData.push(r == c ? 1 : 0);
             }
             matrix.data.data.push(colData);
         }
@@ -239,8 +354,6 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**********
-     *
-     *
      * At present, the domain layer represents matrices (either covariance
      * or other) with two different naming conventions.
      *
@@ -255,19 +368,20 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      ***********/
 
     /**
-     * Resize the rows of a covariance object
-     * @param matrix
-     * @param oldRows
+     * Resize the rows of a covariance matrix
+     * @param covariance
      * @param newRows
      */
-    matrixUtilitiesInstance.resizeCovarianceRows = function(covariance, oldRows, newRows,
-                                                  defaultOffDiagonal, defaultDiagonal) {
+    matrixUtilitiesInstance.resizeCovarianceRows = function(covariance, newRows) {
+        var oldRows = covariance.rows;
         covariance.rows = newRows;
         if (newRows > oldRows) {
             for(var r = oldRows; r < newRows; r++) {
                 var newRow = [];
                 for(var c = 0; c < covariance.columns; c++) {
-                    newRow.push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                    newRow.push(
+                        r == c ? 1 : covariance.type === glimmpseConstants.correlationTypeLear ? 0 : undefined
+                    );
                 }
                 covariance.blob.data.push(newRow);
             }
@@ -277,18 +391,19 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
-     * Resize the columns of a matrix
-     * @param matrix
-     * @param oldColumns
+     * Resize the columns of a covariance matrix
+     * @param covariance
      * @param newColumns
      */
-    matrixUtilitiesInstance.resizeCovarianceColumns = function(covariance, oldColumns, newColumns,
-                                                     defaultOffDiagonal, defaultDiagonal) {
+    matrixUtilitiesInstance.resizeCovarianceColumns = function(covariance, newColumns) {
+        var oldColumns = covariance.columns;
         covariance.columns = newColumns;
         if (newColumns > oldColumns) {
             for(var r = 0; r < covariance.rows; r++) {
                 for(var c = oldColumns; c < newColumns; c++) {
-                    covariance.blob.data[r].push((r == c ? defaultDiagonal : defaultOffDiagonal));
+                    covariance.blob.data[r].push(
+                        r == c ? 1 : covariance.type === glimmpseConstants.correlationTypeLear ? 0 : undefined
+                    );
                 }
             }
         } else if (newColumns < oldColumns) {
@@ -301,12 +416,12 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     /**
      * Resize the standard deviation list within a covariance object
      * @param covariance
-     * @param defaultValue
+     * @param dimension
      */
     matrixUtilitiesInstance.resizeCovarianceStandardDeviationList = function(covariance, dimension) {
         if (covariance.standardDeviationList.length < dimension) {
             for(var i = covariance.standardDeviationList.length; i < dimension; i++) {
-                covariance.standardDeviationList.push({idx: 0, value: 1});
+                covariance.standardDeviationList.push({idx: 0});
             }
         } else if (covariance.standardDeviationList.length > dimension) {
             covariance.standardDeviationList.splice(dimension,
@@ -315,21 +430,41 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
+     * Adjust a covariance matrix in response to the addition or removal
+     * of a number of its underlying random variables. Elements in inserted
+     * rows and columns are left undefined.
+     *
+     * @param covariance The covariance matrix.
+     * @param delta      The number of random variables addded (if positive)
+     *                   or removed (if negative).
+     * @param locus      The addition or removal point.
+     */
+    matrixUtilitiesInstance.adjustCovarianceMatrix = function(covariance, delta, locus) {
+        covariance.data = covariance.blob;
+        matrixUtilitiesInstance.adjustRows(covariance, delta, locus);
+        matrixUtilitiesInstance.adjustColumns(covariance, delta, locus);
+        delete covariance.data;
+
+        for (var i = 0; i < covariance.rows; ++ i) {
+            covariance.blob.data[i][i] = 1;
+        }
+
+        matrixUtilitiesInstance.adjustArray(
+            covariance.standardDeviationList,
+            delta, locus,
+            function() { return {idx: 0}; }
+        );
+    };
+
+    /**
      * Wrapper function to resize a covariance matrix
      * @param covariance
-     * @param oldColumns
-     * @param newColumns
-     * @param defaultOffDiagonal
-     * @param defaultDiagonal
+     * @param newSize
      */
-    matrixUtilitiesInstance.resizeCovariance = function(covariance, oldSize, newSize,
-        defaultOffDiagonal, defaultDiagonal) {
-        matrixUtilitiesInstance.resizeCovarianceRows(covariance, oldSize, newSize,
-            defaultOffDiagonal, defaultDiagonal);
-        matrixUtilitiesInstance.resizeCovarianceColumns(covariance, oldSize, newSize,
-            defaultOffDiagonal, defaultDiagonal);
+    matrixUtilitiesInstance.resizeCovariance = function(covariance, newSize) {
+        matrixUtilitiesInstance.resizeCovarianceRows(covariance, newSize);
+        matrixUtilitiesInstance.resizeCovarianceColumns(covariance, newSize);
         matrixUtilitiesInstance.resizeCovarianceStandardDeviationList(covariance, newSize);
-
     };
 
     /**
@@ -339,7 +474,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      * @returns covariance
      */
     matrixUtilitiesInstance.createCovariance = function(name, dimension) {
-        // create an empty covariance object, with type unstructured correlation
+        // create an empty covariance object, with type unstructured covariance
         var covariance = {
             idx: 0,
             type: glimmpseConstants.covarianceTypeUnstructured,
@@ -363,7 +498,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var r = 0; r < dimension; r++) {
             var colData = [];
             for(var c = 0; c < dimension; c++) {
-                colData.push((r == c ? 1 : 0));
+                colData.push(r == c ? 1 : 0);
             }
             covariance.blob.data.push(colData);
         }
@@ -402,7 +537,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var r = 0; r < dimension; r++) {
             var colData = [];
             for(var c = 0; c < dimension; c++) {
-                colData.push((r == c ? 1 : 0));
+                colData.push(r == c ? 1 : 0);
             }
             covariance.blob.data.push(colData);
         }
@@ -417,7 +552,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      * @returns covariance
      */
     matrixUtilitiesInstance.createLEARCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type unstructured correlation
+        // create an empty covariance object, with type LEAR correlation
         var covariance = {
             idx: 0,
             type: glimmpseConstants.correlationTypeLear,
@@ -441,7 +576,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         for(var r = 0; r < dimension; r++) {
             var colData = [];
             for(var c = 0; c < dimension; c++) {
-                colData.push((r == c ? 1 : 0));
+                colData.push(r == c ? 1 : 0.1);
             }
             covariance.blob.data.push(colData);
         }
