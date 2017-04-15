@@ -59,7 +59,6 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
         },
 
         controller: ['$scope', 'matrixUtilities', function($scope, matrixUtilities) {
-
             init();
             function init() {
                 $scope.matrixUtils = matrixUtilities;
@@ -109,8 +108,6 @@ glimmpseApp.directive('ngResizableMatrix',['matrixUtilities', function() {
                 return false;
             };
         }]
-
-
     };
 }]);
 
@@ -137,6 +134,45 @@ glimmpseApp.directive('ngTrendSelect',['glimmpseConstants', function() {
         controller: ['$scope', 'glimmpseConstants', function($scope, glimmpseConstants) {
            $scope.constants = glimmpseConstants;
         }]
+    };
+}]);
+
+
+/**
+ * A modification of ngSubmit, supporting conditional submission.
+ *
+ * Attributes
+ *   gl-submit    : the submit action
+ *   gl-submit-if : the submit condition; may contain calls of
+ *                  'confirm'; default is 'true'
+ */
+glimmpseApp.directive('glSubmit', [function() {
+    return {
+        restrict: 'A',
+        scope: {
+            window: "="
+        },
+        controller: ['$scope', '$window', function($scope, $window) {
+            $scope.confirm = function(msg) {
+                return $window.confirm(msg);
+            };
+        }],
+        link: function(scope, element, attrs) {
+            element.bind('submit', function() {
+                var submit;
+
+                var condition = attrs.glSubmitIf;
+                if (condition) {
+                    submit = scope.$eval(condition);
+                } else {
+                    submit = true;
+                }
+
+                if (submit) {
+                    scope.$apply(attrs.glSubmit);
+                }
+            });
+        }
     };
 }]);
 

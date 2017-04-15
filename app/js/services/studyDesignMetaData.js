@@ -72,7 +72,7 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
     };
 
     /**
-     * Rebuild the permutation table for the predictors
+     * Rebuild the combination table for the predictors
      * (used by the relative group size and means screen)
      */
     metaDataInstance.updatePredictorCombinations = function() {
@@ -81,10 +81,10 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
 
         /* calculate the total number of combinations */
         var totalCombinations = 1;
-        for (var i=0; i < studyDesignService.betweenParticipantFactorList.length; i++) {
-            var len = studyDesignService.betweenParticipantFactorList[i].categoryList.length;
-            if (len >= 2 ) {
-                totalCombinations = totalCombinations * len;
+        for (var l = 0; l < studyDesignService.betweenParticipantFactorList.length; l++) {
+            var len = studyDesignService.betweenParticipantFactorList[l].categoryList.length;
+            if (len >= 2) {
+                totalCombinations *= len;
             } else {
                 // user has not completed predictor information, so don't build
                 // the table
@@ -92,19 +92,25 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
             }
         }
 
-        // now build the columns
-        var numRepetitions = totalCombinations;
-        for (var j = 0; j < studyDesignService.betweenParticipantFactorList.length; j++) {
-            var categoryList = studyDesignService.betweenParticipantFactorList[j].categoryList;
-            var column = [];
+        var column;
+        var j, jMax;
+        var i, iMax;
+        var r, rMax;
+
+        // build the columns
+        rMax = totalCombinations;
+        for (var k = 0; k < studyDesignService.betweenParticipantFactorList.length; k++) {
+            var categoryList = studyDesignService.betweenParticipantFactorList[k].categoryList;
+            column = [];
             if (categoryList !== undefined && categoryList.length >= 2) {
-                numRepetitions /= categoryList.length;
-                for(var combo = 0; combo < totalCombinations; ) {
-                    for(var cat = 0; cat < categoryList.length; cat++) {
-                        var value = categoryList[cat].category;
-                        for(var rep = 0; rep < numRepetitions; rep++) {
+                iMax = categoryList.length;
+                jMax = totalCombinations / rMax;
+                rMax /= iMax;
+                for (j = 0; j < jMax; j++) {
+                    for (i = 0; i < iMax; i++) {
+                        var value = categoryList[i].category;
+                        for (r = 0; r < rMax; r++) {
                             column.push(value);
-                            combo++;
                         }
                     }
                 }
@@ -129,40 +135,46 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
             return;
         }
         // multiply the repeated measures onto the total response count
-        for (var i = 0; i < studyDesignService.repeatedMeasuresTree.length; i++) {
-            totalCombinations = totalCombinations *
-                studyDesignService.repeatedMeasuresTree[i].numberOfMeasurements;
+        for (var l = 0; l < studyDesignService.repeatedMeasuresTree.length; l++) {
+            totalCombinations *= studyDesignService.repeatedMeasuresTree[l].numberOfMeasurements;
         }
 
-        // now build the display headers for the repeated measures
-        var numRepetitions = totalCombinations;
-        for (var rmIdx = 0; rmIdx < studyDesignService.repeatedMeasuresTree.length; rmIdx++) {
-            var rmFactor = studyDesignService.repeatedMeasuresTree[rmIdx];
-            var spacingList = rmFactor.spacingList;
-            var row = [];
+        var row;
+        var j, jMax;
+        var i, iMax;
+        var r, rMax;
+
+        // build the display header rows for the repeated measures
+        rMax = totalCombinations;
+        for (var k = 0; k < studyDesignService.repeatedMeasuresTree.length; k++) {
+            var spacingList = studyDesignService.repeatedMeasuresTree[k].spacingList;
+            row = [];
             if (spacingList !== undefined && spacingList.length >= 2) {
-                numRepetitions = numRepetitions / spacingList.length;
-                for(var combo = 0; combo < totalCombinations; ) {
-                    for(var spacingIdx = 0; spacingIdx < spacingList.length; spacingIdx++) {
-                        for(var rep = 0; rep < numRepetitions; rep++) {
-                            row.push(spacingList[spacingIdx].value);
-                            combo++;
+                iMax = spacingList.length;
+                jMax = totalCombinations / rMax;
+                rMax /= iMax;
+                for (j = 0; j < jMax; j++) {
+                    for (i = 0; i < iMax; i++) {
+                        var value = spacingList[i].value;
+                        for (r = 0; r < rMax; r++) {
+                            row.push(value);
                         }
                     }
                 }
             }
             metaDataInstance.responseCombinationList.push(row);
         }
-        // build the rows for the responses
-        var responseRow = [];
-        numRepetitions = totalCombinations / studyDesignService.responseList.length;
-        for(var repIdx = 0; repIdx < numRepetitions; repIdx++) {
-            for(var responseIdx = 0; responseIdx < studyDesignService.responseList.length; responseIdx++) {
-                responseRow.push(studyDesignService.responseList[responseIdx].name);
+
+        // build the display header row for the responses
+        row = [];
+        iMax = studyDesignService.responseList.length;
+        jMax = totalCombinations / iMax;
+        for (j = 0; j < jMax; j++) {
+            for (i = 0; i < iMax; i++) {
+                row.push(studyDesignService.responseList[i].name);
             }
         }
-        metaDataInstance.responseCombinationList.push(responseRow);
-
+        metaDataInstance.responseCombinationList.push(row);
     };
 
     return metaDataInstance;

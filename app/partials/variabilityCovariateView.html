@@ -47,7 +47,7 @@
                 <table class="table table-bordered table-condensed table-striped maxHeight300">
                     <tr>
                         <th ng-repeat="rmFactor in studyDesign.repeatedMeasuresTree">{{rmFactor.dimension}}</th>
-                        <th>response</th>
+                        <th>Response</th>
                         <th>Correlation with covariate</th>
                     </tr>
                     <tr ng-repeat="row in sigmaYG.data.data">
@@ -83,14 +83,16 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-        {{sharedCorrelation}}
+        sharedCorrelation: {{sharedCorrelation}}
     </div>
     <div class="vmargin15">
-        Sigma G: {{sigmaG}}
+        sigmaG: {{sigmaG}}
     </div>
-
     <div class="vmargin15">
-        Sigma YG: {{sigmaYG}}
+        sigmaYG: {{sigmaYG}}
+    </div>
+    <div class="vmargin15">
+        metaData.responseCombinationList: {{metaData.responseCombinationList}}
     </div>
 </div>
 

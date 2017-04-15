@@ -73,13 +73,6 @@ glimmpseApp.factory('powerService',function($http, $q, config, glimmpseConstants
     };
 
     /**
-     *  Retrieve CI width results from the power service.
-     */
-    powerServiceInstance.calculateConfidenceIntervalWidth = function(studyDesignJSON) {
-        return powerServiceInstance._retrieveResults(studyDesignJSON, config.uriCIWidth);
-    };
-
-    /**
      *  Retrieve matrices results from the power service.
      */
     powerServiceInstance.getMatrices = function(studyDesignJSON) {

@@ -203,7 +203,7 @@ glimmpseApp.controller('stateController',
          * Get the state of the repeated measures view.  The view
          * is complete when
          * 1. No repeated measures are specified, or
-         * 2. Information for all repeated measures are complete
+         * 2. Information for all repeated measures is complete
          *
          * @returns {string}
          */
@@ -218,11 +218,17 @@ glimmpseApp.controller('stateController',
                         factor.spacingList.length <= 0) {
                         return $scope.glimmpseConstants.stateIncomplete;
                     }
+                    var spacingValue, previousSpacingValue;
                     for(var j = 0; j < factor.spacingList.length; j++) {
-                        var spacing = factor.spacingList[j];
-                        if (!/^\d+$/.test(spacing.value)) {
+                        spacingValue = factor.spacingList[j].value;
+                        if (!/^\d+$/.test(spacingValue)) {
                             return $scope.glimmpseConstants.stateIncomplete;
                         }
+                        spacingValue = +spacingValue;
+                        if (j > 0 && spacingValue <= previousSpacingValue) {
+                            return $scope.glimmpseConstants.stateIncomplete;
+                        }
+                        previousSpacingValue = spacingValue;
                     }
                 }
             }
@@ -295,9 +301,6 @@ glimmpseApp.controller('stateController',
                 !$scope.testDone($scope.state.repeatedMeasures)) {
                 return $scope.glimmpseConstants.stateBlocked;
             }
-            if (beta === undefined || beta === null) {
-                return $scope.glimmpseConstants.stateBlocked;
-            }
             if ($scope.matrixUtils.isValidMatrix(beta, undefined, undefined)) {
                 return $scope.glimmpseConstants.stateComplete;
             } else {
@@ -324,12 +327,15 @@ glimmpseApp.controller('stateController',
          * screen is blocked when the user has not yet completed the
          * response variables and repeated measures screens.  The
          * screen is complete when all variability information for
-         * responses and each level of repeated measures are entered
+         * responses and each level of repeated measures are entered.
          *
          * @returns blocked, complete, or incomplete
          */
         $scope.getStateWithinVariability = function() {
             if ($scope.studyDesign.responseList.length <= 0) {
+                return $scope.glimmpseConstants.stateBlocked;
+            }
+            if (!$scope.testDone($scope.state.repeatedMeasures)) {
                 return $scope.glimmpseConstants.stateBlocked;
             }
             if ($scope.studyDesign.covariance.length > 0) {
@@ -1000,7 +1006,9 @@ glimmpseApp.controller('stateController',
                         } catch(err) {
                             var msg = "Sorry, that file does not contain a valid study design.";
                             if (glimmpseConstants.debug) {
-                                msg += "\n\n" + err;
+                                msg += "\n\n" + "Exception:\n" + err;
+                                msg += "\n\n" + "Response:\n" + responseText;
+                                msg += "\n\n" + "Status:\n" + statusText;
                             }
                             window.alert(msg);
                         }
@@ -1134,8 +1142,8 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Called prior to submission of save form.  Updates
-         * the value of the study design JSON in a hidden field
+         * Called prior to submission of the save form. Updates
+         * the value of the study design JSON for use in a hidden field
          * in the save form.
          */
         $scope.updateStudyDesignJSON = function() {
@@ -1143,8 +1151,8 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Called prior to submission of save form.  Updates
-         * the value of the study design JSON in a hidden field
+         * Called prior to submission of the save form. Updates
+         * the value of the results CSV for use in a hidden field
          * in the save form.
          */
         $scope.updateResultsCSV = function() {
@@ -1169,11 +1177,9 @@ glimmpseApp.controller('stateController',
                             (result.errorCode !== null ? result.errorCode : "") + "," +
                             (result.errorMessage !== null ? result.errorMessage : "") + "\n"
                     ;
-
                 }
             }
             $scope.resultsCSV = resultsCSV;
-
         };
 
         /**
@@ -1199,10 +1205,7 @@ glimmpseApp.controller('stateController',
         $scope.setMode = function(mode) {
             $scope.mode = mode;
             $scope.studyDesign.viewTypeEnum = mode;
-            if ($scope.mode == $scope.glimmpseConstants.modeMatrix) {
-                // set the default matrices
-                $scope.studyDesign.initializeDefaultMatrices();
-            }
+            $scope.studyDesign.initializeDefaultMatrices();
         };
 
         /**
@@ -1651,22 +1654,23 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.metaData = studyDesignMetaData;
             $scope.newResponse = '';
-            $scope.editedResponse = '';
             $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**
          * When a response is added or removed, this function
          * ensures that the beta matrix and covariance structures
-         * are still in sync with the responses list
+         * are still in sync with the responses list.
+         *
+         * @param i     Index of response that was added or removed.
+         * @param delta +1 if it was added, -1 if it was removed.
          */
-        $scope.syncStudyDesign = function() {
+        $scope.syncStudyDesign = function(i, delta) {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
 
             // update the beta matrix
-            $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
-                                            $scope.metaData.getNumberOfResponseCombinations());
+            $scope.studyDesign.adjustBetaOnChangeToResponseVariables(i, delta);
 
             // update covariance of the responses
             var covariance = $scope.studyDesign.getCovarianceByName(glimmpseConstants.covarianceResponses);
@@ -1695,14 +1699,9 @@ glimmpseApp.controller('stateController',
                         );
                     }
                 } else {
-                    $scope.matrixUtils.resizeCovariance(covariance, covariance.rows,
-                        $scope.studyDesign.responseList.length, 0, 1);
+                    $scope.matrixUtils.adjustCovarianceMatrix(covariance, delta, i);
                     if ($scope.studyDesign.gaussianCovariate) {
-                        var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                        if (sigmaYg !== undefined) {
-                            $scope.matrixUtils.resizeRows(sigmaYg,
-                                $scope.studyDesign.getNumberOfResponses(), 0, 1);
-                        }
+                        $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
                     }
                 }
             }
@@ -1712,11 +1711,12 @@ glimmpseApp.controller('stateController',
          * Add a new response variable
          */
         $scope.addResponse = function () {
+            var i = $scope.studyDesign.responseList.length;
             var newOutcome = $scope.newResponse;
             if (newOutcome.length > 0) {
                 // add the response to the list
                 $scope.studyDesign.responseList.push({
-                    idx: $scope.studyDesign.responseList.length,
+                    idx: i,
                     name: newOutcome
                 });
             }
@@ -1724,18 +1724,18 @@ glimmpseApp.controller('stateController',
             $scope.newResponse = '';
 
             // update the study design
-            $scope.syncStudyDesign();
+            $scope.syncStudyDesign(i, 1);
         };
 
         /**
          * Delete an existing response variable
          */
         $scope.deleteResponse = function(response) {
-            studyDesignService.responseList.splice(
-                studyDesignService.responseList.indexOf(response), 1);
+            var i = $scope.studyDesign.responseList.indexOf(response);
+            $scope.studyDesign.responseList.splice(i, 1);
 
             // update the study design
-            $scope.syncStudyDesign();
+            $scope.syncStudyDesign(i, -1);
         };
 
     })
@@ -1766,7 +1766,7 @@ glimmpseApp.controller('stateController',
 
         /**
          * Updates the dimensions of the beta matrix and relative group
-         * size list when a predictor or category is added/deleted
+         * size list when a predictor or category is added/deleted.
          */
         $scope.syncStudyDesign = function() {
             // update the list of combinations of predictors
@@ -1903,22 +1903,22 @@ glimmpseApp.controller('stateController',
         $scope.updateMatrixSet = function() {
 
             if ($scope.studyDesign.gaussianCovariate) {
+                var beta = $scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixBeta);
+
                 // Add the beta random matrix
                 // TODO: drop beta random from the domain layer - not needed for power
-                var beta = $scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixBeta);
-                if (beta !== undefined) {
-                    $scope.studyDesign.matrixSet.push(
-                        $scope.matrixUtils.createNamedFilledMatrix(
-                            $scope.glimmpseConstants.matrixBetaRandom, 1, beta.columns, 1
-                        )
-                    );
-                    // add default sigma YG
-                    $scope.studyDesign.matrixSet.push(
-                        $scope.matrixUtils.createNamedFilledMatrix(
-                            $scope.glimmpseConstants.matrixSigmaYG, beta.columns, 1, 0
-                        )
-                    );
-                }
+                $scope.studyDesign.matrixSet.push(
+                    $scope.matrixUtils.createNamedFilledMatrix(
+                        $scope.glimmpseConstants.matrixBetaRandom, 1, beta.columns, 1
+                    )
+                );
+
+                // add default sigma YG
+                $scope.studyDesign.matrixSet.push(
+                    $scope.matrixUtils.createNamedFilledMatrix(
+                        $scope.glimmpseConstants.matrixSigmaYG, beta.columns, 1, 0
+                    )
+                );
 
                 // add default sigma G
                 $scope.studyDesign.matrixSet.push(
@@ -1982,7 +1982,7 @@ glimmpseApp.controller('stateController',
 
             // lists of indicators of which test is selected
             $scope.testsList = [
-                {label: "Hotelling Lawley Trace",
+                {label: "Hotelling-Lawley Trace",
                     type: $scope.glimmpseConstants.testHotellingLawleyTrace,
                     selected: ($scope.getTestIndexByName($scope.glimmpseConstants.testHotellingLawleyTrace) != -1)},
                 {label: "Pillai-Bartlett Trace",
@@ -2088,21 +2088,24 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * When a level of repeated measures is added or removed, this function
-         * ensures that the beta matrix is still in sync with the responses list
+         * When a number of measurements of a repeated measure is changed, this
+         * function ensures that the beta matrix and sigmaYg matrices are still
+         * in sync with the responses list.
+         *
+         * @param i    Index of repeated measure whose number of measuresments
+         *             has changed.
+         * @param oldN Its previous number of measurements.
          */
-        $scope.syncTotalResponses = function() {
+        $scope.syncStudyDesign = function(i, oldN) {
             // update the list of combinations of responses
             $scope.metaData.updateResponseCombinations();
+
             // update the beta matrix
-            $scope.studyDesign.resizeBeta($scope.metaData.getNumberOfPredictorCombinations(),
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
-            // if the design has a covariate, resize the sigmaYg matrix
+            $scope.studyDesign.adjustBetaOnChangeToNumberOfMeasurements(i, oldN);
+
+            // if the design has a covariate, update the sigmaYg matrix
             if ($scope.studyDesign.gaussianCovariate) {
-                var sigmaYg = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-                $scope.matrixUtils.resizeRows(sigmaYg,
-                    $scope.studyDesign.getNumberOfResponses(), 0, 0);
+                $scope.studyDesign.adjustSigmaYgOnChangeToNumberOfMeasurements(i, oldN);
             }
         };
 
@@ -2110,68 +2113,75 @@ glimmpseApp.controller('stateController',
          * Add a new level of repeated measures
          */
         $scope.addLevel = function() {
-            if ($scope.studyDesign.repeatedMeasuresTree.length < 3) {
-                $scope.studyDesign.repeatedMeasuresTree.push({
-                    idx: 0,
-                    node: 0,
-                    parent: 0,
-                    repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
-                    numberOfMeasurements: 2,
-                    spacingList: [
-                        {idx: 1, value: 0},
-                        {idx: 2, value: 1}
-                    ]
-                });
-
-                /* synchronize the study design */
-                $scope.syncTotalResponses();
-
-                // add a covariance object
-                var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
-                if (rmLevel >= 0) {
-                    $scope.studyDesign.covariance.splice(rmLevel, 0,
-                        $scope.matrixUtils.createLEARCorrelation("", 2)
-                    );
-                }
-
-                // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
-                var hypothesis = $scope.studyDesign.hypothesis[0];
-                if (hypothesis !== undefined && hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
-                    hypothesis.type = $scope.glimmpseConstants.hypothesisInteraction;
-                }
+            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length;
+            if (rmLevel > 2) {
+                return;
             }
+
+            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // of the model in sync, we first add the level with 1 measurement "by
+            // brute force", and then update the level's number of measurements to 2.
+
+            var rmFactor = {
+                idx: 0,
+                node: 0,
+                parent: 0,
+                repeatedMeasuresDimensionType: $scope.glimmpseConstants.repeatedMeasuresTypeNumeric,
+                numberOfMeasurements: 1,
+                spacingList: [
+                    {idx: 1, value: 1}
+                ]
+            };
+            $scope.studyDesign.repeatedMeasuresTree.push(rmFactor);
+
+            // add a covariance object
+            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation("", 2));
+
+            // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
+            var hypothesis = $scope.studyDesign.hypothesis[0];
+            if (hypothesis !== undefined && hypothesis.type == $scope.glimmpseConstants.hypothesisManova) {
+                hypothesis.type = $scope.glimmpseConstants.hypothesisInteraction;
+            }
+
+            rmFactor.numberOfMeasurements = 2;
+            $scope.updateNumberOfMeasurements(rmLevel);
         };
 
         /**
          * When the units are changed, update the corresponding
          * name in the covariance list
          *
-         * @param factor
          * @param rmLevel
          */
-        $scope.updateDimension = function(factor, rmLevel) {
-            $scope.studyDesign.covariance[rmLevel].name = factor.dimension;
+        $scope.updateDimension = function(rmLevel) {
+            $scope.studyDesign.covariance[rmLevel].name = $scope.studyDesign.repeatedMeasuresTree[rmLevel].dimension;
         };
 
         /**
          * Update spacingList of repeated measure
+         *
+         * @param rmLevel
          */
-        $scope.updateNumberOfMeasurements = function(factor, rmLevel) {
-            if (factor.spacingList === undefined) {
-                factor.spacingList = [];
+        $scope.updateNumberOfMeasurements = function(rmLevel) {
+            var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
+
+            if (rmFactor.spacingList === undefined) {
+                rmFactor.spacingList = [];
             }
-            if (factor.numberOfMeasurements > factor.spacingList.length) {
+            var oldN = rmFactor.spacingList.length;
+            var newN = rmFactor.numberOfMeasurements;
+            if (newN > oldN) {
                 // assumes that the max value is the last value
                 var startValue = 0;
-                if (factor.spacingList.length > 0) {
-                    startValue = factor.spacingList[factor.spacingList.length-1].value + 1;
+                if (oldN > 0) {
+                    startValue = rmFactor.spacingList[oldN-1].value + 1;
                 }
-                for(var i = factor.spacingList.length; i < factor.numberOfMeasurements; i++) {
-                    factor.spacingList.push({idx: factor.spacingList.length+1, value: startValue});
+                for(var i = oldN; i < newN; i++) {
+                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: startValue});
                     startValue++;
                 }
-            } else if (factor.numberOfMeasurements < factor.spacingList.length) {
-                factor.spacingList.splice(factor.numberOfMeasurements);
+            } else if (newN < oldN) {
+                rmFactor.spacingList.splice(newN);
 
                 // if this factor is included in the hypothesis, make sure the
                 // chosen trend is still valid
@@ -2179,46 +2189,64 @@ glimmpseApp.controller('stateController',
                 if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
                     for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
                         var map = hypothesis.repeatedMeasuresMapTree[rmi];
-                        if (map.repeatedMeasuresNode == factor) {
-                            map.type = $scope.studyDesign.getBestTrend(map.type, factor.numberOfMeasurements);
+                        if (map.repeatedMeasuresNode == rmFactor) {
+                            map.type = $scope.studyDesign.getBestTrend(map.type, newN);
                             break;
                         }
                     }
                 }
             }
 
-            // update the meta data
-            $scope.syncTotalResponses();
+            // update the beta matrix and number of responses
+            $scope.syncStudyDesign(rmLevel, oldN);
 
             /* resize the covariance associated with this factor
              * note, no need to do so if the user selected the LEAR correlation
              * structure, since we build the matrix server side for those
              */
             var covariance = $scope.studyDesign.covariance[rmLevel];
-            $scope.matrixUtils.resizeCovariance(covariance,
-                covariance.rows, factor.numberOfMeasurements, 0, 1);
+            $scope.matrixUtils.resizeCovariance(covariance, newN);
+        };
 
+        /**
+         * Update spacing of repeated measure
+         */
+        $scope.updateSpacing = function() {
+            // update the list of combinations of responses
+            $scope.metaData.updateResponseCombinations();
         };
 
         /**
          * Delete an existing level of repeated measures
          */
         $scope.removeLevel = function() {
-            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length-1;
+            var rmLevel = $scope.studyDesign.repeatedMeasuresTree.length - 1;
+            if (rmLevel < 0) {
+                return;
+            }
+
+            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // of the model in sync, we first update the level's number of measurements
+            // to 1, and then remove the level "by brute force".
+
+            var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
+
+            rmFactor.numberOfMeasurements = 1;
+            $scope.updateNumberOfMeasurements(rmLevel);
 
             // remove the covariance object corresponding to this level of repeated measures
             $scope.studyDesign.covariance.splice(rmLevel, 1);
 
             // remove the repeated measures level from the tree
-            var factor = $scope.studyDesign.repeatedMeasuresTree.pop();
-            // update the beta matrix and number of responses
-            $scope.syncTotalResponses();
+            $scope.studyDesign.repeatedMeasuresTree.pop();
+            $scope.metaData.updateResponseCombinations(); // TODO: sub-optimal; we have to do this twice in this path
+
             // if the factor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
             if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
                 for(var i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
                     var map = hypothesis.repeatedMeasuresMapTree[i];
-                    if (map.repeatedMeasuresNode == factor) {
+                    if (map.repeatedMeasuresNode == rmFactor) {
                         hypothesis.repeatedMeasuresMapTree.splice(i, 1);
                         break;
                     }
@@ -2231,31 +2259,24 @@ glimmpseApp.controller('stateController',
          * Remove all levels of repeated measures
          */
         $scope.removeRepeatedMeasures = function() {
-            var maxRmLevel = studyDesignService.repeatedMeasuresTree.length;
-            // remove the covariance objects related to the repeated measures
-            studyDesignService.covariance.splice(0, maxRmLevel);
-            // clear the tree
-            studyDesignService.repeatedMeasuresTree = [];
-            // clear any repeated measures from the hypothesis
-            var hypothesis = $scope.studyDesign.hypothesis[0];
-            if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
-                hypothesis.repeatedMeasuresMapTree = [];
-                hypothesis.type = $scope.studyDesign.getBestHypothesisType(hypothesis.type);
+            var i, n;
+            for (i = 0, n = $scope.studyDesign.repeatedMeasuresTree.length; i < n; ++ i) {
+                $scope.removeLevel();
             }
-            // update the beta matrix and number of responses
-            $scope.syncTotalResponses();
         };
 
         /**
          * Reset the spacing list to equal spacing
          *
-         * @param factor
+         * @param rmFactor
          */
-        $scope.resetToEqualSpacing = function(factor) {
-            if (factor.spacingList !== undefined) {
-                for(var i = 0; i < factor.spacingList.length; i++) {
-                    factor.spacingList[i].value = i;
+        $scope.resetToEqualSpacing = function(rmFactor) {
+            if (rmFactor.spacingList !== undefined) {
+                for(var i = 0; i < rmFactor.spacingList.length; i++) {
+                    rmFactor.spacingList[i].value = i + 1;
                 }
+                // update the list of combinations of responses
+                $scope.metaData.updateResponseCombinations();
             }
         };
 
@@ -2857,7 +2878,6 @@ glimmpseApp.controller('stateController',
                     }
                 }
             }
-
         };
 
         /**
@@ -2875,7 +2895,9 @@ glimmpseApp.controller('stateController',
                         $scope.columnLabelList.push(value);
                     }
                 } else {
-                    var rmFactor = $scope.studyDesign.repeatedMeasuresTree[0];
+                    var rmFactor = $scope.studyDesign.repeatedMeasuresTree[
+                                    $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
+                                   ];
                     for(var sidx = 0; sidx < rmFactor.spacingList.length; sidx++) {
                         var spacingEntry = rmFactor.spacingList[sidx].value;
                         $scope.rowLabelList.push($scope.currentCovariance.name + " " + spacingEntry);
@@ -2978,7 +3000,6 @@ glimmpseApp.controller('stateController',
                         $scope.currentCovariance.standardDeviationList[ii].value = 1;
                     }
                     break;
-
             }
         };
 
@@ -3549,11 +3570,8 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.betweenContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixBetweenContrast);
-            $scope.maxCRows = 1;
             var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
-            if (beta !== undefined) {
-                $scope.maxCRows = beta.rows;
-            }
+            $scope.maxCRows = beta.rows;
         }
 
         $scope.$watch('betweenContrastMatrix.rows', function(newValue, oldValue) {
@@ -3576,11 +3594,8 @@ glimmpseApp.controller('stateController',
             $scope.matrixUtils = matrixUtilities;
             $scope.withinContrastMatrix =
                 studyDesignService.getMatrixByName(glimmpseConstants.matrixWithinContrast);
-            $scope.maxUColumns = 1;
             var beta = studyDesignService.getMatrixByName(glimmpseConstants.matrixBeta);
-            if (beta !== undefined) {
-                $scope.maxUColumns = beta.columns;
-            }
+            $scope.maxUColumns = beta.columns;
         }
 
         $scope.$watch('withinContrastMatrix.columns', function(newValue, oldValue) {

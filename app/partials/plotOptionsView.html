@@ -20,6 +20,10 @@
 <p>
     To create a power curve, uncheck the box below.  Follow the prompts to define the curve.
 </p>
+<p>
+    WARNING: Changing any other part of the study design causes any information
+    entered here to be discarded.
+</p>
 <div class="well">
     <input id="noCurve" type="checkbox" ng-checked="studyDesign.powerCurveDescriptions == null"
            ng-click="togglePowerCurveDescription()">
@@ -52,5 +56,3 @@
     <div class="vmargin15">Grid options - columns: {{columnDefs}}</div>
     <div class="vmargin15">Grid options - selected: {{gridOptions.selected}}</div>
 </div>
-
-
