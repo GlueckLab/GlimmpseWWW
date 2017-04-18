@@ -84,7 +84,6 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     /** The between participant factor list. */
     studyDesignInstance.betweenParticipantFactorList = [];
 
-    // private Set<StudyDesignNamedMatrix> matrixSet = null;
     /** The repeated measures tree. */
     studyDesignInstance.repeatedMeasuresTree = [];
 
@@ -105,17 +104,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     studyDesignInstance.covariance = [];
 
     /** The matrix set. */
-    studyDesignInstance.matrixSet = [
-        {
-            idx:0,
-            name: glimmpseConstants.matrixThetaNull,
-            rows: 1,
-            columns: 1,
-            data: {
-                data:[[0]]
-            }
-        }
-    ];
+    studyDesignInstance.matrixSet = [];
 
     /*** Methods ***/
 
@@ -703,6 +692,16 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 columns: 0,
                 data: {
                     data: [[]]
+                }
+            });
+            // default null hypothesis (theta null) matrix
+            studyDesignInstance.matrixSet.push({
+                idx: 0,
+                name: glimmpseConstants.matrixThetaNull,
+                rows: 1,
+                columns: 1,
+                data: {
+                    data:[[0]]
                 }
             });
         }
