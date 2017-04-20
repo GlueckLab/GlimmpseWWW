@@ -1699,7 +1699,7 @@ glimmpseApp.controller('stateController',
                         );
                     }
                 } else {
-                    $scope.matrixUtils.adjustCovarianceMatrix(covariance, delta, i);
+                    $scope.matrixUtils.adjustVariability(covariance, delta, i);
                     if ($scope.studyDesign.gaussianCovariate) {
                         $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
                     }
@@ -1748,7 +1748,6 @@ glimmpseApp.controller('stateController',
 
         init();
         function init() {
-
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newPredictorName = undefined;
@@ -1802,7 +1801,6 @@ glimmpseApp.controller('stateController',
             }
             // reset the new sample size to null
             $scope.newPredictorName = undefined;
-
         };
 
         /**
@@ -2917,7 +2915,7 @@ glimmpseApp.controller('stateController',
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
             if ($scope.currentCovariance !== undefined &&
-                $scope.currentCovariance.type == glimmpseConstants.correlationTypeLear) {
+                $scope.currentCovariance.type == glimmpseConstants.variabilityTypeLearCorrelation) {
                 $scope.calculateLear();
             }
         }
@@ -2963,13 +2961,13 @@ glimmpseApp.controller('stateController',
          */
         $scope.updateType = function() {
             switch ($scope.currentCovariance.type) {
-                case glimmpseConstants.correlationTypeLear:
+                case glimmpseConstants.variabilityTypeLearCorrelation:
                     // set default LEAR params
                     $scope.currentCovariance.rho = 0;
                     $scope.currentCovariance.delta = 0;
                     $scope.calculateLear();
                     break;
-                case glimmpseConstants.correlationTypeUnstructured:
+                case glimmpseConstants.variabilityTypeUnstructuredCorrelation:
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
@@ -2991,7 +2989,7 @@ glimmpseApp.controller('stateController',
                         }
                     }
                     break;
-                case glimmpseConstants.covarianceTypeUnstructured:
+                case glimmpseConstants.variabilityTypeUnstructuredCovariance:
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
@@ -3016,11 +3014,11 @@ glimmpseApp.controller('stateController',
                 return true;
             }
             if ($scope.currentCovariance.type ==
-                glimmpseConstants.covarianceTypeUnstructured) {
+                glimmpseConstants.variabilityTypeUnstructuredCovariance) {
                 return (column > row);
 
             } else if ($scope.currentCovariance.type ==
-                glimmpseConstants.correlationTypeUnstructured) {
+                glimmpseConstants.variabilityTypeUnstructuredCorrelation) {
                 return (column >= row);
             }
             return true;
