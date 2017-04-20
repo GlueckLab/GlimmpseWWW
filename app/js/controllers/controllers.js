@@ -2927,7 +2927,7 @@ glimmpseApp.controller('stateController',
          */
         $scope.getName = function(covariance) {
             if (covariance.name == glimmpseConstants.covarianceResponses) {
-                return "responses";
+                return "Responses";
             }
             return covariance.name;
         };
