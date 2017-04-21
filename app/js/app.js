@@ -107,9 +107,12 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
 
         // special label for covariance of response variables
         covarianceResponses: "__RESPONSE_COVARIANCE__",
-        covarianceTypeUnstructured: "UNSTRUCTURED_COVARIANCE",
-        correlationTypeUnstructured: "UNSTRUCTURED_CORRELATION",
-        correlationTypeLear: "LEAR_CORRELATION",
+
+        // types of variability objects (still often called
+        // "covariance objects")
+        variabilityTypeUnstructuredCovariance: "UNSTRUCTURED_COVARIANCE",
+        variabilityTypeUnstructuredCorrelation: "UNSTRUCTURED_CORRELATION",
+        variabilityTypeLearCorrelation: "LEAR_CORRELATION",
 
         // plot axis names
         xAxisTotalSampleSize: "TOTAL_SAMPLE_SIZE",
