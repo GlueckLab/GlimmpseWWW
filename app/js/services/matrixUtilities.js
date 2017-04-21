@@ -427,7 +427,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     matrixUtilitiesInstance.resizeCovarianceStandardDeviationList = function(covariance, dimension) {
         if (covariance.standardDeviationList.length < dimension) {
             for(var i = covariance.standardDeviationList.length; i < dimension; i++) {
-                covariance.standardDeviationList.push({idx: 0});
+                covariance.standardDeviationList.push(matrixUtilitiesInstance.defaultStandardDeviation(covariance));
             }
         } else if (covariance.standardDeviationList.length > dimension) {
             covariance.standardDeviationList.splice(dimension,
@@ -482,7 +482,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         matrixUtilitiesInstance.adjustArray(
             variability.standardDeviationList,
             delta, locus,
-            function() { return {idx: 0}; }
+            function() { return matrixUtilitiesInstance.defaultStandardDeviation(variability); }
         );
     };
 
@@ -574,6 +574,29 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         return covariance;
+    };
+
+    /**
+     * Return the default standard deviation object that is appropriate
+     * for the type of variability object we have. Standard deviations
+     * are only displayed and editable for the Responses variability
+     * object, and only then when its type is unstructured correlation;
+     * so in that case we want new ones to have undefined values, to
+     * force the user to define them.
+     *
+     * <p>
+     * Is this a hack? You decide.
+     *
+     * @param variability The variability object.
+     */
+    matrixUtilitiesInstance.defaultStandardDeviation = function(variability) {
+        var name = variability.name;
+        var type = variability.type;
+
+        var responses = glimmpseConstants.covarianceResponses;
+        var unstrCorr = glimmpseConstants.variabilityTypeUnstructuredCorrelation;
+
+        return name === responses && type === unstrCorr ? {idx:0} : {idx:0, value:1};
     };
 
     return matrixUtilitiesInstance;
