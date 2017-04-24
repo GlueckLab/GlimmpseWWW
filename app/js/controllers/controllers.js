@@ -2975,7 +2975,7 @@ glimmpseApp.controller('stateController',
                                 $scope.currentCovariance.blob.data[r][c] = 1;
                             } else {
                                 var value = $scope.currentCovariance.blob.data[r][c];
-                                if (value < -1 || value > 1) {
+                                if (value <= -1 || value >= 1) {
                                     $scope.currentCovariance.blob.data[r][c] = 0;
                                 }
                             }
