@@ -1689,8 +1689,7 @@ glimmpseApp.controller('stateController',
                 // update the size of the existing covariance or create a fresh one
                 if (covariance === undefined) {
                     $scope.studyDesign.covariance.push(
-                        $scope.matrixUtils.createUnstructuredCorrelation(glimmpseConstants.covarianceResponses,
-                            $scope.studyDesign.responseList.length)
+                        $scope.matrixUtils.createUnstructuredCorrelation($scope.studyDesign.responseList.length)
                     );
                     if ($scope.studyDesign.gaussianCovariate) {
                         $scope.studyDesign.matrixSet.push(
@@ -2133,7 +2132,7 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign.repeatedMeasuresTree.push(rmFactor);
 
             // add a covariance object
-            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation("", 2));
+            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation());
 
             // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
             var hypothesis = $scope.studyDesign.hypothesis[0];
@@ -2813,10 +2812,10 @@ glimmpseApp.controller('stateController',
 
                 // maximum spacing between any of the measurements, assuming the list is in
                 // ascending order
-                $scope.maxDistance = Math.abs(rmFactor.spacingList[rmFactor.spacingList.length-1].value -
+                var maxDistance = Math.abs(rmFactor.spacingList[rmFactor.spacingList.length-1].value -
                     rmFactor.spacingList[0].value);
                 // find the smallest distance increment between any of the measurements
-                $scope.minDistance = $scope.maxDistance;
+                $scope.minDistance = maxDistance;
                 for(var i = 0, j = 1; j < rmFactor.spacingList.length; i++, j++ )
                 {
                     var difference = Math.abs(rmFactor.spacingList[j].value - rmFactor.spacingList[i].value);
@@ -2825,14 +2824,13 @@ glimmpseApp.controller('stateController',
                         $scope.minDistance = difference;
                     }
                 }
-                $scope.maxMinDiff = $scope.maxDistance - $scope.minDistance;
+                $scope.maxMinDiff = maxDistance - $scope.minDistance;
                 // when there are only 2 elements in the spacing list, the max = min distance between
                 // the elements.  thus we force to 1
                 if ($scope.maxMinDiff === 0) $scope.maxMinDiff = 1;
             } else {
                 $scope.maxMinDiff = undefined;
                 $scope.minDistance = undefined;
-                $scope.maxDistance = undefined;
             }
         };
 
@@ -2940,6 +2938,10 @@ glimmpseApp.controller('stateController',
             $scope.currentCovariance = covariance;
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
+            if ($scope.currentCovariance !== undefined &&
+                $scope.currentCovariance.type == glimmpseConstants.variabilityTypeLearCorrelation) {
+                $scope.calculateLear();
+            }
         };
 
         /**
@@ -2962,22 +2964,13 @@ glimmpseApp.controller('stateController',
         $scope.updateType = function() {
             switch ($scope.currentCovariance.type) {
                 case glimmpseConstants.variabilityTypeLearCorrelation:
-                    // set default LEAR params
-                    $scope.currentCovariance.rho = 0;
-                    $scope.currentCovariance.delta = 0;
+                    // calculate LEAR elements
                     $scope.calculateLear();
                     break;
                 case glimmpseConstants.variabilityTypeUnstructuredCorrelation:
-                    // clear LEAR parameters
-                    $scope.currentCovariance.rho = -2;
-                    $scope.currentCovariance.delta = -1;
-                    // reset standard deviations to 1
-                    for(var i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
-                        $scope.currentCovariance.standardDeviationList[i].value = 1;
-                    }
                     // reset diagonals to 1, off-diagonals to 0 if < -1 or > 1
                     for(var r = 0; r < $scope.currentCovariance.rows; r++) {
-                        for(var c = 0; c <= r; c++) {
+                        for(var c = 0; c < $scope.currentCovariance.columns; c++) {
                             if (c == r) {
                                 $scope.currentCovariance.blob.data[r][c] = 1;
                             } else {
@@ -2990,13 +2983,6 @@ glimmpseApp.controller('stateController',
                     }
                     break;
                 case glimmpseConstants.variabilityTypeUnstructuredCovariance:
-                    // clear LEAR parameters
-                    $scope.currentCovariance.rho = -2;
-                    $scope.currentCovariance.delta = -1;
-                    // reset standard deviations to 1
-                    for(var ii = 0; ii < $scope.currentCovariance.standardDeviationList.length; ii++) {
-                        $scope.currentCovariance.standardDeviationList[ii].value = 1;
-                    }
                     break;
             }
         };
