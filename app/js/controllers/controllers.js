@@ -1681,28 +1681,20 @@ glimmpseApp.controller('stateController',
                     // the last in the array.
                     $scope.studyDesign.covariance.pop();
                 }
-                // remove SigmaYg
-                if ($scope.studyDesign.gaussianCovariate) {
-                    $scope.studyDesign.removeMatrixByName(glimmpseConstants.matrixSigmaYG);
-                }
             } else {
                 // update the size of the existing covariance or create a fresh one
                 if (covariance === undefined) {
                     $scope.studyDesign.covariance.push(
                         $scope.matrixUtils.createUnstructuredCorrelation($scope.studyDesign.responseList.length)
                     );
-                    if ($scope.studyDesign.gaussianCovariate) {
-                        $scope.studyDesign.matrixSet.push(
-                            $scope.matrixUtils.createNamedFilledMatrix(glimmpseConstants.matrixSigmaYG,
-                                $scope.studyDesign.getNumberOfResponses(), 1, 0)
-                        );
-                    }
                 } else {
                     $scope.matrixUtils.adjustVariability(covariance, delta, i);
-                    if ($scope.studyDesign.gaussianCovariate) {
-                        $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
-                    }
                 }
+            }
+
+            // if the design has a covariate, update the sigmaYg matrix
+            if ($scope.studyDesign.gaussianCovariate) {
+                $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
             }
         };
 
