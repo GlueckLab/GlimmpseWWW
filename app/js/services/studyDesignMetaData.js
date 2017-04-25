@@ -47,6 +47,8 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
         };
         metaDataInstance.predictorCombinationList = [];
         metaDataInstance.responseCombinationList = [];
+        delete metaDataInstance.sharedCorrelation;
+        delete metaDataInstance.sharedMean;
     };
 
     /**
