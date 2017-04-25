@@ -35,107 +35,114 @@
 <div>
     <div class="well">
         <form novalidate>
-            <div class="pull-left">
-                <div ng-show="betaMatrix.rows > 1">
-                    <table class="table table-bordered table-condensed bgtransparent">
-                        <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree" >
-                            <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
-                                {{factor.dimension}}
-                            </th>
-                        </tr>
-                        <tr>
-                            <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
-                                Response
-                            </th>
-                        </tr>
-                        <tr>
-                            <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
-                                {{predictor.predictorName}}
-                            </th>
-                        </tr>
-                        <tr
-                            ng-repeat="row in betaMatrix.data.data  track by $id($index)">
-                            <th ng-repeat="entry in metaData.predictorCombinationList">
-                                {{entry[$parent.$index]}}
-                            </th>
-                        </tr>
-                    </table>
+            <div class="form-group">
+                <div class="pull-left">
+                    <div ng-show="betaMatrix.rows > 1">
+                        <table class="table table-bordered table-condensed bgtransparent">
+                            <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree" >
+                                <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
+                                    {{factor.dimension}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="{{studyDesign.betweenParticipantFactorList.length}}">
+                                    Response
+                                </th>
+                            </tr>
+                            <tr>
+                                <th ng-repeat="predictor in studyDesign.betweenParticipantFactorList">
+                                    {{predictor.predictorName}}
+                                </th>
+                            </tr>
+                            <tr
+                                ng-repeat="row in betaMatrix.data.data  track by $id($index)">
+                                <th ng-repeat="entry in metaData.predictorCombinationList">
+                                    {{entry[$parent.$index]}}
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-show="betaMatrix.rows == 1">
+                        <table class="table table-bordered table-condensed bgtransparent">
+                            <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
+                                <th>
+                                    {{factor.dimension}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Response
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Sample Mean
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div ng-show="betaMatrix.rows == 1">
-                    <table class="table table-bordered table-condensed bgtransparent">
-                        <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
-                            <th>
-                                {{factor.dimension}}
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Response
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>
-                                Sample Mean
-                            </th>
-                        </tr>
-                    </table>
+                <div class="xscroll">
+                    <div ng-show="betaMatrix.rows > 1">
+                        <table class="table table-bordered table-condensed means-table">
+                            <tr class="bgtransparent" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
+                                <th ng-repeat="entry in metaData.responseCombinationList[$index] track by $id($index)">
+                                    {{entry}}
+                                </th>
+                            </tr>
+                            <tr class="bgtransparent" >
+                                <th ng-repeat="entry in metaData.responseCombinationList[metaData.responseCombinationList.length-1] track by $id($index)">
+                                    {{entry}}
+                                </th>
+                            </tr>
+                            <tr class="bgtransparent" >
+                                <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <tr class="white-box" ng-repeat="row in betaMatrix.data.data  track by $id($index)">
+                                <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
+                                    <input type="number" class="matrix-cell"
+                                           ng-model="betaMatrix.data.data[$parent.$index][$index]"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div ng-show="betaMatrix.rows == 1">
+                        <table class="table table-bordered table-condensed white-box">
+                            <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
+                                <th ng-repeat="entry in metaData.responseCombinationList[$index] track by $id($index)">
+                                    {{entry}}
+                                </th>
+                            </tr>
+                            <tr>
+                                <th ng-repeat="entry in metaData.responseCombinationList[metaData.responseCombinationList.length-1] track by $id($index)">
+                                    {{entry}}
+                                </th>
+                            </tr>
+                            <tr ng-repeat="row in betaMatrix.data.data  track by $id($index)">
+                                <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
+                                    <input type="number" class="matrix-cell"
+                                           ng-model="betaMatrix.data.data[$parent.$index][$index]"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="xscroll">
-                <div ng-show="betaMatrix.rows > 1">
-                    <table class="table table-bordered table-condensed means-table">
-                        <tr class="bgtransparent" ng-repeat="factor in studyDesign.repeatedMeasuresTree">
-                            <th ng-repeat="entry in metaData.responseCombinationList[$index] track by $id($index)">
-                                {{entry}}
-                            </th>
-                        </tr>
-                        <tr class="bgtransparent" >
-                            <th ng-repeat="entry in metaData.responseCombinationList[metaData.responseCombinationList.length-1] track by $id($index)">
-                                {{entry}}
-                            </th>
-                        </tr>
-                        <tr class="bgtransparent" >
-                            <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
-                                &nbsp;
-                            </td>
-                        </tr>
-                        <tr class="white-box" ng-repeat="row in betaMatrix.data.data  track by $id($index)">
-                            <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
-                                <input type="number" class="matrix-cell"
-                                       ng-model="betaMatrix.data.data[$parent.$index][$index]"/>
-                            </td>
-                        </tr>
-                    </table>
-
-                </div>
-                <div ng-show="betaMatrix.rows == 1">
-                    <table class="table table-bordered table-condensed white-box">
-                        <tr ng-repeat="factor in studyDesign.repeatedMeasuresTree">
-                            <th ng-repeat="entry in metaData.responseCombinationList[$index] track by $id($index)">
-                                {{entry}}
-                            </th>
-                        </tr>
-                        <tr>
-                            <th ng-repeat="entry in metaData.responseCombinationList[metaData.responseCombinationList.length-1] track by $id($index)">
-                                {{entry}}
-                            </th>
-                        </tr>
-                        <tr ng-repeat="row in betaMatrix.data.data  track by $id($index)">
-                            <td ng-repeat="column in betaMatrix.data.data[0] track by $id($index)">
-                                <input type="number" class="matrix-cell"
-                                       ng-model="betaMatrix.data.data[$parent.$index][$index]"/>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
+            <div class="form-group">
+                <button class="btn btn-primary" ng-click="setSharedMean()">
+                    Set all means to the value below
+                </button>
+                <input class="form-control" type="number" ng-model="metaData.sharedMean">
             </div>
-
         </form>
-
     </div>
 
     <div ng-show="glimmpseConstants.debug == true">
+        <div class="vmargin15">
+            metaData.sharedMean: {{metaData.sharedMean}}
+        </div>
         <div class="vmargin15">
             betaMatrix: {{betaMatrix}}
         </div>

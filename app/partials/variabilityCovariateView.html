@@ -18,8 +18,8 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<h3>  Variability Due to the Covariate
-</h3>
+<h3>Variability Due to the Covariate</h3>
+
 <p>
     Describe the anticipated variability in the normally-distributed covariate.
     In addition, specify how strongly the covariate is correlated with
@@ -63,7 +63,6 @@
                     </tr>
                 </table>
             </div>
-
         </div>
         <div class="form-group">
             <button class="btn btn-primary" ng-click="setSharedCorrelationForAllOutcomes()">
@@ -71,19 +70,18 @@
             </button>
             <input class="form-control" name="sharedCorrelation" type="number"
                    ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
-                   data-ng-model="sharedCorrelation">
+                   data-ng-model="metaData.sharedCorrelation">
             <div class="alert alert-danger" class="form-control"
                  ng-show="covariateVariabilityForm.sharedCorrelation.$error.pattern">
                 Please enter a number between -1 and 1, exclusive
             </div>
         </div>
     </form>
-
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-        sharedCorrelation: {{sharedCorrelation}}
+        metaData.sharedCorrelation: {{metaData.sharedCorrelation}}
     </div>
     <div class="vmargin15">
         sigmaG: {{sigmaG}}
@@ -95,20 +93,3 @@
         metaData.responseCombinationList: {{metaData.responseCombinationList}}
     </div>
 </div>
-
-
-
-
-</div>
-
-
-
-    <div><input type="checkbox"
-                ng-model="hasSameCorrelation"
-                ng-true-value="YES" ng-false-value="NO"
-                ng-change="SameCorrelationForOutcomes()">
-        Use the same correlation for all outcomes
-        </input>
-    </div>
-</div>
-

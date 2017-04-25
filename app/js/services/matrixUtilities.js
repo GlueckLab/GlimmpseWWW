@@ -499,17 +499,18 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
-     * Create an unstructured correlation object
-     * @param name
+     * Create an "unstructured correlation" Responses variability object.
+     *
      * @param dimension
-     * @returns covariance
+     *
+     * @returns The variability object.
      */
-    matrixUtilitiesInstance.createUnstructuredCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type unstructured correlation
-        var covariance = {
+    matrixUtilitiesInstance.createUnstructuredCorrelation = function(dimension) {
+        // create an empty variability object, with type unstructured correlation
+        var variability = {
             idx: 0,
             type: glimmpseConstants.variabilityTypeUnstructuredCorrelation,
-            name: name,
+            name: glimmpseConstants.covarianceResponses,
             standardDeviationList:[],
             rho:-2,
             delta:-1,
@@ -522,7 +523,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         // fill in the standard deviation list
         for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1});
+            variability.standardDeviationList.push({idx: 0});
         }
 
         // fill in the data
@@ -531,49 +532,48 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             for(var c = 0; c < dimension; c++) {
                 colData.push(r == c ? 1 : 0);
             }
-            covariance.blob.data.push(colData);
+            variability.blob.data.push(colData);
         }
 
-        return covariance;
+        return variability;
     };
 
     /**
-     * Create a LEAR correlation object
-     * @param name
-     * @param dimension
-     * @returns covariance
+     * Create a 2x2 "LEAR correlation" variability object with no name.
+     *
+     * @returns The variability object.
      */
-    matrixUtilitiesInstance.createLEARCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type LEAR correlation
-        var covariance = {
+    matrixUtilitiesInstance.createLEARCorrelation = function() {
+        // create an empty variability object, with type LEAR correlation
+        var variability = {
             idx: 0,
             type: glimmpseConstants.variabilityTypeLearCorrelation,
-            name: name,
+            name: "",
             standardDeviationList:[],
             rho:0.1,
             delta:0,
-            rows: dimension,
-            columns: dimension,
+            rows: 2,
+            columns: 2,
             blob: {
                 data:[]
             }
         };
 
         // fill in the standard deviation list
-        for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1});
+        for(var i = 0; i < 2; i++) {
+            variability.standardDeviationList.push({idx: 0, value: 1});
         }
 
         // fill in the data
-        for(var r = 0; r < dimension; r++) {
+        for(var r = 0; r < 2; r++) {
             var colData = [];
-            for(var c = 0; c < dimension; c++) {
+            for(var c = 0; c < 2; c++) {
                 colData.push(r == c ? 1 : 0.1);
             }
-            covariance.blob.data.push(colData);
+            variability.blob.data.push(colData);
         }
 
-        return covariance;
+        return variability;
     };
 
     /**
