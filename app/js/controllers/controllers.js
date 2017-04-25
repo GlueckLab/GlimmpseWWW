@@ -1886,7 +1886,6 @@ glimmpseApp.controller('stateController',
  * Controller managing the covariates
  */
     .controller('covariatesController', function($scope, matrixUtilities, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1898,7 +1897,6 @@ glimmpseApp.controller('stateController',
          * Toggle
          */
         $scope.updateMatrixSet = function() {
-
             if ($scope.studyDesign.gaussianCovariate) {
                 var beta = $scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixBeta);
 
@@ -2285,13 +2283,26 @@ glimmpseApp.controller('stateController',
  */
     .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService,
                                                 studyDesignMetaData) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.betaMatrix = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
         }
+
+        /**
+         * Set same mean for all values
+         */
+        $scope.setSharedMean = function() {
+            var r, rMax = $scope.betaMatrix.rows;
+            var c, cMax = $scope.betaMatrix.columns;
+
+            for (r = 0; r < rMax; ++ r) {
+                for (c = 0; c < cMax; ++ c) {
+                    $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean;
+                }
+            }
+        };
     })
 
 /**
@@ -3023,21 +3034,18 @@ glimmpseApp.controller('stateController',
             $scope.metaData = studyDesignMetaData;
             $scope.sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
             $scope.sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-            $scope.sharedCorrelation = 0;
         }
 
         /**
          * Set same correlation for all values
-         *
          */
         $scope.setSharedCorrelationForAllOutcomes = function() {
             if ($scope.sigmaYG !== undefined) {
                 for(var r = 0; r < $scope.sigmaYG.rows; r++) {
-                    $scope.sigmaYG.data.data[r][0] = $scope.sharedCorrelation;
+                    $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation;
                 }
             }
         };
-
     })
 
 /**
