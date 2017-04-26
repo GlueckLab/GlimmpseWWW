@@ -138,7 +138,6 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         return true;
-
     };
 
     /**
@@ -578,11 +577,12 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
     /**
      * Return the default standard deviation object that is appropriate
-     * for the type of variability object we have. Standard deviations
+     * for the kind of variability object we have. Standard deviations
      * are only displayed and editable for the Responses variability
      * object, and only then when its type is unstructured correlation;
      * so in that case we want new ones to have undefined values, to
-     * force the user to define them.
+     * force the user to define them. In the other cases, we hard-code
+     * a value of 1.
      *
      * <p>
      * Is this a hack? You decide.
