@@ -2965,13 +2965,35 @@ glimmpseApp.controller('stateController',
          * and LEAR specifications
          */
         $scope.updateType = function() {
+            var i;
+
             switch ($scope.currentCovariance.type) {
                 case glimmpseConstants.variabilityTypeLearCorrelation:
+                    // set default LEAR params
+                    $scope.currentCovariance.rho = 0;
+                    $scope.currentCovariance.delta = 0;
+
+                    // reset standard deviations to 1
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+
                     // calculate LEAR elements
                     $scope.calculateLear();
+
                     break;
+
                 case glimmpseConstants.variabilityTypeUnstructuredCorrelation:
-                    // reset diagonals to 1, off-diagonals to 0 if < -1 or > 1
+                    // clear LEAR parameters
+                    $scope.currentCovariance.rho = -2;
+                    $scope.currentCovariance.delta = -1;
+
+                    // reset standard deviations to 1
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+
+                    // reset diagonals to 1, off-diagonals to 0 if <= -1 or >= 1
                     for(var r = 0; r < $scope.currentCovariance.rows; r++) {
                         for(var c = 0; c < $scope.currentCovariance.columns; c++) {
                             if (c == r) {
@@ -2984,8 +3006,19 @@ glimmpseApp.controller('stateController',
                             }
                         }
                     }
+
                     break;
+
                 case glimmpseConstants.variabilityTypeUnstructuredCovariance:
+                    // clear LEAR parameters
+                    $scope.currentCovariance.rho = -2;
+                    $scope.currentCovariance.delta = -1;
+
+                    // reset standard deviations to 1
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+
                     break;
             }
         };
