@@ -1643,18 +1643,17 @@ glimmpseApp.controller('stateController',
     })
 
 /**
- * Controller managing the response variables list
+ * Controller managing the responses
  */
-    .controller('responseController', function($scope, glimmpseConstants, matrixUtilities,
-                                               studyDesignService, studyDesignMetaData) {
-
+    .controller('responsesController', function($scope, glimmpseConstants, matrixUtilities,
+                                                studyDesignService, studyDesignMetaData) {
         init();
         function init() {
-            $scope.studyDesign = studyDesignService;
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.matrixUtils = matrixUtilities;
+            $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newResponse = '';
-            $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**

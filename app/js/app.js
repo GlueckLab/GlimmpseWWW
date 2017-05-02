@@ -156,7 +156,7 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
             {templateUrl: 'partials/groupSizesView.html', controller: 'groupSizesController' }
         )
             .when('/responseVariables',
-            {templateUrl: 'partials/responseVariablesView.html', controller: 'responseController' }
+            {templateUrl: 'partials/responseVariablesView.html', controller: 'responsesController' }
         )
             .when('/repeatedMeasures',
             {templateUrl: 'partials/repeatedMeasuresView.html', controller: 'repeatedMeasuresController' }
