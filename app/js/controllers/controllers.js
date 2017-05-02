@@ -1335,7 +1335,7 @@ glimmpseApp.controller('stateController',
                     value: +newPower
                 });
             }
-            // reset the new power to null
+            // reset the new nominal power value to null
             $scope.newNominalPower = undefined;
         };
 
@@ -1394,7 +1394,7 @@ glimmpseApp.controller('stateController',
                     alphaValue: +newAlpha
                 });
             }
-            // reset the new power to null
+            // reset the new type I error rate to null
             $scope.newTypeIErrorRate = undefined;
         };
 
@@ -1432,7 +1432,7 @@ glimmpseApp.controller('stateController',
                     value: +newScale
                 });
             }
-            // reset the new factor to null
+            // reset the new scale factor to null
             $scope.newScaleFactorForVariance = undefined;
         };
 
@@ -1491,7 +1491,7 @@ glimmpseApp.controller('stateController',
                     value: +newScale
                 });
             }
-            // reset the new factor to null
+            // reset the new scale factor to null
             $scope.newScaleFactorForMeans = undefined;
         };
 
@@ -1711,7 +1711,7 @@ glimmpseApp.controller('stateController',
                     name: newOutcome
                 });
             }
-            // reset the new response to null
+            // reset the new response variable to null
             $scope.newResponse = '';
 
             // update the study design
@@ -2055,11 +2055,10 @@ glimmpseApp.controller('stateController',
     })
 
 /**
- * Controller managing repeated measures
+ * Controller managing the repeated measures
  */
     .controller('repeatedMeasuresController', function($scope, glimmpseConstants, matrixUtilities,
                                                        studyDesignService, studyDesignMetaData) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -2079,7 +2078,7 @@ glimmpseApp.controller('stateController',
          * function ensures that the beta matrix and sigmaYg matrices are still
          * in sync with the responses list.
          *
-         * @param i    Index of repeated measure whose number of measuresments
+         * @param i    Index of repeated measure whose number of measurements
          *             has changed.
          * @param oldN Its previous number of measurements.
          */
@@ -2266,9 +2265,7 @@ glimmpseApp.controller('stateController',
                 $scope.metaData.updateResponseCombinations();
             }
         };
-
     })
-
 
 /**
  * Controller managing the means view (i.e. beta matrix)
@@ -2784,7 +2781,7 @@ glimmpseApp.controller('stateController',
                     value: +newQuantile
                 });
             }
-            // reset the new response to null
+            // reset the new quantile to null
             $scope.newQuantile = undefined;
         };
 
