@@ -52,35 +52,10 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
     };
 
     /**
-     * Return the number of predictor combinations
-     */
-    metaDataInstance.getNumberOfPredictorCombinations = function() {
-        if (metaDataInstance.predictorCombinationList.length > 0) {
-            return metaDataInstance.predictorCombinationList[0].length;
-        } else {
-            return 1;
-        }
-    };
-
-    /**
-     * Return the number of predictor combinations
-     */
-    metaDataInstance.getNumberOfResponseCombinations = function() {
-        if (metaDataInstance.responseCombinationList.length > 0) {
-            return metaDataInstance.responseCombinationList[0].length;
-        } else {
-            return 0;
-        }
-    };
-
-    /**
      * Rebuild the combination table for the predictors
      * (used by the relative group size and means screen)
      */
     metaDataInstance.updatePredictorCombinations = function() {
-        // clear the list
-        metaDataInstance.predictorCombinationList = [];
-
         /* calculate the total number of combinations */
         var totalCombinations = 1;
         for (var l = 0; l < studyDesignService.betweenParticipantFactorList.length; l++) {
@@ -93,6 +68,9 @@ glimmpseApp.factory('studyDesignMetaData', function(glimmpseConstants, studyDesi
                 return;
             }
         }
+
+        // clear the list
+        metaDataInstance.predictorCombinationList = [];
 
         var column;
         var j, jMax;

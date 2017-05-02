@@ -1727,23 +1727,22 @@ glimmpseApp.controller('stateController',
             // update the study design
             $scope.syncStudyDesign(i, -1);
         };
-
     })
 
 /**
  * Controller managing the predictors
  */
-    .controller('predictorsController', function($scope, glimmpseConstants, studyDesignService,
-                                                 studyDesignMetaData) {
-
+    .controller('predictorsController', function($scope, glimmpseConstants, matrixUtilities,
+                                                 studyDesignService, studyDesignMetaData) {
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
+            $scope.matrixUtils = matrixUtilities;
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newPredictorName = undefined;
             $scope.newCategoryName = undefined;
             $scope.currentPredictor = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**
@@ -1755,22 +1754,25 @@ glimmpseApp.controller('stateController',
 
         /**
          * Updates the dimensions of the beta matrix and relative group
-         * size list when a predictor or category is added/deleted.
+         * size list when a category is added or deleted.
+         *
+         * @param predictorIndex Index of predictor.
+         * @param categoryIndex  Index of category.
+         * @param delta          +1 if it was added, -1 if it was removed.
          */
-        $scope.syncStudyDesign = function() {
+        $scope.syncStudyDesign = function(predictorIndex, categoryIndex, delta) {
             // update the list of combinations of predictors
             $scope.metaData.updatePredictorCombinations();
-            var numCombos = $scope.metaData.getNumberOfPredictorCombinations();
+
             // update the beta matrix
-            $scope.studyDesign.resizeBeta(numCombos,
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
+            $scope.studyDesign.adjustBetaOnCategoryChange(predictorIndex, categoryIndex, delta);
+
             // update the relative group size list
-            $scope.studyDesign.resizeRelativeGroupSizeList(numCombos);
+            $scope.studyDesign.adjustRelativeGroupSizeListOnCategoryChange(predictorIndex, categoryIndex, delta);
         };
 
         /**
-         * Add a new predictor name
+         * Add a new predictor
          */
         $scope.addPredictor = function () {
             var newPredictor = $scope.newPredictorName;
@@ -1785,27 +1787,24 @@ glimmpseApp.controller('stateController',
 
                 // set the newly added predictor as active and show its categories
                 $scope.currentPredictor = newPredictorObject;
-
-                // sync the study design
-                $scope.syncStudyDesign();
             }
-            // reset the new sample size to null
+            // reset the new predictor to null
             $scope.newPredictorName = undefined;
         };
 
         /**
-         * Delete an existing predictor name
+         * Delete an existing predictor
          */
         $scope.deletePredictor = function(factor) {
+            $scope.updateCategoryList(factor, 0, -factor.categoryList.length);
+
             if (factor == $scope.currentPredictor) {
                 $scope.currentPredictor = undefined;
             }
             // remove the predictor
             studyDesignService.betweenParticipantFactorList.splice(
                 studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
-
-            // sync the study design
-            $scope.syncStudyDesign();
+            $scope.metaData.updatePredictorCombinations(); // TODO: sub-optimal; we have to do this twice in this path
 
             // if the predictor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
@@ -1830,46 +1829,53 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Add a new category name
+         * Update category list of predictor
+         *
+         * @param predictor
+         * @param categoryIndex
+         * @param delta
          */
-        $scope.addCategory = function () {
-            var newCategory = $scope.newCategoryName;
-            if ($scope.currentPredictor !== undefined &&
-                newCategory !== undefined) {
-                // add the category to the list
-                $scope.currentPredictor.categoryList.push({
-                    idx: 0,
-                    category: newCategory
-                });
-
-                // sync the study design
-                $scope.syncStudyDesign();
+        $scope.updateCategoryList = function(predictor, categoryIndex, delta) {
+            if (delta === 0) {
+                return;
             }
-            // reset the new sample size to null
-            $scope.newCategoryName = undefined;
-        };
 
-        /**
-         * Delete an existing category name
-         */
-        $scope.deleteCategory = function(category) {
-            $scope.currentPredictor.categoryList.splice(
-                $scope.currentPredictor.categoryList.indexOf(category), 1);
+            var predictorIndex = $scope.studyDesign.betweenParticipantFactorList.indexOf(predictor);
 
-            // sync the study design
-            $scope.syncStudyDesign();
+            if (predictor.categoryList === undefined) {
+                predictor.categoryList = [];
+            }
 
-            // if the predictor appears in the hypothesis, make sure the selected trend
-            // is still valid
-            var hypothesis = $scope.studyDesign.hypothesis[0];
-            if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
-                for(var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
-                    var map = hypothesis.betweenParticipantFactorMapList[i];
-                    if (map.betweenParticipantFactor == $scope.currentPredictor) {
-                        map.type = $scope.studyDesign.getBestTrend(map.type, $scope.currentPredictor.categoryList.length);
+            $scope.matrixUtils.adjustArray(
+                predictor.categoryList, delta, categoryIndex,
+                function(i) {
+                    var c = $scope.newCategoryName;
+                    for (var j = 0; j < i; ++ j) {
+                        c += "'";
+                    }
+                    return {idx: 0, category: c};
+                }
+            );
+
+            if (delta > 0) {
+                $scope.newCategoryName = undefined;
+            } else {
+                // if this factor is included in the hypothesis, make sure the
+                // chosen trend is still valid
+                var hypothesis = $scope.studyDesign.hypothesis[0];
+                if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
+                    for (var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
+                        var map = hypothesis.betweenParticipantFactorMapList[i];
+                        if (map.betweenParticipantFactor == predictor) {
+                            map.type = $scope.studyDesign.getBestTrend(map.type, predictor.categoryList.length);
+                            break;
+                        }
                     }
                 }
             }
+
+            // update the beta matrix and relative group size list
+            $scope.syncStudyDesign(predictorIndex, categoryIndex, delta);
         };
     })
 
@@ -2189,11 +2195,9 @@ glimmpseApp.controller('stateController',
             // update the beta matrix and number of responses
             $scope.syncStudyDesign(rmLevel, oldN);
 
-            /* resize the covariance associated with this factor
-             * note, no need to do so if the user selected the LEAR correlation
-             * structure, since we build the matrix server side for those
-             */
+            // resize the covariance associated with this factor
             var covariance = $scope.studyDesign.covariance[rmLevel];
+            // TODO: use adjustVariability instead
             $scope.matrixUtils.resizeCovariance(covariance, newN);
         };
 
