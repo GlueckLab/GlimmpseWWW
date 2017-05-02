@@ -2104,7 +2104,7 @@ glimmpseApp.controller('stateController',
                 return;
             }
 
-            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // To exploit the ability of updateSpacingList to keep the rest
             // of the model in sync, we first add the level with 1 measurement "by
             // brute force", and then update the level's number of measurements to 2.
 
@@ -2130,7 +2130,7 @@ glimmpseApp.controller('stateController',
             }
 
             rmFactor.numberOfMeasurements = 2;
-            $scope.updateNumberOfMeasurements(rmLevel);
+            $scope.updateSpacingList(rmLevel);
         };
 
         /**
@@ -2144,37 +2144,41 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Update spacingList of repeated measure
+         * Update spacing list of repeated measure
          *
          * @param rmLevel
          */
-        $scope.updateNumberOfMeasurements = function(rmLevel) {
+        $scope.updateSpacingList = function(rmLevel) {
             var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
 
             if (rmFactor.spacingList === undefined) {
                 rmFactor.spacingList = [];
             }
+
             var oldN = rmFactor.spacingList.length;
             var newN = rmFactor.numberOfMeasurements;
+
+            if (oldN === newN) {
+                return;
+            }
+
+            var i;
+
             if (newN > oldN) {
-                // assumes that the max value is the last value
-                var startValue = 0;
-                if (oldN > 0) {
-                    startValue = rmFactor.spacingList[oldN-1].value + 1;
+                var pp = oldN > 0 ? rmFactor.spacingList[oldN-1].value + 1 : 1;
+                for (i = oldN; i < newN; i++) {
+                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: pp});
+                    pp++;
                 }
-                for(var i = oldN; i < newN; i++) {
-                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: startValue});
-                    startValue++;
-                }
-            } else if (newN < oldN) {
+            } else {
                 rmFactor.spacingList.splice(newN);
 
                 // if this factor is included in the hypothesis, make sure the
                 // chosen trend is still valid
                 var hypothesis = $scope.studyDesign.hypothesis[0];
                 if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
-                    for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
-                        var map = hypothesis.repeatedMeasuresMapTree[rmi];
+                    for (i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
+                        var map = hypothesis.repeatedMeasuresMapTree[i];
                         if (map.repeatedMeasuresNode == rmFactor) {
                             map.type = $scope.studyDesign.getBestTrend(map.type, newN);
                             break;
@@ -2211,14 +2215,14 @@ glimmpseApp.controller('stateController',
                 return;
             }
 
-            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // To exploit the ability of updateSpacingList to keep the rest
             // of the model in sync, we first update the level's number of measurements
             // to 1, and then remove the level "by brute force".
 
             var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
 
             rmFactor.numberOfMeasurements = 1;
-            $scope.updateNumberOfMeasurements(rmLevel);
+            $scope.updateSpacingList(rmLevel);
 
             // remove the covariance object corresponding to this level of repeated measures
             $scope.studyDesign.covariance.splice(rmLevel, 1);
