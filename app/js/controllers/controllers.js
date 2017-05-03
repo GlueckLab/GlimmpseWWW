@@ -2196,8 +2196,8 @@ glimmpseApp.controller('stateController',
             $scope.syncStudyDesign(rmLevel, oldN);
 
             // resize the covariance associated with this factor
+            // TODO: use adjustVariability instead, and move this call into syncStudyDesign
             var covariance = $scope.studyDesign.covariance[rmLevel];
-            // TODO: use adjustVariability instead
             $scope.matrixUtils.resizeCovariance(covariance, newN);
         };
 
