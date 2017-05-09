@@ -157,31 +157,69 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Get the state of the group sizes view. When the user
-         * is solving for sample size, the view is disabled
-         * when no predictors are specified; it is blocked when
-         * the predictor specification is not complete;
-         * otherwise it is complete. When the user is solving
-         * for power, the view is complete when at least one
-         * group size is specified; otherwise it is incomplete.
+         * Get the state of the group sizes view, as a function
+         * of the states of the smallest group sizes (sub)view
+         * and the relative group sizes (sub)view.
          *
-         * @returns blocked, complete, disabled, or incomplete
+         * <p>
+         * If both are disabled, it is disabled; otherwise, if
+         * either is blocked, it is blocked; otherwise, if
+         * either is incomplete, it is incomplete; otherwise,
+         * it is complete.
+         *
+         * <p>
+         * The state of the smallest group sizes (sub)view is
+         * determined in the same way as the state of the
+         * smallest group size view is determined (see the
+         * getStateSmallestGroupSize function).
+         *
+         * <p>
+         * The state of the relative group sizes (sub)view is
+         * determined as follows: if no predictors are
+         * specified, it is disabled; otherwise, if the
+         * predictor specification is not complete, it is
+         * blocked; otherwise, if any relative group sizes are
+         * undefined, it is incomplete; otherwise, it is
+         * complete.
+         *
+         * @returns complete, incomplete, disabled, or blocked
          */
         $scope.getStateGroupSizes = function() {
-            var result =
-                $scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize ?
-                (
-                    $scope.studyDesign.betweenParticipantFactorList.length <= 0 ?
-                        $scope.glimmpseConstants.stateDisabled
-                  : $scope.state.predictors == $scope.glimmpseConstants.stateComplete ?
-                        $scope.glimmpseConstants.stateComplete
+            var sd = $scope.studyDesign;
+            var gc = $scope.glimmpseConstants;
+
+            var gotAllRelativeGroupSizes = function() {
+                var rgsl = sd.relativeGroupSizeList;
+                return rgsl !== undefined && rgsl.every(function(rgs) { return rgs.value !== undefined; });
+            };
+
+            var getStateRelativeGroupSizes = function() {
+                var result =
+                    sd.betweenParticipantFactorList.length <= 0 ?
+                        gc.stateDisabled
+                  : $scope.state.predictors !== gc.stateComplete ?
+                        gc.stateBlocked
+                  : ! gotAllRelativeGroupSizes() ?
+                        gc.stateIncomplete
                   : /*true*/
-                        $scope.glimmpseConstants.stateBlocked
-                )
-              : $scope.studyDesign.sampleSizeList.length > 0 ?
-                    $scope.glimmpseConstants.stateComplete
+                        gc.stateComplete;
+
+                return result;
+            };
+
+            var stateSmallestGroupSizes = $scope.getStateSmallestGroupSize();
+            var stateRelativeGroupSizes = getStateRelativeGroupSizes();
+
+            var result =
+                stateSmallestGroupSizes === gc.stateDisabled && stateRelativeGroupSizes === gc.stateDisabled ?
+                    gc.stateDisabled
+              : stateSmallestGroupSizes === gc.stateBlocked || stateRelativeGroupSizes === gc.stateBlocked ?
+                    gc.stateBlocked
+              : stateSmallestGroupSizes === gc.stateIncomplete || stateRelativeGroupSizes === gc.stateIncomplete ?
+                    gc.stateIncomplete
               : /*true*/
-                    $scope.glimmpseConstants.stateIncomplete;
+                    gc.stateComplete;
+
             return result;
         };
 
