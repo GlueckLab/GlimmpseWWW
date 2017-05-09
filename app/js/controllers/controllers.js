@@ -3063,10 +3063,12 @@ glimmpseApp.controller('stateController',
         /**
          * Set same correlation for all values
          */
-        $scope.setSharedCorrelationForAllOutcomes = function() {
+        $scope.setSharedCorrelation = function() {
             if ($scope.sigmaYG !== undefined) {
                 for(var r = 0; r < $scope.sigmaYG.rows; r++) {
-                    $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation;
+                    if ($scope.sigmaYG.data.data[r][0] === undefined) {
+                        $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation;
+                    }
                 }
             }
         };
