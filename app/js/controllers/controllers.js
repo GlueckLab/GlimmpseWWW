@@ -1671,6 +1671,23 @@ glimmpseApp.controller('stateController',
             studyDesignService.sampleSizeList.splice(
                 studyDesignService.sampleSizeList.indexOf(samplesize), 1);
         };
+
+        /**
+         * Set same relative group size for all undefined values
+         */
+        $scope.setSharedRelativeGroupSize = function() {
+            var rgsl = studyDesignService.relativeGroupSizeList;
+
+            if (rgsl !== undefined) {
+                var i, iMax = rgsl.length;
+
+                for (i = 0; i < iMax; ++ i) {
+                    if (rgsl[i].value === undefined) {
+                        rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize;
+                    }
+                }
+            }
+        };
     })
 
 /**
