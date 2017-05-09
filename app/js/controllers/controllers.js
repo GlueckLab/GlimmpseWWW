@@ -1346,7 +1346,6 @@ glimmpseApp.controller('stateController',
             $scope.editedNominalPower = power;
         };
 
-
         /**
          * Called when editing is complete
          * @param power
@@ -1443,7 +1442,6 @@ glimmpseApp.controller('stateController',
             $scope.editedScaleFactorForVariance = factor;
         };
 
-
         /**
          * Called when editing is complete
          * @param factor
@@ -1502,7 +1500,6 @@ glimmpseApp.controller('stateController',
             $scope.editedScaleFactorForMeans = factor;
         };
 
-
         /**
          * Called when editing is complete
          * @param factor
@@ -1529,13 +1526,12 @@ glimmpseApp.controller('stateController',
  * Controller managing the smallest group size list
  */
     .controller('sampleSizeController', function($scope, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.newSampleSize = undefined;
             $scope.editedSampleSize = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new sample size
@@ -1559,7 +1555,6 @@ glimmpseApp.controller('stateController',
         $scope.editSampleSize = function(samplesize) {
             $scope.editedSampleSize = samplesize;
         };
-
 
         /**
          * Called when editing is complete
@@ -1587,14 +1582,13 @@ glimmpseApp.controller('stateController',
  * Controller managing the group sizes view
  */
     .controller('groupSizesController', function($scope, glimmpseConstants, studyDesignService, studyDesignMetaData) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newSampleSize = undefined;
             $scope.editedSampleSize = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new sample size
@@ -1618,7 +1612,6 @@ glimmpseApp.controller('stateController',
         $scope.editSampleSize = function(samplesize) {
             $scope.editedSampleSize = samplesize;
         };
-
 
         /**
          * Called when editing is complete
@@ -2287,7 +2280,7 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * Set same mean for all values
+         * Set same mean for all undefined values
          */
         $scope.setSharedMean = function() {
             var r, rMax = $scope.betaMatrix.rows;
@@ -2295,7 +2288,9 @@ glimmpseApp.controller('stateController',
 
             for (r = 0; r < rMax; ++ r) {
                 for (c = 0; c < cMax; ++ c) {
-                    $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean;
+                    if ($scope.betaMatrix.data.data[r][c] === undefined) {
+                        $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean;
+                    }
                 }
             }
         };
