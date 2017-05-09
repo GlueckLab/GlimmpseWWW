@@ -1077,7 +1077,7 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
         var locus = N * stride + (categoryIndex - oldN) * sw0;
 
         var rgs = function() {
-            return {idx:0, value:1};
+            return {idx:0};
         };
 
         for (var k = 0; k < N; ++ k) {
