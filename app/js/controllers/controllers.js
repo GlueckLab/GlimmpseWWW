@@ -1673,18 +1673,34 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Set same relative group size for all undefined values
+         * Set same relative group size for all undefined or null values
          */
-        $scope.setSharedRelativeGroupSize = function() {
+        $scope.setSharedRelativeGroupSize_Blank = function() {
             var rgsl = studyDesignService.relativeGroupSizeList;
 
             if (rgsl !== undefined) {
                 var i, iMax = rgsl.length;
 
                 for (i = 0; i < iMax; ++ i) {
-                    if (rgsl[i].value === undefined) {
-                        rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize;
+                    /*jshint eqnull: true*/
+                    if (rgsl[i].value == null) {
+                        rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize_Blank;
                     }
+                }
+            }
+        };
+
+        /**
+         * Set same relative group size for all values
+         */
+        $scope.setSharedRelativeGroupSize_All = function() {
+            var rgsl = studyDesignService.relativeGroupSizeList;
+
+            if (rgsl !== undefined) {
+                var i, iMax = rgsl.length;
+
+                for (i = 0; i < iMax; ++ i) {
+                    rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize_All;
                 }
             }
         };
@@ -2335,17 +2351,32 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * Set same mean for all undefined values
+         * Set same mean for all undefined or null values
          */
-        $scope.setSharedMean = function() {
+        $scope.setSharedMean_Blank = function() {
             var r, rMax = $scope.betaMatrix.rows;
             var c, cMax = $scope.betaMatrix.columns;
 
             for (r = 0; r < rMax; ++ r) {
                 for (c = 0; c < cMax; ++ c) {
-                    if ($scope.betaMatrix.data.data[r][c] === undefined) {
-                        $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean;
+                    /*jshint eqnull: true*/
+                    if ($scope.betaMatrix.data.data[r][c] == null) {
+                        $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean_Blank;
                     }
+                }
+            }
+        };
+
+        /**
+         * Set same mean for all values
+         */
+        $scope.setSharedMean_All = function() {
+            var r, rMax = $scope.betaMatrix.rows;
+            var c, cMax = $scope.betaMatrix.columns;
+
+            for (r = 0; r < rMax; ++ r) {
+                for (c = 0; c < cMax; ++ c) {
+                    $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean_All;
                 }
             }
         };
@@ -3116,14 +3147,26 @@ glimmpseApp.controller('stateController',
         }
 
         /**
-         * Set same correlation for all values
+         * Set same correlation for all undefined or null values
          */
-        $scope.setSharedCorrelation = function() {
+        $scope.setSharedCorrelation_Blank = function() {
             if ($scope.sigmaYG !== undefined) {
                 for(var r = 0; r < $scope.sigmaYG.rows; r++) {
-                    if ($scope.sigmaYG.data.data[r][0] === undefined) {
-                        $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation;
+                    /*jshint eqnull: true*/
+                    if ($scope.sigmaYG.data.data[r][0] == null) {
+                        $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation_Blank;
                     }
+                }
+            }
+        };
+
+        /**
+         * Set same correlation for all values
+         */
+        $scope.setSharedCorrelation_All = function() {
+            if ($scope.sigmaYG !== undefined) {
+                for(var r = 0; r < $scope.sigmaYG.rows; r++) {
+                    $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation_All;
                 }
             }
         };

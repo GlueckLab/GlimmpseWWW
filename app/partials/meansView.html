@@ -131,17 +131,26 @@
                 </div>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary" ng-click="setSharedMean()">
+                <button class="btn btn-primary" ng-click="setSharedMean_Blank()">
                     Set all blank means to the value below
                 </button>
-                <input class="form-control" type="number" ng-model="metaData.sharedMean">
+                <input class="form-control" type="number" ng-model="metaData.sharedMean_Blank">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" ng-click="setSharedMean_All()">
+                    Set all means to the value below
+                </button>
+                <input class="form-control" type="number" ng-model="metaData.sharedMean_All">
             </div>
         </form>
     </div>
 
     <div ng-show="glimmpseConstants.debug == true">
         <div class="vmargin15">
-            metaData.sharedMean: {{metaData.sharedMean}}
+            metaData.sharedMean_Blank: {{metaData.sharedMean_Blank}}
+        </div>
+        <div class="vmargin15">
+            metaData.sharedMean_All: {{metaData.sharedMean_All}}
         </div>
         <div class="vmargin15">
             betaMatrix: {{betaMatrix}}

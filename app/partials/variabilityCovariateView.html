@@ -65,14 +65,26 @@
             </div>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" ng-click="setSharedCorrelation()">
+            <button class="btn btn-primary" ng-click="setSharedCorrelation_Blank()">
                 Set all blank correlations to the value below
             </button>
-            <input class="form-control" name="sharedCorrelation" type="number"
+            <input class="form-control" name="sharedCorrelation_Blank" type="number"
                    ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
-                   data-ng-model="metaData.sharedCorrelation">
+                   data-ng-model="metaData.sharedCorrelation_Blank">
             <div class="alert alert-danger" class="form-control"
-                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.pattern">
+                 ng-show="covariateVariabilityForm.sharedCorrelation_Blank.$error.pattern">
+                Please enter a number between -1 and 1, exclusive
+            </div>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="setSharedCorrelation_All()">
+                Set all correlations to the value below
+            </button>
+            <input class="form-control" name="sharedCorrelation_All" type="number"
+                   ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
+                   data-ng-model="metaData.sharedCorrelation_All">
+            <div class="alert alert-danger" class="form-control"
+                 ng-show="covariateVariabilityForm.sharedCorrelation_All.$error.pattern">
                 Please enter a number between -1 and 1, exclusive
             </div>
         </div>
@@ -81,7 +93,10 @@
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-        metaData.sharedCorrelation: {{metaData.sharedCorrelation}}
+        metaData.sharedCorrelation_Blank: {{metaData.sharedCorrelation_Blank}}
+    </div>
+    <div class="vmargin15">
+        metaData.sharedCorrelation_All: {{metaData.sharedCorrelation_All}}
     </div>
     <div class="vmargin15">
         sigmaG: {{sigmaG}}
