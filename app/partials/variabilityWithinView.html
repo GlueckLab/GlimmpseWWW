@@ -117,14 +117,16 @@
                                 <th>
                                     {{rowLabelList[$index]}}
                                 </th>
-                                <td ng-repeat="cell in row track by $id($index)">
+                                <td ng-repeat="cell in row track by $id($index)" ng-form="nestedForm">
                                     <!-- correlation and not disabled, so min = -1, max = 1 -->
-                                    <input type="number" class="form-control"
+                                    <input type="number" class="form-control" name="input"
                                            ng-show="currentCovariance.type != glimmpseConstants.variabilityTypeUnstructuredCovariance && !isCellDisabled($parent.$index, $index)"
                                            ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                                            ng-model="currentCovariance.blob.data[$parent.$index][$index]"
                                            ng-change="setCellValue($index, $parent.$index, currentCovariance.blob.data[$parent.$index][$index])"
                                            ng-disabled='false' />
+                                    <div class="alert alert-danger" ng-show="currentCovariance.type != glimmpseConstants.variabilityTypeUnstructuredCovariance && !isCellDisabled($parent.$index, $index) && nestedForm.input.$error.pattern">
+                                        Please enter a number between -1 and 1, exclusive</div>
                                     <!-- correlation and disabled, so min and max are implicit -->
                                     <input type="number" class="form-control"
                                            ng-show="currentCovariance.type != glimmpseConstants.variabilityTypeUnstructuredCovariance && isCellDisabled($parent.$index, $index)"

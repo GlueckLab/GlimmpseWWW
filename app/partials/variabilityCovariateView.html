@@ -50,14 +50,18 @@
                         <th>Response</th>
                         <th>Correlation with covariate</th>
                     </tr>
-                    <tr ng-repeat="row in sigmaYG.data.data">
+                    <tr ng-repeat="row in sigmaYG.data.data" ng-form="nestedForm">
                         <th ng-repeat="entry in metaData.responseCombinationList track by $id($index)">
                             {{entry[$parent.$index]}}
                         </th>
                         <td>
-                            <input class="form-control" type="number"
+                            <input class="form-control" type="number" name="input"
                                    ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                                    data-ng-model="sigmaYG.data.data[$index][0]">
+                            <div class="alert alert-danger" class="form-control"
+                                 ng-show="nestedForm.input.$error.pattern">
+                                Please enter a number between -1 and 1, exclusive
+                            </div>
                             </input>
                         </td>
                     </tr>
