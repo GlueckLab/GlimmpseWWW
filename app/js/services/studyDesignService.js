@@ -762,24 +762,69 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     };
 
     /**
-     * Convenience routine to resize the beta matrix
+     * Adjust the beta matrix after a category is added or deleted.
+     *
+     * @param predictorIndex Index of predictor.
+     * @param categoryIndex  Index of category.
+     * @param delta          +1 if it was added, -1 if it was removed.
      */
-    studyDesignInstance.resizeBeta = function(rows, columns) {
-        // update beta as needed
-        var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
-
-        if (beta.rows != rows) {
-            matrixUtilities.resizeRows(beta, rows, 0, 0);
+    studyDesignInstance.adjustBetaOnCategoryChange = function(predictorIndex, categoryIndex, delta) {
+        if (delta === 0) {
+            return;
         }
 
-        if (beta.columns != columns) {
-            matrixUtilities.resizeColumns(beta, columns, 0, 0);
-            if (studyDesignInstance.gaussianCovariate) {
-                var betaRandom = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBetaRandom);
-                if (betaRandom.columns != columns) {
-                    matrixUtilities.resizeColumns(betaRandom, columns, 1, 1);
-                }
+        var nocs = studyDesignInstance.betweenParticipantFactorList.map(
+            function(p) {
+                return p.categoryList.length;
             }
+        );
+        var nP = nocs.length;
+        var newN = nocs[predictorIndex];
+        var oldN = newN - delta;
+
+        // these two are mutually exclusive; both
+        // may be false, but both may not be true
+        var addingFirst  = oldN === 0;  // => delta > 0
+        var deletingLast = newN === 0;  // => delta < 0
+
+        if (addingFirst) {
+            -- delta;
+            // ==> delta >= 0
+        }
+        if (deletingLast) {
+            ++ delta;
+            // ==> delta <= 0
+        }
+
+        if (delta === 0) {
+            return;
+        }
+
+        var beta = studyDesignInstance.getMatrixByName(glimmpseConstants.matrixBeta);
+
+        var j;
+
+        // horizontal swath width (per category)
+        var sw0 = 1;
+        for (j = predictorIndex + 1; j < nP; ++ j) {
+            sw0 *= nocs[j];
+        }
+
+        // number of horizontal swaths
+        var N = 1;
+        for (j = 0; j < predictorIndex; ++ j) {
+            N *= nocs[j];
+        }
+
+        // horizontal swath width (total; positive if inserting, negative if deleting)
+        var sw = delta * sw0;
+
+        var stride = oldN * sw0;
+        var locus = N * stride + (categoryIndex - oldN) * sw0;
+
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustRows(beta, sw, locus);
+            locus -= stride;
         }
     };
 
@@ -969,22 +1014,76 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
     };
 
     /**
-     * Update the relative group sizes list
-     * @param newSize
+     * Adjust the relative group size list after a category is added or deleted.
+     *
+     * @param predictorIndex Index of predictor.
+     * @param categoryIndex  Index of category.
+     * @param delta          +1 if it was added, -1 if it was removed.
      */
-    studyDesignInstance.resizeRelativeGroupSizeList = function(newSize) {
-        if (studyDesignInstance.betweenParticipantFactorList.length > 0) {
-            if (newSize > studyDesignInstance.relativeGroupSizeList.length) {
-                for(var i = studyDesignInstance.relativeGroupSizeList.length; i < newSize; i++) {
-                    studyDesignInstance.relativeGroupSizeList.push({idx:0, value:1});
-                }
-            } else if (newSize < studyDesignInstance.relativeGroupSizeList.length) {
-                studyDesignInstance.relativeGroupSizeList.splice(newSize);
-            }
-        } else {
-            studyDesignInstance.relativeGroupSizeList = [];
+    studyDesignInstance.adjustRelativeGroupSizeListOnCategoryChange = function(predictorIndex, categoryIndex, delta) {
+        if (delta === 0) {
+            return;
         }
 
+        var nocs = studyDesignInstance.betweenParticipantFactorList.map(
+            function(p) {
+                return p.categoryList.length;
+            }
+        );
+        var nP = nocs.length;
+        var newN = nocs[predictorIndex];
+        var oldN = newN - delta;
+
+        if (nP > 1) {
+            // these two are mutually exclusive; both
+            // may be false, but both may not be true
+            var addingFirst  = oldN === 0;  // => delta > 0
+            var deletingLast = newN === 0;  // => delta < 0
+
+            if (addingFirst) {
+                -- delta;
+                // ==> delta >= 0
+            }
+            if (deletingLast) {
+                ++ delta;
+                // ==> delta <= 0
+            }
+
+            if (delta === 0) {
+                return;
+            }
+        }
+
+        var rgsl = studyDesignInstance.relativeGroupSizeList;
+
+        var j;
+
+        // horizontal swath width (per category)
+        var sw0 = 1;
+        for (j = predictorIndex + 1; j < nP; ++ j) {
+            sw0 *= nocs[j];
+        }
+
+        // number of horizontal swaths
+        var N = 1;
+        for (j = 0; j < predictorIndex; ++ j) {
+            N *= nocs[j];
+        }
+
+        // horizontal swath width (total; positive if inserting, negative if deleting)
+        var sw = delta * sw0;
+
+        var stride = oldN * sw0;
+        var locus = N * stride + (categoryIndex - oldN) * sw0;
+
+        var rgs = function() {
+            return {idx:0};
+        };
+
+        for (var k = 0; k < N; ++ k) {
+            matrixUtilities.adjustArray(rgsl, sw, locus, rgs);
+            locus -= stride;
+        }
     };
 
     /**

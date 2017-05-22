@@ -18,8 +18,14 @@
  */
 
 /**
- * Global results object
- * Retrieved via JSON from the Power Web Service
+ * Utility functions for matrix objects and variability objects.
+ *
+ * <p>
+ * For historical reasons, much of the code refers to variability
+ * objects as "covariance objects" or "covariance matrices". This
+ * nomenclature is unfortunate, since variability objects may
+ * contain either covariance data or correlation data. Over time,
+ * we may replace these older terms.
  */
 
 glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
@@ -89,7 +95,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             return false;
         }
 
-        if (covar.type == glimmpseConstants.correlationTypeLear &&
+        if (covar.type == glimmpseConstants.variabilityTypeLearCorrelation &&
             covar.rho === null || covar.rho === undefined ||
             covar.delta === null || covar.delta === undefined) {
             return false;
@@ -132,7 +138,6 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         return true;
-
     };
 
     /**
@@ -380,7 +385,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
                 var newRow = [];
                 for(var c = 0; c < covariance.columns; c++) {
                     newRow.push(
-                        r == c ? 1 : covariance.type === glimmpseConstants.correlationTypeLear ? 0 : undefined
+                        r == c ? 1 : covariance.type === glimmpseConstants.variabilityTypeLearCorrelation ? 0 : undefined
                     );
                 }
                 covariance.blob.data.push(newRow);
@@ -402,13 +407,13 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             for(var r = 0; r < covariance.rows; r++) {
                 for(var c = oldColumns; c < newColumns; c++) {
                     covariance.blob.data[r].push(
-                        r == c ? 1 : covariance.type === glimmpseConstants.correlationTypeLear ? 0 : undefined
+                        r == c ? 1 : covariance.type === glimmpseConstants.variabilityTypeLearCorrelation ? 0 : undefined
                     );
                 }
             }
         } else if (newColumns < oldColumns) {
             for(var rr = 0; rr < covariance.rows; rr++) {
-                covariance.blob.data[rr].splice(newColumns, oldColumns-newColumns);
+                covariance.blob.data[rr].splice(newColumns, oldColumns - newColumns);
             }
         }
     };
@@ -421,7 +426,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     matrixUtilitiesInstance.resizeCovarianceStandardDeviationList = function(covariance, dimension) {
         if (covariance.standardDeviationList.length < dimension) {
             for(var i = covariance.standardDeviationList.length; i < dimension; i++) {
-                covariance.standardDeviationList.push({idx: 0});
+                covariance.standardDeviationList.push(matrixUtilitiesInstance.defaultStandardDeviation(covariance));
             }
         } else if (covariance.standardDeviationList.length > dimension) {
             covariance.standardDeviationList.splice(dimension,
@@ -430,29 +435,53 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
     };
 
     /**
-     * Adjust a covariance matrix in response to the addition or removal
-     * of a number of its underlying random variables. Elements in inserted
-     * rows and columns are left undefined.
+     * Adjust a variability object in response to the addition or removal
+     * of a number of its underlying random variables. Inserted elements
+     * are left undefined, except for diagonal elements of correlation
+     * matrices, which are set to 1, and off-diagonal elements of LEAR
+     * correlation matrices, which are set to 0 here (to avoid flagging
+     * them as incomplete) and later set to their correct values elsewhere.
      *
-     * @param covariance The covariance matrix.
-     * @param delta      The number of random variables addded (if positive)
-     *                   or removed (if negative).
-     * @param locus      The addition or removal point.
+     * @param variability The variability object.
+     * @param delta       The number of random variables addded (if positive)
+     *                    or removed (if negative).
+     * @param locus       The addition or removal point.
      */
-    matrixUtilitiesInstance.adjustCovarianceMatrix = function(covariance, delta, locus) {
-        covariance.data = covariance.blob;
-        matrixUtilitiesInstance.adjustRows(covariance, delta, locus);
-        matrixUtilitiesInstance.adjustColumns(covariance, delta, locus);
-        delete covariance.data;
+    matrixUtilitiesInstance.adjustVariability = function(variability, delta, locus) {
+        // Make the variability object be also a matrix object.
+        variability.data = variability.blob;
 
-        for (var i = 0; i < covariance.rows; ++ i) {
-            covariance.blob.data[i][i] = 1;
+        // Call matrix object functions on it.
+        matrixUtilitiesInstance.adjustRows(variability, delta, locus);
+        matrixUtilitiesInstance.adjustColumns(variability, delta, locus);
+
+        // Make the variability object not be also a matrix object.
+        delete variability.data;
+
+        var r, rMax = variability.rows;
+        var c, cMax = variability.columns;
+
+        switch (variability.type) {
+        case glimmpseConstants.variabilityTypeLearCorrelation:
+            for (r = 0; r < rMax; ++ r) {
+                for (c = 0; c < cMax; ++ c) {
+                    if (typeof variability.blob.data[r][c] === 'undefined') {
+                        variability.blob.data[r][c] = 0;
+                    }
+                }
+            }
+            /* falls through */
+        case glimmpseConstants.variabilityTypeUnstructuredCorrelation:
+            for (r = 0; r < rMax; ++ r) {
+                variability.blob.data[r][r] = 1;
+            }
+            break;
         }
 
         matrixUtilitiesInstance.adjustArray(
-            covariance.standardDeviationList,
+            variability.standardDeviationList,
             delta, locus,
-            function() { return {idx: 0}; }
+            function() { return matrixUtilitiesInstance.defaultStandardDeviation(variability); }
         );
     };
 
@@ -462,23 +491,25 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
      * @param newSize
      */
     matrixUtilitiesInstance.resizeCovariance = function(covariance, newSize) {
+        // TODO: remove this function and use adjustVariability instead
         matrixUtilitiesInstance.resizeCovarianceRows(covariance, newSize);
         matrixUtilitiesInstance.resizeCovarianceColumns(covariance, newSize);
         matrixUtilitiesInstance.resizeCovarianceStandardDeviationList(covariance, newSize);
     };
 
     /**
-     * Create an unstructured covariance object
-     * @param name
+     * Create an "unstructured correlation" Responses variability object.
+     *
      * @param dimension
-     * @returns covariance
+     *
+     * @returns The variability object.
      */
-    matrixUtilitiesInstance.createCovariance = function(name, dimension) {
-        // create an empty covariance object, with type unstructured covariance
-        var covariance = {
+    matrixUtilitiesInstance.createUnstructuredCorrelation = function(dimension) {
+        // create an empty variability object, with type unstructured correlation
+        var variability = {
             idx: 0,
-            type: glimmpseConstants.covarianceTypeUnstructured,
-            name: name,
+            type: glimmpseConstants.variabilityTypeUnstructuredCorrelation,
+            name: glimmpseConstants.covarianceResponses,
             standardDeviationList:[],
             rho:-2,
             delta:-1,
@@ -491,7 +522,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
 
         // fill in the standard deviation list
         for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1});
+            variability.standardDeviationList.push({idx: 0});
         }
 
         // fill in the data
@@ -500,88 +531,72 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             for(var c = 0; c < dimension; c++) {
                 colData.push(r == c ? 1 : 0);
             }
-            covariance.blob.data.push(colData);
+            variability.blob.data.push(colData);
         }
 
-        return covariance;
+        return variability;
     };
 
     /**
-     * Create an unstructured correlation object
-     * @param name
-     * @param dimension
-     * @returns covariance
+     * Create a 2x2 "LEAR correlation" variability object with no name.
+     *
+     * @returns The variability object.
      */
-    matrixUtilitiesInstance.createUnstructuredCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type unstructured correlation
-        var covariance = {
+    matrixUtilitiesInstance.createLEARCorrelation = function() {
+        // create an empty variability object, with type LEAR correlation
+        var variability = {
             idx: 0,
-            type: glimmpseConstants.correlationTypeUnstructured,
-            name: name,
-            standardDeviationList:[],
-            rho:-2,
-            delta:-1,
-            rows: dimension,
-            columns: dimension,
-            blob: {
-                data:[]
-            }
-        };
-
-        // fill in the standard deviation list
-        for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1});
-        }
-
-        // fill in the data
-        for(var r = 0; r < dimension; r++) {
-            var colData = [];
-            for(var c = 0; c < dimension; c++) {
-                colData.push(r == c ? 1 : 0);
-            }
-            covariance.blob.data.push(colData);
-        }
-
-        return covariance;
-    };
-
-    /**
-     * Create a LEAR correlation object
-     * @param name
-     * @param dimension
-     * @returns covariance
-     */
-    matrixUtilitiesInstance.createLEARCorrelation = function(name, dimension) {
-        // create an empty covariance object, with type LEAR correlation
-        var covariance = {
-            idx: 0,
-            type: glimmpseConstants.correlationTypeLear,
-            name: name,
+            type: glimmpseConstants.variabilityTypeLearCorrelation,
+            name: "",
             standardDeviationList:[],
             rho:0.1,
             delta:0,
-            rows: dimension,
-            columns: dimension,
+            rows: 2,
+            columns: 2,
             blob: {
                 data:[]
             }
         };
 
         // fill in the standard deviation list
-        for(var i = 0; i < dimension; i++) {
-            covariance.standardDeviationList.push({idx: 0, value: 1});
+        for(var i = 0; i < 2; i++) {
+            variability.standardDeviationList.push({idx: 0, value: 1});
         }
 
         // fill in the data
-        for(var r = 0; r < dimension; r++) {
+        for(var r = 0; r < 2; r++) {
             var colData = [];
-            for(var c = 0; c < dimension; c++) {
+            for(var c = 0; c < 2; c++) {
                 colData.push(r == c ? 1 : 0.1);
             }
-            covariance.blob.data.push(colData);
+            variability.blob.data.push(colData);
         }
 
-        return covariance;
+        return variability;
+    };
+
+    /**
+     * Return the default standard deviation object that is appropriate
+     * for the kind of variability object we have. Standard deviations
+     * are only displayed and editable for the Responses variability
+     * object, and only then when its type is unstructured correlation;
+     * so in that case we want new ones to have undefined values, to
+     * force the user to define them. In the other cases, we hard-code
+     * a value of 1.
+     *
+     * <p>
+     * Is this a hack? You decide.
+     *
+     * @param variability The variability object.
+     */
+    matrixUtilitiesInstance.defaultStandardDeviation = function(variability) {
+        var name = variability.name;
+        var type = variability.type;
+
+        var responses = glimmpseConstants.covarianceResponses;
+        var unstrCorr = glimmpseConstants.variabilityTypeUnstructuredCorrelation;
+
+        return name === responses && type === unstrCorr ? {idx:0} : {idx:0, value:1};
     };
 
     return matrixUtilitiesInstance;

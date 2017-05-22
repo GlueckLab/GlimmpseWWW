@@ -75,7 +75,7 @@
        <div class="col-md-6">
            <div class="category-list white-box padding10 rounded-box" ng-show="currentPredictor != undefined">
                <form name="categoriesForm" novalidate
-                    gl-submit="$parent.addCategory()"
+                    gl-submit="$parent.updateCategoryList($parent.currentPredictor, $parent.currentPredictor.categoryList.length, +1)"
                     gl-submit-if="
                            $parent.currentPredictor.categoryList.length != 9
                         || confirm(
@@ -96,7 +96,7 @@
                    <li class="list-item box rounded-box"
                        ng-repeat="category in currentPredictor.categoryList">
                        <label>{{category.category}}</label>
-                       <button data-ng-click="deleteCategory(category)" class="glyphicon glyphicon-remove"></button>
+                       <button data-ng-click="updateCategoryList($parent.currentPredictor, $index, -1)" class="glyphicon glyphicon-remove"></button>
                    </li>
                </ul>
 
@@ -117,12 +117,6 @@
     </div>
     <div class="vmargin15">
         metaData.predictorCombinationList: {{metaData.predictorCombinationList}}
-    </div>
-    <div class="vmargin15">
-        metaData.getNumberOfPredictorCombinations(): {{metaData.getNumberOfPredictorCombinations()}}
-    </div>
-    <div class="vmargin15">
-        metaData.getNumberOfResponseCombinations(): {{metaData.getNumberOfResponseCombinations()}}
     </div>
     <div class="vmargin15">
         studyDesign.relativeGroupSizeList: {{studyDesign.relativeGroupSizeList}}

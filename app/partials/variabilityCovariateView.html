@@ -18,8 +18,8 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<h3>  Variability Due to the Covariate
-</h3>
+<h3>Variability Due to the Covariate</h3>
+
 <p>
     Describe the anticipated variability in the normally-distributed covariate.
     In addition, specify how strongly the covariate is correlated with
@@ -50,40 +50,57 @@
                         <th>Response</th>
                         <th>Correlation with covariate</th>
                     </tr>
-                    <tr ng-repeat="row in sigmaYG.data.data">
+                    <tr ng-repeat="row in sigmaYG.data.data" ng-form="nestedForm">
                         <th ng-repeat="entry in metaData.responseCombinationList track by $id($index)">
                             {{entry[$parent.$index]}}
                         </th>
                         <td>
-                            <input class="form-control" type="number"
+                            <input class="form-control" type="number" name="input"
                                    ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
                                    data-ng-model="sigmaYG.data.data[$index][0]">
+                            <div class="alert alert-danger" class="form-control"
+                                 ng-show="nestedForm.input.$error.pattern">
+                                Please enter a number between -1 and 1, exclusive
+                            </div>
                             </input>
                         </td>
                     </tr>
                 </table>
             </div>
-
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" ng-click="setSharedCorrelationForAllOutcomes()">
+            <button type="button" class="btn btn-primary" ng-click="setSharedCorrelation_Blank()">
+                Set all blank correlations to the value below
+            </button>
+            <input class="form-control" name="sharedCorrelation_Blank" type="number"
+                   ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
+                   data-ng-model="metaData.sharedCorrelation_Blank">
+            <div class="alert alert-danger" class="form-control"
+                 ng-show="covariateVariabilityForm.sharedCorrelation_Blank.$error.pattern">
+                Please enter a number between -1 and 1, exclusive
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" ng-click="setSharedCorrelation_All()">
                 Set all correlations to the value below
             </button>
-            <input class="form-control" name="sharedCorrelation" type="number"
+            <input class="form-control" name="sharedCorrelation_All" type="number"
                    ng-pattern="/^-?(?:0+(?:\.\d*)?|\.\d+)$/"
-                   data-ng-model="sharedCorrelation">
+                   data-ng-model="metaData.sharedCorrelation_All">
             <div class="alert alert-danger" class="form-control"
-                 ng-show="covariateVariabilityForm.sharedCorrelation.$error.pattern">
+                 ng-show="covariateVariabilityForm.sharedCorrelation_All.$error.pattern">
                 Please enter a number between -1 and 1, exclusive
             </div>
         </div>
     </form>
-
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
     <div class="vmargin15">
-        sharedCorrelation: {{sharedCorrelation}}
+        metaData.sharedCorrelation_Blank: {{metaData.sharedCorrelation_Blank}}
+    </div>
+    <div class="vmargin15">
+        metaData.sharedCorrelation_All: {{metaData.sharedCorrelation_All}}
     </div>
     <div class="vmargin15">
         sigmaG: {{sigmaG}}
@@ -95,20 +112,3 @@
         metaData.responseCombinationList: {{metaData.responseCombinationList}}
     </div>
 </div>
-
-
-
-
-</div>
-
-
-
-    <div><input type="checkbox"
-                ng-model="hasSameCorrelation"
-                ng-true-value="YES" ng-false-value="NO"
-                ng-change="SameCorrelationForOutcomes()">
-        Use the same correlation for all outcomes
-        </input>
-    </div>
-</div>
-
