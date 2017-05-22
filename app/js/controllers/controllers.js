@@ -157,31 +157,69 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Get the state of the group sizes view. When the user
-         * is solving for sample size, the view is disabled
-         * when no predictors are specified; it is blocked when
-         * the predictor specification is not complete;
-         * otherwise it is complete. When the user is solving
-         * for power, the view is complete when at least one
-         * group size is specified; otherwise it is incomplete.
+         * Get the state of the group sizes view, as a function
+         * of the states of the smallest group sizes (sub)view
+         * and the relative group sizes (sub)view.
          *
-         * @returns blocked, complete, disabled, or incomplete
+         * <p>
+         * If both are disabled, it is disabled; otherwise, if
+         * either is blocked, it is blocked; otherwise, if
+         * either is incomplete, it is incomplete; otherwise,
+         * it is complete.
+         *
+         * <p>
+         * The state of the smallest group sizes (sub)view is
+         * determined in the same way as the state of the
+         * smallest group size view is determined (see the
+         * getStateSmallestGroupSize function).
+         *
+         * <p>
+         * The state of the relative group sizes (sub)view is
+         * determined as follows: if no predictors are
+         * specified, it is disabled; otherwise, if the
+         * predictor specification is not complete, it is
+         * blocked; otherwise, if any relative group sizes are
+         * undefined, it is incomplete; otherwise, it is
+         * complete.
+         *
+         * @returns complete, incomplete, disabled, or blocked
          */
         $scope.getStateGroupSizes = function() {
-            var result =
-                $scope.studyDesign.solutionTypeEnum == glimmpseConstants.solutionTypeSampleSize ?
-                (
-                    $scope.studyDesign.betweenParticipantFactorList.length <= 0 ?
-                        $scope.glimmpseConstants.stateDisabled
-                  : $scope.state.predictors == $scope.glimmpseConstants.stateComplete ?
-                        $scope.glimmpseConstants.stateComplete
+            var sd = $scope.studyDesign;
+            var gc = $scope.glimmpseConstants;
+
+            var gotAllRelativeGroupSizes = function() {
+                var rgsl = sd.relativeGroupSizeList;
+                return rgsl !== undefined && rgsl.every(function(rgs) { return rgs.value !== undefined; });
+            };
+
+            var getStateRelativeGroupSizes = function() {
+                var result =
+                    sd.betweenParticipantFactorList.length <= 0 ?
+                        gc.stateDisabled
+                  : $scope.state.predictors !== gc.stateComplete ?
+                        gc.stateBlocked
+                  : ! gotAllRelativeGroupSizes() ?
+                        gc.stateIncomplete
                   : /*true*/
-                        $scope.glimmpseConstants.stateBlocked
-                )
-              : $scope.studyDesign.sampleSizeList.length > 0 ?
-                    $scope.glimmpseConstants.stateComplete
+                        gc.stateComplete;
+
+                return result;
+            };
+
+            var stateSmallestGroupSizes = $scope.getStateSmallestGroupSize();
+            var stateRelativeGroupSizes = getStateRelativeGroupSizes();
+
+            var result =
+                stateSmallestGroupSizes === gc.stateDisabled && stateRelativeGroupSizes === gc.stateDisabled ?
+                    gc.stateDisabled
+              : stateSmallestGroupSizes === gc.stateBlocked || stateRelativeGroupSizes === gc.stateBlocked ?
+                    gc.stateBlocked
+              : stateSmallestGroupSizes === gc.stateIncomplete || stateRelativeGroupSizes === gc.stateIncomplete ?
+                    gc.stateIncomplete
               : /*true*/
-                    $scope.glimmpseConstants.stateIncomplete;
+                    gc.stateComplete;
+
             return result;
         };
 
@@ -1335,7 +1373,7 @@ glimmpseApp.controller('stateController',
                     value: +newPower
                 });
             }
-            // reset the new power to null
+            // reset the new nominal power value to null
             $scope.newNominalPower = undefined;
         };
 
@@ -1345,7 +1383,6 @@ glimmpseApp.controller('stateController',
         $scope.editNominalPower = function(power) {
             $scope.editedNominalPower = power;
         };
-
 
         /**
          * Called when editing is complete
@@ -1394,7 +1431,7 @@ glimmpseApp.controller('stateController',
                     alphaValue: +newAlpha
                 });
             }
-            // reset the new power to null
+            // reset the new type I error rate to null
             $scope.newTypeIErrorRate = undefined;
         };
 
@@ -1432,7 +1469,7 @@ glimmpseApp.controller('stateController',
                     value: +newScale
                 });
             }
-            // reset the new factor to null
+            // reset the new scale factor to null
             $scope.newScaleFactorForVariance = undefined;
         };
 
@@ -1442,7 +1479,6 @@ glimmpseApp.controller('stateController',
         $scope.editScaleFactorForVariance = function(factor) {
             $scope.editedScaleFactorForVariance = factor;
         };
-
 
         /**
          * Called when editing is complete
@@ -1491,7 +1527,7 @@ glimmpseApp.controller('stateController',
                     value: +newScale
                 });
             }
-            // reset the new factor to null
+            // reset the new scale factor to null
             $scope.newScaleFactorForMeans = undefined;
         };
 
@@ -1501,7 +1537,6 @@ glimmpseApp.controller('stateController',
         $scope.editScaleFactorForMeans = function(factor) {
             $scope.editedScaleFactorForMeans = factor;
         };
-
 
         /**
          * Called when editing is complete
@@ -1529,13 +1564,12 @@ glimmpseApp.controller('stateController',
  * Controller managing the smallest group size list
  */
     .controller('sampleSizeController', function($scope, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.newSampleSize = undefined;
             $scope.editedSampleSize = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new sample size
@@ -1559,7 +1593,6 @@ glimmpseApp.controller('stateController',
         $scope.editSampleSize = function(samplesize) {
             $scope.editedSampleSize = samplesize;
         };
-
 
         /**
          * Called when editing is complete
@@ -1587,14 +1620,13 @@ glimmpseApp.controller('stateController',
  * Controller managing the group sizes view
  */
     .controller('groupSizesController', function($scope, glimmpseConstants, studyDesignService, studyDesignMetaData) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newSampleSize = undefined;
             $scope.editedSampleSize = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
         /**
          * Add a new sample size
@@ -1619,7 +1651,6 @@ glimmpseApp.controller('stateController',
             $scope.editedSampleSize = samplesize;
         };
 
-
         /**
          * Called when editing is complete
          * @param samplesize
@@ -1640,21 +1671,53 @@ glimmpseApp.controller('stateController',
             studyDesignService.sampleSizeList.splice(
                 studyDesignService.sampleSizeList.indexOf(samplesize), 1);
         };
+
+        /**
+         * Set same relative group size for all undefined or null values
+         */
+        $scope.setSharedRelativeGroupSize_Blank = function() {
+            var rgsl = studyDesignService.relativeGroupSizeList;
+
+            if (rgsl !== undefined) {
+                var i, iMax = rgsl.length;
+
+                for (i = 0; i < iMax; ++ i) {
+                    /*jshint eqnull: true*/
+                    if (rgsl[i].value == null) {
+                        rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize_Blank;
+                    }
+                }
+            }
+        };
+
+        /**
+         * Set same relative group size for all values
+         */
+        $scope.setSharedRelativeGroupSize_All = function() {
+            var rgsl = studyDesignService.relativeGroupSizeList;
+
+            if (rgsl !== undefined) {
+                var i, iMax = rgsl.length;
+
+                for (i = 0; i < iMax; ++ i) {
+                    rgsl[i].value = studyDesignMetaData.sharedRelativeGroupSize_All;
+                }
+            }
+        };
     })
 
 /**
- * Controller managing the response variables list
+ * Controller managing the responses
  */
-    .controller('responseController', function($scope, glimmpseConstants, matrixUtilities,
-                                               studyDesignService, studyDesignMetaData) {
-
+    .controller('responsesController', function($scope, glimmpseConstants, matrixUtilities,
+                                                studyDesignService, studyDesignMetaData) {
         init();
         function init() {
-            $scope.studyDesign = studyDesignService;
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.matrixUtils = matrixUtilities;
+            $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newResponse = '';
-            $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**
@@ -1681,29 +1744,20 @@ glimmpseApp.controller('stateController',
                     // the last in the array.
                     $scope.studyDesign.covariance.pop();
                 }
-                // remove SigmaYg
-                if ($scope.studyDesign.gaussianCovariate) {
-                    $scope.studyDesign.removeMatrixByName(glimmpseConstants.matrixSigmaYG);
-                }
             } else {
                 // update the size of the existing covariance or create a fresh one
                 if (covariance === undefined) {
                     $scope.studyDesign.covariance.push(
-                        $scope.matrixUtils.createUnstructuredCorrelation(glimmpseConstants.covarianceResponses,
-                            $scope.studyDesign.responseList.length)
+                        $scope.matrixUtils.createUnstructuredCorrelation($scope.studyDesign.responseList.length)
                     );
-                    if ($scope.studyDesign.gaussianCovariate) {
-                        $scope.studyDesign.matrixSet.push(
-                            $scope.matrixUtils.createNamedFilledMatrix(glimmpseConstants.matrixSigmaYG,
-                                $scope.studyDesign.getNumberOfResponses(), 1, 0)
-                        );
-                    }
                 } else {
-                    $scope.matrixUtils.adjustCovarianceMatrix(covariance, delta, i);
-                    if ($scope.studyDesign.gaussianCovariate) {
-                        $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
-                    }
+                    $scope.matrixUtils.adjustVariability(covariance, delta, i);
                 }
+            }
+
+            // if the design has a covariate, update the sigmaYg matrix
+            if ($scope.studyDesign.gaussianCovariate) {
+                $scope.studyDesign.adjustSigmaYgOnChangeToResponseVariables(i, delta);
             }
         };
 
@@ -1720,7 +1774,7 @@ glimmpseApp.controller('stateController',
                     name: newOutcome
                 });
             }
-            // reset the new response to null
+            // reset the new response variable to null
             $scope.newResponse = '';
 
             // update the study design
@@ -1737,24 +1791,22 @@ glimmpseApp.controller('stateController',
             // update the study design
             $scope.syncStudyDesign(i, -1);
         };
-
     })
 
 /**
  * Controller managing the predictors
  */
-    .controller('predictorsController', function($scope, glimmpseConstants, studyDesignService,
-                                                 studyDesignMetaData) {
-
+    .controller('predictorsController', function($scope, glimmpseConstants, matrixUtilities,
+                                                 studyDesignService, studyDesignMetaData) {
         init();
         function init() {
-
+            $scope.glimmpseConstants = glimmpseConstants;
+            $scope.matrixUtils = matrixUtilities;
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.newPredictorName = undefined;
             $scope.newCategoryName = undefined;
             $scope.currentPredictor = undefined;
-            $scope.glimmpseConstants = glimmpseConstants;
         }
 
         /**
@@ -1766,22 +1818,25 @@ glimmpseApp.controller('stateController',
 
         /**
          * Updates the dimensions of the beta matrix and relative group
-         * size list when a predictor or category is added/deleted.
+         * size list when a category is added or deleted.
+         *
+         * @param predictorIndex Index of predictor.
+         * @param categoryIndex  Index of category.
+         * @param delta          +1 if it was added, -1 if it was removed.
          */
-        $scope.syncStudyDesign = function() {
+        $scope.syncStudyDesign = function(predictorIndex, categoryIndex, delta) {
             // update the list of combinations of predictors
             $scope.metaData.updatePredictorCombinations();
-            var numCombos = $scope.metaData.getNumberOfPredictorCombinations();
+
             // update the beta matrix
-            $scope.studyDesign.resizeBeta(numCombos,
-                $scope.metaData.getNumberOfResponseCombinations()
-            );
+            $scope.studyDesign.adjustBetaOnCategoryChange(predictorIndex, categoryIndex, delta);
+
             // update the relative group size list
-            $scope.studyDesign.resizeRelativeGroupSizeList(numCombos);
+            $scope.studyDesign.adjustRelativeGroupSizeListOnCategoryChange(predictorIndex, categoryIndex, delta);
         };
 
         /**
-         * Add a new predictor name
+         * Add a new predictor
          */
         $scope.addPredictor = function () {
             var newPredictor = $scope.newPredictorName;
@@ -1796,28 +1851,24 @@ glimmpseApp.controller('stateController',
 
                 // set the newly added predictor as active and show its categories
                 $scope.currentPredictor = newPredictorObject;
-
-                // sync the study design
-                $scope.syncStudyDesign();
             }
-            // reset the new sample size to null
+            // reset the new predictor to null
             $scope.newPredictorName = undefined;
-
         };
 
         /**
-         * Delete an existing predictor name
+         * Delete an existing predictor
          */
         $scope.deletePredictor = function(factor) {
+            $scope.updateCategoryList(factor, 0, -factor.categoryList.length);
+
             if (factor == $scope.currentPredictor) {
                 $scope.currentPredictor = undefined;
             }
             // remove the predictor
             studyDesignService.betweenParticipantFactorList.splice(
                 studyDesignService.betweenParticipantFactorList.indexOf(factor), 1);
-
-            // sync the study design
-            $scope.syncStudyDesign();
+            $scope.metaData.updatePredictorCombinations(); // TODO: sub-optimal; we have to do this twice in this path
 
             // if the predictor appears in the hypothesis, remove it
             var hypothesis = $scope.studyDesign.hypothesis[0];
@@ -1842,46 +1893,53 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Add a new category name
+         * Update category list of predictor
+         *
+         * @param predictor
+         * @param categoryIndex
+         * @param delta
          */
-        $scope.addCategory = function () {
-            var newCategory = $scope.newCategoryName;
-            if ($scope.currentPredictor !== undefined &&
-                newCategory !== undefined) {
-                // add the category to the list
-                $scope.currentPredictor.categoryList.push({
-                    idx: 0,
-                    category: newCategory
-                });
-
-                // sync the study design
-                $scope.syncStudyDesign();
+        $scope.updateCategoryList = function(predictor, categoryIndex, delta) {
+            if (delta === 0) {
+                return;
             }
-            // reset the new sample size to null
-            $scope.newCategoryName = undefined;
-        };
 
-        /**
-         * Delete an existing category name
-         */
-        $scope.deleteCategory = function(category) {
-            $scope.currentPredictor.categoryList.splice(
-                $scope.currentPredictor.categoryList.indexOf(category), 1);
+            var predictorIndex = $scope.studyDesign.betweenParticipantFactorList.indexOf(predictor);
 
-            // sync the study design
-            $scope.syncStudyDesign();
+            if (predictor.categoryList === undefined) {
+                predictor.categoryList = [];
+            }
 
-            // if the predictor appears in the hypothesis, make sure the selected trend
-            // is still valid
-            var hypothesis = $scope.studyDesign.hypothesis[0];
-            if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
-                for(var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
-                    var map = hypothesis.betweenParticipantFactorMapList[i];
-                    if (map.betweenParticipantFactor == $scope.currentPredictor) {
-                        map.type = $scope.studyDesign.getBestTrend(map.type, $scope.currentPredictor.categoryList.length);
+            $scope.matrixUtils.adjustArray(
+                predictor.categoryList, delta, categoryIndex,
+                function(i) {
+                    var c = $scope.newCategoryName;
+                    for (var j = 0; j < i; ++ j) {
+                        c += "'";
+                    }
+                    return {idx: 0, category: c};
+                }
+            );
+
+            if (delta > 0) {
+                $scope.newCategoryName = undefined;
+            } else {
+                // if this factor is included in the hypothesis, make sure the
+                // chosen trend is still valid
+                var hypothesis = $scope.studyDesign.hypothesis[0];
+                if (hypothesis !== undefined && hypothesis.betweenParticipantFactorMapList !== undefined) {
+                    for (var i = 0; i < hypothesis.betweenParticipantFactorMapList.length; i++) {
+                        var map = hypothesis.betweenParticipantFactorMapList[i];
+                        if (map.betweenParticipantFactor == predictor) {
+                            map.type = $scope.studyDesign.getBestTrend(map.type, predictor.categoryList.length);
+                            break;
+                        }
                     }
                 }
             }
+
+            // update the beta matrix and relative group size list
+            $scope.syncStudyDesign(predictorIndex, categoryIndex, delta);
         };
     })
 
@@ -1889,7 +1947,6 @@ glimmpseApp.controller('stateController',
  * Controller managing the covariates
  */
     .controller('covariatesController', function($scope, matrixUtilities, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -1901,7 +1958,6 @@ glimmpseApp.controller('stateController',
          * Toggle
          */
         $scope.updateMatrixSet = function() {
-
             if ($scope.studyDesign.gaussianCovariate) {
                 var beta = $scope.studyDesign.getMatrixByName($scope.glimmpseConstants.matrixBeta);
 
@@ -2068,11 +2124,10 @@ glimmpseApp.controller('stateController',
     })
 
 /**
- * Controller managing repeated measures
+ * Controller managing the repeated measures
  */
     .controller('repeatedMeasuresController', function($scope, glimmpseConstants, matrixUtilities,
                                                        studyDesignService, studyDesignMetaData) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
@@ -2092,7 +2147,7 @@ glimmpseApp.controller('stateController',
          * function ensures that the beta matrix and sigmaYg matrices are still
          * in sync with the responses list.
          *
-         * @param i    Index of repeated measure whose number of measuresments
+         * @param i    Index of repeated measure whose number of measurements
          *             has changed.
          * @param oldN Its previous number of measurements.
          */
@@ -2118,7 +2173,7 @@ glimmpseApp.controller('stateController',
                 return;
             }
 
-            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // To exploit the ability of updateSpacingList to keep the rest
             // of the model in sync, we first add the level with 1 measurement "by
             // brute force", and then update the level's number of measurements to 2.
 
@@ -2135,7 +2190,7 @@ glimmpseApp.controller('stateController',
             $scope.studyDesign.repeatedMeasuresTree.push(rmFactor);
 
             // add a covariance object
-            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation("", 2));
+            $scope.studyDesign.covariance.splice(rmLevel, 0, $scope.matrixUtils.createLEARCorrelation());
 
             // disallow MANOVA hypothesis for now; switch to incomplete interaction hypothesis
             var hypothesis = $scope.studyDesign.hypothesis[0];
@@ -2144,7 +2199,7 @@ glimmpseApp.controller('stateController',
             }
 
             rmFactor.numberOfMeasurements = 2;
-            $scope.updateNumberOfMeasurements(rmLevel);
+            $scope.updateSpacingList(rmLevel);
         };
 
         /**
@@ -2158,37 +2213,41 @@ glimmpseApp.controller('stateController',
         };
 
         /**
-         * Update spacingList of repeated measure
+         * Update spacing list of repeated measure
          *
          * @param rmLevel
          */
-        $scope.updateNumberOfMeasurements = function(rmLevel) {
+        $scope.updateSpacingList = function(rmLevel) {
             var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
 
             if (rmFactor.spacingList === undefined) {
                 rmFactor.spacingList = [];
             }
+
             var oldN = rmFactor.spacingList.length;
             var newN = rmFactor.numberOfMeasurements;
+
+            if (oldN === newN) {
+                return;
+            }
+
+            var i;
+
             if (newN > oldN) {
-                // assumes that the max value is the last value
-                var startValue = 0;
-                if (oldN > 0) {
-                    startValue = rmFactor.spacingList[oldN-1].value + 1;
+                var pp = oldN > 0 ? rmFactor.spacingList[oldN-1].value + 1 : 1;
+                for (i = oldN; i < newN; i++) {
+                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: pp});
+                    pp++;
                 }
-                for(var i = oldN; i < newN; i++) {
-                    rmFactor.spacingList.push({idx: rmFactor.spacingList.length+1, value: startValue});
-                    startValue++;
-                }
-            } else if (newN < oldN) {
+            } else {
                 rmFactor.spacingList.splice(newN);
 
                 // if this factor is included in the hypothesis, make sure the
                 // chosen trend is still valid
                 var hypothesis = $scope.studyDesign.hypothesis[0];
                 if (hypothesis !== undefined && hypothesis.repeatedMeasuresMapTree !== undefined) {
-                    for(var rmi = 0; rmi < hypothesis.repeatedMeasuresMapTree.length; rmi++) {
-                        var map = hypothesis.repeatedMeasuresMapTree[rmi];
+                    for (i = 0; i < hypothesis.repeatedMeasuresMapTree.length; i++) {
+                        var map = hypothesis.repeatedMeasuresMapTree[i];
                         if (map.repeatedMeasuresNode == rmFactor) {
                             map.type = $scope.studyDesign.getBestTrend(map.type, newN);
                             break;
@@ -2200,10 +2259,8 @@ glimmpseApp.controller('stateController',
             // update the beta matrix and number of responses
             $scope.syncStudyDesign(rmLevel, oldN);
 
-            /* resize the covariance associated with this factor
-             * note, no need to do so if the user selected the LEAR correlation
-             * structure, since we build the matrix server side for those
-             */
+            // resize the covariance associated with this factor
+            // TODO: use adjustVariability instead, and move this call into syncStudyDesign
             var covariance = $scope.studyDesign.covariance[rmLevel];
             $scope.matrixUtils.resizeCovariance(covariance, newN);
         };
@@ -2225,14 +2282,14 @@ glimmpseApp.controller('stateController',
                 return;
             }
 
-            // To exploit the ability of updateNumberOfMeasurements to keep the rest
+            // To exploit the ability of updateSpacingList to keep the rest
             // of the model in sync, we first update the level's number of measurements
             // to 1, and then remove the level "by brute force".
 
             var rmFactor = $scope.studyDesign.repeatedMeasuresTree[rmLevel];
 
             rmFactor.numberOfMeasurements = 1;
-            $scope.updateNumberOfMeasurements(rmLevel);
+            $scope.updateSpacingList(rmLevel);
 
             // remove the covariance object corresponding to this level of repeated measures
             $scope.studyDesign.covariance.splice(rmLevel, 1);
@@ -2279,22 +2336,50 @@ glimmpseApp.controller('stateController',
                 $scope.metaData.updateResponseCombinations();
             }
         };
-
     })
-
 
 /**
  * Controller managing the means view (i.e. beta matrix)
  */
     .controller('meansViewController', function($scope, glimmpseConstants, studyDesignService,
                                                 studyDesignMetaData) {
-
         init();
         function init() {
             $scope.studyDesign = studyDesignService;
             $scope.metaData = studyDesignMetaData;
             $scope.betaMatrix = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixBeta);
         }
+
+        /**
+         * Set same mean for all undefined or null values
+         */
+        $scope.setSharedMean_Blank = function() {
+            var r, rMax = $scope.betaMatrix.rows;
+            var c, cMax = $scope.betaMatrix.columns;
+
+            for (r = 0; r < rMax; ++ r) {
+                for (c = 0; c < cMax; ++ c) {
+                    /*jshint eqnull: true*/
+                    if ($scope.betaMatrix.data.data[r][c] == null) {
+                        $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean_Blank;
+                    }
+                }
+            }
+        };
+
+        /**
+         * Set same mean for all values
+         */
+        $scope.setSharedMean_All = function() {
+            var r, rMax = $scope.betaMatrix.rows;
+            var c, cMax = $scope.betaMatrix.columns;
+
+            for (r = 0; r < rMax; ++ r) {
+                for (c = 0; c < cMax; ++ c) {
+                    $scope.betaMatrix.data.data[r][c] = $scope.metaData.sharedMean_All;
+                }
+            }
+        };
     })
 
 /**
@@ -2784,7 +2869,7 @@ glimmpseApp.controller('stateController',
                     value: +newQuantile
                 });
             }
-            // reset the new response to null
+            // reset the new quantile to null
             $scope.newQuantile = undefined;
         };
 
@@ -2815,10 +2900,10 @@ glimmpseApp.controller('stateController',
 
                 // maximum spacing between any of the measurements, assuming the list is in
                 // ascending order
-                $scope.maxDistance = Math.abs(rmFactor.spacingList[rmFactor.spacingList.length-1].value -
+                var maxDistance = Math.abs(rmFactor.spacingList[rmFactor.spacingList.length-1].value -
                     rmFactor.spacingList[0].value);
                 // find the smallest distance increment between any of the measurements
-                $scope.minDistance = $scope.maxDistance;
+                $scope.minDistance = maxDistance;
                 for(var i = 0, j = 1; j < rmFactor.spacingList.length; i++, j++ )
                 {
                     var difference = Math.abs(rmFactor.spacingList[j].value - rmFactor.spacingList[i].value);
@@ -2827,14 +2912,13 @@ glimmpseApp.controller('stateController',
                         $scope.minDistance = difference;
                     }
                 }
-                $scope.maxMinDiff = $scope.maxDistance - $scope.minDistance;
+                $scope.maxMinDiff = maxDistance - $scope.minDistance;
                 // when there are only 2 elements in the spacing list, the max = min distance between
                 // the elements.  thus we force to 1
                 if ($scope.maxMinDiff === 0) $scope.maxMinDiff = 1;
             } else {
                 $scope.maxMinDiff = undefined;
                 $scope.minDistance = undefined;
-                $scope.maxDistance = undefined;
             }
         };
 
@@ -2917,7 +3001,7 @@ glimmpseApp.controller('stateController',
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
             if ($scope.currentCovariance !== undefined &&
-                $scope.currentCovariance.type == glimmpseConstants.correlationTypeLear) {
+                $scope.currentCovariance.type == glimmpseConstants.variabilityTypeLearCorrelation) {
                 $scope.calculateLear();
             }
         }
@@ -2929,7 +3013,7 @@ glimmpseApp.controller('stateController',
          */
         $scope.getName = function(covariance) {
             if (covariance.name == glimmpseConstants.covarianceResponses) {
-                return "responses";
+                return "Responses";
             }
             return covariance.name;
         };
@@ -2942,6 +3026,10 @@ glimmpseApp.controller('stateController',
             $scope.currentCovariance = covariance;
             $scope.setRowColumnLabels();
             $scope.updateLearDistances();
+            if ($scope.currentCovariance !== undefined &&
+                $scope.currentCovariance.type == glimmpseConstants.variabilityTypeLearCorrelation) {
+                $scope.calculateLear();
+            }
         };
 
         /**
@@ -2962,43 +3050,60 @@ glimmpseApp.controller('stateController',
          * and LEAR specifications
          */
         $scope.updateType = function() {
+            var i;
+
             switch ($scope.currentCovariance.type) {
-                case glimmpseConstants.correlationTypeLear:
+                case glimmpseConstants.variabilityTypeLearCorrelation:
                     // set default LEAR params
                     $scope.currentCovariance.rho = 0;
                     $scope.currentCovariance.delta = 0;
+
+                    // reset standard deviations to 1
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
+                    }
+
+                    // calculate LEAR elements
                     $scope.calculateLear();
+
                     break;
-                case glimmpseConstants.correlationTypeUnstructured:
+
+                case glimmpseConstants.variabilityTypeUnstructuredCorrelation:
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
+
                     // reset standard deviations to 1
-                    for(var i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
                         $scope.currentCovariance.standardDeviationList[i].value = 1;
                     }
-                    // reset diagonals to 1, off-diagonals to 0 if < -1 or > 1
+
+                    // reset diagonals to 1, off-diagonals to 0 if <= -1 or >= 1
                     for(var r = 0; r < $scope.currentCovariance.rows; r++) {
-                        for(var c = 0; c <= r; c++) {
+                        for(var c = 0; c < $scope.currentCovariance.columns; c++) {
                             if (c == r) {
                                 $scope.currentCovariance.blob.data[r][c] = 1;
                             } else {
                                 var value = $scope.currentCovariance.blob.data[r][c];
-                                if (value < -1 || value > 1) {
+                                if (value <= -1 || value >= 1) {
                                     $scope.currentCovariance.blob.data[r][c] = 0;
                                 }
                             }
                         }
                     }
+
                     break;
-                case glimmpseConstants.covarianceTypeUnstructured:
+
+                case glimmpseConstants.variabilityTypeUnstructuredCovariance:
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
+
                     // reset standard deviations to 1
-                    for(var ii = 0; ii < $scope.currentCovariance.standardDeviationList.length; ii++) {
-                        $scope.currentCovariance.standardDeviationList[ii].value = 1;
+                    for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
+                        $scope.currentCovariance.standardDeviationList[i].value = 1;
                     }
+
                     break;
             }
         };
@@ -3016,11 +3121,11 @@ glimmpseApp.controller('stateController',
                 return true;
             }
             if ($scope.currentCovariance.type ==
-                glimmpseConstants.covarianceTypeUnstructured) {
+                glimmpseConstants.variabilityTypeUnstructuredCovariance) {
                 return (column > row);
 
             } else if ($scope.currentCovariance.type ==
-                glimmpseConstants.correlationTypeUnstructured) {
+                glimmpseConstants.variabilityTypeUnstructuredCorrelation) {
                 return (column >= row);
             }
             return true;
@@ -3039,21 +3144,32 @@ glimmpseApp.controller('stateController',
             $scope.metaData = studyDesignMetaData;
             $scope.sigmaG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaG);
             $scope.sigmaYG = $scope.studyDesign.getMatrixByName(glimmpseConstants.matrixSigmaYG);
-            $scope.sharedCorrelation = 0;
         }
 
         /**
-         * Set same correlation for all values
-         *
+         * Set same correlation for all undefined or null values
          */
-        $scope.setSharedCorrelationForAllOutcomes = function() {
+        $scope.setSharedCorrelation_Blank = function() {
             if ($scope.sigmaYG !== undefined) {
                 for(var r = 0; r < $scope.sigmaYG.rows; r++) {
-                    $scope.sigmaYG.data.data[r][0] = $scope.sharedCorrelation;
+                    /*jshint eqnull: true*/
+                    if ($scope.sigmaYG.data.data[r][0] == null) {
+                        $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation_Blank;
+                    }
                 }
             }
         };
 
+        /**
+         * Set same correlation for all values
+         */
+        $scope.setSharedCorrelation_All = function() {
+            if ($scope.sigmaYG !== undefined) {
+                for(var r = 0; r < $scope.sigmaYG.rows; r++) {
+                    $scope.sigmaYG.data.data[r][0] = $scope.metaData.sharedCorrelation_All;
+                }
+            }
+        };
     })
 
 /**

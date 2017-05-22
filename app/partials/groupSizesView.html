@@ -52,7 +52,7 @@
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
-    Sample Size List: {{studyDesign.sampleSizeList}}
+    studyDesign.sampleSizeList: {{studyDesign.sampleSizeList}}
 </div>
 </div>
 
@@ -101,9 +101,51 @@ For unequal group sizes, specify the ratio of the group sizes. For example, cons
             </td>
         </tr>
     </table>
+    <div class="form-group">
+        <button class="btn btn-primary" ng-click="setSharedRelativeGroupSize_Blank()">
+            Set all blank relative group sizes to the value below
+        </button>
+        <select class="form-control" ng-model="metaData.sharedRelativeGroupSize_Blank" required>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" ng-click="setSharedRelativeGroupSize_All()">
+            Set all relative group sizes to the value below
+        </button>
+        <select class="form-control" ng-model="metaData.sharedRelativeGroupSize_All" required>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+        </select>
+    </div>
 </div>
 
 <div ng-show="glimmpseConstants.debug == true">
-    Relative Group Size List: {{studyDesign.relativeGroupSizeList}}
+    <div class="vmargin15">
+        studyDesign.relativeGroupSizeList: {{studyDesign.relativeGroupSizeList}}
+    </div>
+    <div class="vmargin15">
+        metaData.sharedRelativeGroupSize_Blank: {{metaData.sharedRelativeGroupSize_Blank}}
+    </div>
+    <div class="vmargin15">
+        metaData.sharedRelativeGroupSize_All: {{metaData.sharedRelativeGroupSize_All}}
+    </div>
 </div>
 </div>

@@ -65,7 +65,7 @@
             <div class="form-group">
                 <label>Number of measurements</label>
                 <select class="form-control" ng-model="factor.numberOfMeasurements"
-                        ng-change="updateNumberOfMeasurements($index)"
+                        ng-change="updateSpacingList($index)"
                         ng-options="option as option for option in validNumberOfMeasurements" required>
                 </select>
             </div>
@@ -105,9 +105,6 @@
     <div ng-show="glimmpseConstants.debug == true">
         <div class="vmargin15">
             studyDesign.repeatedMeasuresTree: {{studyDesign.repeatedMeasuresTree}}
-        </div>
-        <div class="vmargin15">
-            metaData.getNumberOfResponseCombinations(): ({{metaData.getNumberOfResponseCombinations()}})
         </div>
         <div class="vmargin15">
             metaData.responseCombinationList: {{metaData.responseCombinationList}}
