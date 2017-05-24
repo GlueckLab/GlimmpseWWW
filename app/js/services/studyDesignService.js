@@ -232,9 +232,13 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.sampleSizeList = [];
             } else {
                 studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
+                    var v = e.value;
                     return {
                         idx: idx,
-                        value: typeof e.value !== 'number' || e.value < 2 ? 2 : Math.floor(e.value)
+                        value:    typeof v !== 'number' ? 2
+                                : v < 2                 ? 2
+                                : v > 2147483647        ? 2147483647
+                                :                         Math.floor(v)
                     };
                 });
             }
