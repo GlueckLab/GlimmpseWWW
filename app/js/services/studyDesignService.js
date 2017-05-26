@@ -232,13 +232,13 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.sampleSizeList = [];
             } else {
                 studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
-                    var v = e.value;
+                    var v = +e.value;
                     return {
-                        idx: idx,
-                        value:    typeof v !== 'number' ? 2
-                                : v < 2                 ? 2
-                                : v > 2147483647        ? 2147483647
-                                :                         Math.floor(v)
+                        idx:   idx,
+                        value:   v !== v        ? 2            // NaN
+                               : v < 2          ? 2
+                               : v > 2147483647 ? 2147483647
+                               :                Math.floor(v)
                     };
                 });
             }
