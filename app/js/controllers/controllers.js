@@ -3874,7 +3874,7 @@ glimmpseApp.controller('stateController',
                     headerCellTemplate: $scope.headerCellTemplate},
 
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 100,
-                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null && row.getProperty(col.field) < 0 ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>',
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>',
                     headerCellTemplate: $scope.headerCellTemplate},
 
                 { field: 'nominalPower.value', displayName: 'Target Power', width:60,
