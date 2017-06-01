@@ -1042,9 +1042,8 @@ glimmpseApp.controller('stateController',
                             $scope.metaData.updatePredictorCombinations();
                             $scope.metaData.updateResponseCombinations();
                         } catch(err) {
-                            var msg = "Sorry, that file does not contain a valid study design.";
+                            var msg = "Sorry, that file does not contain a valid study design." + "\n\n" + err;
                             if (glimmpseConstants.debug) {
-                                msg += "\n\n" + "Exception:\n" + err;
                                 msg += "\n\n" + "Response:\n" + responseText;
                                 msg += "\n\n" + "Status:\n" + statusText;
                             }
