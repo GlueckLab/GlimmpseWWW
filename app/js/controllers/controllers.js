@@ -2080,16 +2080,15 @@ glimmpseApp.controller('stateController',
  * Controller managing the clusters
  */
     .controller('clusteringController', function($scope, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.pluralize = owl.pluralize;
             // $scope.aOrAn = AvsAn.query;
         }
 
         $scope.addCluster = function() {
-
             if (studyDesignService.clusteringTree.length < 3) {
                 studyDesignService.clusteringTree.unshift({
                     idx: studyDesignService.clusteringTree.length,
@@ -2101,11 +2100,11 @@ glimmpseApp.controller('stateController',
                 }
             }
         };
+
         /**
          *  Remove a cluster from the list
          */
         $scope.removeCluster = function() {
-
             studyDesignService.clusteringTree.shift();
             /* idx does not actually seem to be used */
             for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
@@ -2116,7 +2115,6 @@ glimmpseApp.controller('stateController',
         /**
          * Remove all levels of clustering
          */
-
         $scope.removeClustering = function() {
             studyDesignService.clusteringTree = [];
         };
