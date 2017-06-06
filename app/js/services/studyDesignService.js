@@ -232,9 +232,13 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                 studyDesignInstance.sampleSizeList = [];
             } else {
                 studyDesignInstance.sampleSizeList = object.sampleSizeList.map(function(e, idx) {
+                    var v = +e.value;
                     return {
-                        idx: idx,
-                        value: typeof e.value !== 'number' || e.value < 2 ? 2 : Math.floor(e.value)
+                        idx:   idx,
+                        value:   v !== v        ? 2            // NaN
+                               : v < 2          ? 2
+                               : v > 2147483647 ? 2147483647
+                               :                Math.floor(v)
                     };
                 });
             }
@@ -491,12 +495,45 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
 
         // Convenience variables.
         var rmt = studyDesignInstance.repeatedMeasuresTree;
-        var nrc = studyDesignInstance.responseList.length > 0 ? 1 : 0;
+        var rl  = studyDesignInstance.responseList;
+        var rll = rl.length;
+        var nrc = rll > 0 ? 1 : 0;
         var cov = studyDesignInstance.covariance;
 
         // Check for length compatibility.
         if (cov.length != rmt.length + nrc) {
-            throw cov.length + " covariances instead of " + rmt.length + " + " + nrc;
+            var count = function(n, noun) {
+                var result = n + " " + noun;
+                if (n !== 1) {
+                    result += "s";
+                }
+                return result;
+            };
+            var names = function(a) {
+                return a.map(
+                        function(o) {
+                            return o.name === glimmpseConstants.covarianceResponses ? "[" + names(rl) + "]" : o.name;
+                        }
+                       ).join(", ");
+            };
+            var dimensions = function(a) {
+                return a.map(function(o) {return o.dimension;}).join(", ");
+            };
+
+            var msg =
+                    "It contains " + count(cov.length, "variability object") + " (" + names(cov) + ") " +
+                    "instead of " + (rmt.length + nrc) + "\n";
+
+            if (nrc !== 0) {
+                msg +=
+                    "(" + rmt.length + " for its " + count(rmt.length, "repeated measure") + " (" + dimensions(rmt) + ") " +
+                    "plus 1 for its " + count(rll, "response") + " ([" + names(rl) + "])).";
+            } else {
+                msg +=
+                    "for its " + count(rmt.length, "repeated measure") + " (" + dimensions(rmt) + ").";
+            }
+
+            throw msg;
         }
 
         // Function to look up a covariance by name.

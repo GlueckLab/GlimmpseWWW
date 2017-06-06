@@ -120,6 +120,34 @@ var glimmpseApp = angular.module('glimmpse', ['ui.bootstrap','ngGrid', 'highchar
         xAxisBetaScale: "REGRESSION_COEEFICIENT_SCALE_FACTOR",
         xAxisDesiredPower: "DESIRED_POWER",
 
+        // REGULAR EXPRESSIONS
+
+        // This is a regular expression that matches all and only
+        // the strings that are the decimal representations of
+        // integers in the closed interval [2, 2147483647]: in
+        // other words, Java ints with values greater than 1.
+
+        javaIntGreaterThanOne: new RegExp("^0*" +
+            "(?:1\\d{1,9}|[3-9]\\d{0,8}|2(?:" +
+                "0\\d{0,8}|[2-9]\\d{0,7}|1(?:" +
+                    "[0-3]\\d{0,7}|[5-9]\\d{0,6}|4(?:" +
+                        "[0-6]\\d{0,6}|[8-9]\\d{0,5}|7(?:" +
+                            "[0-3]\\d{0,5}|[5-9]\\d{0,4}|4(?:" +
+                                "[0-7]\\d{0,4}|9\\d{0,3}|8(?:" +
+                                    "[0-2]\\d{0,3}|[4-9]\\d{0,2}|3(?:" +
+                                        "[0-5]\\d{0,2}|[7-9]\\d{0,1}|6(?:" +
+                                            "[0-3]\\d{0,1}|[5-9]|4(?:" +
+                                                "[0-7]" +
+                                            ")?" +
+                                        ")?" +
+                                    ")?" +
+                                ")?" +
+                            ")?" +
+                        ")?" +
+                    ")?" +
+                ")?" +
+            ")?)$"),
+
         // platform
         platform: /android/i.test(window.navigator.userAgent) ? 'android' : 'other'
     })
