@@ -1,6 +1,6 @@
 {
   "name": "Glimmpse",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.2",
