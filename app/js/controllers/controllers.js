@@ -1042,9 +1042,8 @@ glimmpseApp.controller('stateController',
                             $scope.metaData.updatePredictorCombinations();
                             $scope.metaData.updateResponseCombinations();
                         } catch(err) {
-                            var msg = "Sorry, that file does not contain a valid study design.";
+                            var msg = "Sorry, that file does not contain a valid study design." + "\n\n" + err;
                             if (glimmpseConstants.debug) {
-                                msg += "\n\n" + "Exception:\n" + err;
                                 msg += "\n\n" + "Response:\n" + responseText;
                                 msg += "\n\n" + "Status:\n" + statusText;
                             }
@@ -2081,16 +2080,15 @@ glimmpseApp.controller('stateController',
  * Controller managing the clusters
  */
     .controller('clusteringController', function($scope, glimmpseConstants, studyDesignService) {
-
         init();
         function init() {
+            $scope.glimmpseConstants = glimmpseConstants;
             $scope.studyDesign = studyDesignService;
             $scope.pluralize = owl.pluralize;
             // $scope.aOrAn = AvsAn.query;
         }
 
         $scope.addCluster = function() {
-
             if (studyDesignService.clusteringTree.length < 3) {
                 studyDesignService.clusteringTree.unshift({
                     idx: studyDesignService.clusteringTree.length,
@@ -2102,11 +2100,11 @@ glimmpseApp.controller('stateController',
                 }
             }
         };
+
         /**
          *  Remove a cluster from the list
          */
         $scope.removeCluster = function() {
-
             studyDesignService.clusteringTree.shift();
             /* idx does not actually seem to be used */
             for (var i = 0, n = studyDesignService.clusteringTree.length; i < n; ++ i) {
@@ -2117,7 +2115,6 @@ glimmpseApp.controller('stateController',
         /**
          * Remove all levels of clustering
          */
-
         $scope.removeClustering = function() {
             studyDesignService.clusteringTree = [];
         };
@@ -3874,7 +3871,7 @@ glimmpseApp.controller('stateController',
                     headerCellTemplate: $scope.headerCellTemplate},
 
                 { field: 'totalSampleSize', displayName: 'Total Sample Size', width: 100,
-                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null && row.getProperty(col.field) < 0 ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>',
+                    cellTemplate: '<div class="ngCellText" ng-class="[col.colIndex(), row.getProperty(\'errorMessage\') != null ? \'errorBorderless\' : \'\']"><span ng-cell-text>{{row.getProperty(col.field) >= 0 ? row.getProperty(col.field) : "&#x2014;"}}</span></div>',
                     headerCellTemplate: $scope.headerCellTemplate},
 
                 { field: 'nominalPower.value', displayName: 'Target Power', width:60,

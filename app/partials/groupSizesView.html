@@ -34,12 +34,12 @@
         <div class="form-group">
             <label>Smallest Group Size</label>
             <input class="form-control" name="newSampleSize"
-                   ng-attr-type="{{glimmpseConstants.platform === 'android' ? 'text' : 'number'}}"
-                   ng-pattern="/^0*(?:(?:1\d+)|(?:[2-9]\d*))$/"
+                   ng-attr-type="text"
+                   ng-pattern="glimmpseConstants.javaIntGreaterThanOne"
                    placeholder="Enter a sample size value" ng-model="newSampleSize"
-                   step='1' autocomplete="off" autofocus required>
+                   autocomplete="off" autofocus required>
             <div class="alert alert-danger" ng-show="sampleSizeForm.newSampleSize.$error.pattern">
-                Please enter an integer greater than 1
+                Please enter an integer greater than 1 and less than 2,147,483,648
             </div>
         </div>
     </form>
