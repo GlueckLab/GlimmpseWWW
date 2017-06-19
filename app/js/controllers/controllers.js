@@ -489,15 +489,19 @@ glimmpseApp.controller('stateController',
          * @returns disabled, complete, or incomplete
          */
         $scope.getStateConfidenceIntervals = function() {
-            if ($scope.studyDesign.confidenceIntervalDescriptions === null) {
+            var ci = $scope.studyDesign.confidenceIntervalDescriptions;
+
+            // TODO: the method comment is incorrect; the method does not return disabled
+            if (ci === null) {
                 return glimmpseConstants.stateComplete;
             } else {
-                if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.upperTailProbability !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.sampleSize !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix !== undefined) {
+                if (ci.betaFixed !== undefined &&
+                        ci.sigmaFixed !== undefined &&
+                        ci.upperTailProbability !== undefined &&
+                        ci.lowerTailProbability !== undefined &&
+                        ci.sampleSize !== undefined &&
+                        ci.rankOfDesignMatrix !== undefined &&
+                        +ci.sampleSize > +ci.rankOfDesignMatrix) {
                     return glimmpseConstants.stateComplete;
                 } else {
                     return glimmpseConstants.stateIncomplete;
