@@ -96,8 +96,9 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
         }
 
         if (covar.type == glimmpseConstants.variabilityTypeLearCorrelation &&
-            covar.rho === null || covar.rho === undefined ||
-            covar.delta === null || covar.delta === undefined) {
+            (covar.rho === null || covar.rho === undefined ||
+            covar.delta === null || covar.delta === undefined ||
+            covar.scale === null || covar.scale === undefined)) {
             return false;
         }
 
@@ -513,6 +514,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             standardDeviationList:[],
             rho:-2,
             delta:-1,
+            scale:false,
             rows: dimension,
             columns: dimension,
             blob: {
@@ -551,6 +553,7 @@ glimmpseApp.factory('matrixUtilities',function(glimmpseConstants){
             standardDeviationList:[],
             rho:0.1,
             delta:0,
+            scale:true,
             rows: 2,
             columns: 2,
             blob: {
