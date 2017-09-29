@@ -1046,6 +1046,8 @@ glimmpseApp.controller('stateController',
                             $scope.metaData.updatePredictorCombinations();
                             $scope.metaData.updateResponseCombinations();
                         } catch(err) {
+                            $scope.studyDesign.reset();
+                            $scope.metaData.reset();
                             var msg = "Sorry, that file does not contain a valid study design." + "\n\n" + err;
                             if (glimmpseConstants.debug) {
                                 msg += "\n\n" + "Response:\n" + responseText;
@@ -1178,6 +1180,8 @@ glimmpseApp.controller('stateController',
                     $scope.metaData.updateResponseCombinations();
                 },
                 function(errorMessage){
+                    $scope.studyDesign.reset();
+                    $scope.metaData.reset();
                     $scope.dropboxService.setStatus("ERROR");
                 });
         };
