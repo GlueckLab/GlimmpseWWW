@@ -67,13 +67,20 @@
                     </div>
                     <div ng-show="currentCovariance.type == glimmpseConstants.variabilityTypeLearCorrelation">
                         <p>
-                            The LEAR model describes correlation which monotonically decreases with distance
-                            between repeated measurements. The model has two correlation parameters, the
+                            The LEAR model describes correlation which monotonically decreases with distance or
+                            time between repeated measurements. The model has two correlation parameters, the
                             base correlation and the decay rate. The base correlation describes the correlation
                             between measurements taken 1 unit apart. The decay rate describes the rate of decrease
                             in the base correlation as the distance or time between repeated measurements increases.
                             Our experience with biological and behavioral data leads us to suggest using decay
                             values between 0.05 and 0.5.
+                        </p>
+                        <p>
+                            In addition, you may request that the LEAR model correlation matrix be computed with
+                            scaled spacing values: that is, spacing values scaled so that the minimum distance or
+                            time between measurements is 1 unit. With this scaling, the base correlation will
+                            appear in the correlation matrix for every element representing measurements whose
+                            separation in distance or time is the minimum.
                         </p>
                         <form name="learForm" novalidate>
                             <div class="form-group">
@@ -92,6 +99,15 @@
                                 </input>
                                 <div class="alert alert-danger" ng-show="learForm.delta.$error.min">
                                     Please enter a nonnegative number</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="well white-box">
+                                  <input type="checkbox"
+                                      data-ng-model="currentCovariance.scale"
+                                      data-ng-click="calculateLear()">
+                                    Scale spacing values
+                                  </input>
+                                </div>
                             </div>
                         </form>
                     </div>
