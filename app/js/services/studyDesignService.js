@@ -459,7 +459,10 @@ glimmpseApp.factory('studyDesignService', function(glimmpseConstants, matrixUtil
                             covar.blob.data.push(row);
                         }
                     }
-
+                    // fix scale
+                    if (covar.scale === undefined || covar.scale === null) {
+                        covar.scale = false;
+                    }
                 }
             }
         } else {

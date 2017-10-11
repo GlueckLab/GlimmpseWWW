@@ -489,15 +489,19 @@ glimmpseApp.controller('stateController',
          * @returns disabled, complete, or incomplete
          */
         $scope.getStateConfidenceIntervals = function() {
-            if ($scope.studyDesign.confidenceIntervalDescriptions === null) {
+            var ci = $scope.studyDesign.confidenceIntervalDescriptions;
+
+            // TODO: the method comment is incorrect; the method does not return disabled
+            if (ci === null) {
                 return glimmpseConstants.stateComplete;
             } else {
-                if ($scope.studyDesign.confidenceIntervalDescriptions.betaFixed !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.sigmaFixed !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.upperTailProbability !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.lowerTailProbability !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.sampleSize !== undefined &&
-                    $scope.studyDesign.confidenceIntervalDescriptions.rankOfDesignMatrix !== undefined) {
+                if (ci.betaFixed !== undefined &&
+                        ci.sigmaFixed !== undefined &&
+                        ci.upperTailProbability !== undefined &&
+                        ci.lowerTailProbability !== undefined &&
+                        ci.sampleSize !== undefined &&
+                        ci.rankOfDesignMatrix !== undefined &&
+                        +ci.sampleSize > +ci.rankOfDesignMatrix) {
                     return glimmpseConstants.stateComplete;
                 } else {
                     return glimmpseConstants.stateIncomplete;
@@ -1042,6 +1046,8 @@ glimmpseApp.controller('stateController',
                             $scope.metaData.updatePredictorCombinations();
                             $scope.metaData.updateResponseCombinations();
                         } catch(err) {
+                            $scope.studyDesign.reset();
+                            $scope.metaData.reset();
                             var msg = "Sorry, that file does not contain a valid study design." + "\n\n" + err;
                             if (glimmpseConstants.debug) {
                                 msg += "\n\n" + "Response:\n" + responseText;
@@ -1174,6 +1180,8 @@ glimmpseApp.controller('stateController',
                     $scope.metaData.updateResponseCombinations();
                 },
                 function(errorMessage){
+                    $scope.studyDesign.reset();
+                    $scope.metaData.reset();
                     $scope.dropboxService.setStatus("ERROR");
                 });
         };
@@ -2883,7 +2891,6 @@ glimmpseApp.controller('stateController',
  * Controller for variability within view
  */
     .controller('variabilityWithinController', function($scope, glimmpseConstants, studyDesignService) {
-
         /**
          * Pre-calculate the min/max distances for the LEAR model
          * when the user selected a repeated measures tab
@@ -2925,37 +2932,49 @@ glimmpseApp.controller('stateController',
          * lear covariance values
          */
         $scope.calculateLear = function() {
+            if ($scope.currentCovariance === undefined) {
+                return;
+            }
+
+            var cv = $scope.currentCovariance;
+
             // make sure user is done filling in the text
-            if ($scope.currentCovariance !== undefined &&
-                $scope.currentCovariance.rho >= -1 && $scope.currentCovariance.rho <= 1 &&
-                $scope.currentCovariance.delta >= 0) {
-                if ($scope.currentCovariance.blob === null) {
-                    $scope.currentCovariance.blob = {
+            if (cv.rho >= -1 && cv.rho <= 1 && cv.delta >= 0) {
+                var r, nRows = cv.rows;
+                var c, nCols = cv.columns;
+
+                if (cv.blob === null) {
+                    cv.blob = {
                         data: []
                     };
                     // some uploaded designs may not include the lear data, but we need to
                     // keep it somewhere, so create an empty covariance matrix
-                    for(var r = 0; r < $scope.currentCovariance.rows; r++) {
+                    for (r = 0; r < nRows; r++) {
                         var row = [];
-                        for(var c = 0; c < $scope.currentCovariance.columns; c++) {
-                            row.push((r == c ? 1 : 0));
+                        for (c = 0; c < nCols; c++) {
+                            row.push(r == c ? 1 : 0);
                         }
-                        $scope.currentCovariance.blob.data.push(row);
+                        cv.blob.data.push(row);
                     }
-
                 }
-                var spacingList = $scope.studyDesign.repeatedMeasuresTree[
-                    $scope.studyDesign.covariance.indexOf($scope.currentCovariance)
-                    ].spacingList;
-                for(var rr = 0; rr < $scope.currentCovariance.rows; rr++) {
-                    for(var cc = 0; cc < rr; cc++) {
-                        var measurementDistance = Math.abs(spacingList[rr].value - spacingList[cc].value);
-                        var powerValue = $scope.minDistance + (
-                            $scope.currentCovariance.delta *
-                                (measurementDistance - $scope.minDistance)/($scope.maxMinDiff));
-                        var value = Math.pow($scope.currentCovariance.rho, powerValue);
-                        $scope.currentCovariance.blob.data[rr][cc] = value;
-                        $scope.currentCovariance.blob.data[cc][rr] = value;
+
+                var sd = $scope.studyDesign;
+                var sl = sd.repeatedMeasuresTree[sd.covariance.indexOf(cv)].spacingList;
+                var dMin = $scope.minDistance;
+                var maxMinDiff = $scope.maxMinDiff;
+                var delta = cv.delta;
+                var rho = cv.rho;
+                var d = cv.scale ? 1 : dMin;
+                var data = cv.blob.data;
+
+                for (r = 0; r < nRows; r++) {
+                    for (c = 0; c < r; c++) {
+                        var dCur = Math.abs(sl[r].value - sl[c].value);
+                        var curMinDiff = dCur - dMin;
+                        var powerValue = d + delta * curMinDiff/maxMinDiff;
+                        var value = Math.pow(rho, powerValue);
+                        data[r][c] = value;
+                        data[c][r] = value;
                     }
                 }
             }
@@ -3052,8 +3071,9 @@ glimmpseApp.controller('stateController',
             switch ($scope.currentCovariance.type) {
                 case glimmpseConstants.variabilityTypeLearCorrelation:
                     // set default LEAR params
-                    $scope.currentCovariance.rho = 0;
+                    $scope.currentCovariance.rho = 0.1;
                     $scope.currentCovariance.delta = 0;
+                    $scope.currentCovariance.scale = true;
 
                     // reset standard deviations to 1
                     for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
@@ -3069,6 +3089,7 @@ glimmpseApp.controller('stateController',
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
+                    $scope.currentCovariance.scale = false;
 
                     // reset standard deviations to 1
                     for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
@@ -3095,6 +3116,7 @@ glimmpseApp.controller('stateController',
                     // clear LEAR parameters
                     $scope.currentCovariance.rho = -2;
                     $scope.currentCovariance.delta = -1;
+                    $scope.currentCovariance.scale = false;
 
                     // reset standard deviations to 1
                     for (i = 0; i < $scope.currentCovariance.standardDeviationList.length; i++) {
@@ -3127,7 +3149,6 @@ glimmpseApp.controller('stateController',
             }
             return true;
         };
-
     })
 
 /**

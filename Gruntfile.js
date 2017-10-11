@@ -115,7 +115,8 @@ module.exports = function(grunt) {
                     {expand: true, flatten: true, src: ['app/img/**'], dest: 'build/dist/img'},
                     {expand: true, flatten: true, src: ['app/partials/**'], dest: 'build/dist/partials'},
                     {expand: true, flatten: true, src: ['app/templates/**'], dest: 'build/dist/templates'},
-                    {expand: true, flatten: true, src: ['app/*.php'], dest: 'build/dist/'}
+                    {expand: true, flatten: true, src: ['app/*.php'], dest: 'build/dist/'},
+                    {expand: true, flatten: true, src: ['app/favicon.ico'], dest: 'build/dist/'}
                 ]
             },
             libs: {
