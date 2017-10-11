@@ -76,7 +76,7 @@
     <gap:splash gap:platform="ios" height="1024" src="resources/screen/GlimmpseScreen768x1024.png" width="768" />
     <gap:splash gap:platform="ios" height="768" src="resources/screen/GlimmpseScreen1024x768.png" width="1024" />
     <gap:splash gap:platform="winphone" src="resources/screen/windows-phone/screen-portrait.jpg" />
-    <gap:plugin name="cordova-plugin-inappbrowser" source="npm" version="1.0.1"/>
+    <gap:plugin name="cordova-plugin-inappbrowser" source="npm" version="1.7.1"/>
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
     <allow-navigation href="*"/>
     <access origin="*"/>
